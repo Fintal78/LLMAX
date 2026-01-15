@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "brand": {
+                "type": "string"
+            },
+            "model_name": {
+                "type": "string"
+            },
+            "url": {
+                "type": "string"
+            },
+            "specs": {
+                "type": "object",
+                "properties": {
+                    "Network": {
+                        "type": "object"
+                    },
+                    "Launch": {
+                        "type": "object"
+                    },
+                    "Body": {
+                        "type": "object"
+                    },
+                    "Display": {
+                        "type": "object"
+                    },
+                    "Platform": {
+                        "type": "object"
+                    },
+                    "Memory": {
+                        "type": "object"
+                    },
+                    "Camera": {
+                        "type": "object"
+                    },
+                    "Sound": {
+                        "type": "object"
+                    },
+                    "Comms": {
+                        "type": "object"
+                    },
+                    "Features": {
+                        "type": "object"
+                    },
+                    "Battery": {
+                        "type": "object"
+                    },
+                    "Misc": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "required": [
+            "brand",
+            "model_name",
+            "specs"
+        ]
+    }
+}
