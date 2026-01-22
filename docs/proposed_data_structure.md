@@ -791,32 +791,56 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "8_2_headphone_jack_dac": {
-      "value": "No Jack (Dongle Required)",
-      "predicted_score": 0.0,
+    "8_2_playback_audio_processing_immersion": {
+      "audio_format_decode": {
+        "dolby_atmos": true,
+        "dts_x": false,
+        "multichannel_surround": true,
+        "score": 8.0
+      },
+      "spatial_audio_rendering": {
+        "head_tracking": false,
+        "static_spatial": true,
+        "score": 7.0
+      },
+      "predicted_score": 7.5,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
       },
-      "final_score": 0.0
+      "final_score": 7.5
     },
-    "8_3_microphone_recording": {
-      "value": "Studio Quality + Audio Zoom",
-      "predicted_score": 0.0,
+    "8_3_wired_audio_capability": {
+      "value": "USB-C digital audio only (dongle required)",
+      "headphone_jack_3_5mm": false,
+      "usb_c_analog_audio": false,
+      "usb_c_digital_only": true,
+      "predicted_score": 3.0,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
       },
-      "final_score": 0.0
+      "final_score": 3.0
     },
-    "8_4_advanced_audio_features": {
-      "features": ["Dolby Atmos", "360 Audio"],
-      "predicted_score": 0.0,
+    "8_4_microphone_audio_recording": {
+      "mhc": {
+        "microphone_count": 3,
+        "score": 8.0
+      },
+      "rcm": {
+        "recording_channels": "Stereo",
+        "score": 8.0
+      },
+      "acf": {
+        "features": ["Directional/Audio Zoom", "Wind noise reduction"],
+        "score": 5.0
+      },
+      "predicted_score": 7.0,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
       },
-      "final_score": 0.0
+      "final_score": 7.0
     },
     "microphones_count": 3
   },
@@ -824,41 +848,38 @@ It includes all previously removed parameters, categorized as:
     "9_1_price": {
       "usd": 1299
     },
-    "9_2_price_to_value_ratio": "Fair Price",
-    "9_3_resale_value": "Good Retention",
-    "9_4_repairability": {
-      "ifixit_score": 8
+    "price_to_value_ratio": "Fair Price",
+    "resale_value": "Good Retention",
+    "9_2_repairability": {
+      "ifixit_score": 8,
+      "eu_repairability_index": 4.0,
+      "eu_converted_score": 8.0,
+      "predicted_score": 8.0,
+      "confidence": "High"
     },
-    "9_5_warranty_support": "1 Year Standard",
-    "9_6_availability": "Global Release (Everywhere)"
+    "9_3_service_ecosystem_support": {
+      "support_level": "Self-repair program + parts + manuals",
+      "predicted_score": 10.0
+    },
+    "9_4_warranty_length": "1 Year Standard",
   },
-  "10_reviews_and_performance_boosters": {
-    "10_1_dxomark_camera": {
+  "10_miscellaneous": {
+    "10_1_haptics_quality": "X-Axis Linear (Large)",
+    "10_2_stylus_hardware_system_support": "Integrated active stylus + dedicated digitizer + BT features"
+  },
+  "11_reviews_and_performance_boosters": {
+    "11_1_dxomark_camera": {
       "score": 144,
       "url": "https://www.dxomark.com/..."
     },
-    "10_2_gsm_arena_battery": {
+    "11_2_gsm_arena_battery": {
       "endurance_rating": "Active Use Score",
       "url": "https://www.gsmarena.com/..."
     },
-    "10_3_jerryrigeverything": {
+    "11_3_jerryrigeverything": {
       "result": "Passed",
       "url": "https://www.youtube.com/..."
     },
-    "10_4_user_reports": {
-      "issues": "None",
-      "url": "https://www.reddit.com/..."
-    }
   },
-  "11_miscellaneous": {
-    "11_1_haptics_quality": "X-Axis Linear (Large)",
-    "11_2_sustainability": "High Recycled % + No Plastic",
-    "11_3_stylus_support": "Integrated (BT + Low Latency)"
-  },
-  "To_be_scored_after_maturation": {
-    "npu_tops": 45,
-    "mil_std_810h": false,
-    "antutu_v10_score": 2100000
-  }
 }
 ```

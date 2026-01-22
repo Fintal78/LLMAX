@@ -10,21 +10,53 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 
 ### 🔹 1.1 Materials (Frame/Back)
 *Description:* The physical materials used for the device chassis and rear panel. Affects how premium the phone feels, how well it resists drops, and how cool it stays during use.
-*   **Measurement:** Manufacturer specifications and physical inspection.
-*   **Unit:** Qualitative (Material Tier)
+*   **Measurement:** Manufacturer specifications and teardown confirmation.
+*   **Unit:** Composite Score (0-10)
 *   **Significance:** Determines structural integrity, thermal dissipation, and tactile quality.
-| Score    | Combination                     | Example Models                  |
-| :------- | :------------------------------ | :------------------------------ |
-| **10.0** | **Titanium + Ceramic/Shield**   | iPhone 15 Pro Max, Xiaomi Mix 4 |
-| **9.0**  | **Titanium + Glass**            | Samsung Galaxy S24 Ultra        |
-| **8.5**  | **Stainless Steel + Glass**     | iPhone 14 Pro Max               |
-| **8.0**  | **Aluminum + Glass (Victus)**   | Pixel 8 Pro, Galaxy S24+        |
-| **7.0**  | **Aluminum + Glass (Standard)** | Nothing Phone (2), Xiaomi 13T   |
-| **6.0**  | **Plastic Frame + Glass Back**  | Galaxy A55, Redmi Note 13 Pro+  |
-| **5.0**  | **High-Quality Polycarbonate**  | Pixel 7a, Lumia 1020 (Legacy)   |
-| **4.0**  | **Plastic + Plastic**           | Galaxy A15, Moto G Power        |
-| **2.0**  | **Cheap Plastic / Removable**   | Entry-level / Feature Phones    |
-| **0.0**  | **No Information**              | Unknown                         |
+
+**Final Score Formula:**
+`Materials Score = (0.6 × Frame Material Score) + (0.4 × Back Material Score)`
+
+> [!NOTE]
+> **Why this weighting is explicit:** The frame governs structural rigidity, torsional strength, and thermal conduction pathways more than the back panel, which mainly affects surface durability, radio transparency, and impact shatter behavior.
+
+#### 1.1.A Frame Material (Structural Class)
+*   **Measurement:** Manufacturer specifications and teardown confirmation.
+*   **Unit:** Material Class
+*   **Significance:** Determines chassis rigidity, bending resistance, and heat transfer from internal components to the outer shell.
+
+| Score    | Frame Material Class       |
+| :------- | :------------------------- | 
+| **10.0** | **Titanium Alloy Frame**   |  
+| **8.5**  | **Stainless Steel Frame**  |
+| **7.0**  | **Aluminum Alloy Frame**   |  
+| **4.0**  | **Polymer Composite Frame**| 
+| **0.0**  | **Material Not Disclosed** | 
+
+**Titanium Alloy Frame**: Titanium alloy structural frame; high strength-to-weight ratio, low thermal conductivity versus steel, high corrosion resistance
+**Stainless Steel Frame**: Steel alloy structural frame; very high rigidity and mass, high thermal conductivity, strong impact resistance
+**Aluminum Alloy Frame**: Aluminum structural frame; moderate rigidity, low mass, high thermal conductivity
+**Polymer Composite Frame**: Structural frame made from plastic or fiber-reinforced polymer; low thermal conductivity, lower stiffness than metals
+**Material Not Disclosed**: Frame material not specified in official documentation or teardown sources
+
+#### 1.1.B Back Panel Material (Surface Class)
+*   **Measurement:** Manufacturer specifications and teardown confirmation.
+*   **Unit:** Material Class
+*   **Significance:** Affects scratch resistance, shatter risk, radio signal transparency, and surface heat dissipation.
+
+| Score    | Back Material Class        |                                                |
+| :------- | :------------------------- | 
+| **10.0** | **Ceramic Back**           |
+| **8.0**  | **Strengthened Glass Back**|
+| **6.0**  | **Standard Glass Back**    |
+| **4.0**  | **Polymer Back**           |
+| **0.0**  | **Material Not Disclosed** |
+
+**Ceramic Back**: Back panel made from ceramic or ceramic composite; high surface hardness, low radio frequency interference, high brittleness
+**Strengthened Glass Back**: Chemically strengthened aluminosilicate glass (e.g., Gorilla Glass, Victus); moderate hardness, brittle fracture behavior
+**Standard Glass Back**: Glass back without strengthened certification; similar brittleness with lower surface hardness
+**Polymer Back**: Plastic or polymer rear panel; low brittleness, low surface hardness, high radio frequency transparency
+**Material Not Disclosed**: Back material not specified in official documentation or teardown sources   
 
 ### 🔹 1.2 Durability (IP Rating)
 *Description:* Ingress Protection rating against dust and water. Determines if your phone can survive a drop in the toilet, rain, or a dusty environment.
@@ -197,6 +229,18 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Max Score (10.0):** ≥ 93%
 *   **Min Score (0.0):** ≤ 60%
 > [!NOTE]
+This is a continuous linear scoring metric. Higher ratio means thinner bezels.
+
+
+## 🟣 3. Processing Power & Performance
+
+### 🔹 3.1 SoC Performance (Sustained Outcome)
+*Description:* Measures actual delivered performance in standardized workloads, regardless of architecture, clocks, or vendor optimizations. This represents the "heavy lifting" capability of the device.
+
+*   **Measurement:** Geekbench 6 Multi-Core Score.
+*   **Unit:** Points
+*   **Significance:** Primary indicator of sustained workloads, gaming potential, and multitasking capability.
+
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
 This is the preferred method when a direct Geekbench 6 score is available. It provides the most accurate representation of real-world performance.
@@ -1270,7 +1314,6 @@ Each feature = +2.5 points, max 10.0.
 
 *Formula:* `ACF = 2.5 × number_of_features` (Clamped 0-10)
 
----
 
 ## 🟣 9. Financial & Economic Value
 
@@ -1322,6 +1365,29 @@ The final score is the average of the iFixit Score (0-10) and the converted EU R
 | **0.0**  | **No official repair pathway**            | Niche/Import-only devices      |
 
 ### 🔹 9.4 Warranty Length
+*Description:* Manufacturer's standard warranty period. Longer warranties indicate manufacturer confidence and provide financial protection.
+*   **Measurement:** Manufacturer policy commitment.
+*   **Unit:** Months
+*   **Significance:** Financial protection against defects and accidents.
+
+IMPORTANT: The score of a phone is based on its Limited Manufacturer Warranty (the one that applies globally, usually 12 months). This measures the manufacturer's confidence in the hardware. Hence, a phone sold in the US with a 12-month warranty and in the EU with a 24-month warranty will only get a 3.0 score corresponding to the 12-month warranty. In short, the shortest warranty applied worldwide is the one used for scoring.
+
+| Score    | Manufacturer Warranty Period  | Example Models                                                   |
+| :------- | :---------------------------- | :--------------------------------------------------------------- |
+| **10.0** |   **≥ 60 Months (5 Years)**   | Fairphone 5/6, Teracube (Often requires registration)            |
+| **8.5**  |   **48 Months (4 Years)**     | Rugged/Enterprise models (e.g., Samsung Tactical).               |
+| **7.0**  |   **36 Months (3 Years)**     | Newer EU baseline (Spain/Portugal) or Nokia X-series.            |
+| **5.0**  |   **24 Months (2 Years)**     | EU Standard                                                      |
+| **3.0**  |   **12 Months (1 Year)**      | US Standard. The bare minimum for Apple/Samsung/Google globally. |
+| **0.0**  |   **0 Months**                | Grey Market / Used                                               |
+
+
+## 🟣 10. Miscellaneous
+
+### 🔹 10.1 Haptics Quality
+*Description:* Vibration quality. Good haptics feel like crisp clicks (premium), while bad ones feel like a buzzy rattle (cheap).
+*   **Measurement:** Teardown / Tactile evaluation.
+*   **Unit:** Motor Type
 *   **Significance:** Affects typing experience and notification quality.
 
 | Score    | Motor Type                                                      | Example Models              |
@@ -1354,7 +1420,7 @@ The final score is the average of the iFixit Score (0-10) and the converted EU R
 > - **Passive capacitive stylus:** Essentially a finger substitute. It does not communicate electronically with the phone (no interaction with any digitizer layer).
 
 
-## 🟣 11. Reviews & Performance Boosters
+# 🟣 11. Reviews & Performance Boosters
 *Description:* Adjustments based on real-world expert reviews. Technical specs don't always tell the whole story; reviews validate actual performance.
 *   **Measurement:** Expert review consensus.
 *   **Unit:** Multiplier (Booster)
@@ -1365,38 +1431,67 @@ The final score is the average of the iFixit Score (0-10) and the converted EU R
 **Booster Methodology**
 Boosters are applied strictly at the **subsection** level. This ensures that a review's specific findings impact only the relevant technical metric rather than the entire category.
 
-**Core Rules:**
-*   **Unaccounted Feature Requirement:** A booster is ONLY justified if it captures a characteristic or performance factor that is either entirely missing from the standard scoring system (Sections 1–10) or is significantly under-represented by the theoretical metrics. "General improvement" or "good performance" relative to a predecessor is NOT a valid justification; the performance must deviate from what the technical specifications would predict.
-*   **Specificity:** Booster justifications must be extremely specific to the findings of the review and the technical gap they fill.
-*   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection.
-*   **Extract Requirement:** Every justification point made must be associated with an **exact extract** from the review. This extract must be exact, meaning that searching for the extract in the review source will find it as is.
-*   **Decomposition:** A single review source may impact multiple subsections; in such cases, the booster must be decomposed into separate entries.
+### 11.A Core Principles
+*   **Unaccounted Feature Requirement:** A booster is ONLY justified if it captures a characteristic or performance factor that is either entirely missing from the standard scoring system (Sections 1–10) or is significantly under-represented by the theoretical metrics.
+*   **Real-World Test Exclusion:** Boosters are **FORBIDDEN** for subsections that are already scored using real-world benchmarks or tests. Since these scores already reflect actual performance, applying a booster would double-count the benefit.
+    *   *Excluded Subsections:* **3.1** (SoC Performance), **3.2** (CPU Efficiency), **5.1** (Battery Capacity).
+*   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection or any other subsection.
+*   **Complete Assessment:** Before applying a booster, verify that the feature is not already scored in another section (e.g., Video Codecs vs. ISP tuning). Double-counting features is strictly prohibited.
 
-**Example of Decomposition:**
-If a review finds a phone has exceptional telephoto zoom but poor video stabilization:
-- **Booster A (1.10):** Targets Subsection 4.5 (Zoom Capability) for superior optics.
-- **Booster B (0.90):** Targets Subsection 4.4 (Image Stabilization) for poor software compensation.
+### 11.B Justification Logic
+A valid booster requires a clear logical chain linking a hidden technical feature to an observed result.
+Each booster section must provide the following elements:
+1)  **Source Link:** The link of the review that must be publicly accesible 
+2)  **Impacted Subsection:** The subsection number impacted by the booster value, for example 4.16
+3)  **Booster:** The value of the booster, for example 1.05
+4)  **Justification:**
+    a)   **Unaccounted Feature (Cause):** The specific technical mechanism, hardware component, or software algorithm that is responsible for the anomaly. This is the "Why".
+    b)   **Unaccounted Reason (Gap):** The explicit explanation of *why* this feature is not captured by the standard scoring rules of Sections 1-10.
+    c)   **Observed Justification (Effect):** The tangible performance outcome observed in the review. This is the "What".
+    The justification must be detailed and exhaustive enough to be understood without further explanation, and sufficient to justify the booster value.
+
+**Extract Requirement:** Both **Unaccounted Feature** and **Observed Justification** must be **exact, verbatim extracts** from the review. These extracts must be exact, meaning that searching for any extract in the review source will find it as is. **NEVER** invent, paraphrase, or hallucinate content. If the exact text is not in the source, the booster is invalid.
+**Technical Causality:** There must be a clear link between the technical mechanism (the **Unaccounted Feature**) and the performance outcome (the **Observed Justification**). Purely comparative statements (e.g., "best we have seen") are **INVALID** unless they explain *why*.
+
+### 11.C Evidence Requirements 
+*   **Proof & Precision:** The extracts must contain specific quantitative data (e.g., "Delta-E 0.14", "117 points") or precise technical descriptions. Vague praise is not evidence.
+*   **Source Verification:** All source links must be active, accessible URLs from reputable publications. Placeholders (e.g., `example.com`) are **STRICTLY PROHIBITED**. If a specific text extract is used, the source must be verifiable.
+*   **Specificity:** Justifications must be extremely specific to the findings of the review and the technical gap they fill.
+*   **Disjointed Extracts:** Extracts may combine non-contiguous text from the same review, for example to link technical data with the resulting conclusion. Use `[...]` to indicate the separation. For more fluidity, parts that are less distant from each other than 3 sentences should not be separated.
+*   **Decomposition:** A single review source may impact multiple subsections; in such cases, the booster must be decomposed into separate entries.
+    *   *Example:* If a review finds a phone has exceptional telephoto zoom but poor video stabilization:
+        *   **Booster A (1.10):** Targets Subsection 4.5 (Zoom Capability) for superior optics.
+        *   **Booster B (0.90):** Targets Subsection 4.4 (Image Stabilization) for poor software compensation.
+
+### 11.D Process
+*   **Verification Loop:** After drafting a booster, perform a mandatory self-check ensuring that **ALL** rules in sections 11.A, 11.B, and 11.C are strictly satisfied. If any rule is violated, discard and refine. Repeat this refinement process up to **3 times**. If the booster still fails to meet all criteria after the 3rd attempt, **discard the booster entirely** and log a "Verification Failed" error for that subsection.
 
 > [!NOTE]
 > The following items are **examples** of how expert reviews can be used to adjust theoretical scores. In practice, any reputable and verifiable expert review can be used as a booster source.
 
-### 🔹 11.1 DXOMARK Camera Validation
+### 🔹 11.1 DXOMARK 24MP Texture Optimization
 *   **Source Link:** [iPhone 15 Pro Max Camera Test](https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/)
 *   **Impacted Subsection:** 4.16 Computational Photography & AI
 *   **Booster:** **1.05**
-*   **Justification:** DXOMARK's testing reveals that the iPhone 15 Pro Max achieves a level of texture preservation and noise management that significantly exceeds what is predicted by its sensor size and pixel pitch. This is attributed to a specific "texture-to-noise" optimization in the image signal processor (ISP) that is not captured by the base scoring of sensor hardware or standard HDR features.
-    *   **Extract:** "The iPhone 15 Pro Max uses a new image processing pipeline... some specific effort has been made to significantly improve the texture and noise trade-off over its predecessor iPhone 14 Pro."
+*   **Justification:**
+    *   **Unaccounted Feature:** "the jump from 12MP to 24MP images by default"
+    *   **Unaccounted Reason:** Section 4.3 scores the sensor's max resolution (48MP) and Section 4.16 scores HDR presence, but neither captures the computational fusion that enables a 24MP default output with superior texture rendering.
+    *   **Observed Justification:** "made for significantly improved texture quality"
 
-### 🔹 11.2 GSMArena Battery Efficiency
-*   **Source Link:** [iPhone 15 Plus Battery Review](https://www.gsmarena.com/apple_iphone_15_plus-review-2621p3.php)
-*   **Impacted Subsection:** 5.1 Battery Capacity
-*   **Booster:** **1.10**
-*   **Justification:** GSMArena's "Active Use Score" demonstrates that the iPhone 15 Plus manages background tasks and modem power states with exceptional efficiency, leading to endurance that outlasts competitors with significantly larger physical batteries (mAh). This "standby drain" and "modem efficiency" are factors not captured by the raw capacity or SoC node metrics in Section 5.
-    *   **Extract:** "the iPhone 15 Plus appears to outperform the iPhone 15 Pro Max in the web browsing test by a small margin as well as in the gaming test. Even the Active Use Score is higher on the 15 Plus."
+### 🔹 11.2 Tom's Guide Display Color Accuracy
+*   **Source Link:** [iPhone 15 Pro Max Review](https://www.tomsguide.com/reviews/iphone-15-pro-max)
+*   **Impacted Subsection:** 2.7 Color Accuracy & HDR
+*   **Booster:** **1.05**
+*   **Justification:**
+    *   **Unaccounted Feature:** "earned a Delta-E score of 0.14"
+    *   **Unaccounted Reason:** Section 2.7 scores theoretical support (DCI-P3, Dolby Vision) but does not measure the specific factory calibration accuracy (Delta-E).
+    *   **Observed Justification:** "offers more accurate colors"
 
-### 🔹 11.3 JerryRigEverything Durability Audit
-*   **Source Link:** [iPhone 15 Pro Max Durability Test](https://www.youtube.com/watch?v=isS_uG_xH_8)
-*   **Impacted Subsection:** 1.2 Durability (IP Rating)
-*   **Booster:** **0.85**
-*   **Justification:** The JerryRigEverything bend test revealed a specific structural vulnerability in the internal frame bracing of the iPhone 15 Pro Max, where the back glass shattered under localized pressure. This "structural integrity under torsion" is a mechanical durability factor that is entirely distinct from the ingress protection (IP rating) and surface scratch resistance (Ceramic Shield) already evaluated.
-    *   **Extract:** "the glass did not like being pressed or flexed by my thumb. that's crazy... that snap was abnormally quick kind of stunned."
+### 🔹 11.3 NotebookCheck PWM Flickering
+*   **Source Link:** [iPhone 15 Pro Max Review](https://www.notebookcheck.net/Apple-iPhone-15-Pro-Max-review-More-camera-power-and-titanium-for-Apple-s-biggest-smartphone.756855.0.html)
+*   **Impacted Subsection:** 2.1 Display Technology
+*   **Booster:** **0.95**
+*   **Justification:**
+    *   **Unaccounted Feature:** "The frequency of 240 Hz is relatively low"
+    *   **Unaccounted Reason:** Section 2.1 scores the OLED technology type but does not penalize low-frequency PWM dimming which can cause eyestrain for sensitive users.
+    *   **Observed Justification:** "sensitive users will likely notice flickering" 
