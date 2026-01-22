@@ -197,17 +197,6 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Max Score (10.0):** ≥ 93%
 *   **Min Score (0.0):** ≤ 60%
 > [!NOTE]
-> This is a continuous linear scoring metric. Higher ratio means thinner bezels.
-
-
-## 🟣 3. Processing Power & Performance
-
-### 🔹 3.1 SoC Performance (Sustained Outcome)
-*Description:* Measures actual delivered performance in standardized workloads, regardless of architecture, clocks, or vendor optimizations. This represents the "heavy lifting" capability of the device.
-*   **Measurement:** Geekbench 6 Multi-Core Score.
-*   **Unit:** Points
-*   **Significance:** Primary indicator of sustained workloads, gaming potential, and multitasking capability.
-
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
 This is the preferred method when a direct Geekbench 6 score is available. It provides the most accurate representation of real-world performance.
@@ -1144,22 +1133,69 @@ Each feature presence counts as 1 point, up to a maximum of 5 points.
 ## 🟣 8. Audio
 
 ### 🔹 8.1 Speaker System Capability (SSC)
-*Description:* Evaluates the hardware design and acoustic potential of the built-in speakers. Focuses on speaker count, channel balance, and enclosure design — not subjective "sound taste".
-*   **Measurement:** Speaker count & placement, channel symmetry, presence of dedicated bass chamber, peak loudness measurements (when available).
-*   **Unit:** Hardware Configuration Index (0-10)
-*   **Significance:** Directly impacts media consumption, gaming immersion, and call loudness without headphones.
+*Description:* Evaluates the physical speaker configuration of the device. Focuses on speaker count, placement, and channel symmetry. Acoustic tuning and subjective sound quality are intentionally excluded.
+*   **Measurement:** Speaker count and placement (manufacturer specs, teardowns, reviews).
+*   **Unit:** Hardware Configuration Score (0-10)
+*   **Significance:** Determines baseline loudness, stereo separation, and immersion without headphones.
 
-| Score    | Speaker Configuration                                  | Example Models                 |
-| :------- | :----------------------------------------------------- | :----------------------------- |
-| **10.0** | **Dual front-facing speakers + dedicated bass chamber**| ROG Phone 8, Black Shark 5 Pro |
-| **8.5**  | **Symmetrical stereo (top + bottom), tuned enclosure** | iPhone 15 Pro Max, S24 Ultra   |
-| **7.0**  | **Stereo using earpiece + bottom speaker**             | Pixel 8, Galaxy A55            |
-| **5.0**  | **Asymmetrical stereo (weak earpiece channel)**        | Budget Mid-range               |
-| **3.0**  | **Single bottom-firing speaker**                       | Entry Level                    |
-| **1.0**  | **Single low-power speaker (muffled / low SPL)**       | Feature phones                 |
-| **0.0**  | **No usable external speaker**                         | Obsolete/damaged devices       |
+| Score    | Speaker Configuration                               |
+| :------- | :-------------------------------------------------- |
+| **10.0** | **Stereo, dual front-facing speakers**              | 
+| **8.0**  | **Stereo, dual NON-front-facing speakers**          | 
+| **6.0**  | **Stereo labeled but asymmetrical**                 | 
+| **4.0**  | **Mono physical speaker**                           |                          
+| **0.0**  | **No usable speaker**                               | 
 
-### 🔹 8.2 Wired Audio Capability
+Explanation:
+**Stereo, dual front-facing speakers**: Two distinct speaker units both oriented toward the user (e.g., top/bottom or left/right front bezels)
+**Stereo, dual NON-front-facing speakers**: The phone has two separate physical speaker units that output stereo sound, but at least one speaker does not face the user directly (e.g., bottom-firing or side-firing), which limits spatial accuracy.
+**Stereo labeled but asymmetrical**: Two physical drivers present but one is not a true channel (e.g., both at bottom or unbalanced geometry)
+**Mono physical speaker**: Only one physical speaker unit present, no stereo channel labeling
+**No usable speaker**: No working built-in speaker (e.g., legacy device, accessory-only audio)
+
+Note: This section evaluates only physical speaker hardware. Virtual surround, spatial audio, Dolby Atmos, and head tracking are software-level features and are evaluated separately in playback processing sections.
+
+### 🔹 8.2 Playback Audio Processing & Immersion (PAPI)
+*Description:* Evaluates the phone's ability to decode modern multichannel audio formats and to render spatialized sound during playback. This section focuses exclusively on playback-side processing, independent of speakers, microphones, or wired audio output.
+*   **Measurement:** Supported playback formats, OS-level spatial audio feature support.
+*   **Unit:** Composite Index (0-10)
+*   **Significance:** Determines compatibility with modern streaming content and immersion during media consumption.
+
+**Structure:**
+PAPI is a weighted composite of two subsections:
+- **8.2.1 Audio Format Decode Support** — 50% weight
+- **8.2.2 Spatial Audio Rendering** — 50% weight
+
+*Formula:* `PAPI = (0.5 × Score_8.2.1) + (0.5 × Score_8.2.2)`
+
+---
+
+#### 8.2.1 Audio Format Decode Support
+*What it measures:* Range of multichannel or object-based audio formats the device can natively decode.
+*Why it matters:* Determines compatibility with modern streaming and video content.
+
+| Score    | Supported Decode Formats             |
+| :------- | :----------------------------------- |
+| **10.0** | **Dolby Atmos and DTS:X**            |
+| **8.0**  | **Dolby Atmos only**                 |
+| **5.0**  | **Multichannel surround (DD / DD+)** |
+| **0.0**  | **Stereo only**                      |
+
+---
+
+#### 8.2.2 Spatial Audio Rendering (Playback)
+*What it measures:* Ability of the operating system to spatialize audio during playback, creating a 3D soundstage over headphones or speakers.
+*Why it matters:* Determines immersion and realism during media consumption.
+
+| Score    | Spatial Rendering Capability                |
+| :------- | :------------------------------------------ |
+| **10.0** | **Spatial audio with dynamic head tracking**|
+| **7.0**  | **Spatial audio (static, no head tracking)**|
+| **0.0**  | **No spatial rendering**                    |
+
+---
+
+### 🔹 8.3 Wired Audio Capability
 *Description:* Evaluates native wired audio output options available without relying on external powered accessories.
 *   **Measurement:** Presence of 3.5mm analog audio jack, presence of analog audio output via USB-C, digital-only USB-C audio fallback.
 *   **Unit:** Wired Audio Capability Score (0-10)
@@ -1175,7 +1211,7 @@ The 3.5mm jack provides universal compatibility (works with all wired headphones
 | **3.0**  | **USB-C digital audio only (dongle required)**   | Most Flagships (S24, iPhone) |
 | **0.0**  | **No wired audio support**                       | Rare/obsolete devices        |
 
-### 🔹 8.3 Microphone & Audio Recording (MAR)
+### 🔹 8.4 Microphone & Audio Recording (MAR)
 *Description:* Evaluates the audio capture capability of the device using only publicly verifiable data, without subjective quality judgments. This is a composite score based on hardware count, recording channels, and advanced features.
 *   **Measurement:** Microphone count, recording channels/modes, documented audio features.
 *   **Unit:** Composite Index (0-10)
@@ -1183,15 +1219,15 @@ The 3.5mm jack provides universal compatibility (works with all wired headphones
 
 **Structure:**
 MAR is a weighted composite of three subsections:
-- **8.3.1 Microphone Hardware Count (MHC)** — 30% weight
-- **8.3.2 Recording Channels & Modes (RCM)** — 30% weight
-- **8.3.3 Advanced Capture Features (ACF)** — 40% weight
+- **8.4.1 Microphone Hardware Count (MHC)** — 30% weight
+- **8.4.2 Recording Channels & Modes (RCM)** — 30% weight
+- **8.4.3 Advanced Capture Features (ACF)** — 40% weight
 
 *Formula:* `MAR = (0.30 × MHC) + (0.30 × RCM) + (0.40 × ACF)`
 
 ---
 
-#### 8.3.1 Microphone Hardware Count (MHC)
+#### 8.4.1 Microphone Hardware Count (MHC)
 *What it measures:* Physical microphones available for capture (bottom, top, rear, front).
 *Why it matters:* More microphones enable better noise separation, spatial capture, and redundancy.
 
@@ -1205,7 +1241,7 @@ MAR is a weighted composite of three subsections:
 
 ---
 
-#### 8.3.2 Recording Channels & Modes (RCM)
+#### 8.4.2 Recording Channels & Modes (RCM)
 *What it measures:* How many audio channels the phone can record and in which modes.
 *Why it matters:* Stereo recording dramatically improves realism; multi-channel enables spatial audio and post-processing.
 
@@ -1218,7 +1254,7 @@ MAR is a weighted composite of three subsections:
 
 ---
 
-#### 8.3.3 Advanced Capture Features (ACF)
+#### 8.4.3 Advanced Capture Features (ACF)
 *What it measures:* Presence of clearly documented, named audio-processing features.
 *Why it matters:* These features demonstrably improve intelligibility and subject isolation.
 
@@ -1236,25 +1272,11 @@ Each feature = +2.5 points, max 10.0.
 
 ---
 
-
-### 🔹 8.4 Advanced Audio Features
-*Description:* Software enhancements for playback. Spatial Audio and Dolby Atmos create a 3D soundstage from supported content.
-*   **Measurement:** Software support check.
-*   **Unit:** Feature Suite
-*   **Significance:** Enhances immersion in movies and games.
-| Score    | Features                       | Example Models         |
-| :------- | :----------------------------- | :--------------------- |
-| **10.0** | **Spatial Audio + Head Track** | iPhone 15, Pixel 8 Pro |
-| **8.0**  | **Dolby Atmos / DTS:X**        | S24 Ultra, Xiaomi 13T  |
-| **5.0**  | **Basic EQ / Presets**         | Budget Androids        |
-| **2.0**  | **None**                       | Basic Phones           |
-
-
 ## 🟣 9. Financial & Economic Value
 
 ### 🔹 9.1 Price
 *Description:* The current market price in USD. Lower prices mean better accessibility for more people.
-*   **Measurement:** MSRP at launch or current average market price.
+*   **Measurement:** Manufacturer's Suggested Retail Price (MSRP) at launch or current average market price.
 *   **Unit:** USD ($)
 *   **Significance:** Primary barrier to entry and value determinant.
 *Formula:* `Score = 10 - 10 * (log(Price) - log(100)) / (log(1600) - log(100))` (Clamped 0-10)
@@ -1265,29 +1287,74 @@ Each feature = +2.5 points, max 10.0.
 
 ### 🔹 9.2 Repairability
 *Description:* How easy it is to fix. High scores mean you (or a shop) can easily replace a battery or screen, extending the phone's life.
-*   **Measurement:** Official iFixit teardown score (or equivalent).
-*   **Unit:** iFixit Score (0-10)
+*   **Measurement:** Official iFixit teardown score (0-10) and/or EU Repairability Index (0-5).
+*   **Unit:** Composite Repairability Score (0-10)
 *   **Significance:** Determines serviceability and long-term ownership viability.
-*Formula:* `Score = iFixit_Score` (Direct mapping)
-*   **Max Score (10.0):** iFixit 10
-*   **Min Score (0.0):** iFixit 0
+
+**Scoring Logic:**
+The final score is the average of the iFixit Score (0-10) and the converted EU Repairability Index (0-10).
+*   **EU Conversion:** `EU_Converted_Score = EU_Index_Value * 2`
+*   If both are available: `Score = (iFixit_Score + EU_Converted_Score) / 2`
+*   If only one is available: `Score = Available_Score`
+*   If neither is available: `Score = N/A` (Not Scored)
+
+**Confidence Score:**
+*   **Unknown:** Only one source available (iFixit OR EU).
+*   **High:** Both sources available, difference ≤ 1.0 point.
+*   **Medium:** Both sources available, difference ≤ 2.5 points.
+*   **Low:** Both sources available, difference > 2.5 points.
+
+*   **Max Score (10.0):** iFixit 10 / EU Index 5.0
+*   **Min Score (0.0):** iFixit 0 / EU Index 0.0
+
+### 🔹 9.3 Service Ecosystem Support
+*Description:* Measures the practical ability to obtain official parts and documentation for the device.
+*   **Measurement:** Manufacturer self-repair programs, parts store availability, public manuals, authorized network scope.
+*   **Unit:** Support Level Score (0-10)
+*   **Significance:** Determines if the device can actually be serviced in the real world over its lifetime.
+
+| Score    | Support Level                             | Example Models                 |
+| :------- | :-----------------------------------------| :----------------------------- |
+| **10.0** | **Self-repair program + parts + manuals** | Fairphone, Apple, Samsung      |
+| **8.0**  | **Official parts sold, no manuals**       | Google (via iFixit), Motorola  |
+| **6.0**  | **Authorized repair only (global)**       | Most major global brands       |
+| **3.0**  | **Limited regional service**              | Regional/Budget brands         |
+| **0.0**  | **No official repair pathway**            | Niche/Import-only devices      |
+
+### 🔹 9.4 Warranty Length
+*   **Significance:** Affects typing experience and notification quality.
+
+| Score    | Motor Type                                                      | Example Models              |
+| :------- | :-------------------------------------------------------------- | :-------------------------- |
+| **10.0** | **Large X-axis linear motor (≥ 20mm length or “Taptic-class”)** | iPhone (Taptic), OnePlus 12 |
+| **8.0**  | **Standard X-axis linear motor**                                | S24, Pixel 8                |
+| **6.0**  | **Z-axis linear motor**                                         | Galaxy A55                  |
+| **3.0**  | **Eccentric rotating mass motor (coin or cylinder type)**       | Budget Phones               |
+| **0.0**  | **No vibration motor**                                          | -                           |
+
+### 🔹 10.2 Stylus Hardware & System Support (SHSS)
+*Description:* Measures whether the phone supports active stylus input at the hardware and system level, including digitizer presence and latency class.
+*   **Measurement:** Digitizer specifications, stylus protocol support, manufacturer documentation.
+*   **Unit:** Stylus Capability Index (0–10)
+*   **Significance:** Determines whether precision input is natively supported or only simulated.
+
+| Score    | Stylus Support Level                                                   | Example Models                  |
+| :------- | :--------------------------------------------------------------------- | :------------------------------ |
+| **10.0** | **Integrated active stylus + dedicated digitizer + Bluetooth features**| S24 Ultra                       |
+| **8.0**  | **Integrated active stylus + dedicated digitizer**                     | Moto G Stylus                   |
+| **6.0**  | **External active stylus support (digitizer present)**                 | Z Fold 5, Xiaomi Mix Fold       |
+| **3.0**  | **Passive capacitive stylus compatibility**                            | iPhone, Pixel, Standard Android |
+| **0.0**  | **No stylus support**                                                  | -                               |
+
 > [!NOTE]
-> This is a continuous linear scoring metric directly mapped to the industry-standard iFixit score.
+> **Technical Definitions:**
+> - **Digitizer:** A special layer under the screen that detects a stylus tip separately from your finger. This allows the phone to track very precise movements, detect pressure levels, and ignore your palm while writing. Phones without a digitizer can only use basic “dumb” styluses that act like a finger.
+> - **Integrated active stylus:** Physically built into the phone and stored inside a dedicated slot in the device body.
+> - **External active stylus:** A separate accessory you carry and attach magnetically or store in a case — it is not built into the phone.
+> - **Passive capacitive stylus:** Essentially a finger substitute. It does not communicate electronically with the phone (no interaction with any digitizer layer).
 
-### 🔹 9.3 Warranty Length
-*Description:* Manufacturer's standard warranty period. Longer warranties indicate manufacturer confidence and provide financial protection.
-*   **Measurement:** Manufacturer policy commitment.
-*   **Unit:** Months
-*   **Significance:** Financial protection against defects and accidents.
-| Score    | Warranty Period                  | Example Models            |
-| :------- | :------------------------------- | :------------------------ |
-| **10.0** | **≥ 60 Months (5 Years)**        | Fairphone 5               |
-| **8.0**  | **36 Months (3 Years)**          | Enterprise Editions       |
-| **6.0**  | **24 Months (2 Years)**          | EU Standard               |
-| **4.0**  | **12 Months (1 Year)**           | US Standard               |
-| **0.0**  | **0 Months**                     | Grey Market / Used        |
 
-## 🟣 10. Reviews & Performance Boosters
+## 🟣 11. Reviews & Performance Boosters
 *Description:* Adjustments based on real-world expert reviews. Technical specs don't always tell the whole story; reviews validate actual performance.
 *   **Measurement:** Expert review consensus.
 *   **Unit:** Multiplier (Booster)
@@ -1295,70 +1362,41 @@ Each feature = +2.5 points, max 10.0.
 *   **Booster > 1.0:** Increases score (e.g., 1.05 = +5%). Used when a device outperforms its specs (e.g., great software optimization).
 *   **Booster < 1.0:** Reduces score (e.g., 0.90 = -10%). Used when a device underperforms (e.g., overheating, bugs).
 
-### 🔹 10.1 DXOMARK Camera
-*   **Url:** https://www.dxomark.com/
-*   **Description:** Top-tier camera score
-*   **Impacted Section:** 4.1 - 4.9 Camera
+**Booster Methodology**
+Boosters are applied strictly at the **subsection** level. This ensures that a review's specific findings impact only the relevant technical metric rather than the entire category.
+
+**Core Rules:**
+*   **Unaccounted Feature Requirement:** A booster is ONLY justified if it captures a characteristic or performance factor that is either entirely missing from the standard scoring system (Sections 1–10) or is significantly under-represented by the theoretical metrics. "General improvement" or "good performance" relative to a predecessor is NOT a valid justification; the performance must deviate from what the technical specifications would predict.
+*   **Specificity:** Booster justifications must be extremely specific to the findings of the review and the technical gap they fill.
+*   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection.
+*   **Extract Requirement:** Every justification point made must be associated with an **exact extract** from the review. This extract must be exact, meaning that searching for the extract in the review source will find it as is.
+*   **Decomposition:** A single review source may impact multiple subsections; in such cases, the booster must be decomposed into separate entries.
+
+**Example of Decomposition:**
+If a review finds a phone has exceptional telephoto zoom but poor video stabilization:
+- **Booster A (1.10):** Targets Subsection 4.5 (Zoom Capability) for superior optics.
+- **Booster B (0.90):** Targets Subsection 4.4 (Image Stabilization) for poor software compensation.
+
+> [!NOTE]
+> The following items are **examples** of how expert reviews can be used to adjust theoretical scores. In practice, any reputable and verifiable expert review can be used as a booster source.
+
+### 🔹 11.1 DXOMARK Camera Validation
+*   **Source Link:** [iPhone 15 Pro Max Camera Test](https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/)
+*   **Impacted Subsection:** 4.16 Computational Photography & AI
 *   **Booster:** **1.05**
-*   **Justification:** Validates real-world image quality beyond just sensor size.
+*   **Justification:** DXOMARK's testing reveals that the iPhone 15 Pro Max achieves a level of texture preservation and noise management that significantly exceeds what is predicted by its sensor size and pixel pitch. This is attributed to a specific "texture-to-noise" optimization in the image signal processor (ISP) that is not captured by the base scoring of sensor hardware or standard HDR features.
+    *   **Extract:** "The iPhone 15 Pro Max uses a new image processing pipeline... some specific effort has been made to significantly improve the texture and noise trade-off over its predecessor iPhone 14 Pro."
 
-### � 10.2 GSM Arena Battery
-*   **Url:** https://www.gsmarena.com/battery-test.php3
-*   **Description:** Exceptional endurance rating
-*   **Impacted Section:** 5.1 Battery
+### 🔹 11.2 GSMArena Battery Efficiency
+*   **Source Link:** [iPhone 15 Plus Battery Review](https://www.gsmarena.com/apple_iphone_15_plus-review-2621p3.php)
+*   **Impacted Subsection:** 5.1 Battery Capacity
 *   **Booster:** **1.10**
-*   **Justification:** Confirms software optimization beats raw mAh capacity.
+*   **Justification:** GSMArena's "Active Use Score" demonstrates that the iPhone 15 Plus manages background tasks and modem power states with exceptional efficiency, leading to endurance that outlasts competitors with significantly larger physical batteries (mAh). This "standby drain" and "modem efficiency" are factors not captured by the raw capacity or SoC node metrics in Section 5.
+    *   **Extract:** "the iPhone 15 Plus appears to outperform the iPhone 15 Pro Max in the web browsing test by a small margin as well as in the gaming test. Even the Active Use Score is higher on the 15 Plus."
 
-### � 10.3 JerryRigEverything
-*   **Url:** https://www.youtube.com/@JerryRigEverything
-*   **Description:** Failed durability test
-*   **Impacted Section:** 1.2 Durability
-*   **Booster:** **0.50**
-*   **Justification:** Structural failure (snapping) overrides theoretical IP rating.
-
-### � 10.4 User Reports
-*   **Url:** https://www.reddit.com/r/Android/
-*   **Description:** Widespread overheating
-*   **Impacted Section:** 3.5 Thermal
-*   **Booster:** **0.80**
-*   **Justification:** Real-world throttling issues not caught in short benchmarks.
-
-
-## 🟣 11. Miscellaneous
-
-### 🔹 11.1 Haptics Quality
-*Description:* Vibration quality. Good haptics feel like crisp clicks (premium), while bad ones feel like a buzzy rattle (cheap).
-*   **Measurement:** Teardown / Tactile evaluation.
-*   **Unit:** Motor Type
-*   **Significance:** Affects typing experience and notification quality.
-| Score    | Motor Type                | Example Models              |
-| :------- | :------------------------ | :-------------------------- |
-| **10.0** | **X-Axis Linear (Large)** | iPhone (Taptic), OnePlus 12 |
-| **8.0**  | **X-Axis Linear (Std)**   | S24, Pixel 8                |
-| **6.0**  | **Z-Axis Linear**         | Galaxy A55                  |
-| **4.0**  | **Coin/ERM Motor**        | Budget Phones               |
-| **1.0**  | **None / Broken**         | -                           |
-
-### 🔹 11.2 Sustainability
-*Description:* Eco-friendliness. Using recycled materials and plastic-free packaging reduces the device's environmental footprint.
-*   **Measurement:** Materials analysis and packaging audit.
-*   **Unit:** Qualitative (Eco-Score)
-*   **Significance:** Reduces environmental impact.
-| Score    | Effort                           | Example Models           |
-| :------- | :------------------------------- | :----------------------- |
-| **10.0** | **Fairphone Level (Modular)**    | Fairphone 5              |
-| **9.0**  | **High Recycled % + No Plastic** | Apple, Samsung Flagships |
-| **5.0**  | **Standard Packaging**           | Most Chinese OEMs        |
-| **2.0**  | **No Effort**                    | -                        |
-
-### 🔹 11.3 Stylus Support
-*Description:* Precision input method. Integrated styluses offer the best experience for note-taking and drawing, while external support is a good bonus.
-*   **Measurement:** Hardware check.
-*   **Unit:** Feature Presence / Latency
-*   **Significance:** Enhances productivity and creativity.
-| Score    | Support Level                     | Example Models                  |
-| :------- | :-------------------------------- | :------------------------------ |
-| **10.0** | **Integrated (BT + Low Latency)** | S24 Ultra                       |
-| **8.0**  | **Integrated (Standard)**         | Moto G Stylus                   |
-| **5.0**  | **External Support (Active)**     | Z Fold 5, Xiaomi Mix Fold       |
-| **2.0**  | **No Dedicated Support**          | iPhone, Pixel, Standard Android |
+### 🔹 11.3 JerryRigEverything Durability Audit
+*   **Source Link:** [iPhone 15 Pro Max Durability Test](https://www.youtube.com/watch?v=isS_uG_xH_8)
+*   **Impacted Subsection:** 1.2 Durability (IP Rating)
+*   **Booster:** **0.85**
+*   **Justification:** The JerryRigEverything bend test revealed a specific structural vulnerability in the internal frame bracing of the iPhone 15 Pro Max, where the back glass shattered under localized pressure. This "structural integrity under torsion" is a mechanical durability factor that is entirely distinct from the ingress protection (IP rating) and surface scratch resistance (Ceramic Shield) already evaluated.
+    *   **Extract:** "the glass did not like being pressed or flexed by my thumb. that's crazy... that snap was abnormally quick kind of stunned."
