@@ -47,35 +47,40 @@ import os
 PROCESS_NODE_MIN = 3
 PROCESS_NODE_MAX = 20
 
-# Layer B.1.2 CPU Class
+# Layer B.1.2 CPU Class (See Section 3.1.1 of scoring_rules.md)
 CPU_SCORES = {
-    "Cortex-X4": 10, "Cortex-X925": 10, "Apple A17": 10, "Apple A18": 10,
+    "Cortex-X925": 10, "Cortex-X4": 10, "Apple A18": 10, "Apple A17": 10, "Apple A17 Pro": 10,
     "Cortex-X3": 9,
     "Cortex-X2": 8,
-    "Cortex-A720": 7, "Cortex-A715": 7, "Cortex-A710": 7, "Cortex-A78": 7,
-    "Cortex-A77": 6, "Cortex-A76": 6,
-    "Cortex-A75": 5, "Cortex-A73": 5,
-    "Cortex-A55": 2,
+    "Cortex-A720": 7, "Cortex-A715": 7,
+    "Cortex-A710": 6, "Cortex-A78": 6, "Cortex-A77": 6,
+    "Cortex-A76": 5, "Cortex-A75": 5,
+    "Cortex-A73": 4,
+    "Cortex-A55": 2, "Cortex-A520": 2, "Cortex-A510": 2,
     "Cortex-A53": 0, "Cortex-A7": 0
 }
 
-# Layer B.1.3 GPU Class
+# Layer B.1.3 GPU Class (See Section 3.3.1 of scoring_rules.md)
 GPU_SCORES = {
-    "Apple GPU": 10,
-    "Adreno 750": 9, "Adreno 740": 9, "Immortalis-G720": 9,
+    "Apple GPU": 10, "Immortalis-G720": 10,
+    "Adreno 750": 9, "Adreno 740": 9,
     "Adreno 730": 8, "Mali-G715": 8,
-    "Adreno 660": 6, "Mali-G610": 6,
-    "Mali-G57": 2,
+    "Mali-G710": 7, "Adreno 660": 7,
+    "Adreno 642L": 6, "Mali-G610": 6,
+    "Adreno 619": 4, "Mali-G68": 4,
+    "Mali-G57": 2, "Adreno 610": 2,
     "Mali-G52": 0
 }
 
 # Layer B.2.1 Panel Technology
+# Layer B.2.1 Panel Technology (See Section 2.1 of scoring_rules.md)
 PANEL_SCORES = {
-    "LTPO OLED": 10, "LTPO AMOLED": 10,
-    "OLED": 10, "AMOLED": 9, "Super AMOLED": 9, "Dynamic AMOLED": 9, "Dynamic AMOLED 2X": 9,
+    "Tandem OLED": 10,
+    "LTPO OLED": 9, "LTPO AMOLED": 9,
+    "OLED": 9, "AMOLED": 9, "Super AMOLED": 9, "Dynamic AMOLED": 9, "Dynamic AMOLED 2X": 9, "P-OLED": 9, "LTPS OLED": 9,
     "IPS LCD": 6, "IPS": 6,
-    "TFT": 2, "PLS": 2,
-    "LCD": 0
+    "TFT": 2, "PLS": 2, "TFT LCD": 2, "PLS LCD": 2,
+    "LCD": 0, "TN LCD": 0
 }
 
 # Layer B.3.1 Cellular (Inverted)
@@ -96,12 +101,21 @@ WIFI_SCORES = {
     "Wi-Fi 7": 0, "802.11be": 0
 }
 
-# Layer B.4.1 Cooling
+# TDSI - Frame Material (Part A1)
+FRAME_MATERIAL_SCORES = {
+    "Titanium": 10, "Stainless Steel": 10,
+    "Aluminum": 8, "Magnesium": 8,
+    "Plastic": 4,
+    "Polymer": 0, "Rubber": 0
+}
+
+# TDSI - Cooling System (Part B)
 COOLING_SCORES = {
-    "Active fan": 10,
-    "Vapor chamber": 8,
-    "Heat pipe": 6, "Graphite": 4, "Copper foil": 4,
-    "None": 0
+    "Active Cooling (Fan)": 10, "Active fan": 10,
+    "Large Vapor Chamber": 8, "Vapor chamber": 7, "Vapor Chamber (Standard)": 7,
+    "Multi-layer Graphite/Copper": 5, "Graphite": 5, "Copper foil": 5,
+    "Single Heat Spreader": 3, "Heat pipe": 3,
+    "No Thermal System Disclosed": 0, "None": 0
 }
 
 # Layer C.1 OS/Skin
@@ -195,8 +209,24 @@ def calc_layer_a(specs):
         if match:
             mah = int(match.group(1))
     
-    # Default voltage
-    voltage = 3.85
+    # Voltage detection with dual-cell support
+    voltage = 3.85  # Default single-cell
+    
+    # Priority 1: Check for dual-cell indicators in battery type string
+    if battery_type:
+        battery_type_lower = battery_type.lower()
+        if "dual-cell" in battery_type_lower or "dual cell" in battery_type_lower or "2s" in battery_type_lower:
+            voltage = 7.7  # Dual-cell configuration (2 × 3.85V in series)
+    
+    # Priority 2: High-power charging heuristic (≥120W almost always means dual-cell)
+    if voltage == 3.85:  # Only apply if not already detected as dual-cell
+        charging = battery.get("Charging", "")
+        if charging:
+            wired_match = re.search(r'(\d+)W', charging)
+            if wired_match:
+                wired_w = int(wired_match.group(1))
+                if wired_w >= 120:
+                    voltage = 7.7
     
     wh = (mah * voltage) / 1000
     score = normalize_linear(wh, 8, 25)
@@ -252,7 +282,26 @@ def calc_layer_b(specs):
         elif "Apple" in gpu_str:
             gpu_model = "Apple GPU"
     
-    process_score = 10 - 10 * (process_nm - 3) / (20 - 3)
+    # Extract foundry from chipset string (e.g., "Snapdragon 8 Gen 3 (4 nm, TSMC)")
+    foundry = "Samsung"  # Default
+    if chipset:
+        if "TSMC" in chipset:
+            foundry = "TSMC"
+        elif "SMIC" in chipset:
+            foundry = "SMIC"
+    
+    # Unified logarithmic formula (see Section 3.4 of scoring_rules.md)
+    import math
+    base_score = 10 * (math.log(20) - math.log(process_nm)) / (math.log(20) - math.log(3)) - 0.3
+    
+    # Foundry modifier: TSMC +0.3, Samsung 0.0, SMIC -0.3
+    foundry_modifier = 0.0
+    if foundry == "TSMC":
+        foundry_modifier = 0.3
+    elif foundry == "SMIC":
+        foundry_modifier = -0.3
+    
+    process_score = base_score + foundry_modifier
     process_score = clamp(process_score, 0, 10)
     
     cpu_score = get_best_match(cpu_name, CPU_SCORES, default=5)
@@ -324,44 +373,76 @@ def calc_layer_b(specs):
     
     conn_total = 0.7 * cell_score + 0.3 * wifi_score
     
-    # B.4 Thermal - Default values
-    cooling_score = 4  # Default passive
+    # B.4 Thermal Efficiency = TDSI (Thermal Dissipation & Stability Index)
+    # Reference: Section 3.5 of scoring_rules.md
     
+    # Part A: Chassis Thermal Capacity (50% of TDSI)
+    # A1: Frame Material (40% of Part A)
     body = specs.get("Body", {})
-    thickness = 8.0
+    build = body.get("Build", "")
+    frame_score = get_best_match(build, FRAME_MATERIAL_SCORES, default=4)
+    
+    # A2: Device Thermal Mass / Weight (25% of Part A)
+    weight_g = 200  # Default
+    weight_str = body.get("Weight", "")
+    if weight_str:
+        weight_match = re.search(r'(\d+)\s*g', weight_str)
+        if weight_match:
+            weight_g = int(weight_match.group(1))
+    # Assuming Weight_Lightest_Phone = 140g, Weight_Heaviest_Phone = 250g
+    weight_score = 10 * (weight_g - 140) / (250 - 140)
+    weight_score = clamp(weight_score, 0, 10)
+    
+    # A3: Heat Dissipation Surface Area (20% of Part A)
+    height_mm = 160
+    width_mm = 75
     dim_str = body.get("Dimensions", "")
     if dim_str:
-        thick_match = re.search(r'(\d+\.?\d*)\s*mm.*?\(\d+\.\d+\s*in\)$', dim_str)
+        # Parse dimensions like "162.3 x 79 x 8.6 mm (6.39 x 3.11 x 0.34 in)"
+        dim_match = re.search(r'([\d.]+)\s*x\s*([\d.]+)\s*x\s*([\d.]+)\s*mm', dim_str)
+        if dim_match:
+            height_mm = float(dim_match.group(1))
+            width_mm = float(dim_match.group(2))
+    surface_area = height_mm * width_mm
+    surface_score = 10 * (surface_area - 6000) / (9000 - 6000)
+    surface_score = clamp(surface_score, 0, 10)
+    
+    # A4: Device Thickness (15% of Part A)
+    thickness = 8.0  # Default
+    if dim_str:
+        thick_match = re.search(r'x\s*([\d.]+)\s*mm.*?\(\d+\.\d+\s*in\)$', dim_str)
         if thick_match:
             thickness = float(thick_match.group(1))
+    thickness_score = 10 * (thickness - 6) / (10 - 6)
+    thickness_score = clamp(thickness_score, 0, 10)
     
-    thick_score = 10 * (thickness - 6) / (10 - 6)
-    thick_score = clamp(thick_score, 0, 10)
+    # Part A Total
+    part_a_total = (0.40 * frame_score) + (0.25 * weight_score) + (0.20 * surface_score) + (0.15 * thickness_score)
     
-    thermal_total = 0.6 * cooling_score + 0.4 * thick_score
+    # Part B: Internal Cooling System Class (40% of TDSI)
+    # Note: Cooling system data not typically in GSMArena specs, default to passive
+    cooling_score = 4  # Default passive
     
-    # B.5 Charging
-    wired_w = 25  # Default
-    wireless_w = 0
+    # Part C: Thermal Demand Compensation (20% of TDSI - Additive)
+    # In full database mode, we may not have Geekbench scores for all phones.
+    # We use the CPU Architecture Score (cpu_score) as a proxy for Performance/Thermal Load.
+    # Logic: High Architecture Score (10) = High Load -> Bonus 0.
+    #        Low Architecture Score (0) = Low Load -> Bonus 5.
+    soc_perf_proxy = cpu_score
+    part_c_bonus = (10 - soc_perf_proxy) * 0.5
+    part_c_bonus = clamp(part_c_bonus, 0, 5)
     
-    battery = specs.get("Battery", {})
-    charging = battery.get("Charging", "")
-    if charging:
-        wired_match = re.search(r'(\d+)W', charging)
-        if wired_match:
-            wired_w = int(wired_match.group(1))
-    
-    wired_score = 10 - 10 * (wired_w - 10) / (150 - 10)
-    wired_score = clamp(wired_score, 0, 10)
-    
-    wireless_score = 10 - 10 * (wireless_w - 0) / (50 - 0)
-    wireless_score = clamp(wireless_score, 0, 10)
-    
-    charging_total = 0.7 * wired_score + 0.3 * wireless_score
+    # Final TDSI = Thermal Efficiency for battery scoring
+    # Prior Formula: (0.5 * A) + (0.5 * B)
+    # New Formula: A/B Average + Bonus
+    base_physical = (0.5 * part_a_total) + (0.5 * cooling_score)
+    thermal_total = base_physical + part_c_bonus
+    thermal_total = clamp(thermal_total, 0, 10)
     
     # Total HEI
-    hei_total = (0.35 * soc_total + 0.35 * display_total + 
-                 0.15 * conn_total + 0.10 * thermal_total + 0.05 * charging_total)
+    # Weights: SoC 40%, Display 40%, Connectivity 10%, Thermal 10%
+    hei_total = (0.40 * soc_total + 0.40 * display_total + 
+                 0.10 * conn_total + 0.10 * thermal_total)
     
     return {
         "soc_efficiency": {
@@ -382,14 +463,14 @@ def calc_layer_b(specs):
             "total_connectivity_score": round(conn_total, 2)
         },
         "thermal_efficiency": {
+            "frame_material_score": round(frame_score, 2),
+            "weight_score": round(weight_score, 2),
+            "surface_area_score": round(surface_score, 2),
+            "thickness_score": round(thickness_score, 2),
+            "part_a_chassis_score": round(part_a_total, 2),
             "cooling_system_score": round(cooling_score, 2),
-            "thickness_score": round(thick_score, 2),
-            "total_thermal_score": round(thermal_total, 2)
-        },
-        "charging_stress_efficiency": {
-            "wired_charging_score": round(wired_score, 2),
-            "wireless_charging_score": round(wireless_score, 2),
-            "total_charging_stress_score": round(charging_total, 2)
+            "thermal_demand_bonus": round(part_c_bonus, 2),
+            "tdsi_score": round(thermal_total, 2)
         },
         "total_hei_score": round(hei_total, 2)
     }
@@ -397,16 +478,34 @@ def calc_layer_b(specs):
 def calc_layer_c(specs):
     """Calculate Layer C: Software & Optimization Index (20%)"""
     
-    # Default to moderate skin and bloat
-    skin_score = 6
-    bloat_score = 6
+    # Default to modern standard (8) if unknown
+    skin_score = 8
     
     platform = specs.get("Platform", {})
     os_str = platform.get("OS", "")
     
     if os_str:
-        if "iOS" in os_str:
-            skin_score = 10
+        # Check Android
+        android_match = re.search(r'Android\s+(\d+)', os_str, re.IGNORECASE)
+        if android_match:
+            ver = int(android_match.group(1))
+            if ver >= 14: skin_score = 10
+            elif ver == 13: skin_score = 9
+            elif ver == 12: skin_score = 8
+            elif ver >= 10: skin_score = 6
+            elif ver >= 8: skin_score = 4
+            else: skin_score = 0
+            
+        # Check iOS
+        ios_match = re.search(r'iOS\s+(\d+)', os_str, re.IGNORECASE)
+        if ios_match:
+            ver = int(ios_match.group(1))
+            if ver >= 17: skin_score = 10
+            elif ver == 16: skin_score = 9
+            elif ver == 15: skin_score = 8
+            elif ver >= 13: skin_score = 6
+            elif ver >= 11: skin_score = 4
+            else: skin_score = 0
     # C.2 System Cleanliness & Control (SCC)
     # Default values (worst case)
     pal_count = 10

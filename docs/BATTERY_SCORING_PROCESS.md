@@ -1,4 +1,4 @@
-# Battery Scoring Process - Complete Lifecycle Guide
+# Battery Endurance Scoring Process - Complete Lifecycle Guide
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -12,7 +12,7 @@
 
 ## Overview
 
-The battery scoring system calculates performance scores for smartphones based on:
+The battery endurance scoring system calculates performance scores for smartphones based on:
 - **Layer A (45%):** Battery Energy (Wh)
 - **Layer B (35%):** Hardware Efficiency Index (SoC, Display, Connectivity, Thermal, Charging)
 - **Layer C (20%):** Software Optimization Index (OS/Skin, Bloatware)

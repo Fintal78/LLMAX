@@ -29,8 +29,8 @@ It includes all previously removed parameters, categorized as:
   "1_design_and_build_quality": {
     "form_factor": "Bar",
     "1_1_materials": {
-      "frame": "Titanium",
-      "back": "Glass",
+      "frame_material": "Titanium Alloy Frame",
+      "back_material": "Strengthened Glass Back",
       "description": "Titanium Frame + Gorilla Glass Armor Back",
       "predicted_score": 0.0,
       "score_adjustment": {
@@ -41,7 +41,8 @@ It includes all previously removed parameters, categorized as:
     },
     "1_2_durability": {
       "ip_rating": "IP68",
-      "details": "1.5m for 30 mins",
+      "dust_protection_digit": 6,
+      "water_protection_digit": 8,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -79,16 +80,7 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "1_6_ergonomics": {
-      "value": "Boxy / Sharp Corners",
-      "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
-      "final_score": 0.0
-    },
-    "1_7_aesthetics": {
-      "value": "Matte Glass + Minimal Wobble",
+      "width_mm": 79.0,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -110,7 +102,7 @@ It includes all previously removed parameters, categorized as:
   "2_display": {
     "aspect_ratio": "19.5:9",
     "panel_type": "OLED",
-    "2_1_technology": {
+    "2_1_panel_architecture": {
       "value": "LTPO OLED",
       "predicted_score": 0.0,
       "score_adjustment": {
@@ -121,9 +113,7 @@ It includes all previously removed parameters, categorized as:
     },
     "2_2_resolution_density": {
       "ppi": 505,
-      "class": "QHD+",
-      "width_px": 1440,
-      "height_px": 3120,
+      "megapixels_mp": 6.9,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -133,8 +123,6 @@ It includes all previously removed parameters, categorized as:
     },
     "2_3_brightness": {
       "peak_nits": 2600,
-      "hbm_nits": 1750,
-      "typical_nits": 1200,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -142,9 +130,9 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "2_4_eye_comfort": {
-      "pwm_dimming_hz": 492,
-      "certification": "Eye Care Certified",
+    "2_4_color_gamut_coverage": {
+      "dci_p3_percent": 100,
+      "srgb_percent": 100,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -152,8 +140,8 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "2_5_touch_responsiveness": {
-      "sampling_rate_hz": 240,
+    "2_5_hdr_format_support": {
+      "formats": ["HDR10+", "HDR10", "HLG"],
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -163,8 +151,6 @@ It includes all previously removed parameters, categorized as:
     },
     "2_6_refresh_rate": {
       "max_hz": 120,
-      "min_hz": 1,
-      "adaptive": true,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -172,8 +158,8 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "2_7_color_accuracy_hdr": {
-      "features": ["HDR10+", "100% DCI-P3"],
+    "2_7_touch_responsiveness": {
+      "sampling_rate_hz": 240,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -181,7 +167,16 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "2_8_screen_size": {
+    "2_8_eye_comfort": {
+      "pwm_dimming_hz": 492,
+      "predicted_score": 0.0,
+      "score_adjustment": {
+        "booster": 1.0,
+        "source": "None"
+      },
+      "final_score": 0.0
+    },
+    "2_9_screen_size": {
       "diagonal_inches": 6.8,
       "predicted_score": 0.0,
       "score_adjustment": {
@@ -190,7 +185,7 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "2_9_screen_to_body_ratio": {
+    "2_10_screen_to_body_ratio": {
       "percent": 88.5,
       "predicted_score": 0.0,
       "score_adjustment": {
@@ -203,8 +198,6 @@ It includes all previously removed parameters, categorized as:
   "3_processing_power_and_performance": {
     "3_1_soc_performance": {
       "geekbench_6_multi_score": 7200,
-      "chipset_model": "Snapdragon 8 Gen 3",
-      "manufacturer": "Qualcomm",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -212,35 +205,8 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "3_2_cpu_structure": {
-      "prime_core_ghz": 3.39,
-      "config": "1x3.39GHz X4 + 3x3.1GHz A720 + 2x2.9GHz A720 + 2x2.2GHz A520",
-      "clusters": [
-        {
-          "type": "Prime",
-          "cores": 1,
-          "name": "Cortex-X4",
-          "ghz": 3.39
-        },
-        {
-          "type": "Performance",
-          "cores": 3,
-          "name": "Cortex-A720",
-          "ghz": 3.1
-        },
-        {
-          "type": "Performance",
-          "cores": 2,
-          "name": "Cortex-A720",
-          "ghz": 2.9
-        },
-        {
-          "type": "Efficiency",
-          "cores": 2,
-          "name": "Cortex-A520",
-          "ghz": 2.2
-        }
-      ],
+    "3_2_cpu_architecture_single_core": {
+      "geekbench_6_single_score": 2200,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -249,8 +215,10 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "3_3_gpu_performance": {
-      "model": "Adreno 750",
-      "features": "HW Ray Tracing",
+      "gpu_model": "Adreno 750",
+      "vulkan_version": "1.3",
+      "opengl_es_version": "3.2",
+      "ray_tracing_support": true,
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -268,8 +236,13 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "3_5_thermal_management": {
-      "value": "Vapor Chamber",
+    "3_5_thermal_dissipation_stability": {
+      "frame_material": "Titanium Alloy Frame",
+      "weight_g": 232,
+      "height_mm": 162.3,
+      "width_mm": 79.0,
+      "thickness_mm": 8.6,
+      "cooling_system": "Vapor Chamber (Standard)",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -277,7 +250,6 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "thermal_system_size_mm2": 9000,
     "3_6_ram_technology": {
       "value": "LPDDR5X",
       "predicted_score": 0.0,
@@ -289,7 +261,6 @@ It includes all previously removed parameters, categorized as:
     },
     "3_7_ram_capacity": {
       "max_gb": 12,
-      "variants_gb": [12],
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -308,7 +279,6 @@ It includes all previously removed parameters, categorized as:
     },
     "3_9_storage_capacity": {
       "max_gb": 1024,
-      "variants_gb": [256, 512, 1024],
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -397,7 +367,6 @@ It includes all previously removed parameters, categorized as:
     },
     "4_5_zoom_capability": {
       "optical_zoom_x": 5,
-      "type": "Dual Periscope (3x + 5x)",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -408,7 +377,7 @@ It includes all previously removed parameters, categorized as:
     "4_6_ultrawide_capability": {
       "presence": true,
       "fov_degrees": 120,
-      "sensor_size": "1/2.0",
+      "ultrawide_sensor_size": "1/2.0",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -420,15 +389,6 @@ It includes all previously removed parameters, categorized as:
       "ultrawide_af": true,
       "min_focus_distance_cm": 2.5,
       "dedicated_macro_mp": 0,
-      "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
-      "final_score": 0.0
-    },
-    "4_8_front_camera": {
-      "value": "High Res + AF + 4K60",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -464,13 +424,26 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "4_11_video_encoding": {
-      "codecs": ["ProRes", "Log"],
-      "predicted_score": 0.0,
+      "pcs": {
+        "professional_codec_support": true,
+        "codec_name": "ProRes",
+        "score": 10.0
+      },
+      "lcps": {
+        "log_profile_available": true,
+        "profile_name": "Log",
+        "score": 10.0
+      },
+      "cbd": {
+        "bit_depth": 10,
+        "score": 10.0
+      },
+      "predicted_score": 10.0,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
       },
-      "final_score": 0.0
+      "final_score": 10.0
     },
     "4_12_slow_motion": {
       "max_fps": 120,
@@ -503,6 +476,7 @@ It includes all previously removed parameters, categorized as:
     "4_15_front_camera_video": {
       "max_resolution": "4K",
       "max_fps": 60,
+      "hdr_capability": "SDR",
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -528,8 +502,8 @@ It includes all previously removed parameters, categorized as:
       },
       "final_score": 0.0
     },
-    "4_18_generative_ai": {
-      "features": ["Magic Editor"],
+    "4_18_generative_ai_tools": {
+      "features": ["Magic Eraser"],
       "predicted_score": 0.0,
       "score_adjustment": {
         "booster": 1.0,
@@ -539,9 +513,10 @@ It includes all previously removed parameters, categorized as:
     }
   },
   "5_battery_and_charging": {
-    "5_1_battery_capacity": {
+    "5_1_battery_endurance": {
       "mah": 5000,
       "battery_voltage_v": "Not available",
+      "battery_type": "Li-Ion 5000 mAh, non-removable",
       "scoring_components": {
         "layer_a_energy": {
           "wh": 19.25,
@@ -549,16 +524,16 @@ It includes all previously removed parameters, categorized as:
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.41,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 9,
-            "total_soc_score": 9.51
+            "process_node_score": 8.48,
+            "cpu_architecture_score": 5,
+            "gpu_architecture_score": 5,
+            "total_soc_score": 6.74
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.74,
-            "resolution_efficiency_score": 5.22,
-            "total_display_score": 7.77
+            "panel_technology_score": 5,
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.82,
+            "total_display_score": 5.26
           },
           "connectivity_efficiency": {
             "cellular_score": 0,
@@ -566,24 +541,24 @@ It includes all previously removed parameters, categorized as:
             "total_connectivity_score": 0.0
           },
           "thermal_efficiency": {
-            "cooling_system_score": 8,
+            "frame_material_score": 10,
+            "weight_score": 8.36,
+            "surface_area_score": 10,
             "thickness_score": 6.5,
-            "total_thermal_score": 7.4
+            "part_a_chassis_score": 9.07,
+            "cooling_system_score": 7,
+            "thermal_demand_bonus": 0.13,
+            "tdsi_score": 8.16
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.5,
-            "wireless_charging_score": 7.0,
-            "total_charging_stress_score": 7.35
-          },
-          "total_hei_score": 7.16
+          "total_hei_score": 5.62
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
+          "os_skin_score": 10,
           "scc_score": 10.0,
-          "total_soi_score": 8.2
+          "total_soi_score": 10.0
         }
       },
-      "predicted_score": 7.12,
+      "predicted_score": 6.95,
       "benchmarks": {
         "gsmarena_active_use": {
           "hours": 16.75,
@@ -595,7 +570,7 @@ It includes all previously removed parameters, categorized as:
         }
       },
       "score_adjustment": {
-        "booster": 1.029,
+        "booster": 1.055,
         "source": "GSMArena Active Use + PhoneArena Battery Life"
       },
       "final_score": 7.33
@@ -841,8 +816,7 @@ It includes all previously removed parameters, categorized as:
         "source": "None"
       },
       "final_score": 7.0
-    },
-    "microphones_count": 3
+    }
   },
   "9_financial_and_economic_value": {
     "9_1_price": {
@@ -861,7 +835,7 @@ It includes all previously removed parameters, categorized as:
       "support_level": "Self-repair program + parts + manuals",
       "predicted_score": 10.0
     },
-    "9_4_warranty_length": "1 Year Standard",
+    "9_4_warranty_length": "1 Year Standard"
   },
   "10_miscellaneous": {
     "10_1_haptics_quality": "X-Axis Linear (Large)",
@@ -879,7 +853,7 @@ It includes all previously removed parameters, categorized as:
     "11_3_jerryrigeverything": {
       "result": "Passed",
       "url": "https://www.youtube.com/..."
-    },
-  },
+    }
+  }
 }
 ```

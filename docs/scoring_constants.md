@@ -17,10 +17,14 @@
 ## 3. Performance (SoC & Memory)
 *   `GB6_Multi_Best_Phone` = 7500  (Snapdragon 8 Gen 3 / A17 Pro baseline)
 *   `GB6_Multi_Worst_Phone` = 1500 (Entry level)
-*   `Max_Freq_GHz_Best_Phone` = 3.4 (High performance core)
+*   `Max_Freq_GHz_Best_Phone` = 3.8 (High performance core)
 *   `Max_Freq_GHz_Worst_Phone` = 1.8 (Efficiency core only)
+*   `PTS_Best_Phone` = 900 (Best multi-thread: CPS × AES × FSF at maximum)
+*   `PTS_Worst_Phone` = 18 (Worst multi-thread: CPS × AES × FSF at minimum)
+*   `STRS_Best_Phone` = 20 (Best single-thread: CAS × FSF of 10 × 2.0)
+*   `STRS_Worst_Phone` = 9 (Worst single-thread: CAS × FSF of 9 × 1.0)
 *   `Process_Node_Best_nm` = 3 (Latest TSMC)
-*   `Process_Node_Worst_nm` = 16 (Legacy)
+*   `Process_Node_Worst_nm` = 20 (Legacy)
 *   `RAM_Max_GB` = 24
 *   `RAM_Min_GB` = 2
 *   `Storage_Max_GB` = 1024

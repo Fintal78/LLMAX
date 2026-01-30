@@ -58,35 +58,74 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 **Polymer Back**: Plastic or polymer rear panel; low brittleness, low surface hardness, high radio frequency transparency
 **Material Not Disclosed**: Back material not specified in official documentation or teardown sources   
 
-### 🔹 1.2 Durability (IP Rating)
-*Description:* Ingress Protection rating against dust and water. Determines if your phone can survive a drop in the toilet, rain, or a dusty environment.
-*   **Measurement:** Standardized ingress protection testing.
-*   **Unit:** IP Rating (IEC 60529)
+### 🔹 1.2 Durability (Ingress Protection)
+*Description:* Ingress Protection rating against dust and water. Dust and water resistance are tested separately under IEC 60529. A phone can be fully dust-sealed but weak against immersion, or vice versa. Treating them independently reflects the actual certification process and physical risks.
+*   **Measurement:** Manufacturer IP certification (IEC 60529).
+*   **Unit:** Composite Score (0-10)
 *   **Significance:** Critical for device longevity and accident protection.
-| Score    | Rating (Unit) | Description                  | Example Models          |
-| :------- | :------------ | :--------------------------- | :---------------------- |
-| **10.0** | **IP69K**     | High Temp/Pressure Jets      | Ulefone Armor 23 Ultra  |
-| **9.0**  | **IP68**      | Submersion >1.5m for 30 mins | S24 Ultra, iPhone 15    |
-| **8.0**  | **IP67**      | Submersion 1m for 30 mins    | Pixel 7a, Galaxy A54    |
-| **6.0**  | **IP54**      | Splash Proof                 | Moto G84, Redmi Note 13 |
-| **4.0**  | **IP53**      | Light Spray                  | Poco X6 Pro             |
-| **0.0**  | **None**      | No Rating                    | Entry-level devices     |
 
-### 🔹 1.3 Glass Protection
-*Description:* The generation of protective glass used on the display. Newer versions are much harder to crack or scratch when dropped.
-*   **Measurement:** Manufacturer specifications (Mohs hardness scale correlation).
-*   **Unit:** Generation / Brand
-*   **Significance:** Reduces the likelihood of screen breakage from drops.
-| Score    | Technology                   | Example Models                |
-| :------- | :--------------------------- | :---------------------------- |
-| **10.0** | **Gorilla Glass Armor**      | S24 Ultra                     |
-| **9.5**  | **Ceramic Shield (Latest)**  | iPhone 15/16 Series           |
-| **9.0**  | **Gorilla Glass Victus 2**   | S23 Ultra, OnePlus 12         |
-| **8.0**  | **Gorilla Glass Victus / +** | Pixel 7 Pro, Xiaomi 12S Ultra |
-| **7.0**  | **Gorilla Glass 5 / 6**      | Galaxy A54, Nothing Phone (1) |
-| **5.0**  | **Gorilla Glass 3**          | Pixel 6a, Budget Phones       |
-| **3.0**  | **Tempered Glass (Generic)** | Low-end Androids              |
-| **0.0**  | **No Protection / Plastic**  | Entry-level / Feature Phones  |
+**Final Score Formula:**
+`IP Score = (0.5 × Dust Protection Score) + (0.5 × Water Protection Score)`
+
+#### 1.2.A Dust Protection (First Digit of IP Code)
+*   **Measurement:** Manufacturer IP certification.
+*   **Unit:** IEC 60529 First Digit (0–6)
+*   **Significance:** Determines resistance to fine particles that cause long-term mechanical and electrical wear (ports, speakers, buttons, seals).
+
+| IEC Level | Score    | Objective Definition                                       |
+| :-------- | :------- | :--------------------------------------------------------- |
+| **6**     | **10.0** | Dust-tight — no ingress of dust under vacuum conditions    |
+| **5**     | **8.0**  | Dust-protected — limited dust ingress, no harmful deposits |
+| **4**     | **6.0**  | Protected against solid objects >1mm (wires, tools)        |
+| **3**     | **4.0**  | Protected against solid objects >2.5mm                     |
+| **2**     | **2.0**  | Protected against fingers only                             |
+| **0–1**   | **0.0**  | No certified protection                                    |
+
+#### 1.2.B Water Protection (Second Digit of IP Code)
+*   **Measurement:** Manufacturer IP certification.
+*   **Unit:** IEC 60529 Second Digit (0–9)
+*   **Significance:** Determines resistance to splashes, rain, jets, and immersion accidents.
+
+| IEC Level | Score    | Objective Definition                                               |
+| :-------- | :------- | :------------------------------------------------------------------|
+| **9**     | **10.0** | High-pressure, high-temperature water jets (IEC 60529 + ISO 20653) |
+| **8**     | **9.0**  | Continuous immersion beyond 1m (manufacturer-defined depth/time)   |
+| **7**     | **8.0**  | Immersion up to 1m for 30 minutes                                  |
+| **6**     | **6.0**  | Powerful water jets                                                |
+| **5**     | **4.0**  | Low-pressure water jets                                            |
+| **4**     | **2.0**  | Splashing water                                                    |
+| **0–3**   | **0.0**  | No certified protection                                            |
+
+> [!NOTE]
+> **Note on Level 9:** IEC 60529 does not define IPX9, but many manufacturers certify both IEC IP68 + ISO 20653 IPX9/9K. This model accepts 9 as a valid "extended water resistance" level when officially documented.
+
+### 🔹 1.3 Display Glass Protection (DGP)
+*Description:* Evaluates the protective glass generation used on the display, based on manufacturer-declared glass type and supplier performance class. Newer versions are much harder to crack or scratch when dropped.
+*   **Measurement:** Front glass type (manufacturer specification).
+*   **Unit:** Glass Protection Tier (0–10)
+*   **Significance:** Indicates expected resistance to cracking and surface damage from drops and daily handling.
+
+| Score    | Declared Glass Type                | Example Models                |
+| :------- | :--------------------------------- | :---------------------------- |
+| **10.0** | **Gorilla Glass Armor**            | Galaxy S24 Ultra              |
+| **9.5**  | **Ceramic Shield (current gen)**   | iPhone 15 / 16 series         |
+| **9.0**  | **Gorilla Glass Victus 2**         | OnePlus 12, S23 Ultra         |
+| **8.0**  | **Gorilla Glass Victus / Victus+** | Pixel 7 Pro, Xiaomi 12S Ultra |
+| **7.0**  | **Gorilla Glass 5 / 6**            | Galaxy A54, Nothing Phone (1) |
+| **5.0**  | **Gorilla Glass 3 / Panda Glass**  | Budget mid-range              |
+| **3.0**  | **Tempered Glass**                 | Low-end devices               |
+| **2.0**  | **Glass (Unspecified)**            | Entry-level                   |
+| **0.0**  | **Plastic / No Glass**             | Feature phones                |
+
+**Gorilla Glass Armor**: Flagship reinforced glass with anti-reflective and ≥2.0m-class drop certification  
+**Ceramic Shield (current gen)**: Ceramic-infused glass with ≥2.0m-class drop certification  
+**Gorilla Glass Victus 2**: Advanced reinforced glass rated for drops on rough surfaces (~2.0m class)  
+**Gorilla Glass Victus / Victus+**: Reinforced glass rated for ~2.0m drops  
+**Gorilla Glass 5 / 6**: Mid-tier reinforced glass rated for ~1.6m drops  
+**Gorilla Glass 3 / Panda Glass**: Entry-tier reinforced glass rated for ~1.2m drops  
+**Tempered Glass**: Basic chemically strengthened glass (no certified drop class)  
+**Glass (Unspecified)**: Manufacturer does not disclose protection class  
+**Plastic / No Glass**: Polymer display cover
 
 ### 🔹 1.4 Dimensions (Thickness)
 *Description:* Device thickness excluding camera bump. Thinner phones are easier to hold and fit better in pockets.
@@ -124,27 +163,40 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 
 ## 🟣 2. Display
 
-### 🔹 2.1 Technology & Quality
-*Description:* The screen technology. OLED panels offer perfect blacks and vibrant colors, while newer LTPO versions save significant battery life.
-*   **Measurement:** Panel analysis (Microscope/Spec).
-*   **Unit:** Technology Type
-*   **Significance:** Defines contrast ratio, power efficiency, and viewing angles.
-| Score    | Technology              | Description                    | Example Models              |
-| :------- | :---------------------- | :----------------------------- | :-------------------------- |
-| **10.0** | **Tandem OLED**         | Dual-stack, extreme brightness | iPad Pro M4 (Reference)     |
-| **9.5**  | **LTPO 3.0 / Eco²**     | 1-120Hz, lowest power          | OnePlus 12, Xiaomi 14 Ultra |
-| **9.0**  | **LTPO OLED**           | 1-120Hz Variable               | S24 Ultra, iPhone 15 Pro    |
-| **8.0**  | **Dynamic AMOLED 2X**   | 120Hz, HDR10+                  | S21 Ultra, S22+             |
-| **7.0**  | **Super AMOLED / OLED** | 60-90Hz, Infinite Contrast     | Galaxy A55, Pixel 7a        |
-| **5.0**  | **IPS LCD (120Hz)**     | Fast LCD, Good Colors          | Poco X4 GT                  |
-| **3.0**  | **IPS LCD (60Hz)**      | Standard LCD                   | iPhone 11, Galaxy A14       |
-| **0.0**  | **TFT / TN**            | Poor Angles, Washout           | Galaxy J1 (Legacy)          |
+### A. Display Architecture (What it is)
+
+### 🔹 2.1 Display Panel Architecture (DPA)
+*Description:* Evaluates the physical display technology used to generate light and images. Focuses on panel construction and emission method — not brightness, color accuracy, refresh behavior, or power efficiency. OLED panels offer perfect blacks and vibrant colors due to self-emissive pixel control.
+*   **Measurement:** Manufacturer specifications and teardown confirmations.
+*   **Unit:** Panel Technology Tier (0–10)
+*   **Significance:** Determines contrast capability, viewing angle stability, and pixel-level light control.
+
+| Score    | Panel Type                 | Example Models              |
+| :------- | :------------------------- | :-------------------------- |
+| **10.0** | **Tandem OLED**            | iPad Pro M4 (Reference)     |
+| **9.0**  | **OLED (LTPO/AMOLED)**     | S24 Ultra, iPhone 15 Pro    |
+| **6.0**  | **IPS LCD**                | iPhone 11, Poco X4 GT       |
+| **2.0**  | **TFT / PLS LCD**          | Budget devices              |
+| **0.0**  | **TN LCD / Legacy**        | Galaxy J1 (Legacy)          |
+
+**Tandem OLED**: Dual-stack emissive OLED panel (two light-emitting layers)  
+**OLED (LTPO/AMOLED)**: Self-emissive OLED panel (AMOLED, P-OLED, Dynamic AMOLED, LTPO OLED, LTPS OLED)  
+**IPS LCD**: LED-backlit LCD with in-plane switching  
+**TFT / PLS LCD**: Thin-film transistor LCD (non-IPS), includes PLS (Plane-to-Line Switching)  
+**TN LCD / Legacy**: Twisted nematic LCD and other legacy technologies
+
+> [!IMPORTANT]
+> **Single Source of Truth:** This table is the master reference for all display panel scores. Battery efficiency scoring (Section B.2.1) references this table.
+
+### B. Visual Output Quality (What it looks like)
 
 ### 🔹 2.2 Resolution Density
 *Description:* Pixel density (sharpness). Higher PPI means text and images look crisp, with no visible pixels.
-*   **Measurement:** Calculated from Resolution and Diagonal Size.
-*   **Unit:** Pixels Per Inch (PPI)
+*   **Measurement:** Pixels Per Inch (PPI)
+*   **Unit:** PPI
 *   **Significance:** Determines visual sharpness and clarity of text.
+*   **Data Structure Mapping:** `2_2_resolution_density.ppi`
+
 *Formula:* `Score = 10 * (log(PPI) - log(200)) / (log(600) - log(200))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ 600 PPI
 *   **Min Score (0.0):** ≤ 200 PPI
@@ -162,29 +214,36 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > [!NOTE]
 > **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a significant doubling in brightness, whereas a jump from 3000 to 3500 nits is perceived as a much smaller increase.
 
-### 🔹 2.4 Eye Comfort (PWM Dimming)
-*Description:* How the screen dims. Higher frequencies prevent eye strain, headaches, and fatigue for people sensitive to screen flicker.
-*   **Measurement:** Oscilloscope or flicker meter at low brightness levels.
-*   **Unit:** Hertz (Hz)
-*   **Significance:** Reduces eye strain and headaches for sensitive users.
-*Formula:* `Score = 10 * (log(Hz) - log(120)) / (log(3840) - log(120))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 3840 Hz
-*   **Min Score (0.0):** ≤ 120 Hz
-> [!NOTE]
-> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The jump from 240Hz to 480Hz significantly reduces visible flicker for sensitive eyes, whereas the difference between 2000Hz and 3000Hz is marginal.
+### 🔹 2.4 Color Gamut Coverage (CGC)
+*Description:* Measures how much of standard color spaces the display can reproduce. This defines what the screen can physically display in terms of color richness and saturation.
+*   **Measurement:** DCI-P3 coverage percentage from manufacturer specs or review databases.
+*   **Unit:** Percentage (%)
+*   **Significance:** Determines real-world color vibrancy and HDR reproduction capability.
 
-### 🔹 2.5 Touch Responsiveness
-*Description:* How fast the screen reacts to your touch. Higher rates mean instant response in games and a "glued to your finger" feel.
-*   **Measurement:** Touch latency testing (time from touch to signal).
-*   **Unit:** Hertz (Hz)
-*   **Significance:** Critical for competitive gaming and UI fluidity.
-*Formula:* `Score = 10 * (log(Hz) - log(60)) / (log(960) - log(60))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 960 Hz
-*   **Min Score (0.0):** ≤ 60 Hz
-> [!NOTE]
-> **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz provides a noticeably "stickier" feel. Beyond 480Hz, the improvements in reaction time are smaller than the average human reaction variance.
+*Formula:* `Score = 10 * (P3_percent - 85) / (100 - 85)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ 100% DCI-P3
+*   **Min Score (0.0):** ≤ 85% DCI-P3
 
-### 🔹 2.6 Refresh Rate
+> [!NOTE]
+> **Why this works:** DCI-P3 is the industry HDR content standard. The scale is continuous, fully quantitative, and automation-friendly.
+> **sRGB Fallback:** If only sRGB data is available (typical for legacy or budget screens), the score is **0.0** because 100% sRGB corresponds to approximately 75-80% DCI-P3, which falls below the minimum threshold for modern wide-gamut scoring.
+
+### 🔹 2.5 HDR Format Support (HFS)
+*Description:* Measures which HDR video formats the display officially supports (decoding capability).
+*   **Measurement:** Manufacturer specifications and DRM capability lists.
+*   **Unit:** Supported Standards (Binary Features)
+*   **Significance:** Ensures compatibility with premium content from streaming services (Netflix, Disney+, etc.).
+
+| Score    | Supported Formats                 |
+| :------- | :-------------------------------- |
+| **10.0** | **Dolby Vision + HDR10+ + HDR10** |
+| **8.0**  | **HDR10+ + HDR10**                |
+| **6.0**  | **HDR10 only**                    |
+| **0.0**  | **No HDR formats**                | 
+
+### C. Interaction & Motion (How it behaves)
+
+### 🔹 2.6 Motion Smoothness (Max Refresh Rate)
 *Description:* How many times the screen updates per second. 120Hz+ makes scrolling and animations look incredibly smooth compared to standard 60Hz.
 *   **Measurement:** High-speed camera analysis or system reporting.
 *   **Unit:** Hertz (Hz)
@@ -195,21 +254,31 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > [!NOTE]
 > **Why Logarithmic?** Motion smoothness perception follows Weber's Law. The upgrade from 60Hz to 120Hz is a massive leap in fluidity. The step from 120Hz to 144Hz or 165Hz is much harder to perceive for the average user.
 
-### 🔹 2.7 Color Accuracy & HDR
-*Description:* Support for rich colors and contrast. Ensures movies and photos look realistic, vibrant, and exactly as the creator intended.
-*   **Measurement:** Colorimeter (Delta E) and gamut coverage (DCI-P3 %).
-*   **Unit:** Standards / Gamut Coverage
-*   **Significance:** Ensures content is displayed as the creator intended.
-| Score    | Features                       | Example Models                 |
-| :------- | :----------------------------- | :----------------------------- |
-| **10.0** | **Dolby Vision + 100% DCI-P3** | iPhone 15 Pro, Xiaomi 13 Ultra |
-| **9.0**  | **HDR10+ + 100% DCI-P3**       | S24 Ultra, OnePlus 12          |
-| **8.0**  | **HDR10 + High Gamut**         | Pixel 8, Nothing Phone (2)     |
-| **6.0**  | **Basic HDR support**          | Galaxy A55                     |
-| **3.0**  | **No HDR / sRGB only**         | Budget LCDs                    |
-| **0.0**  | **No HDR, No sRGB**            | Entry Level / TN panels        |
+### 🔹 2.7 Touch Responsiveness
+*Description:* How fast the screen reacts to your touch. Higher rates mean instant response in games and a "glued to your finger" feel.
+*   **Measurement:** Touch latency testing (time from touch to signal).
+*   **Unit:** Hertz (Hz)
+*   **Significance:** Critical for competitive gaming and UI fluidity.
+*Formula:* `Score = 10 * (log(Hz) - log(60)) / (log(960) - log(60))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ 960 Hz
+*   **Min Score (0.0):** ≤ 60 Hz
+> [!NOTE]
+> **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz provides a noticeably "stickier" feel. Beyond 480Hz, the improvements in reaction time are smaller than the average human reaction variance.
 
-### 🔹 2.8 Screen Size
+### 🔹 2.8 Eye Comfort (PWM Dimming)
+*Description:* How the screen dims. Higher frequencies prevent eye strain, headaches, and fatigue for people sensitive to screen flicker.
+*   **Measurement:** Oscilloscope or flicker meter at low brightness levels.
+*   **Unit:** Hertz (Hz)
+*   **Significance:** Reduces eye strain and headaches for sensitive users.
+*Formula:* `Score = 10 * (log(Hz) - log(120)) / (log(3840) - log(120))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ 3840 Hz
+*   **Min Score (0.0):** ≤ 120 Hz
+> [!NOTE]
+> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The jump from 240Hz to 480Hz significantly reduces visible flicker for sensitive eyes, whereas the difference between 2000Hz and 3000Hz is marginal.
+
+### D. Physical Immersion (How big it feels)
+
+### 🔹 2.9 Screen Size
 *Description:* The physical size of the display measured diagonally. Larger screens offer more immersive media and gaming experiences.
 *   **Measurement:** Diagonal length of the active display area.
 *   **Unit:** Inches (")
@@ -220,7 +289,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > [!NOTE]
 > This is a continuous linear scoring metric. Larger screens provide more immersion.
 
-### 🔹 2.9 Screen-to-Body Ratio (Bezels)
+### 🔹 2.10 Screen-to-Body Ratio (Bezels)
 *Description:* How much of the front is screen vs. border. Higher percentage means thinner bezels and a more immersive, modern look.
 *   **Measurement:** (Active Display Area / Total Frontal Area) * 100.
 *   **Unit:** Percentage (%)
@@ -250,6 +319,36 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 > [!NOTE]
 > **Why Logarithmic?** Performance utility follows diminishing returns. The difference between a laggy 500-point phone and a usable 1500-point phone is transformative. The difference between an 8500-point flagship and a 9500-point gaming beast is noticeable only in extreme niche scenarios.
 
+#### 3.1.1 CPU Core Architecture Reference
+
+**Master Scoring Table** (used across all CPU performance calculations)
+
+This table provides the authoritative CPU core architecture scores used throughout the scoring system, including:
+- Section 3.1 Method C: Multi-Thread Performance (CPS calculation)
+- Section 3.2 Method C: Single-Thread Performance (CAS calculation)
+- Battery Endurance Scoring (Battery efficiency - SoC component)
+
+**Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
+
+| CPU Core Architecture        | Score  | Generation | Notes                          |
+|------------------------------|--------|------------|--------------------------------|
+| **Apple A18 / A17 Pro / A17**| **10** | 2023-2024  | Highest IPC, 3nm process       |
+| **Cortex-X925**              | **10** | 2024       | ARMv9.2, latest flagship       |
+| **Cortex-X4**                | **10** | 2023       | ARMv9, flagship performance    |
+| **Cortex-X3**                | **9**  | 2022       | ARMv9 flagship                 |
+| **Cortex-X2**                | **8**  | 2021       | ARMv9 early flagship           |
+| **Cortex-A720 / A715**       | **7**  | 2023-2024  | ARMv9 modern performance       |
+| **Cortex-A710**              | **6**  | 2021       | ARMv9 transitional             |
+| **Cortex-A78 / A77**         | **6**  | 2019-2020  | ARMv8.2 legacy flagship        |
+| **Cortex-A76 / A75**         | **5**  | 2017-2018  | ARMv8.2 older flagship         |
+| **Cortex-A73**               | **4**  | 2016       | ARMv8 budget performance       |
+| **Cortex-A55**               | **2**  | 2017       | ARMv8.2 modern efficiency      |
+| **Cortex-A520 / A510**       | **2**  | 2021-2023  | ARMv9 efficiency cores         |
+| **Cortex-A53 / A7**          | **0**  | 2012-2014  | ARMv8 ancient efficiency       |
+
+> [!IMPORTANT]
+> **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
+
 #### Method B: Nearest Neighbor Interpolation (Secondary)
 If the specific device has no benchmark, but we have data for other devices:
 1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Theoretical Score** (calculated via Method C) to the target device.
@@ -266,15 +365,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 **Step 1: Calculate Cluster Power Score (CPS)**
 *   *What is it?* A sum of all CPU cores weighted by their strength.
 *   **Formula:** `Sum(Core_Weight * Core_Count)`
-*   **Core Weights:**
-    *   **10:** Apple M3/A17 Pro
-    *   **9:** Cortex-X4 (e.g., Snapdragon 8 Gen 3)
-    *   **8:** Cortex-X3 (e.g., Snapdragon 8 Gen 2)
-    *   **7:** Cortex-X2 (e.g., Snapdragon 8 Gen 1)
-    *   **6:** Cortex-A720 / A715 / A710 (Modern Performance)
-    *   **4:** Cortex-A76 / A55 Hybrids (Legacy Performance)
-    *   **2:** Cortex-A520 / A510 (Modern Efficiency)
-    *   **0:** Cortex-A55 / A53 (Legacy Efficiency)
+*   **Core Weights:** See **Section 3.1.1 CPU Core Architecture Reference** for authoritative core scores.
 
 **Step 2: Architecture Efficiency Score (AES)**
 *   *What is it?* The average quality of the cores.
@@ -332,26 +423,26 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Core Architecture Score (CAS)**
 *   *What is it?* The weight of the *single strongest core* in the system.
-*   **Weights:** Same as Section 3.1 (e.g., Cortex-X4 = 9, Cortex-A78 = 6).
+*   **Weights:** See **Section 3.1.1 CPU Core Architecture Reference** for authoritative core scores.
 
-**Step 2: Frequency Modifier (FM)**
-*   *What is it?* A direct multiplier for clock speed.
-*   **Formula:** `Max_Freq_GHz / Max_Freq_GHz_Best_Phone`
-    *   *Range is 0-1.
-    *   **Why FM?** Single-core performance scales almost linearly with frequency for the same architecture. A 3.0GHz core is roughly 50% faster than a 2.0GHz core of the same type.
+**Step 2: Frequency Scaling Factor (FSF)**
+*   *What is it?* A multiplier for clock speed.
+*   **Formula:** `1 + (Max_Freq_GHz - Max_Freq_GHz_Worst_Phone) / (Max_Freq_GHz_Best_Phone - Max_Freq_GHz_Worst_Phone)`
+    *   *Range is 1-2.
+    *   **Why FSF?** Single-core performance scales almost linearly with frequency for the same architecture. A 3.0GHz core is roughly 50% faster than a 2.0GHz core of the same type. FSF normalizes this between the worst and best phones in the dataset.
 
 **Step 3: Calculate Final Score**
-1.  **Raw Single-Thread (STRS - Single Thread Raw Score):** `CAS * FM`
+1.  **Raw Single-Thread (STRS - Single Thread Raw Score):** `CAS * FSF`
 2.  **Final Score:** `10 * (log(STRS) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
-    *   **Parameters:** See `scoring_parameters.md` for values.
+    *   **Parameters:** See `scoring_constants.md` for values.
 
 > **Example: Snapdragon 8 Gen 3**
 > *   **Specs:** Prime Core is Cortex-X4 at 3.3GHz.
 > *   **CAS:** Cortex-X4 = **9**
-> *   **FM:** `3.3 / Max_Freq_GHz_Best_Phone` = `3.3 / 3.8` = **0.87**
-> *   **Raw:** `9 * 0.87` = **7.83**
-> *   **Score:** `10 * (log(7.83) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
-> *   `10 * (log(7.83) - log(1)) / (log(11) - log(1))` = `10 * (0.894 - 0) / (1.041 - 0)` = `10 * 0.859` ≈ **8.6/10**
+> *   **FSF:** `1 + (3.3 - 1.8) / (3.8 - 1.8)` = `1 + 1.5/2.0` = **1.75**
+> *   **Raw:** `9 * 1.75` = **15.75**
+> *   **Score:** `10 * (log(15.75) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
+> *   `10 * (log(15.75) - log(9)) / (log(20) - log(9))` = `10 * (1.197 - 0.954) / (1.301 - 0.954)` = `10 * 0.700` ≈ **7.0/10**
 
 
 ### 🔹 3.3 GPU Performance (Graphics & Gaming)
@@ -360,19 +451,41 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Critical for high-fidelity gaming, UI smoothness, and future-proofing.
 
+#### 3.3.1 GPU Architecture Reference
+
+**Master Scoring Table** (used across all GPU-related calculations)
+
+This table provides the authoritative GPU architecture scores used throughout the scoring system, including:
+- Section 3.3 GPU Performance (Base Architecture Score - Part 1)
+- Battery Endurance Scoring (Battery efficiency - SoC component)
+
+**Scoring Basis:** Based on GPU generation, compute units, and real-world graphics performance.
+
+| GPU Model                    | Score  | Generation | Notes                          |
+|------------------------------|--------|------------|--------------------------------|
+| **Apple GPU (A17/A18)**      | **10** | 2023-2024  | Highest mobile GPU performance |
+| **Immortalis-G720**          | **10** | 2023       | ARM flagship with ray tracing  |
+| **Adreno 750**               | **9**  | 2023       | Snapdragon 8 Gen 3             |
+| **Adreno 740**               | **9**  | 2022       | Snapdragon 8 Gen 2             |
+| **Adreno 730**               | **8**  | 2021       | Snapdragon 8 Gen 1             |
+| **Mali-G715**                | **8**  | 2022       | Dimensity 9000 series          |
+| **Mali-G710**                | **7**  | 2021       | Dimensity 8000 series          |
+| **Adreno 660**               | **7**  | 2020       | Snapdragon 888                 |
+| **Adreno 642L**              | **6**  | 2021       | Snapdragon 778G                |
+| **Mali-G610**                | **6**  | 2021       | Dimensity 1080                 |
+| **Adreno 619**               | **4**  | 2019       | Snapdragon 750G                |
+| **Mali-G68**                 | **4**  | 2020       | Dimensity 900                  |
+| **Mali-G57**                 | **2**  | 2018       | Budget Dimensity/Exynos        |
+| **Adreno 610**               | **2**  | 2019       | Snapdragon 665/680             |
+| **Mali-G52**                 | **0**  | 2018       | Entry-level budget             |
+
+> [!IMPORTANT]
+> **Single Source of Truth:** This table is the master reference for all GPU scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
+
 **Part 1: Base GPU Architecture Score (70%)**
 *   *What is it?* The core raw performance potential based on the GPU generation and tier.
 *   **Measurement:** GPU Model & Generation.
-| Score    | GPU Class                                | Example Models                 |
-| :------- | :--------------------------------------- | :----------------------------- |
-| **10.0** | **Apple GPU (Latest) / Immortalis-G720** | iPhone 15 Pro, Dimensity 9300  |
-| **9.0**  | **Adreno 750 / 740**                     | S24 Ultra, S23 Ultra           |
-| **8.0**  | **Adreno 730 / Mali-G715**               | S22 Ultra, Pixel 8 Pro         |
-| **7.0**  | **Adreno 660 / Mali-G710**               | S21 Ultra, Pixel 7 Pro         |
-| **6.0**  | **Adreno 642L / Mali-G610**              | Nothing Phone (1), Galaxy A55  |
-| **4.0**  | **Adreno 619 / Mali-G68**                | Galaxy A54, Moto G84           |
-| **2.0**  | **Adreno 610 / Mali-G52**                | Budget Phones (Snapdragon 680) |
-| **0.0**  | **Legacy / Unknown**                     | Entry Level                    |
+*   **Scoring:** See **Section 3.3.1 GPU Architecture Reference** for authoritative GPU scores.
 
 **Part 2: API & Feature Support Modifier (20%)**
 *   *What is it?* Support for modern graphics APIs that enable advanced visual effects and efficiency.
@@ -404,59 +517,120 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Unit:** Nanometers (nm)
 *   **Significance:** Major factor in power efficiency and thermal performance.
 *Formula:*
-1.  **Calculate Base Score:** `10 * (log(16) - log(Node)) / (log(16) - log(3)) - 0.3`
+1.  **Calculate Base Score:** `10 * (log(20) - log(Node)) / (log(20) - log(3)) - 0.3`
     *   *Note:* The `- 0.3` ensures that a perfect 10.0 is only achievable with the TSMC modifier.
 2.  **Apply Modifier:** `Final_Score = Base_Score + Foundry_Modifier` (Clamped 0-10)
 
 *   **Max Score (10.0):** ≤ 3nm (TSMC Only)
-*   **Min Score (0.0):** ≥ 16nm
+*   **Min Score (0.0):** ≥ 20nm
 
 **Foundry Efficiency Modifier:**
-| Foundry           | Modifier | Why?                                               |
-| :---------------- | :------- | :------------------------------------------------- |
-| **TSMC**          | **+0.3** | Consistently higher efficiency at same node label. |
-| **Samsung**       | **0.0**  | Standard efficiency baseline.                      |
-| **SMIC / Others** | **-0.3** | Generally lower yield/efficiency than leaders.     |
+| Foundry           | Modifier | Why?                                                                        |
+| :---------------- | :------- | :-------------------------------------------------------------------------- |
+| **TSMC**          | **+0.3** | 20-30% better power efficiency at same node label (empirically proven).     |
+| **Samsung**       | **0.0**  | Standard efficiency baseline.                                               |
+| **SMIC / Others** | **-0.3** | Generally lower yield/efficiency than leaders.                              |
 
 > [!NOTE]
-> **Why Logarithmic & 16nm Cap?** Transistor density scales non-linearly. A shrink from 10nm to 5nm is a massive leap compared to 16nm to 11nm. We cap the scale at 16nm because almost all relevant modern devices (post-2018) are ≤16nm, ensuring the score resolution is focused where it matters most.
+> **Why Logarithmic & 20nm Cap?** Transistor density and power efficiency scale non-linearly. A shrink from 10nm to 5nm is a massive leap compared to 20nm to 15nm. We cap the scale at 20nm (extended from 16nm) because almost all relevant modern devices are ≤20nm, ensuring the score resolution is focused where it matters most.
+
+> [!NOTE]
+> **Unified Formula for Battery Scoring:** This exact formula is also used in the Battery Endurance Score model (Section 5.1, see [battery_scoring_model.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/battery_scoring_model.md) B.1.1) because process node efficiency directly impacts battery life. Foundry differences (TSMC vs Samsung) affect power consumption by 20-30%, so the foundry modifier must be included in battery life predictions.
 
 ### 🔹 3.5 Thermal Dissipation & Stability Index (TDSI)
 *Description:* A composite index measuring the device's ability to sustain performance and shed heat. It combines the physical thermal capacity of the chassis with the sophistication of the internal cooling solution.
-*   **Measurement:** Materials + Weight + Cooling System Type.
+*   **Measurement:** Frame Material + Weight + Dimensions + Cooling System Type.
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Prevents throttling, ensures sustained gaming performance, and maintains device longevity.
 
-**Part A: Passive Thermal Capacity (60%)**
-*   *What is it?* The hardware's physical ability to absorb and dissipate heat into the environment.
-*   **Measurement:** Frame/Back Material + Device Mass.
-*   **Step 1: Material Score**
-| Material Configuration               | Score  | Why?                                    |
-| :----------------------------------- | :----- | :-------------------------------------- |
-| **Metal Frame + Glass/Ceramic Back** | **10** | Best passive dissipation combo.         |
-| **Metal Frame + Plastic Back**       | **8**  | Plastic back traps some heat.           |
-| **Plastic Frame + Glass Back**       | **6**  | Plastic frame hinders edge dissipation. |
-| **Plastic Frame + Composite**        | **4**  | Low thermal conductivity.               |
-| **All Plastic**                      | **0**  | Insulator, poor dissipation.            |
+**Part A: Chassis Thermal Capacity (50%)**
+*   *What is it?* How much heat the phone body can absorb and spread passively.
+*   **Measurement:** Frame material, device weight, and physical dimensions.
 
-*   **Step 2: Mass Modifier (Thermal Inertia)**
-    *   *Formula:* `Mass_Modifier = clamp(Weight_g / Weight_Heaviest_Phone, 0.7, 1.0)`
-    *   *Logic:* Heavier phones have more thermal mass. We use `Weight_Heaviest_Phone` as the reference. Lighter phones get a reduction factor (<1.0), while the heaviest phone gets no penalty (1.0).
-*   **Score A:** `clamp(Material_Score * Mass_Modifier, 0, 10)`
+**A1 — Frame Thermal Conductivity Class (40% of Part A)**
+*   **Measurement:** Frame material from manufacturer specifications.
+*   **Unit:** Material Class (Discrete)
+*   **Significance:** Primary heat path from SoC to edges.
 
-**Part B: Cooling System Class (40%)**
+| Score    | Frame Material                 | Thermal Conductivity Basis    |
+| :------- | :----------------------------- | :---------------------------- |
+| **10.0** | **Titanium / Stainless Steel** | High conductivity metals      |
+| **8.0**  | **Aluminum / Magnesium Alloy** | Very high conductivity        |
+| **4.0**  | **Plastic Composite**          | Low conductivity              |
+| **0.0**  | **Polymer / Rubberized**       | Very low conductivity         |
+
+> [!NOTE]
+> **Why frame only?** Frame material is always published in specs, forms the primary heat path from SoC to edges, and is more consistent than back panel materials.
+
+**A2 — Device Thermal Mass (25% of Part A)**
+*   **Measurement:** Device weight.
+*   **Unit:** Grams (g)
+*   **Significance:** Heavier phones have more thermal mass to absorb heat spikes.
+
+*Formula:* `Score = 10 * (Weight_g - Weight_Lightest_Phone) / (Weight_Heaviest_Phone - Weight_Lightest_Phone)` (Clamped 0-10)
+*   **Max Score (10.0):** obtained for Heaviest Phone (Weight_Heaviest_Phone)
+*   **Min Score (0.0):** obtained for Lightest Phone (Weight_Lightest_Phone)
+
+**A3 — Heat Dissipation Surface Area (20% of Part A)**
+*   **Measurement:** Physical dimensions from spec sheet.
+*   **Unit:** mm²
+*   **Significance:** Bigger phones dissipate heat better through larger surface area.
+
+*Formula:* `Surface = Height_mm × Width_mm`  
+*Formula:* `Score = 10 * (Surface - 6000) / (9000 - 6000)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ 9000 mm²
+*   **Min Score (0.0):** ≤ 6000 mm²
+
+**A4 — Device Thickness (15% of Part A)**
+*   **Measurement:** Device thickness from manufacturer specifications.
+*   **Unit:** Millimeters (mm)
+*   **Significance:** Thicker phones have more internal volume for heat dissipation and airflow, allowing for better passive cooling and thermal capacity.
+
+*Formula:* `Score = 10 * (Thickness_mm - 6) / (10 - 6)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ 10 mm
+*   **Min Score (0.0):** ≤ 6 mm
+
+> [!NOTE]
+> **Data Structure Mapping:** `1_4_dimensions.thickness_mm`
+
+**Part A Final Score:**  
+`Part_A = (0.40 × A1) + (0.25 × A2) + (0.20 × A3) + (0.15 × A4)`
+
+**Part B: Internal Cooling System Class (50%)**
 *   *What is it?* The engineering sophistication of the internal heat management.
-*   **Measurement:** Cooling solution type (from specs/marketing).
-| Cooling Solution                | Score  | Description                                |
-| :------------------------------ | :----- | :----------------------------------------- |
-| **Active Cooling (Fan)**        | **10** | Physical fan (e.g., RedMagic).             |
-| **Large Vapor Chamber**         | **8**  | Explicitly marketed large area (>4000mm²). |
-| **Vapor Chamber (Standard)**    | **7**  | Standard flagship cooling.                 |
-| **Multi-layer Graphite/Copper** | **5**  | Basic passive spreading.                   |
-| **Basic Heat Spreader**         | **3**  | Minimal cooling (budget).                  |
-| **None Disclosed**              | **0**  | Likely no specific cooling.                |
+*   **Measurement:** Manufacturer thermal system disclosure.
+*   **Unit:** System Class (Discrete)
+*   **Significance:** Advanced cooling systems enable sustained peak performance by actively removing heat from critical components.
 
-**Final Formula:** `TDSI = (0.6 * Score_A) + (0.4 * Score_B)`
+| Score    | Cooling System                      | 
+| :------- | :---------------------------------- |
+| **10.0** | **Active Cooling (Fan)**            |
+| **8.0**  | **Large Vapor Chamber (≥4000 mm²)** |
+| **7.0**  | **Vapor Chamber (Standard)**        |
+| **5.0**  | **Multi-layer Graphite/Copper**     |
+| **3.0**  | **Single Heat Spreader**            |
+| **0.0**  | **No Thermal System Disclosed**     |
+
+**Part C: Thermal Demand Compensation (Additive Bonus)**
+*   *What is it?* A fairness adjustment that rewards devices with lower power consumption (lower thermal load).
+*   **Measurement:** Based on **Section 3.1 SoC Performance Score**.
+*   **Significance:** A low-power chip generates less heat, so it remains stable even with simple cooling. A high-power chip generates massive heat, requiring advanced cooling to prevent throttling.
+*   **Formula:** `Bonus = (10 - SoC_Performance_Score) * 0.5`
+    *   **Max Bonus (+5.0):** Low-end SoC (Score ~0) -> Needs minimal cooling.
+    *   **Min Bonus (+0.0):** Flagship SoC (Score 10) -> Needs maximum cooling.
+
+> [!NOTE]
+> **Why this formula?** We use an **Additive Bonus** approach. The physical hardware (Parts A & B) sets the baseline stability capability. Then, we add points if the "engine" is small and easy to cool.
+> *   **Budget Phone:** Passive cooling (Score 3) + Low Load Bonus (4) = **7.0 (Stable)**.
+> *   **Gaming Phone:** Active Fan (Score 10) + High Load Bonus (0) = **10.0 (Stable)**.
+> *   **Hot Flagship:** Passive cooling (Score 3) + High Load Bonus (0) = **3.0 (Unstable)**.
+> This correctly predicts that a passively cooled flagship will throttle, while a passively cooled budget phone will not.
+
+**Final Formula:**
+1.  **Calculate Physical Capability:** `Physical_Score = (0.5 × Part_A) + (0.5 × Part_B)`
+2.  **Calculate Load Compensation:** `Load_Bonus = (10 - Section_3_1_Score) * 0.5`
+3.  **Final TDSI:** `TDSI = Physical_Score + Load_Bonus` (Clamped 0-10)
+
 
 ### 🔹 3.6 RAM Technology - Memory Technology Efficiency Index (MTEI)
 *Description:* The type of memory used. Newer technology (LPDDR5X) allows for faster app switching and saves battery compared to older types.
@@ -562,18 +736,27 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > **Why Logarithmic?** Moving from 12MP to 50MP provides a significant jump in detail for cropping. However, moving from 100MP to 200MP offers diminishing returns due to lens diffraction limits and file size management.
 
 ### 🔹 4.4 Image Stabilization
-*Description:* Technology to reduce blur from handshakes. Essential for sharp low-light photos and smooth video recording.
-*   **Measurement:** Hardware analysis (OIS, Sensor-Shift).
-*   **Unit:** Stabilization Type
-*   **Significance:** Critical for low-light sharpness and video stability.
-| Score    | Technology                      | Example Models                |
-| :------- | :------------------------------ | :---------------------------- |
-| **10.0** | **Gimbal / Sensor-Shift Gen 2** | iPhone 15 Pro Max, Zenfone 10 |
-| **9.0**  | **Sensor-Shift OIS**            | iPhone 15, Pixel 8 Pro        |
-| **8.0**  | **Standard OIS**                | S24 Ultra, Galaxy A55         |
-| **5.0**  | **EIS Only (Electronic)**       | Budget Phones                 |
-| **2.0**  | **Poor EIS**                    | Low-end chipsets              |
-| **0.0**  | **None**                        | Entry Level                   |
+*Description:* Hardware and software systems used to compensate for hand movement during image capture and video recording. Essential for sharp low-light photos and smooth video recording.
+*   **Measurement:** Manufacturer camera specifications and teardown confirmation (where available).
+*   **Unit:** Stabilization Mechanism Class
+*   **Significance:** Determines the camera's ability to maintain image sharpness at longer exposure times and reduce motion blur in video.
+
+| Score    | Stabilization Mechanism                    |
+| :------- | :----------------------------------------- |
+| **10.0** | **Multi-Axis Gimbal / Multi-Sensor Shift** |
+| **9.0**  | **Sensor-Shift OIS**                       |
+| **8.0**  | **Lens-Based OIS**                         |
+| **5.0**  | **EIS Only**                               |
+| **0.0**  | **None**                                   |
+
+**OIS (Optical Image Stabilization)**: Physical movement of lens elements or sensor to counteract camera shake  
+**EIS (Electronic Image Stabilization)**: Software-based stabilization using frame cropping and motion compensation algorithms
+
+**Multi-Axis Gimbal / Multi-Sensor Shift**: Mechanical stabilization system with ≥2-axis sensor or lens movement explicitly disclosed  
+**Sensor-Shift OIS**: Image sensor physically moves to compensate for motion  
+**Lens-Based OIS**: Optical lens group physically moves to compensate for motion  
+**EIS Only**: Stabilization performed purely by digital frame cropping and motion estimation  
+**None**: No stabilization mechanism disclosed
 
 ### 🔹 4.5 Zoom Capability
 *Description:* Optical zoom power. Allows you to take sharp, detailed photos of distant objects (like at a concert) without losing quality. Only true optical zoom is considered. Digital/crop zoom are excluded. 
@@ -629,27 +812,26 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **4.7.1 Autofocus on Ultrawide**
 *   *Why it matters:* Autofocus (AF) allows for close focus and subject tracking, enabling "real" macro mode.
-| Score  | Focus Type                |
-| :----- | :------------------------ |
-| **10** | **Ultrawide with AF**     |
-| **6**  | **Fixed focus ultrawide** |
-| **0**  | **No macro-capable lens** |
+| Score  | Focus Type                     |
+| :----- | :----------------------------- |
+| **10** | **Ultrawide Autofocus**        |
+| **6**  | **Ultrawide with Fixed focus** |
+| **0**  | **No macro-capable lens**      |
 
 **4.7.2 Minimum Focus Distance**
 *   *Why it matters:* The physical limit of how close you can get.
 *   **Measurement:** Minimum focus distance (cm).
-*   *Formula:* `Score = 10 - 10 * ((Distance - 2) / (10 - 2))` (Clamped 0-10)
-    *   **10.0:** ≤ 2 cm
+*   *Formula:* `Score = 10 - 10 * ((Distance - 1.5) / (10 - 1.5))` (Clamped 0-10)
+    *   **10.0:** ≤ 1.5 cm
     *   **0.0:** ≥ 10 cm
 > [!NOTE]
-> **Why Linear?** In the macro range (2cm - 10cm), every centimeter closer allows for significantly more magnification. While magnification itself is non-linear, a linear scoring penalty for every centimeter lost is a fair and intuitive way to grade the "closeness" capability.
+> **Why Linear?** In the macro range (1.5cm - 10cm), every centimeter closer allows for significantly more magnification. While magnification itself is non-linear, a linear scoring penalty for every centimeter lost is a fair and intuitive way to grade the "closeness" capability.
 
 **4.7.3 Dedicated Macro Lens (Penalty-aware)**
-*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality AF Ultrawide (Score 10).
+*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Autofocus Ultrawide (Score 10).
 *   **Measurement:** Sensor Resolution (MP).
 *   *Formula:* `Score = clamp(MP, 0, 6)`
     *   **Max Score (6.0):** ≥ 6 MP (Decent utility)
-    *   **Mid Score (2.0):** 2 MP (Basic/Gimmick)
     *   **Min Score (0.0):** 0 MP (None)
 > [!NOTE]
 > **Why Linear?** The useful range for dedicated macro lenses is narrow (typically 2MP to 5MP). A simple linear progression (`MP`) accurately maps the hardware capability: 0MP is useless (0), 2MP is weak (2), and 5MP is decent (5). This avoids overvaluing low-res "gimmick" sensors.
@@ -675,7 +857,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 ### 🔹 4.9 Rear Video Frame Rate
 *Description:* Maximum frame rate supported at the highest commonly used resolution (≥1080p).
-*   **Measurement:** Maximum FPS at ≥1080p.
+*   **Measurement:** Maximum FPS.
 *   **Unit:** Frames per second (FPS)
 *   **Significance:** Higher FPS (Frames Per Second) enables smoother motion and better motion clarity.
 *Formula:* `Score = 10 * (log(FPS) - log(5)) / (log(120) - log(5))` (Clamped 0-10)
@@ -689,27 +871,65 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Measurement:** Supported HDR standards and bit depth.
 *   **Unit:** HDR Capability Tier
 *   **Significance:** HDR (High Dynamic Range) video preserves highlights and shadows and improves realism and grading headroom.
-| Score  | Video HDR Capability                   |
-| :----- | :------------------------------------- |
-| **10** | **Dolby Vision or HDR10+ (10-bit)**    |
-| **8**  | **HDR10 / HLG**                        |
-| **6**  | **Extended SDR (flat / log-like SDR)** |
-| **4**  | **Standard SDR**                       |
-| **0**  | **No HDR support**                     |
 
-### 🔹 4.11 Video Encoding & Professional Profiles
-*Description:* Support for professional codecs and recording profiles enabling advanced post-production.
-*   **Measurement:** Supported codecs and profiles.
-*   **Unit:** Codec / Profile Tier
+| Score    | Video HDR Capability                   |
+| :------- | :------------------------------------- |
+| **10.0** | **Dolby Vision or HDR10+ (10-bit)**    |
+| **8.0**  | **HDR10 / HLG**                        |
+| **6.0**  | **Extended SDR (flat / log-like SDR)** |
+| **4.0**  | **Standard SDR**                       |
+| **0.0**  | **No HDR support**                     |
+
+**Definitions:**
+*   **Dolby Vision:** A proprietary dynamic metadata format. It optimizes brightness, contrast, and color on a *scene-by-scene* or even *frame-by-frame* basis, ensuring the best possible picture quality for every moment of the video. It requires 10-bit or 12-bit color depth.
+*   **HDR10+:** An open-standard dynamic metadata format similar to Dolby Vision. It also adjusts brightness and tone mapping scene-by-scene, offering a significant improvement over static HDR10.
+*   **HDR10:** The baseline static metadata format. It sets a *single* brightness levels for the entire video file. If the movie has a very bright scene and a very dark scene, HDR10 must compromise between them, whereas dynamic formats optimize for both individually.
+*   **HLG (Hybrid Log-Gamma):** A broadcast-friendly HDR standard designed to be backward compatible with SDR displays. slightly less capable than HDR10/Dolby Vision in absolute dynamic range but highly convenient.
+*   **SDR (Standard Dynamic Range):** The traditional video standard (Rec.709 color space). It has limited brightness and color volume, leading to blown-out highlights (white skies) or crushed shadows in high-contrast scenes.
+
+> [!NOTE]
+> **Why is Dynamic Metadata (Score 10) better?**
+> Dynamic formats (Dolby Vision, HDR10+) tell the display exactly how to render *each specific scene*. Static formats (HDR10) force the display to pick one average setting for the whole movie, which often makes dark scenes look too dark or bright scenes look washed out.
+
+### 🔹 4.11 Video Encoding & Professional Recording
+*Description:* Support for professional codecs and recording profiles enabling advanced post-production. This is a composite score evaluating codec quality, color profile support, and bit depth independently.
+*   **Measurement:** Supported codecs, color profiles, and bit depth.
+*   **Unit:** Composite Index (0-10)
 *   **Significance:** Professional codecs preserve detail, reduce compression artifacts, and allow color grading.
-| Score    | Encoding Capability                                     |
-| :------- | :------------------------------------------------------ |
-| **10.0** | **Log profile + Pro codec (ProRes / RAW / equivalent)** |
-| **8.0**  | **Log profile (10-bit HEVC / H.265)**                   |
-| **6.0**  | **High-bitrate standard codec**                         |
-| **4.0**  | **Standard consumer codec**                             |
-| **2.0**  | **Legacy codec**                                        |
-| **0**    | **Highly compressed**                                   |
+
+**Structure:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
+
+#### 4.11.1 Professional Codec Support (PCS) — 40%
+*What it measures:* Whether the phone can record in a mezzanine or RAW-class format designed for post-production, not delivery.
+*   **Measurement:** Manufacturer specs, camera API codec list.
+*   **Why it matters:** Mezzanine codecs (ProRes, CinemaDNG) preserve maximum image quality with minimal compression, enabling professional color grading and VFX work.
+
+| Condition                                                                     | Score    |
+| :---------------------------------------------------------------------------- | :------- |
+| **Supports ProRes / CinemaDNG / ProRes RAW / equivalent mezzanine or RAW**    | **10.0** |
+| **Does not**                                                                  | **0.0**  |
+
+#### 4.11.2 Log Color Profile Support (LCPS) — 35%
+*What it measures:* Whether the phone supports a logarithmic gamma curve, preserving dynamic range for color grading.
+*   **Measurement:** Camera feature list, video mode specs.
+*   **Why it matters:** Log profiles (e.g., S-Log, V-Log, HLG) flatten the image's contrast curve, capturing more highlight and shadow detail. This gives editors significantly more flexibility to adjust exposure and color in post-production without clipping or banding.
+
+| Condition                         | Score    |
+| :-------------------------------- | :------- |
+| **Log profile available**         | **10.0** |
+| **No log profile**                | **0.0**  |
+
+#### 4.11.3 Color Bit Depth (CBD) — 25%
+*What it measures:* How much color information is stored per channel in video recording.
+*   **Measurement:** Codec specs, camera API output formats.
+*   **Why it matters:** 10-bit color provides 1024 shades per channel (vs 256 in 8-bit), dramatically reducing banding in gradients (like skies) and enabling smoother color grading transitions.
+
+| Bit Depth           | Score    |
+| :------------------ | :------- |
+| **10-bit or higher**| **10.0** |
+| **8-bit only**      | **0.0**  |
+
+**Final Formula:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
 
 ### 🔹 4.12 High Frame Rate (Slow Motion)
 *Description:* Ability to capture video at very high frame rates for slow-motion playback.
@@ -741,14 +961,16 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Measurement:** Focus mechanism and optical configuration.
 *   **Unit:** Focus System Tier
 *   **Significance:** Autofocus ensures sharp selfies and vlogs regardless of arm length or group distance.
+
 | Score    | Focus System Tier                         | Objective Criteria                                   |
 | :------- | :---------------------------------------- | :--------------------------------------------------- |
 | **10.0** | **Autofocus (PDAF / Dual Pixel / Laser)** | Any active AF mechanism                              |
 | **6.0**  | **Fixed Focus (Modern Wide-DOF)**         | Fixed focus AND (Aperture ≥ f/2.0 OR Sensor ≤ 1/3")  |
 | **3.0**  | **Fixed Focus (Legacy Narrow-DOF)**       | Fixed focus AND (Aperture < f/2.0 AND Sensor > 1/3") |
 | **0.0**  | **No Front Camera**                       | Feature phone                                        |
+
 > [!NOTE]
-> **Why this distinction?** Fixed-focus cameras rely on depth of field (DOF). Older or poorly designed selfie cameras with large sensors and fast apertures produce shallow DOF, causing frequent misfocus. Modern designs either add AF or intentionally limit DOF to maintain usability.
+> **Why this distinction?** Fixed-focus cameras rely on depth of field (DOF). Older or poorly designed selfie cameras with large sensors and fast apertures (low f-numbers) produce shallow DOF, causing frequent misfocus. Modern designs either add AF or intentionally limit DOF to maintain usability.
 
 ### 🔹 4.15 Front Camera Video Performance
 *Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, and dynamic range.
@@ -758,40 +980,62 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *Formula:* `Score = (0.4 * ResScore) + (0.35 * FPSScore) + (0.25 * DRScore)`
 
 **4.15.1 Video Resolution Score**
+*What it measures:* The maximum spatial resolution (pixel count) the front camera can record.
+*   **Measurement:** Maximum supported front video resolution (long edge in pixels).
+*   **Why it matters:** Higher resolution provides more detail for cropping, digital stabilization, and future-proofing. 4K allows for 1080p crops without quality loss, while 720p limits editing flexibility.
 *   *Formula:* `ResScore = 10 * (log(px) - log(1280)) / (log(3840) - log(1280))` (Clamped 0-10)
+    *   **Variables:**
+        *   `px` = Long edge resolution in pixels (e.g., 3840 for 4K, 1920 for 1080p, 1280 for 720p)
     *   **Max Score (10.0):** 4K (3840px long edge)
     *   **Min Score (0.0):** 720p (1280px long edge)
-    *   **Anchors:** 1080p ≈ 3.3
+> [!NOTE]
+> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The jump from 720p to 1080p is dramatic for clarity, but 1080p to 4K is less noticeable on small screens, though valuable for cropping and editing.
 
 **4.15.2 Video Frame Rate Score**
+*What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
+*   **Measurement:** Maximum FPS at the highest supported resolution.
+*   **Why it matters:** Higher frame rates (60fps) create smoother motion for vlogs and video calls, reducing motion blur and improving the perception of fluidity. 24fps is cinematic but can appear choppy for fast movement.
 *   *Formula:* `FPSScore = 10 * (log(FPS) - log(24)) / (log(60) - log(24))` (Clamped 0-10)
+    *   **Variables:**
+        *   `FPS` = Maximum sustained frame rate (e.g., 60, 30, 24)
     *   **Max Score (10.0):** 60 FPS
     *   **Min Score (0.0):** 24 FPS
-    *   **Anchors:** 30 FPS ≈ 2.6
+> [!NOTE]
+> **Why Logarithmic?** Frame rate perception is non-linear. The difference between 24fps and 30fps is barely noticeable, but 30fps to 60fps is a significant smoothness upgrade for motion-heavy content.
 
-**4.15.3 Dynamic Range & Codec Score**
-| Score    | Video Capability                         |
-| :------- | :----------------------------------------|
-| **10.0** | **Log profile or Dolby Vision / ProRes** |
-| **9.0**  | **Log profile or Dolby Vision**          |
-| **7.0**  | **HDR10 / HDR10+**                       |
-| **4.0**  | **Basic HDR (HLG / vendor HDR)**         |
-| **1.0**  | **SDR only (8-bit, Rec.709)**            |
-| **0.0**  | **No front camera**                      |
+**4.15.3 Dynamic Range & Codec Score (DRScore)**
+
+*Description:* Measures the front camera’s support for high dynamic range and professional video recording profiles. Focuses on officially supported video standards, not subjective video quality.
+
+**Measurement:** Manufacturer camera specs and system camera settings
+**Unit:** Video Profile Tier (0–10)
+**Significance:** Determines highlight retention, color grading potential, and post-processing flexibility for selfie video.
+
+| Score    | Video Capability                                                                                  |
+| :------- | :-------------------------------------------------------------------------------------------------|
+| **10.0** | **Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)** |
+| **9.0**  | **Dolby Vision HDR recording**                                                                    |
+| **7.0**  | **HDR10 or HDR10+ recording**                                                                     |
+| **4.0**  | **HLG HDR or manufacturer-labeled “HDR video”**                                                   |
+| **1.0**  | **SDR only (8-bit, Rec.709)**                                                                     |
+| **0.0**  | **No front camera**                                                                               |
 
 
 ### D. Computational Photography & AI
 
-### 🔹 4.16 Computational Photography & AI
-*Description:* Use of multiple frames to improve image quality (noise reduction, HDR).
-*   **Measurement:** Presence of HDR and Night multi-frame processing.
-*   **Unit:** Feature Tier
-*   **Significance:** Multi-frame stacking significantly improves low-light and dynamic range.
-| Score    | Multi-Frame Capability            |
-| :------- | :-------------------------------- |
-| **10.0** | **Advanced HDR + Night stacking** |
-| **6.0**  | **Basic HDR**                     |
-| **0.0**  | **None**                          |
+### 🔹 4.16 Multi-Frame Computational Photography (MFCP)
+*Description:* Measures whether the camera system performs automatic multi-frame capture and stacking for still photos to improve noise, dynamic range, and sharpness.
+*   **Measurement:** Official camera documentation and published feature lists.
+*   **Unit:** Processing Tier (0–10)
+*   **Significance:** Multi-frame pipelines significantly improve low-light performance and highlight retention in still images without relying on hardware changes.
+
+**Why it matters:** Multi-frame processing captures multiple exposures in rapid succession and computationally merges them. This reduces noise (by averaging), expands dynamic range (by combining different exposures), and improves sharpness (by aligning and selecting the sharpest pixels). Always-on systems apply this benefit to every photo automatically, while conditional systems require manual mode activation.
+
+| Score    | Publicly Documented Capability                                                                    |
+| :------- | :------------------------------------------------------------------------------------------------ |
+| **10.0** | **Always-on multi-frame HDR + Night stacking** (automatic frame fusion in daylight and low light) |
+| **6.0**  | **Conditional multi-frame processing** (HDR or Night mode must be manually enabled)               |
+| **0.0**  | **Single-frame capture only**                                                                     |
 
 ### 🔹 4.17 Semantic / Scene AI Processing
 *Description:* Ability of the camera software to understand and segment scenes and subjects.
@@ -818,14 +1062,14 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 ## 🟣 5. Battery & Charging
 
-### 🔹 5.1 Battery Capacity
+### 🔹 5.1 Battery Endurance Score
 
 > [!IMPORTANT]
 > **Battery scoring uses a dedicated comprehensive model.**
 > 
 > See [battery_scoring_model.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/battery_scoring_model.md) for the complete methodology.
 
-**Summary:** Battery performance is scored using a sophisticated **Benchmark-First Approach with Predictive Interpolation** (Model v3.2) that:
+**Summary:** Battery endurance is scored using a sophisticated **Benchmark-First Approach with Predictive Interpolation** (Model v3.2) that:
 
 1. **Prioritizes Real-World Data:** Uses actual battery test results from GSMArena and PhoneArena when available
 2. **Technical Prediction:** Calculates a predicted score based on:
@@ -834,8 +1078,8 @@ Used as a standalone fallback or as the **Predictor** for Method B.
    - **Software Optimization (20%):** OS efficiency and bloatware impact
 3. **Intelligent Interpolation:** For devices without benchmark data, finds "nearest neighbor" phones with similar specs and interpolates their real-world performance
 *   **Measurement:** Standardized battery life tests (or predictive model).
-*   **Unit:** Watt-hours (Wh) / Benchmark Score
-*   **Significance:** Determines how long the phone lasts on a single charge.
+*   **Unit:** Benchmark Score
+*   **Significance:** Determines how long the phone lasts on a single charge under real-world usage.
 
 ### 🔹 5.2 Wired Charging Speed
 *Description:* Charging speed with a cable. Higher wattage means you spend less time tethered to a wall outlet.
@@ -855,7 +1099,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Significance:** Convenience and ease of topping up.
 *Formula:* `Score = 10 * (log(Watts) - log(7.5)) / (log(50) - log(7.5))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ 50W
-*   **Min Score (0.0):** ≤ 7.5W (Standard Qi)
+*   **Min Score (0.0):** ≤ 7.5W
 > [!NOTE]
 > **Why Logarithmic?** Similar to wired charging, the convenience gain from 5W to 15W is significant (usable charging vs trickle). Beyond 50W, thermal limits often throttle speeds, reducing the real-world time savings.
 
