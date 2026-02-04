@@ -635,15 +635,12 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "6_2_ai_user_capability_index": {
-      "afb": {
-        "domains_enabled": ["Text", "Image", "Voice", "System", "Productivity"],
-        "score": 10.0
-      },
-      "aei": {
-        "execution_model": "Fully On-Device",
-        "score": 10.0
-      },
-      "predicted_score": 0.0,
+      "visual_screen_search": true,
+      "live_speech_translation": true,
+      "content_summarization": true,
+      "writing_tools": true,
+      "on_device_processing": true,
+      "predicted_score": 10.0,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
@@ -651,25 +648,13 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "6_3_system_cleanliness_control": {
-      "pal": {
-        "third_party_apps_count": 0,
-        "score": 10.0
-      },
-      "rdc": {
-        "removable_count": 0,
-        "disableable_count": 0,
-        "score": 10.0
-      },
-      "sap": {
-        "ads_status": "No system ads",
-        "score": 10.0
-      },
-      "predicted_score": 0.0,
+      "platform_score": 6.0,
+      "predicted_score": 6.0,
       "score_adjustment": {
         "booster": 1.0,
         "source": "None"
       },
-      "final_score": 0.0
+      "final_score": 6.0
     }
   },
   "7_connectivity_and_sensors": {
@@ -831,15 +816,10 @@ It includes all previously removed parameters, categorized as:
       "predicted_score": 8.0,
       "confidence": "High"
     },
-    "9_3_service_ecosystem_support": {
-      "support_level": "Self-repair program + parts + manuals",
-      "predicted_score": 10.0
-    },
-    "9_4_warranty_length": "1 Year Standard"
+    "9_3_manufacturer_warranty_commitment": "1 Year Standard"
   },
   "10_miscellaneous": {
-    "10_1_haptics_quality": "X-Axis Linear (Large)",
-    "10_2_stylus_hardware_system_support": "Integrated active stylus + dedicated digitizer + BT features"
+    "10_1_stylus_hardware_system_support": "Integrated active stylus + dedicated digitizer + BT features"
   },
   "11_reviews_and_performance_boosters": {
     "11_1_dxomark_camera": {

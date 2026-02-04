@@ -220,13 +220,17 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Percentage (%)
 *   **Significance:** Determines real-world color vibrancy and HDR reproduction capability.
 
-*Formula:* `Score = 10 * (P3_percent - 85) / (100 - 85)` (Clamped 0-10)
+*Formula:* `Score = 10 * (P3_percent - 65) / (100 - 65)` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ 100% DCI-P3
-*   **Min Score (0.0):** ≤ 85% DCI-P3
+*   **Min Score (0.0):** ≤ 65% DCI-P3
 
 > [!NOTE]
-> **Why this works:** DCI-P3 is the industry HDR content standard. The scale is continuous, fully quantitative, and automation-friendly.
-> **sRGB Fallback:** If only sRGB data is available (typical for legacy or budget screens), the score is **0.0** because 100% sRGB corresponds to approximately 75-80% DCI-P3, which falls below the minimum threshold for modern wide-gamut scoring.
+> **Why this works:** DCI-P3 is the industry HDR content standard. The scale is continuous, fully quantitative, and automation-friendly. The 65% floor captures budget LCD devices while maintaining meaningful differentiation across the 35-point range.
+>
+> **sRGB Fallback Conversion:**
+> If only sRGB data is available: `DCI-P3_estimate = min(sRGB_percent × 0.75, 100)` as 100% sRGB ≈ 75% DCI-P3
+>
+> *Example:* 119% sRGB → 89% DCI-P3 (estimate), Score = 6.9
 
 ### 🔹 2.5 HDR Format Support (HFS)
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
@@ -1158,96 +1162,84 @@ This table provides the authoritative GPU architecture scores used throughout th
 
 **Guiding Question:** *"What useful AI features does the user have access to, and how independently can the phone run them?"*
 
-**Structure:** `AUCI = 0.45 × AFB + 0.55 × AEI`
+**Structure:** 5 binary features with weighted scoring.
 
-#### 6.2.1 AI Feature Breadth (AFB)
-*Description:* Measures how many distinct, meaningful user activity domains are enhanced by AI features. Each domain is counted once.
-*   **AI Domains Considered:**
-    1.  **Text & Writing:** Rewrite, summarize, proofread.
-    2.  **Image Editing:** Object removal, generative fill.
-    3.  **Voice & Translation:** Live translation, transcription.
-    4.  **System Intelligence:** Contextual search, smart actions.
-    5.  **Productivity / OS AI:** Notes, reminders, AI workflows.
+> [!NOTE]
+> **Generative image editing** (object removal, fill, etc.) is scored in **Section 4.18** and is excluded here to avoid double-scoring.
 
-*   **Scoring Formula:** `AFB = 10 × (AI_Domains_Enabled / 5)`
+#### AI Capability Features
 
-| Domains Present | AFB Score |
-| :-------------- | :-------- |
-| **5**           | **10.0**  |
-| **4**           | **8.0**   |
-| **3**           | **6.0**   |
-| **2**           | **4.0**   |
-| **1**           | **2.0**   |
-| **0**           | **0.0**   |
+| Feature                     | Weight   |Justification                                                                                 |
+| :---------------------------| :------- | :------------------------------------------------------------------------------------------- |
+| **Visual Screen Search**    | **25%**  | Highest usage frequency (Circle to Search). Immediate utility with minimal friction.         |
+| **Live Speech Translation** | **20%**  | High user value for travel/business. Real-time voice translation in calls/conversations.     |
+| **Content Summarization**   | **15%**  | Time-saving productivity. Summarizes documents, web pages, or recordings.                    |
+| **Writing Tools**           | **10%**  | System-wide text rewrite/proofread. Lower daily frequency but still valuable.                |
+| **On-Device Processing**    | **30%**  | Privacy (58% user concern), offline reliability, lower latency. Enables AI without internet. |
 
-#### 6.2.2 AI Execution Independence (AEI)
-*Description:* Measures how independently AI features can run on the device, without relying on cloud services. This impacts latency, privacy, and offline usability.
-
-| Score    | Execution Model                | Description                                         |
-| :------- | :----------------------------- | :-------------------------------------------------- |
-| **10.0** | **Fully On-Device**            | Core AI features run locally without internet.      |
-| **8.0**  | **Hybrid (On-Device + Cloud)** | Local inference with cloud fallback.                |
-| **5.0**  | **Cloud-First**                | AI requires internet connection.                    |
-| **3.0**  | **Cloud + Account Required**   | Login and online dependency.                        |
-| **0.0**  | **No Meaningful AI**           | Basic assistant only / no AI features.              |
-
-**Final Formula:** `AUCI = (0.45 × AFB) + (0.55 × AEI)`
+**Formula:**
+```
+AUCI = (2.5 × VisualSearch) + (2.0 × Translation) + (1.5 × Summarization) + (1.0 × Writing) + (3.0 × OnDevice)
+```
+Where each feature = 1 if present, 0 if absent. Max score = 10.0.
 
 
 ### 🔹 6.3 System Cleanliness & Control (SCC)
-*Description:* Evaluates how much control the user has over their system environment, focusing on unwanted software, ads, and the ability to remove preinstalled content.
-*   **Measurement:** Count of preinstalled apps, removability status, and presence of system ads.
-*   **Unit:** Composite Index (0-10)
-*   **Significance:** Affects user experience, privacy, and storage.
+*Description:* Evaluates the out-of-box software experience in terms of preinstalled bloatware, user control, and presence of system ads.
 
-**Structure:** `SCC = 0.4 × PAL + 0.35 × RDC + 0.25 × SAP`
+#### Design Rationale
 
-#### 6.3.1 Preinstalled App Load (PAL)
-*Description:* Quantifies the number of non-essential third-party apps preinstalled at first boot.
+> [!IMPORTANT]
+> **Why Platform-Based Scoring?**
+> 
+> Traditional SCC metrics (app counts, removability percentages) require hands-on testing that cannot be automated from public data. However, bloatware policies are defined at the **platform/skin level**, not per-model:
+> - All Samsung One UI phones share the same preinstalled app policies
+> - All iPhones share the same Apple app bundle
+> - Regional/carrier variations exist but are secondary to platform defaults
+>
+> This approach enables **neutral, automated scoring** using only the publicly available `skin` field.
 
-Third-party preinstalled app =
-Any application not required for core OS functionality, including:
-- partner apps (Facebook, TikTok, Booking, etc.)
-- app stores other than the platform default
-- OEM-branded commercial services (themes store, shopping, cloud upsells)
+*   **Data Source:** `6_software_and_longevity.skin`
+*   **Unit:** Platform Cleanliness Score (0-10)
 
-*   **Measurement:** Count of third-party apps (excluding core OS services and hardware utilities).
-*   **Formula:** `PAL = clamp(10 - 2/3 × Third_Party_Apps, 0, 10)`
+#### Scoring Criteria
 
-| Third-Party Apps | PAL Score |
-| :--------------- | :-------- |
-| **0**            | **10.0**  |
-| **3**            | **8.0**   |
-| **6**            | **6.0**   |
-| **9**            | **4.0**   |
-| **12**           | **2.0**   |
-| **≥15**          | **0.0**   |
+Each platform is evaluated on three dimensions (from public documentation and verified reviews):
+1. **Preinstalled App Load:** Volume of non-essential apps at first boot
+2. **User Control:** Ability to remove or disable preinstalled apps
+3. **System Ads:** Presence of advertisements in system UI/notifications
 
-#### 6.3.2 Removability & Disable Control (RDC)
-*Description:* Measures the user's ability to remove or disable the preinstalled apps counted in PAL.
-*   **Formula:** `RDC = 10 × (Removable + 0.5 × Disableable) / Total_Preinstalled`
-*   **Special Case:** If `Total_Preinstalled = 0`, then `RDC = 10`.
+> **Note on Unlisted Platforms:** If a phone runs a platform/skin not explicitly listed below, it receives **No Score (N/A)**. The database must be manually updated to include the new platform with a justified score before a SCC rating can be provided.
 
-| Scenario                          | RDC Score |
-| :-------------------------------- | :-------- |
-| **All removable**                 | **10.0**  |
-| **Half removable, half disable**  | **7.5**   |
-| **Mostly disable-only**           | **~5.0**  |
-| **Mostly locked**                 | **~2.0**  |
-| **No control**                    | **0.0**   |
+#### Platform Cleanliness Table
 
-#### 6.3.3 System Ads & Promotions (SAP)
-*Description:* Evaluates the presence of ads in system apps, notifications, and UI.
+| Platform / Skin                | Score    | Justification                                                             |
+| :----------------------------- | :------- | :------------------------------------------------------------------------ |
+| **iOS**                        | **10.0** | No third-party bloatware, no ads, all non-core apps fully deletable       |
+| **Pixel UI / Stock Android**   | **9.0**  | Minimal Google apps, no third-party bloat, no ads, most apps removable    |
+| **Nothing OS**                 | **9.0**  | Near-stock Android, minimal preinstalls, no ads                           |
+| **Motorola MyUX / Hello UI**   | **8.0**  | Light customization, some carrier bloat possible, no system ads           |
+| **Sony Xperia UI**             | **8.0**  | Clean experience, minimal preinstalls, no ads                             |
+| **Nokia (Stock Android)**      | **8.0**  | Near-stock Android One, minimal bloatware                                 |
+| **ASUS ZenUI / ROG UI**        | **7.0**  | Moderate ASUS apps, gaming features, no system ads                        |
+| **Samsung One UI**             | **6.0**  | Significant Samsung/Microsoft preinstalls, ads present (can be disabled)  |
+| **OxygenOS (OnePlus)**         | **6.0**  | Moderate preinstalls, occasional promotions                               |
+| **Redmagic OS**                | **6.0**  | Gaming-focused, moderate preinstalls, no ads                              |
+| **Honor MagicOS**              | **5.0**  | Moderate preinstalls, regional apps, some promotions                      |
+| **Vivo FunTouch OS / OriginOS**| **5.0**  | Moderate preinstalls, regional third-party apps                           |
+| **ColorOS (Oppo)**             | **5.0**  | More preinstalls, regional third-party apps, some ads                     |
+| **Realme UI**                  | **5.0**  | Based on ColorOS, similar bloatware profile                               |
+| **LG UX (Legacy)**             | **5.0**  | Moderate LG apps, carrier bloatware varied                                |
+| **HTC Sense (Legacy)**         | **5.0**  | Moderate HTC apps, historical reference                                   |
+| **HyperOS (Xiaomi)**           | **4.0**  | Heavy preinstalls, system ads in multiple apps                            |
+| **Huawei EMUI / HarmonyOS**    | **3.0**  | No Google services, significant Huawei apps, regional bloatware           |
+| **MIUI (Legacy Xiaomi)**       | **3.0**  | Significant bloatware, persistent ads difficult to disable                |
+| **Tecno HiOS / Infinix XOS**   | **2.0**  | Heavy third-party bloatware, ads present                                  |
 
-| Condition                                        | SAP Score |
-| :----------------------------------------------- | :-------- |
-| **No system ads, no promotions**                 | **10.0**  |
-| **Ads present but all disabled by one toggle**   | **7.0**   |
-| **Ads disabled only by multiple per-app toggles**| **4.0**   |
-| **Ads present and cannot be fully disabled**     | **1.0**   |
-| **Persistent / recurring ads**                   | **0.0**   |
-
-**Final Formula:** `SCC = (0.4 × PAL) + (0.35 × RDC) + (0.25 × SAP)`
+**Formula:**
+```
+SCC = Platform_Cleanliness_Score (direct lookup from skin field)
+```
 
 
 ## 🟣 7. Connectivity & Sensors
@@ -1268,24 +1260,48 @@ Any application not required for core OS functionality, including:
 | **0.0**  | **2G Only**                                  |
 
 ### 🔹 7.2 SIM Capabilities
-*Description:* SIM card options. Dual SIM lets you have two numbers (e.g., work/personal) or use a local SIM when traveling.
-*   **Measurement:** Physical tray and eSIM support check.
-*   **Unit:** Slot Configuration
-*   **Significance:** Flexibility for multiple carriers and travel.
-| Score    | Configuration                     | 
-| :------- | :-------------------------------- | 
-| **10.0** | **Dual eSIM + iSIM + Nano**       | 
-| **9.0**  | **Dual SIM (Nano + eSIM)**        | 
-| **8.0**  | **Dual Nano-SIM**                 | 
-| **6.0**  | **Single Nano-SIM**               | 
-| **4.0**  | **eSIM only (region-restricted)** | 
-| **0.0**  | **No SIM (Wi-Fi Only)**           | 
+*Description:* Evaluates the device's support for cellular subscriber identity modules (SIM), prioritizing flexibility and modern standards like eSIM and iSIM. Dual SIM lets you have two numbers (e.g., work/personal) or use a local SIM when traveling.
+
+#### Terminology
+*   **SIM (Subscriber Identity Module):** The traditional physical card (Nano-SIM) that authenticates the user on a network.
+*   **eSIM (Embedded SIM):** A rewritable chip soldered onto the motherboard. Allows digital profile downloads, instant carrier switching, and multiple stored profiles. Eliminated physical swapping.
+*   **iSIM (Integrated SIM):** A newer standard where the SIM capability is integrated directly into the phone's main processor (SoC). It offers the same benefits as eSIM but uses less power and space (`<1mm²`), freeing room for larger batteries or other components. Functionally equivalent to eSIM for the user but represents superior engineering.
+*   **Dual Active eSIM:** The ability to have two eSIM lines active simultaneously, without needing a physical card.
+
+*   **Measurement:** Analysis of SIM specifications from manufacturer data.
+*   **Unit:** Configuration Tier (0-10)
+
+#### Scoring Table
+
+| Score    | Configuration                                     |
+| :------- | :-------------------------------------------------|
+| **10.0** | **Dual eSIM / iSIM + Physical Nano-SIM Slot**     |
+| **8.0**  | **Single eSIM / iSIM + Physical Nano-SIM Slot**   |
+| **6.0**  | **Dual eSIM / iSIM Only (No Physical Slot)**      |
+| **4.0**  | **Dual Physical Nano-SIM Slots**                  |
+| **0.0**  | **No SIM or Single SIM (Nano, eSIM, or iSIM)**    |
+
+#### Configuration Details
+
+*   **10.0 - Dual eSIM / iSIM + Physical Nano-SIM Slot:** Maximum flexibility. Can run two digital profiles (eSIM/iSIM) simultaneously AND has a physical slot for legacy carriers or travel.
+*   **8.0 - Single eSIM / iSIM + Physical Nano-SIM Slot:** Standard flagship configuration. Can use one physical SIM and one digital profile simultaneously.
+*   **6.0 - Dual eSIM / iSIM Only (No Physical Slot):** Excellent digital flexibility, but requires carrier eSIM support. No fallback for physical SIM cards.
+*   **4.0 - Dual Physical Nano-SIM Slots:** Good for travel/dual lines, but requires physical card swapping. No digital convenience.
+*   **0.0 - Single SIM (Nano, eSIM, or iSIM):** Basic connectivity. No second line or travel flexibility.
+*   **0.0 - No SIM (Wi-Fi Only):** Not a cellular device. 
+
+> [!NOTE]
+> **Why are eSIM and iSIM scored identically?**
+> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Dimensions)** and **Section 5.1 (Battery Endurance)**.
+> 
+> **Approximation Note:** This is currently an approximation. While **Section 5.1** rewards overall battery life, the theoretical model does not yet strictly quantify the specific µW savings of iSIM vs eSIM, nor do general benchmarks (like GSMArena) typically isolate this specific variable. However, treating them as functionally equivalent in this section prevents double-counting the engineering benefits that don't directly alter the user's *connectivity* options. 
 
 ### 🔹 7.3 Wi-Fi Standard
 *Description:* Wi-Fi technology. Newer standards (Wi-Fi 7/6E) provide faster, more stable internet, especially in crowded homes.
 *   **Measurement:** Supported Wi-Fi protocols.
 *   **Unit:** Standard (Generation)
 *   **Significance:** Local network speed and congestion management.
+
 | Score    | Standard     | 
 | :------- | :----------- | 
 | **10.0** | **Wi-Fi 7**  | 
@@ -1296,126 +1312,241 @@ Any application not required for core OS functionality, including:
 | **0.0**  | **Wi-Fi≤3**  |
 
 ### 🔹 7.4 Bluetooth & Audio Codecs
-*Description:* Bluetooth quality. Newer versions offer more stable connections to headphones, and better codecs mean higher quality music.
-*   **Measurement:** Supported Bluetooth profile and codecs.
-*   **Unit:** Version / Codecs
-*   **Significance:** Audio quality and connection stability with accessories.
-| Score    | Version / Codecs                     | Example Models               |
-| :------- | :----------------------------------- | :--------------------------- |
-| **10.0** | **BT 5.4 + Lossless (aptX/LHDC)**    | Snapdragon 8 Gen 3 Flagships |
-| **9.0**  | **BT 5.3 + High-res (LDAC/aptX HD)** | S23 Ultra, Pixel 7           |
-| **8.0**  | **BT 5.3 + AAC/SBC only**            | iPhone 15 (No LDAC)          |
-| **6.0**  | **BT 5.0-5.2**                       | Older Mid-range              |
-| **4.0**  | **BT 4.2**                           | Budget / Legacy              |
-| **0.0**  | **< BT 4.0**                         | Obsolete                     |
+*Description:* Bluetooth quality. Newer versions offer stability and efficiency, while superior codecs ensure high-fidelity audio.
+*   **Measurement:** Supported Bluetooth Version + Highest Supported Codec.
+*   **Unit:** Composite Score (0-10)
+
+**Scoring Method: Additive Components**
+*Formula:* `Score = Version_Score + Codec_Score` (Max 10.0)
+
+**Part 1: Bluetooth Version Score (Weighted)**
+*Reflects technical leaps in power, speed, or architecture.*
+
+| Version      | Score   | Justification for Weighting                                                                     |
+| :----------- | :------ | :-----------------------------------------------------------------------------------------------|
+| **BT 5.4**   | **5.0** | Latest standard, PAwR (Periodic Advertising with Responses), EAD (Encrypted Advertising Data).  |
+| **BT 5.3**   | **4.5** | Connection Subrating (efficiency update).                                                       |
+| **BT 5.2**   | **4.0** | **MAJOR LEAP:** LE Audio (Low Energy Audio) foundation (LC3 codec / Auracast broadcast audio).  |
+| **BT 5.1**   | **2.5** | Direction Finding (niche usage).                                                                |
+| **BT 5.0**   | **2.0** | **MAJOR LEAP:** 2x Speed, 4x Range vs 4.2.                                                      |
+| **BT 4.2**   | **1.0** | Legacy Low Energy.                                                                              |
+| **< BT 4.0** | **0.0** | Obsolete.                                                                                       |
+
+**Part 2: Codec Capability Score (Normalized)**
+*Score based on the highest tier codec supported. Uses constants for normalization.*
+
+**Why these metrics matter:**
+*   **Bitrate (kbps):** The amount of data transmitted per second. Higher bitrate = less compression = more detail. Standard codecs (~320kbps) discard data to save bandwidth, while High-Res (>900kbps) keeps nearly original quality.
+*   **Bit Depth (bits):** The dynamic range of the audio. **16-bit** is CD standard (96dB range), while **24-bit** (High-Res) offers 144dB range, revealing subtle details in quiet and loud passages.
+
+**Formula:**
+```
+Codec_Score = clamp(Bitrate_Component + Bit_Depth_Component, 0, 5.0)
+
+Where:
+  Bitrate_Component = (Bitrate_kbps / Bitrate_kbps_Best_Device) * 3.5
+  Bit_Depth_Component = 1.5 if (bit_depth ≥ 24) else 0.0
+
+Constants:
+  Bitrate_kbps_Best_Device = See scoring_constants.md Section 7
+```
+
+**Fallback Lookup Table:**
+*Use these values if precise bitrate/depth data is unavailable.*
+
+| Tier         | Score   | Qualifying Codecs                 |
+| :----------- | :------ | :-------------------------------- |
+| **Lossless** | **5.0** | aptX Lossless, LHDC Lossless      |
+| **High-Res** | **4.0** | LDAC, LHDC, aptX HD/Adaptive, SSC |
+| **Standard** | **1.5** | AAC, SBC, aptX Classic            |
+
+**Common Configuration Reference (overall BT + Codec Score):**
+
+| Score    | Combo Example      | Typical Devices                    |
+| :------- | :----------------- | :--------------------------------- |
+| **10.0** | **5.4 + Lossless** | Future Flagships, Zenfone 11 Ultra |
+| **9.0**  | **5.4 + High-Res** | Galaxy S24/S25 (5.0 + 4.0)         |
+| **8.0**  | **5.2 + High-Res** | Older Flagships (4.0 + 4.0)        |
+| **6.5**  | **5.4 + Standard** | iPhone 15/16 (5.0 + 1.5)           |
+| **3.5**  | **5.0 + Standard** | Older Entry (2.0 + 1.5)            |
 
 ### 🔹 7.5 NFC & Ultra-Wideband (UWB)
-*Description:* Contactless features. Near-Field Communication (NFC) allows for phone payments, while UWB lets you precisely find lost items (like trackers).
-*   **Measurement:** Hardware check.
-*   **Unit:** Feature Presence
-*   **Significance:** Mobile payments and precision location finding.
-| Score    | Features                  | Example Models            |
-| :------- | :------------------------ | :------------------------ |
-| **10.0** | **NFC + UWB (Precision)** | iPhone 15 Pro, S24 Ultra  |
-| **6.0**  | **NFC Only**              | Pixel 8, Galaxy A55       |
-| **0.0**  | **No NFC**                | Budget (Region dependent) |
+*Description:* Evaluates short-range wireless connectivity technologies for contactless payments, data transfer, and precision spatial awareness. Near-Field Communication (NFC) enables tap-to-pay and device pairing, while UWB provides centimeter-level location accuracy for advanced use cases.
+*   **Measurement:** Hardware presence verification from manufacturer specifications.
+*   **Unit:** Feature Tier (0-10)
+*   **Significance:** Determines contactless payment capability, peer-to-peer sharing speed, and precision location tracking.
+
+**Why UWB matters:**
+UWB (Ultra-Wideband) uses Time-of-Flight radio pulses to achieve ~10cm positioning accuracy, approximately 100× more precise than Bluetooth LE (Low Energy). This enables:
+*   **Precision Finding:** Directional guidance to UWB item trackers (e.g., Apple AirTag, Samsung SmartTag+) with exact distance and bearing
+*   **Digital Car Keys:** Secure keyless entry with spatial awareness to prevent relay attacks
+*   **Enhanced File Sharing:** Directional AirDrop/Nearby Share (point-to-share)
+*   **Indoor Navigation:** Centimeter-accurate positioning where GPS is unavailable
+
+| Score    | Configuration | Technical Capability                                      | Example Models           |
+| :------- | :------------ | :-------------------------------------------------------- | :----------------------- |
+| **10.0** | **NFC + UWB** | Contactless payments + centimeter-level spatial tracking  | iPhone 15 Pro, S24 Ultra |
+| **5.0**  | **NFC Only**  | Contactless payments + basic proximity detection          | Pixel 8, Galaxy A55      |
+| **0.0**  | **No NFC**    | No contactless payment capability                         | Budget (region-specific) |
+
+> [!NOTE]
+> **Differentiation Analysis:** As of 2024, approximately 94% of smartphones globally include NFC, making it a baseline feature rather than a differentiator. UWB remains exclusive to flagship devices (primarily Apple Pro models, Samsung Ultra/Fold series, and Google Pixel Pro), representing the primary scoring distinction in this category.
 
 ### 🔹 7.6 Biometrics
 *Description:* Unlocking methods. Secure face/fingerprint unlock is faster and safer than typing a PIN every time.
 *   **Measurement:** Hardware check (Sensor type).
 *   **Unit:** Technology Type
 *   **Significance:** Security and convenience of unlocking.
-| Score    | Technology                                   | Example Models          |
-| :------- | :------------------------------------------- | :---------------------- |
-| **10.0** | **3D Face ID + Ultrasonic Fingerprint (FP)** | (Hypothetical Ultimate) |
-| **9.0**  | **Ultrasonic FP**                            | S24 Ultra               |
-| **8.0**  | **3D Face Unlock (Secure)**                  | iPhone 15, Pixel 4      |
-| **7.0**  | **Optical Under-Display FP**                 | Pixel 8, OnePlus 12     |
-| **6.0**  | **Side-Mounted Capacitive FP**               | Z Fold 5, Galaxy A55    |
-| **5.0**  | **Rear Capacitive FP**                       | Pixel 5, Older Androids |
-| **3.0**  | **2D Face**                                  | Budget phones           |
-| **0.0**  | **No Biometrics**                            | Entry Level / PIN only  |
+
+#### 7.6.1 Technical Definitions & Hierarchy
+To ensure objective scoring, we define the hierarchy based on **Security**, **Speed**, and **Usability** (e.g., wet finger performance, darkness).
+
+**1. Face Unlock Technologies:**
+*   **3D Face Unlock (Hardware):** Uses dedicated hardware sensors—either **Structured Light** (projecting thousands of invisible infrared dots to map facial depth) or **Time-of-Flight (ToF)** (measuring the time it takes for light to bounce off the face)—to create a secure 3D map. This cannot be fooled by photos or masks and works in total darkness.
+*   **2D Face Unlock (Software):** Uses the standard front camera to identify facial features. It is insecure (often fooled by photos), requires good lighting, and is generally not valid for banking apps.
+
+**2. Fingerprint(FP) Sensor Technologies:**
+*   **Ultrasonic Fingerprint (Under-Display):** Uses high-frequency sound waves to map the 3D ridges and pores of a fingerprint.
+    *   *Why it's Tier 1:* Extremely secure (spoof-resistant), works when screen is off, and works with wet/dirty fingers.
+*   **Optical Under-Display Fingerprint:** Uses a camera under the screen to take a 2D photo of the illuminated finger.
+    *   *Why it's Tier 2:* Standard modern implementation. Offers clean design integration but struggles with wet fingers and intense sunlight.
+*   **Capacitive Fingerprint (Physical):** Uses a dedicated silicon capacitor array (Side/Rear) to map ridge/valley capacitance.
+    *   *Why it's Tier 2:* Highly reliable and fast. While it lacks the "invisible" integration of under-display sensors, it is a functional peer to Optical sensors in terms of security and often exceeds them in raw speed.
+
+#### Scoring Criteria
+*Score is based on the **Best Available** biometric method on the device.*
+
+| Score    | Technology                               | Justification                                                       |
+| :------- | :--------------------------------------- | :------------------------------------------------------------------ |
+| **10.0** | **3D Face Unlock + Ultrasonic FP**       | The "Ultimate" combo. Secure 3D face map AND wet-finger-capable FP. |
+| **8.0**  | **3D Face Unlock**                       | Secure, effortless unlocking (e.g., Face ID), but no finger option. |
+| **8.0**  | **Ultrasonic FP**                        | Best-in-class fingerprint security and usability.                   |
+| **5.0**  | **Optical Under-Display FP**             | Modern standard interaction; clean design but wet-finger limitation.|
+| **5.0**  | **Capacitive FP**                        | Fast, reliable, and secure. Functional peer to Optical.             |
+| **0.0**  | **No Secure Biometrics**                 | PIN/Pattern only. Includes **2D Face Only** devices.                |
+
+> [!NOTE]
+> **Why is "2D Face Only" scored as 0.0?**
+> A device relying solely on 2D Face Unlock (without a fingerprint sensor) lacks a secure biometric hardware layer. 2D Face is software-based, often spoofable by photos, and usually rejected by banking/payment apps for authentication. Therefore, it is functionally equivalent to having "No Secure Biometrics" for high-security use cases.
 
 ### 🔹 7.7 Sensors
 *Description:* The breadth of hardware sensors in the phone that enable accurate navigation, motion tracking, environmental awareness, and AR/VR features.
-*   **Measurement:** Count of sensor categories present.
-*   **Unit:** Normalized Score (0-10)
-*   **Significance:** Critical for navigation, fitness tracking, AR apps, and basic phone functionality.
+*   **Measurement:** Verified presence in manufacturer specifications or credibility-checked technical reviews.
+*   **Unit:** Composite Score (0-10)
+*   **Significance:** Critical for navigation accuracy, immersive gaming, health tracking, and photography helpers.
 
-**Scoring Logic:**
-Each phone can support up to 6 core sensor categories.
-*Formula:* `Score = round(10 * (Detected_Categories / 6), 1)`
+**Scoring Formula:**
+`Score = Core_Score + Advanced_Score` (Max 10.0)
 
-| Sensor Capability                | Points |
-| :--------------------------------| :----- |
-| **Advanced Depth / ToF / LiDAR** |    1   |
-| **Barometer**                    |    1   |
-| **Magnetometer / Compass**       |    1   |
-| **Gyroscope**                    |    1   |
-| **Accelerometer**                |    1   |
-| **Proximity & Ambient Light**    |    1   |
+#### 7.7.1 Core Sensor Suite (Base Score: Max 5.0)
+*Essential sensors for modern smartphone operation.*
 
-**Sensor Descriptions:**
-*   **Advanced Depth / ToF / LiDAR:** Dedicated depth sensor improves AR depth perception and enhances portrait effects.
-*   **Barometer:** Measures barometric pressure; improves elevation data in maps and fitness apps.
-*   **Magnetometer / Compass:** Detects magnetic fields so the phone knows heading relative to Earth’s magnetic north.
-*   **Gyroscope:** Measures rotational motion; critical for AR/VR apps, stable navigation, and immersive motion tracking.
-*   **Accelerometer:** Measures linear motion for step counting, tilt, and orientation changes.
-*   **Proximity & Ambient Light:** Proximity stops accidental touches during calls; ambient light adjusts screen brightness.
+**1. Gyroscope (1.5 points)**
+*   **Definition:** Measures angular rotational velocity (how fast the device is spinning).
+*   **Why it matters:** Critical for precise UI rotation, AR/VR experiences, and camera stabilization. Virtual gyroscopes (software emulation) are laggy and inaccurate.
 
-**Scoring Table:**
-| Completeness |  Score   | Example Interpretation       |
-| :----------- | :------- | :--------------------------- |
-|  **6 / 6**   | **10.0** | Full sensor suite (flagship) |
-|  **5 / 6**   | **8.3**  | All but advanced depth       |
-|  **4 / 6**   | **6.7**  | Standard modern sensors      |
-|  **3 / 6**   | **5.0**  | Basic navigation + motion    |
-|  **2 / 6**   | **3.3**  | Minimal motion tracking      |
-|  **1 / 6**   | **1.7**  | Very limited sensors         |
-|  **0 / 6**   | **0.0**  | No sensors detected          |
+**2. Magnetometer / Compass (1.0 point)**
+*   **Definition:** Detects Earth's magnetic field to determine direction.
+*   **Why it matters:** Essential for map navigation orientation. Without it, maps cannot show which way you are facing.
+
+**3. Accelerometer (1.0 point)**
+*   **Definition:** Measures linear acceleration and tilt.
+*   **Why it matters:** Enables basic step counting and portrait/landscape screen rotation. Found in 99% of phones.
+
+**4. Proximity Sensor (0.75 points)**
+*   **Definition:** Detects objects close to the screen using infrared or ultrasonic technology.
+*   **Why it matters:** Automatically turns screen off during calls to prevent accidental touches. Virtual versions often fail.
+
+**5. Ambient Light Sensor (0.75 points)**
+*   **Definition:** Measures surrounding light intensity.
+*   **Why it matters:** Enables auto-brightness adjustment, saving battery and protecting eyes.
+
+#### 7.7.2 Advanced Sensor Capabilities (Bonus Score: Max 5.0)
+*Premium sensors that unlock advanced functionality.*
+
+**1. LiDAR / ToF / 3D Depth Sensor (2.0 points)**
+*   **Definition:** **LiDAR** (Light Detection and Ranging) or **ToF** (Time-of-Flight) sensors emit light pulses and measure the time it takes to reflect back, creating a 3D depth map.
+*   **Why it matters:** Enables instant autofocus in low light, professional-grade portrait mode with accurate depth, and AR applications like room scanning and furniture placement.
+
+**2. Barometer (1.5 points)**
+*   **Definition:** Measures atmospheric pressure.
+*   **Why it matters:** Provides altitude data for fitness apps (counting floors climbed) and accelerates GPS lock by providing vertical coordinates. Also used for local weather prediction.
+
+**3. Color Spectrum / Flicker Sensor (1.5 points)**
+*   **Definition:** 
+    *   **Color Spectrum Sensor:** Reads the color temperature of ambient light.
+    *   **Flicker Sensor:** Detects light frequency fluctuations from artificial sources (LEDs, fluorescent).
+*   **Why it matters:** Enables TrueTone-style display adjustment for natural viewing, accurate camera white balance in mixed lighting, and eliminates banding artifacts in photos/videos shot under artificial light.
+
+> [!NOTE]
+> **Public Data Availability:** Core sensors are listed on all major spec sites (GSMArena, PhoneArena). Advanced sensors like Color Spectrum or Flicker are prominently advertised features in flagship devices (e.g., Xiaomi Ultra, iPhone Pro) or listed in detailed review specs. If not explicitly listed, the sensor is presumed absent.
 
 ### 🔹 7.8 USB Port Speed
 *Description:* Wired transfer speed. Fast USB means you can copy 4K videos to a PC in seconds, or connect to a monitor.
 *   **Measurement:** Data transfer rate (Gbps).
 *   **Unit:** Version / Speed
 *   **Significance:** File transfer speed and video output capability.
+
 | Score    | Version / Speed            | Example Models           |
 | :------- | :--------------------------| :----------------------- |
 | **10.0** | **USB 3.2 Gen 2 (10Gbps)** | S24 Ultra, iPhone 15 Pro |
 | **8.0**  | **USB 3.1 / 3.0 (5Gbps)**  | Pixel 8                  |
-| **6.0**  | **USB 2.0 (480Mbps)**      | iPhone 14, Galaxy A55    |
-| **3.0**  | **Micro-USB**              | Legacy                   |
+| **5.0**  | **USB 2.0 (480Mbps)**      | iPhone 14, Galaxy A55    |
+| **2.5**  | **Micro-USB**              | Legacy                   |
 | **0.0**  | **Proprietary/none**       | Obsolete                 |
 
-### 🔹 7.9 Ecosystem Connectivity & Cross-Device Features Index (ECI)
-*Description:* Measures the availability of specific, verifiable connectivity & cross-device continuity features that improve workflow and device interaction — without subjective judgement.
-*   **Measurement:** Count of supported features.
-*   **Unit:** Index Score (0-10)
-*   **Significance:** Workflow efficiency across multiple devices.
+### 🔹 7.9 Connectivity & Cross-Device Continuity (CDC) Index
+*Description:* Measures the practical, daily-use continuity capabilities that enable a smartphone to function as part of a larger computing ecosystem. Scoring prioritizes high-frequency "seamless" interactions over niche technical features.
+*   **Measurement:** Presence of verified, system-level continuity frameworks.
+*   **Unit:** Composite Score (0–10)
+*   **Significance:** Reduces friction when switching between devices (Phone <-> PC/Tablet) and leverages phone hardware for other systems.
 
-**Feature List (Scored Individually):**
-Each feature is independent and publicly verifiable.
+**Scoring Strategy:**
+Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
 
-| Feature                                                 | Why it matters                        |
-| :------------------------------------------------------ | :-------------------------------------|
-| **Cross-device clipboard / drag & drop**                | Seamless text transfer across devices |
-| **Auto switch / multipoint audio**                      | Earbuds/devices follow your activity  |
-| **Native file transfer (e.g., Nearby Share / AirDrop)** | Quick local sharing                   |
-| **Shared notifications across devices**                 | See alerts on all screens             |
-| **Multi-device calling/SMS support**                    | Use phone comms on other devices      |
+#### 1. Native Fast File Transfer (2.0 pts)
+*   **Why it matters:** Users repeatedly cite "air-dropping" photos/files as the #1 missing feature when leaving an ecosystem. It solves the frustration of emailing photos to oneself.
+*   **Neutral Definition:** A pre-installed system protocol that allows direct, high-speed, peer-to-peer file transfer to nearby devices without requiring internet, cables, or third-party app installation.
+*   **Verification (Exact Menu / Feature Name):**
+    *   **Apple:** AirDrop
+    *   **Android (Universal):** Quick Share
+    *   **Huawei:** Huawei Share
 
-**Scoring Rules (0–10):**
-Each feature presence counts as 1 point, up to a maximum of 5 points.
-*Formula:* `ECI = (Count_of_Features / 5) * 10`
+#### 2. Cross-Device System Clipboard (2.0 pts)
+*   **Why it matters:** A massive productivity multiplier. Allows users to copy a 2FA code, URL, or image on their phone and instantly paste it into a document on their PC/Tablet.
+*   **Neutral Definition:** An OS-level service that synchronizes the system clipboard content (text/images) across signed-in devices in near real-time.
+*   **Verification (Exact Menu / Feature Name):**
+    *   **Apple:** Universal Clipboard (Standard feature, no toggle)
+    *   **Samsung:** "Continue apps on other devices" (Settings > Connected devices)
+    *   **Motorola:** "Smart Clipboard" (in Smart Connect)
+    *   **Honor:** "Shared Clipboard" (in Honor Connect)
 
-| Count | Score    |
-| :---- | :------- |
-| **5** | **10.0** |
-| **4** | **8.0**  |
-| **3** | **6.0**  |
-| **2** | **4.0**  |
-| **1** | **2.0**  |
-| **0** | **0.0**  |
+#### 3. Task Handoff & Session State (2.0 pts)
+*   **Why it matters:** Enables "flow" state. A user can start reading an article or drafting an email on their commute and instantly resume it on their desktop without searching for the tab.
+*   **Neutral Definition:** A system framework that broadcasts the current application state (URL, Draft Draft) to nearby devices, offering a "one-click resume" suggestion on the target device.
+*   **Verification (Exact Menu / Feature Name):**
+    *   **Apple:** Handoff (Settings > General > AirPlay & Handoff)
+    *   **Samsung:** "Continue apps on other devices" (Settings > Connected devices)
+    *   **Google:** "Recent tabs" (via Chromebook Phone Hub)
+    *   **Motorola:** "Cross control" (in Smart Connect)
+
+#### 4. Communication Integration (Calls/SMS) (2.0 pts)
+*   **Why it matters:** Allows users to stay focused on their work screen. They can answer phone calls and reply to SMS/OTP messages directly from their Laptop/Tablet without picking up the phone.
+*   **Neutral Definition:** Native capability to route cellular phone calls and SMS/RCS messages to a secondary device (Tablet/PC) via local network or cloud relay.
+*   **Verification (Exact Menu / Feature Name):**
+    *   **Apple:** "Calls on Other Devices" (Settings > Phone) & "Text Message Forwarding" (Settings > Messages)
+    *   **Samsung:** "Call & text on other devices" (Settings > Connected devices)
+    *   **Google:** "Call casting" (Settings > Google > Devices & sharing > Cross-device services)
+    *   **Motorola:** "Cross-device calling" (in Smart Connect)
+
+#### 5. Camera & Accessory Virtualization (2.0 pts)
+*   **Why it matters:** Leverages the superior hardware of the phone (Main Camera, Biometrics) to enhance other devices, replacing the need for dedicated peripherals like webcams.
+*   **Neutral Definition:** System capability to expose the phone's hardware peripherals (Camera, Microphone, Fingerprint) as virtual input devices for a connected PC or Tablet.
+*   **Verification (Exact Menu / Feature Name):**
+    *   **Apple:** Continuity Camera (Auto-detected on Mac)
+    *   **Android (Universal):** USB Webcam Mode (Android 14+)
+    *   **Samsung:** "Camera Sharing" (Settings > Connected devices)
+    *   **Motorola:** "Webcam" (in Smart Connect)
 
 
 ## 🟣 8. Audio
@@ -1426,20 +1557,26 @@ Each feature presence counts as 1 point, up to a maximum of 5 points.
 *   **Unit:** Hardware Configuration Score (0-10)
 *   **Significance:** Determines baseline loudness, stereo separation, and immersion without headphones.
 
-| Score    | Speaker Configuration                               |
-| :------- | :-------------------------------------------------- |
-| **10.0** | **Stereo, dual front-facing speakers**              | 
-| **8.0**  | **Stereo, dual NON-front-facing speakers**          | 
-| **6.0**  | **Stereo labeled but asymmetrical**                 | 
-| **4.0**  | **Mono physical speaker**                           |                          
-| **0.0**  | **No usable speaker**                               | 
+**1. Balanced / Symmetrical Stereo (10.0 pts)**
+*   **Definition:** Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.
+*   **Verification:** Review explicitly states "Symmetrical speakers" or "Balanced stereo".
 
-Explanation:
-**Stereo, dual front-facing speakers**: Two distinct speaker units both oriented toward the user (e.g., top/bottom or left/right front bezels)
-**Stereo, dual NON-front-facing speakers**: The phone has two separate physical speaker units that output stereo sound, but at least one speaker does not face the user directly (e.g., bottom-firing or side-firing), which limits spatial accuracy.
-**Stereo labeled but asymmetrical**: Two physical drivers present but one is not a true channel (e.g., both at bottom or unbalanced geometry)
-**Mono physical speaker**: Only one physical speaker unit present, no stereo channel labeling
-**No usable speaker**: No working built-in speaker (e.g., legacy device, accessory-only audio)
+**2. Standard (Hybrid) Stereo (7.0 pts)**
+*   **Definition:** Uses the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer). Common in most flagships.
+*   **Verification:** Spec sheet lists "Stereo Speakers" without specific "Symmetrical" confirmation.
+
+**3. Mono Speaker (3.0 pts)**
+*   **Definition:** Single active loudspeaker, typically bottom-firing only.
+*   **Verification:** Spec sheet lists "Loudspeaker" (singular) or reviews confirm lack of stereo effect.
+
+**4. No Usable Speaker (0.0 pts)**
+*   **Definition:** Device relies entirely on external audio.
+*   **Verification:** No built-in loudspeaker.
+
+**Explanation of Tiers:**
+*   **Balanced / Symmetrical:** A rare, hardware-intensive setup (e.g., ROG Phone, Xperia 1) where both left/right drivers are physically identical. This guarantees superior stereo imaging and center-channel stability compared to hybrid setups.
+*   **Standard (Hybrid):** The industry standard for flagships (iPhone, Galaxy S, Pixel). While "Stereo", the earpiece is smaller and focuses on highs, while the bottom speaker handles mids/lows. This creates a slight imbalance, hence the lower score than perfect symmetry.
+*   **Mono:** Provides no spatial separation; sound comes from a single point.
 
 Note: This section evaluates only physical speaker hardware. Virtual surround, spatial audio, Dolby Atmos, and head tracking are software-level features and are evaluated separately in playback processing sections.
 
@@ -1456,8 +1593,6 @@ PAPI is a weighted composite of two subsections:
 
 *Formula:* `PAPI = (0.5 × Score_8.2.1) + (0.5 × Score_8.2.2)`
 
----
-
 #### 8.2.1 Audio Format Decode Support
 *What it measures:* Range of multichannel or object-based audio formats the device can natively decode.
 *Why it matters:* Determines compatibility with modern streaming and video content.
@@ -1469,19 +1604,15 @@ PAPI is a weighted composite of two subsections:
 | **5.0**  | **Multichannel surround (DD / DD+)** |
 | **0.0**  | **Stereo only**                      |
 
----
-
 #### 8.2.2 Spatial Audio Rendering (Playback)
 *What it measures:* Ability of the operating system to spatialize audio during playback, creating a 3D soundstage over headphones or speakers.
 *Why it matters:* Determines immersion and realism during media consumption.
 
-| Score    | Spatial Rendering Capability                |
-| :------- | :------------------------------------------ |
-| **10.0** | **Spatial audio with dynamic head tracking**|
-| **7.0**  | **Spatial audio (static, no head tracking)**|
-| **0.0**  | **No spatial rendering**                    |
-
----
+| Score    | Spatial Rendering Capability                 |
+| :------- | :------------------------------------------- |
+| **10.0** | **Spatial audio with dynamic head tracking** |
+| **7.0**  | **Spatial audio (static, no head tracking)** |
+| **0.0**  | **No spatial rendering**                     |
 
 ### 🔹 8.3 Wired Audio Capability
 *Description:* Evaluates native wired audio output options available without relying on external powered accessories.
@@ -1513,8 +1644,6 @@ MAR is a weighted composite of three subsections:
 
 *Formula:* `MAR = (0.30 × MHC) + (0.30 × RCM) + (0.40 × ACF)`
 
----
-
 #### 8.4.1 Microphone Hardware Count (MHC)
 *What it measures:* Physical microphones available for capture (bottom, top, rear, front).
 *Why it matters:* More microphones enable better noise separation, spatial capture, and redundancy.
@@ -1527,8 +1656,6 @@ MAR is a weighted composite of three subsections:
 | **2.0**  | **1 microphone**                      |
 | **0.0**  | **Unknown / undocumented**            |
 
----
-
 #### 8.4.2 Recording Channels & Modes (RCM)
 *What it measures:* How many audio channels the phone can record and in which modes.
 *Why it matters:* Stereo recording dramatically improves realism; multi-channel enables spatial audio and post-processing.
@@ -1540,24 +1667,17 @@ MAR is a weighted composite of three subsections:
 | **5.0**  | **Mono recording**                    |
 | **0.0**  | **Voice-only / unclear**              |
 
----
-
 #### 8.4.3 Advanced Capture Features (ACF)
 *What it measures:* Presence of clearly documented, named audio-processing features.
 *Why it matters:* These features demonstrably improve intelligibility and subject isolation.
 
-**Feature List (binary, additive):**
-Each feature = +2.5 points, max 10.0.
-
-| Feature (Publicly Documented)                                          | Points   |
-| :--------------------------------------------------------------------- | :------- |
-| **Directional / Audio Zoom**                                           | **+2.5** |
-| **Wind noise reduction**                                               | **+2.5** |
-| **Voice focus / subject isolation**                                    | **+2.5** |
-| **High-quality external mic support (USB-C / 3.5mm with manual gain)** | **+2.5** |
+**Feature List (Additive, +2.5 pts each, Max 10.0):**
+*   **Directional / Audio Zoom (+2.5):** Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic").
+*   **Wind Noise Reduction (+2.5):** Dedicated toggle or feature to filter wind rumble.
+*   **Voice Focus / Isolation (+2.5):** Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser").
+*   **Pro Mic Support (+2.5):** High-quality external mic support via USB-C/3.5mm with gain control or Bluetooth Mic support.
 
 *Formula:* `ACF = 2.5 × number_of_features` (Clamped 0-10)
-
 
 ## 🟣 9. Financial & Economic Value
 
@@ -1594,27 +1714,13 @@ The final score is the average of the iFixit Score (0-10) and the converted EU R
 *   **Max Score (10.0):** iFixit 10 / EU Index 5.0
 *   **Min Score (0.0):** iFixit 0 / EU Index 0.0
 
-### 🔹 9.3 Service Ecosystem Support
-*Description:* Measures the practical ability to obtain official parts and documentation for the device.
-*   **Measurement:** Manufacturer self-repair programs, parts store availability, public manuals, authorized network scope.
-*   **Unit:** Support Level Score (0-10)
-*   **Significance:** Determines if the device can actually be serviced in the real world over its lifetime.
-
-| Score    | Support Level                             | Example Models                 |
-| :------- | :-----------------------------------------| :----------------------------- |
-| **10.0** | **Self-repair program + parts + manuals** | Fairphone, Apple, Samsung      |
-| **8.0**  | **Official parts sold, no manuals**       | Google (via iFixit), Motorola  |
-| **6.0**  | **Authorized repair only (global)**       | Most major global brands       |
-| **3.0**  | **Limited regional service**              | Regional/Budget brands         |
-| **0.0**  | **No official repair pathway**            | Niche/Import-only devices      |
-
-### 🔹 9.4 Warranty Length
-*Description:* Manufacturer's standard warranty period. Longer warranties indicate manufacturer confidence and provide financial protection.
-*   **Measurement:** Manufacturer policy commitment.
+### 🔹 9.3 Manufacturer Warranty Commitment
+*Description:* The manufacturer's baseline global warranty period. This measures the manufacturer's confidence in their hardware quality, independent of regional legal requirements (e.g., EU consumer protection laws).
+*   **Measurement:** Shortest manufacturer-provided warranty period applied globally.
 *   **Unit:** Months
-*   **Significance:** Financial protection against defects and accidents.
+*   **Significance:** Reflects manufacturer confidence in build quality and long-term reliability.
 
-IMPORTANT: The score of a phone is based on its Limited Manufacturer Warranty (the one that applies globally, usually 12 months). This measures the manufacturer's confidence in the hardware. Hence, a phone sold in the US with a 12-month warranty and in the EU with a 24-month warranty will only get a 3.0 score corresponding to the 12-month warranty. In short, the shortest warranty applied worldwide is the one used for scoring.
+IMPORTANT: The score is based on the **Limited Manufacturer Warranty** (the shortest period offered globally, typically 12 months). This measures the manufacturer's confidence in the hardware. A phone sold with a 12-month warranty in the US and a 24-month warranty in the EU will score based on the 12-month warranty, as the EU's 24-month period is a legal requirement, not a manufacturer commitment.
 
 | Score    | Manufacturer Warranty Period  | Example Models                                                   |
 | :------- | :---------------------------- | :--------------------------------------------------------------- |
@@ -1628,40 +1734,27 @@ IMPORTANT: The score of a phone is based on its Limited Manufacturer Warranty (t
 
 ## 🟣 10. Miscellaneous
 
-### 🔹 10.1 Haptics Quality
-*Description:* Vibration quality. Good haptics feel like crisp clicks (premium), while bad ones feel like a buzzy rattle (cheap).
-*   **Measurement:** Teardown / Tactile evaluation.
-*   **Unit:** Motor Type
-*   **Significance:** Affects typing experience and notification quality.
-
-| Score    | Motor Type                                                      | Example Models              |
-| :------- | :-------------------------------------------------------------- | :-------------------------- |
-| **10.0** | **Large X-axis linear motor (≥ 20mm length or “Taptic-class”)** | iPhone (Taptic), OnePlus 12 |
-| **8.0**  | **Standard X-axis linear motor**                                | S24, Pixel 8                |
-| **6.0**  | **Z-axis linear motor**                                         | Galaxy A55                  |
-| **3.0**  | **Eccentric rotating mass motor (coin or cylinder type)**       | Budget Phones               |
-| **0.0**  | **No vibration motor**                                          | -                           |
-
-### 🔹 10.2 Stylus Hardware & System Support (SHSS)
+### 🔹 10.1 Stylus Hardware & System Support (SHSS)
 *Description:* Measures whether the phone supports active stylus input at the hardware and system level, including digitizer presence and latency class.
-*   **Measurement:** Digitizer specifications, stylus protocol support, manufacturer documentation.
+*   **Measurement:** Digitizer specifications, stylus protocol support (e.g., USI 2.0, MPP 2.0), manufacturer documentation.
 *   **Unit:** Stylus Capability Index (0–10)
 *   **Significance:** Determines whether precision input is natively supported or only simulated.
 
-| Score    | Stylus Support Level                                                   | Example Models                  |
-| :------- | :--------------------------------------------------------------------- | :------------------------------ |
-| **10.0** | **Integrated active stylus + dedicated digitizer + Bluetooth features**| S24 Ultra                       |
-| **8.0**  | **Integrated active stylus + dedicated digitizer**                     | Moto G Stylus                   |
-| **6.0**  | **External active stylus support (digitizer present)**                 | Z Fold 5, Xiaomi Mix Fold       |
-| **3.0**  | **Passive capacitive stylus compatibility**                            | iPhone, Pixel, Standard Android |
-| **0.0**  | **No stylus support**                                                  | -                               |
+| Score    | Stylus Support Level                                                   | Example Models                          |
+| :------- | :--------------------------------------------------------------------- | :-------------------------------------- |
+| **10.0** | **Integrated active stylus + dedicated digitizer + Bluetooth features**| S24 Ultra                               |
+| **8.0**  | **Integrated active stylus + dedicated digitizer**                     | Moto G Stylus                           |
+| **6.0**  | **External active stylus support + dedicated digitizer**               | Z Fold 5, Xiaomi Mix Fold               |
+| **3.0**  | **Universal Touchscreen Compatibility (Finger/Passive Stylus)**        | **Baseline for ALL modern smartphones** |
+| **0.0**  | **No Touchscreen / Resistive Screen**                                  | Feature Phones / Legacy                 |
 
 > [!NOTE]
 > **Technical Definitions:**
-> - **Digitizer:** A special layer under the screen that detects a stylus tip separately from your finger. This allows the phone to track very precise movements, detect pressure levels, and ignore your palm while writing. Phones without a digitizer can only use basic “dumb” styluses that act like a finger.
-> - **Integrated active stylus:** Physically built into the phone and stored inside a dedicated slot in the device body.
-> - **External active stylus:** A separate accessory you carry and attach magnetically or store in a case — it is not built into the phone.
-> - **Passive capacitive stylus:** Essentially a finger substitute. It does not communicate electronically with the phone (no interaction with any digitizer layer).
+> - **Dedicated Digitizer:** A specialized hardware layer under the screen (e.g., Wacom EMR) required for any "Active" stylus functions like pressure sensitivity and palm rejection. **An active stylus cannot function with pressure/tilt features without a digitizer.**
+> - **Bluetooth Features:** Beyond writing, the stylus acts as a wireless remote control (e.g., camera shutter, media control, "Air Actions"). This requires an internal battery/capacitor in the stylus and a BLE radio.
+> - **Integrated Active Stylus:** Physically built into the phone chassis (silo) for storage and charging.
+> - **External Active Stylus Support:** The screen has the required digitizer, but the pen is sold separately or stored in a localized case (not inside the phone body).
+> - **Universal Compatibility (Passive):** This is **NOT** a specific feature but rather the absence of a digitizer. It means the phone works with cheap "rubber tip" styluses that simply simulate a finger. Since all modern smartphones use capacitive screens, they all achieve this 3.0 baseline.
 
 
 # 🟣 11. Reviews & Performance Boosters
@@ -1689,10 +1782,10 @@ Each booster section must provide the following elements:
 2)  **Impacted Subsection:** The subsection number impacted by the booster value, for example 4.16
 3)  **Booster:** The value of the booster, for example 1.05
 4)  **Justification:**
-    a)   **Unaccounted Feature (Cause):** The specific technical mechanism, hardware component, or software algorithm that is responsible for the anomaly. This is the "Why".
-    b)   **Unaccounted Reason (Gap):** The explicit explanation of *why* this feature is not captured by the standard scoring rules of Sections 1-10.
+    a)   **Unaccounted Feature (Cause):** The specific technical mechanism, hardware component, or software algorithm that is responsible for the anomaly. This is the "Why". IMPORTANT:The extract must be detailed and exhaustive enough to be understood by itself, without further explanation.
+    b)   **Unaccounted Reason (Gap):** The explicit explanation of *why* this feature is not captured by the standard scoring rules of Sections 1-10. IMPORTANT: it is crucial for the **Unaccounted Reason (Gap)** to be closely related to the **Unaccounted Feature (Cause)**. Also always use concepts actually stated in the source and never make your own interpretations.
     c)   **Observed Justification (Effect):** The tangible performance outcome observed in the review. This is the "What".
-    The justification must be detailed and exhaustive enough to be understood without further explanation, and sufficient to justify the booster value.
+    The justification must be detailed and exhaustive enough to be understood by itself, without further explanation, and sufficient to justify the booster value.
 
 **Extract Requirement:** Both **Unaccounted Feature** and **Observed Justification** must be **exact, verbatim extracts** from the review. These extracts must be exact, meaning that searching for any extract in the review source will find it as is. **NEVER** invent, paraphrase, or hallucinate content. If the exact text is not in the source, the booster is invalid.
 **Technical Causality:** There must be a clear link between the technical mechanism (the **Unaccounted Feature**) and the performance outcome (the **Observed Justification**). Purely comparative statements (e.g., "best we have seen") are **INVALID** unless they explain *why*.
@@ -1713,29 +1806,29 @@ Each booster section must provide the following elements:
 > [!NOTE]
 > The following items are **examples** of how expert reviews can be used to adjust theoretical scores. In practice, any reputable and verifiable expert review can be used as a booster source.
 
-### 🔹 11.1 DXOMARK 24MP Texture Optimization
+### 🔹 11.1 DXOMARK 24MP Texture Rendering
 *   **Source Link:** [iPhone 15 Pro Max Camera Test](https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/)
-*   **Impacted Subsection:** 4.16 Computational Photography & AI
+*   **Impacted Subsection:** 4.16 Multi-Frame Computational Photography (MFCP)
 *   **Booster:** **1.05**
 *   **Justification:**
-    *   **Unaccounted Feature:** "the jump from 12MP to 24MP images by default"
-    *   **Unaccounted Reason:** Section 4.3 scores the sensor's max resolution (48MP) and Section 4.16 scores HDR presence, but neither captures the computational fusion that enables a 24MP default output with superior texture rendering.
-    *   **Observed Justification:** "made for significantly improved texture quality"
+    *   **Unaccounted Feature:** "Other important updates compared to the previous generation iPhones include the jump from 12MP to 24MP images by default in most light conditions. In our tests, this made for significantly improved texture quality, especially in close-up portraits."
+    *   **Unaccounted Reason:** Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to output 24MP images by default rather than standard 12MP binned images, which the review explicitly credits for improved texture preservation.
+    *   **Observed Justification:** "The camera in Apple's new flagship device comes with an entirely new texture rendering management, and in our tests the results were outstanding. With most lighting conditions resulting in 24MP images, finest details were preserved much better than on most competitors. [...] The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
 
-### 🔹 11.2 Tom's Guide Display Color Accuracy
+### 🔹 11.2 Tom's Guide Display Factory Calibration
 *   **Source Link:** [iPhone 15 Pro Max Review](https://www.tomsguide.com/reviews/iphone-15-pro-max)
-*   **Impacted Subsection:** 2.7 Color Accuracy & HDR
+*   **Impacted Subsection:** 2.4 Color Gamut Coverage (CGC)
 *   **Booster:** **1.05**
 *   **Justification:**
-    *   **Unaccounted Feature:** "earned a Delta-E score of 0.14"
-    *   **Unaccounted Reason:** Section 2.7 scores theoretical support (DCI-P3, Dolby Vision) but does not measure the specific factory calibration accuracy (Delta-E).
-    *   **Observed Justification:** "offers more accurate colors"
+    *   **Unaccounted Feature:** "it earned a Delta-E score of 0.14 (where zero is perfect)"
+    *   **Unaccounted Reason:** Section 2.4 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.
+    *   **Observed Justification:** "The iPhone 15 Pro Max's display offers more accurate colors, as it earned a Delta-E score of 0.14 (where zero is perfect)"
 
-### 🔹 11.3 NotebookCheck PWM Flickering
-*   **Source Link:** [iPhone 15 Pro Max Review](https://www.notebookcheck.net/Apple-iPhone-15-Pro-Max-review-More-camera-power-and-titanium-for-Apple-s-biggest-smartphone.756855.0.html)
-*   **Impacted Subsection:** 2.1 Display Technology
-*   **Booster:** **0.95**
+### 🔹 11.3 DXOMARK Portrait Skin Tone Rendering
+*   **Source Link:** [iPhone 15 Pro Max Camera Test](https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/)
+*   **Impacted Subsection:** 4.17 Semantic / Scene AI Processing
+*   **Booster:** **1.05**
 *   **Justification:**
-    *   **Unaccounted Feature:** "The frequency of 240 Hz is relatively low"
-    *   **Unaccounted Reason:** Section 2.1 scores the OLED technology type but does not penalize low-frequency PWM dimming which can cause eyestrain for sensitive users.
-    *   **Observed Justification:** "sensitive users will likely notice flickering" 
+    *   **Unaccounted Feature:** "very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
+    *   **Unaccounted Reason:** Section 4.17 scores presence of semantic segmentation features (face detection, scene recognition) as a binary capability tier. It does not capture the *quality* of the AI tuning for specific subject types, particularly the perceptual optimization of skin texture preservation versus noise reduction trade-offs.
+    *   **Observed Justification:** "The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast" 

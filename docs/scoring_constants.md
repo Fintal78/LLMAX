@@ -70,6 +70,9 @@
 *   `Support_Years_Max` = 7
 *   `Support_Years_Min` = 1
 
+## 7. Connectivity & Audio
+*   `Bitrate_kbps_Best_Device` = 1200 (Baseline: aptX Lossless)
+
 ## 9. Financial & Value
 *   `Price_Anchor_Best_USD` = 100
 *   `Price_Anchor_Worst_USD` = 1600
