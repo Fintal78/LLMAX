@@ -6,9 +6,48 @@ description: Standardized workflow for adding a new phone to the database (Scrap
 
 This workflow is the **SINGLE SOURCE OF TRUTH** for adding a new phone to the database. It orchestrates the entire process and strictly enforces the rules defined in `docs/scoring_rules.md`.
 
-## Phase 1: Data Acquisition
-1.  **Scrape Specs**: Run `src/scraper.py` (or equivalent) to fetch raw data for the new device.
-2.  **Verify Data**: Manually verify the scraped data against official manufacturer specifications, referencing `docs/proposed_data_structure.md` for schema compliance.
+## Phase 1: Data Acquisition & Ancestry (The "Source of Truth")
+
+**CRITICAL PROTOCOL:** Every single data point scraped or entered into the database must be traceable back to its origin. We do not accept "trust me" values.
+
+### 1.1 The "Data Ancestry" Triple
+For every input parameter (e.g., `frame_material`, `peak_nits`, `battery_mah`), you **MUST** replace the simple value with a **Data Object** containing 3 fields:
+
+1.  **`value`**: The actual data (string, number, boolean, or array).
+2.  **`source`**: The **ACTIVE, DIRECT URL** where this specific value was found.
+    *   *Preference:* Official Manufacturer Page > Detailed Review (NotebookCheck, DXOMARK) > Spec Aggregator (GSMArena).
+3.  **`exact_extract`**: A **VERBATIM** copy-paste substring from the webpage that contains the value.
+    *   *Requirement:* A text search (Ctrl+F) for this string on the `source` URL **must** return a match.
+    *   *Purpose:* automated verification and auditability.
+
+#### 1.2 Schema Example
+**Old (Forbidden):**
+```json
+"1_1_materials": {
+  "frame_material": "Titanium Alloy"
+}
+```
+
+**New (Required):**
+```json
+"1_1_materials": {
+  "frame_material": {
+    "value": "Titanium Alloy",
+    "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+    "exact_extract": "Titanium Frame"
+  }
+}
+```
+
+### 1.3 Scope of Application
+*   **APPLY TO:** All "Input" parameters scraped from the web (Sections 1-10 inputs, Identity, etc.).
+*   **DO NOT APPLY TO:**
+    *   Calculated fields (`predicted_score`, `final_score`, `total_hei_score`).
+    *   Internal schema structures (`meta`, `scoring_components`).
+    *   `score_adjustment` blocks (these follow the Booster schema).
+
+1.  **Scrape Specs**: Run `src/scraper.py` to populate these 3 fields automatically where possible.
+2.  **Verify Data**: Manually verify that `exact_extract` is indeed present on `source` for key differentiators.
 
 ## Phase 2: Automated Scoring
 1.  **Run Base Scoring**: Execute `src/battery_score_new_phone.py` (and any other relevant scoring scripts).
