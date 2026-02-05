@@ -33,10 +33,6 @@ It includes all previously removed parameters, categorized as:
       "back_material": "Strengthened Glass Back",
       "description": "Titanium Frame + Gorilla Glass Armor Back",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "1_2_durability": {
@@ -44,28 +40,16 @@ It includes all previously removed parameters, categorized as:
       "dust_protection_digit": 6,
       "water_protection_digit": 8,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "1_3_glass_protection": {
       "value": "Gorilla Glass Armor",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "1_4_dimensions": {
       "thickness_mm": 8.6,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "height_mm": 162.3,
@@ -73,19 +57,11 @@ It includes all previously removed parameters, categorized as:
     "1_5_weight": {
       "weight_g": 232,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "1_6_ergonomics": {
       "width_mm": 79.0,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "colors": [
@@ -105,29 +81,17 @@ It includes all previously removed parameters, categorized as:
     "2_1_panel_architecture": {
       "value": "LTPO OLED",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_2_resolution_density": {
       "ppi": 505,
       "megapixels_mp": 6.9,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_3_brightness": {
       "peak_nits": 2600,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_4_color_gamut_coverage": {
@@ -135,83 +99,79 @@ It includes all previously removed parameters, categorized as:
       "srgb_percent": 100,
       "predicted_score": 0.0,
       "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
+        "booster_1": {
+          "value": 1.05,
+          "booster_title": "11_2_toms_guide_display_factory_calibration"
+        }
       },
       "final_score": 0.0
     },
     "2_5_hdr_format_support": {
       "formats": ["HDR10+", "HDR10", "HLG"],
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_6_refresh_rate": {
       "max_hz": 120,
+      "min_hz": 1,
+      "adaptive": true,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_7_touch_responsiveness": {
       "sampling_rate_hz": 240,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_8_eye_comfort": {
       "pwm_dimming_hz": 492,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_9_screen_size": {
       "diagonal_inches": 6.8,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "2_10_screen_to_body_ratio": {
       "percent": 88.5,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     }
   },
   "3_processing_power_and_performance": {
+    "cpu_specifications": {
+      "clusters": [
+        {
+          "name": "Cortex-X4",
+          "count": 1,
+          "freq_ghz": 3.4
+        },
+        {
+          "name": "Cortex-A720",
+          "count": 3,
+          "freq_ghz": 3.15
+        },
+        {
+          "name": "Cortex-A720",
+          "count": 2,
+          "freq_ghz": 2.96
+        },
+        {
+          "name": "Cortex-A520",
+          "count": 2,
+          "freq_ghz": 2.27
+        }
+      ]
+    },
     "3_1_soc_performance": {
       "geekbench_6_multi_score": 7200,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_2_cpu_architecture_single_core": {
       "geekbench_6_single_score": 2200,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_3_gpu_performance": {
@@ -220,20 +180,12 @@ It includes all previously removed parameters, categorized as:
       "opengl_es_version": "3.2",
       "ray_tracing_support": true,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_4_efficiency_node": {
       "process_nm": 4,
       "foundry": "TSMC",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_5_thermal_dissipation_stability": {
@@ -244,55 +196,31 @@ It includes all previously removed parameters, categorized as:
       "thickness_mm": 8.6,
       "cooling_system": "Vapor Chamber (Standard)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_6_ram_technology": {
       "value": "LPDDR5X",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_7_ram_capacity": {
       "max_gb": 12,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_8_storage_technology": {
       "value": "UFS 4.0",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_9_storage_capacity": {
       "max_gb": 1024,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "3_10_storage_expandability": {
       "value": "No Expansion Slot",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     }
   },
@@ -332,46 +260,26 @@ It includes all previously removed parameters, categorized as:
     "4_1_main_sensor_size": {
       "value": "1/1.3 inches",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_2_main_camera_aperture": {
       "value": "f/1.7",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_3_main_camera_resolution": {
       "mp": 200,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_4_image_stabilization": {
       "value": "Standard OIS",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_5_zoom_capability": {
       "optical_zoom_x": 5,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_6_ultrawide_capability": {
@@ -379,10 +287,6 @@ It includes all previously removed parameters, categorized as:
       "fov_degrees": 120,
       "ultrawide_sensor_size": "1/2.0",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_7_macro_capability": {
@@ -390,37 +294,21 @@ It includes all previously removed parameters, categorized as:
       "min_focus_distance_cm": 2.5,
       "dedicated_macro_mp": 0,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_8_rear_video_resolution": {
       "max_resolution": "8K",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_9_rear_video_fps": {
       "max_fps_1080p_plus": 120,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_10_video_hdr": {
       "capability": "Dolby Vision",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_11_video_encoding": {
@@ -439,38 +327,22 @@ It includes all previously removed parameters, categorized as:
         "score": 10.0
       },
       "predicted_score": 10.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 10.0
     },
     "4_12_slow_motion": {
       "max_fps": 120,
       "resolution_mp": 8.3,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_13_front_camera_resolution": {
       "mp": 12,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_14_front_camera_focus": {
       "type": "Autofocus",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_15_front_camera_video": {
@@ -478,18 +350,16 @@ It includes all previously removed parameters, categorized as:
       "max_fps": 60,
       "hdr_capability": "SDR",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "4_16_multiframe_photo": {
       "features": ["Advanced HDR", "Night Mode"],
       "predicted_score": 0.0,
       "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
+        "booster_1": {
+          "value": 1.05,
+          "booster_title": "11_1_dxomark_24mp_texture_rendering"
+        }
       },
       "final_score": 0.0
     },
@@ -497,18 +367,16 @@ It includes all previously removed parameters, categorized as:
       "features": ["Semantic Segmentation"],
       "predicted_score": 0.0,
       "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
+        "booster_1": {
+          "value": 1.05,
+          "booster_title": "11_3_dxomark_portrait_skin_tone_rendering"
+        }
       },
       "final_score": 0.0
     },
     "4_18_generative_ai_tools": {
       "features": ["Magic Eraser"],
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     }
   },
@@ -578,46 +446,26 @@ It includes all previously removed parameters, categorized as:
     "5_2_wired_charging_speed": {
       "watts": 45,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "5_3_wireless_charging_speed": {
       "watts": 15,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "5_4_reverse_wireless": {
       "watts": 4.5,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "5_5_reverse_wired": {
       "watts": 0,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "5_6_charger_in_box": {
       "included_watts": 0,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     }
   },
@@ -628,10 +476,6 @@ It includes all previously removed parameters, categorized as:
       "years_os": 7,
       "years_security": 7,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "6_2_ai_user_capability_index": {
@@ -641,19 +485,11 @@ It includes all previously removed parameters, categorized as:
       "writing_tools": true,
       "on_device_processing": true,
       "predicted_score": 10.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "6_3_system_cleanliness_control": {
       "platform_score": 6.0,
       "predicted_score": 6.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 6.0
     }
   },
@@ -661,83 +497,47 @@ It includes all previously removed parameters, categorized as:
     "7_1_cellular_capabilities": {
       "features": ["5G mmWave", "5G Sub-6"],
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_2_sim_capabilities": {
       "value": "Dual SIM (Nano + eSIM)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_3_wifi_standard": {
       "value": "Wi-Fi 7",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_4_bluetooth_codecs": {
       "value": "BT 5.3 + LDAC/aptX HD",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_5_nfc_uwb": {
       "value": "NFC + UWB (Precision)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_6_biometrics": {
       "value": "Ultrasonic Fingerprint",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_7_sensors": {
       "value": "Full (Gyro, Compass, Baro)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_8_usb_port_speed": {
       "version": "USB 3.2 Gen 2 (10Gbps)",
       "video_out": true,
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "7_9_ecosystem_continuity": {
       "value": "Seamless (Handoff/DeX/Super)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     }
   },
@@ -745,10 +545,6 @@ It includes all previously removed parameters, categorized as:
     "8_1_speaker_quality": {
       "value": "Balanced Stereo (Hybrid)",
       "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 0.0
     },
     "8_2_playback_audio_processing_immersion": {
@@ -764,10 +560,6 @@ It includes all previously removed parameters, categorized as:
         "score": 7.0
       },
       "predicted_score": 7.5,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 7.5
     },
     "8_3_wired_audio_capability": {
@@ -776,10 +568,6 @@ It includes all previously removed parameters, categorized as:
       "usb_c_analog_audio": false,
       "usb_c_digital_only": true,
       "predicted_score": 3.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 3.0
     },
     "8_4_microphone_audio_recording": {
@@ -796,10 +584,6 @@ It includes all previously removed parameters, categorized as:
         "score": 5.0
       },
       "predicted_score": 7.0,
-      "score_adjustment": {
-        "booster": 1.0,
-        "source": "None"
-      },
       "final_score": 7.0
     }
   },
@@ -816,23 +600,46 @@ It includes all previously removed parameters, categorized as:
       "predicted_score": 8.0,
       "confidence": "High"
     },
-    "9_3_manufacturer_warranty_commitment": "1 Year Standard"
+    "9_3_manufacturer_warranty_commitment": {
+      "months": 12,
+      "value": "1 Year Standard",
+      "predicted_score": 3.0,
+      "final_score": 3.0
+    }
   },
   "10_miscellaneous": {
     "10_1_stylus_hardware_system_support": "Integrated active stylus + dedicated digitizer + BT features"
   },
   "11_reviews_and_performance_boosters": {
-    "11_1_dxomark_camera": {
-      "score": 144,
-      "url": "https://www.dxomark.com/..."
+    "11_1_dxomark_24mp_texture_rendering": {
+      "source_link": "https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/",
+      "impacted_subsection": "4.16",
+      "booster": 1.05,
+      "justification": {
+        "unaccounted_feature": "Other important updates compared to the previous generation iPhones include the jump from 12MP to 24MP images by default in most light conditions. In our tests, this made for significantly improved texture quality, especially in close-up portraits.",
+        "unaccounted_reason": "Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to output 24MP images by default rather than standard 12MP binned images, which the review explicitly credits for improved texture preservation.",
+        "observed_justification": "The camera in Apple's new flagship device comes with an entirely new texture rendering management, and in our tests the results were outstanding. With most lighting conditions resulting in 24MP images, finest details were preserved much better than on most competitors. [...] The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
+      }
     },
-    "11_2_gsm_arena_battery": {
-      "endurance_rating": "Active Use Score",
-      "url": "https://www.gsmarena.com/..."
+    "11_2_toms_guide_display_factory_calibration": {
+      "source_link": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
+      "impacted_subsection": "2.4",
+      "booster": 1.05,
+      "justification": {
+        "unaccounted_feature": "it earned a Delta-E score of 0.14 (where zero is perfect)",
+        "unaccounted_reason": "Section 2.4 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.",
+        "observed_justification": "The iPhone 15 Pro Max's display offers more accurate colors, as it earned a Delta-E score of 0.14 (where zero is perfect)"
+      }
     },
-    "11_3_jerryrigeverything": {
-      "result": "Passed",
-      "url": "https://www.youtube.com/..."
+    "11_3_dxomark_portrait_skin_tone_rendering": {
+      "source_link": "https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/",
+      "impacted_subsection": "4.17",
+      "booster": 1.05,
+      "justification": {
+        "unaccounted_feature": "The smart HDR feature helped produce very natural and pleasant colors, even in very challenging light conditions.",
+        "unaccounted_reason": "Section 4.17 scores the binary presence of semantic segmentation features (face detection, scene recognition). It does not score the specific quality of the tuning, such as the effectiveness of the Smart HDR algorithm in delivering strictly accurate and natural skin tones across diverse demographics, which requires qualitative validation beyond a checklist feature.",
+        "observed_justification": "Skin tones were improved compared to the already very good Apple iPhone 14 Pro, across all skin tone types."
+      }
     }
   }
 }

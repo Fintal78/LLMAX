@@ -231,6 +231,13 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > If only sRGB data is available: `DCI-P3_estimate = min(sRGB_percent × 0.75, 100)` as 100% sRGB ≈ 75% DCI-P3
 >
 > *Example:* 119% sRGB → 89% DCI-P3 (estimate), Score = 6.9
+>
+> [!IMPORTANT]
+> **Gamut vs. Accuracy (Delta-E)**
+> *   **Gamut (Section 2.4) = Quantity:** Measures the *range* of colors a screen is physically capable of showing. Like a painter's palette having more colors available.
+> *   **Accuracy (Delta-E) = Quality:** Measures how *correctly* those colors are displayed compared to the source standard. Like the painter using those colors to perfectly match a reference image.
+>
+> **Why no Delta-E Score?** Factory calibration data (Delta-E) is rarely public in specs. Therefore, excellent color accuracy (e.g., Delta-E < 2.0) is rewarded strictly via **Section 11 (Boosters)** when validated by expert reviews.
 
 ### 🔹 2.5 HDR Format Support (HFS)
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
@@ -1800,8 +1807,27 @@ Each booster section must provide the following elements:
         *   **Booster A (1.10):** Targets Subsection 4.5 (Zoom Capability) for superior optics.
         *   **Booster B (0.90):** Targets Subsection 4.4 (Image Stabilization) for poor software compensation.
 
-### 11.D Process
+### 11.D Mandatory Pre-Commit Protocol
+> [!CAUTION]
+> **CRITICAL: STOP AND VERIFY**
+> You are **FORBIDDEN** from writing or updating any booster in the document until you have explicitly executed the verification loop below.
+> 1.  **Draft:** Prepare the content.
+> 2.  **Verify:** Check rigidly against Rules 11.A, 11.B, and 11.C.
+> 3.  **Log:** Prove the verification by filling in the mandatory log form.
+> 4.  **Commit:** Only if **ALL** checks pass, you may update the file. **NEVER** publish without this strict verification.
+
 *   **Verification Loop:** After drafting a booster, perform a mandatory self-check ensuring that **ALL** rules in sections 11.A, 11.B, and 11.C are strictly satisfied. If any rule is violated, discard and refine. Repeat this refinement process up to **3 times**. If the booster still fails to meet all criteria after the 3rd attempt, **discard the booster entirely** and log a "Verification Failed" error for that subsection.
+
+*   **Mandatory Proof of Verification:**
+    After the last verification loop iteration, the verification process must be proven by filling in the form `log_format.md` located in `docs/booster_logs`.
+    
+    **Storage Rules:**
+    1.  **Location:** The filled log must be saved in `docs/booster_logs/logs/`.
+    2.  **Folder Structure:** Save the log within a folder named after the phone's **Unique ID** (scan existing folders; if it doesn't exist, create it).
+    3.  **Naming Convention:** The filename must include:
+        *   First: The number of the subsection impacted by the booster.
+        *   Second: A title that justifies the booster.
+        *   *Format Example:* `4.17_Skin_Tone_Rendering.md`
 
 > [!NOTE]
 > The following items are **examples** of how expert reviews can be used to adjust theoretical scores. In practice, any reputable and verifiable expert review can be used as a booster source.
@@ -1829,6 +1855,6 @@ Each booster section must provide the following elements:
 *   **Impacted Subsection:** 4.17 Semantic / Scene AI Processing
 *   **Booster:** **1.05**
 *   **Justification:**
-    *   **Unaccounted Feature:** "very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
-    *   **Unaccounted Reason:** Section 4.17 scores presence of semantic segmentation features (face detection, scene recognition) as a binary capability tier. It does not capture the *quality* of the AI tuning for specific subject types, particularly the perceptual optimization of skin texture preservation versus noise reduction trade-offs.
-    *   **Observed Justification:** "The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast" 
+    *   **Unaccounted Feature:** "The smart HDR feature helped produce very natural and pleasant colors, even in very challenging light conditions."
+    *   **Unaccounted Reason:** Section 4.17 scores the binary presence of semantic segmentation features (face detection, scene recognition). It does not score the specific quality of the tuning, such as the effectiveness of the Smart HDR algorithm in delivering strictly accurate and natural skin tones across diverse demographics, which requires qualitative validation beyond a checklist feature.
+    *   **Observed Justification:** "Skin tones were improved compared to the already very good Apple iPhone 14 Pro, across all skin tone types." 
