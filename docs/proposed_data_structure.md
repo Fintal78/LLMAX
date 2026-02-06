@@ -88,11 +88,7 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "description": {
-        "value": "Titanium Frame + Gorilla Glass Armor Back",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
+
       "predicted_score": 0.0,
       "final_score": 0.0
     },
@@ -199,6 +195,11 @@ It includes all previously removed parameters, categorized as:
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
+    "megapixels_mp": {
+      "value": 6.9,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
     "2_1_panel_architecture": {
       "value": {
         "value": "LTPO OLED",
@@ -214,11 +215,7 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "megapixels_mp": {
-        "value": 6.9,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
+
       "predicted_score": 0.0,
       "final_score": 0.0
     },
@@ -904,11 +901,7 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "battery_type": {
-        "value": "Li-Ion 5000 mAh, non-removable",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
+
       "scoring_components": {
         "layer_a_energy": {
           "wh": 19.25,
@@ -1156,7 +1149,11 @@ It includes all previously removed parameters, categorized as:
     },
     "7_9_ecosystem_continuity": {
       "value": {
-        "value": "Seamless (Handoff/DeX/Super)",
+        "value": [
+          "AirDrop",
+          "Handoff",
+          "Universal Clipboard"
+        ],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -1295,16 +1292,7 @@ It includes all previously removed parameters, categorized as:
       "predicted_score": 0.8,
       "final_score": 0.8
     },
-    "price_to_value_ratio": {
-      "value": "Fair Price",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "resale_value": {
-      "value": "Good Retention",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
+
     "9_2_repairability": {
       "ifixit_score": 8,
       "eu_repairability_index": {
