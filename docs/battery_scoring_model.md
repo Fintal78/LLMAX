@@ -23,7 +23,7 @@ This approach ensures that widely tested phones have accurate, proven scores, wh
 #### A.1 Battery Energy Calculation
 **Why this matters:** Battery life is fundamentally bounded by the total amount of energy stored. No matter how efficient a phone is, it cannot run without fuel. We calculate the total energy in Watt-hours (Wh) because it accounts for voltage differences, providing a more accurate measure of true capacity than milliamp-hours (mAh) alone.
 
-**Data Structure Mapping:** `5_1_battery_endurance.mah`, `5_1_battery_endurance.battery_voltage_v`, and `5_2_wired_charging_speed.watts` (for dual-cell detection)
+**Data Structure Mapping:** `5_1_battery_endurance.layer_a_energy.wh`, `5_battery_and_charging.mah`, `5_battery_and_charging.battery_voltage_v`, and `5_battery_and_charging.battery_cell_configuration` (for dual-cell detection)
 
 **Voltage Detection Logic:**
 
@@ -41,23 +41,28 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 **Detection Priority:**
 
 1. **Explicit Voltage:** If `battery_voltage_v` contains a numeric value → use that value
-2. **Dual-Cell Indicators:** If battery type contains "Dual-cell", "Dual cell", "2S", or "dual-cell" (case-insensitive) → use **7.7V**
+2. **Dual-Cell Indicators:** If battery_cell_configuration contains "Dual-cell", "Dual cell", "2S", or "dual-cell" (case-insensitive) → use **7.7V**
 3. **High-Power Charging Heuristic:** If wired charging watts ≥ 120W → use **7.7V** (almost all ≥120W phones use dual-cell)
 4. **Default Fallback:** Otherwise → use **3.85V** (single-cell standard)
 
 **Formula:**
 ```
-// Detect voltage
-IF battery_voltage_v is numeric:
-    V = battery_voltage_v
-ELSE IF battery_type contains "dual-cell" OR "2S" (case-insensitive):
-    V = 7.7
-ELSE IF wired_charging_watts >= 120:
-    V = 7.7
+// Priority: Explicit Wh > Calculated Wh
+IF wh_value is numeric:
+    Wh = wh_value
 ELSE:
-    V = 3.85
+    // Detect voltage
+    IF battery_voltage_v is numeric:
+        V = battery_voltage_v
+    ELSE IF battery_cell_configuration contains "dual-cell" OR "2S" (case-insensitive):
+        V = 7.7
+    ELSE IF wired_charging_watts >= 120:
+        V = 7.7
+    ELSE:
+        V = 3.85
+    
+    Wh = (mAh × V) / 1000
 
-Wh = (mAh × V) / 1000
 Energy_Score = 10 * (Wh − 8) / (25 − 8)
 Energy_Score = clamp(Energy_Score, 0, 10)
 ```
@@ -93,23 +98,35 @@ The process node scoring formula, including logarithmic calculation and foundry 
 
 **B.1.2 CPU Architecture Class (30% of SoC)**
 
-**Why this matters:** Newer CPU core designs (like ARM Cortex-X4 or A720) do more work per clock cycle than older ones (like Cortex-A53). This "instructions per clock" (IPC) advantage means they can finish tasks faster and return to sleep sooner, saving energy.
+**Why this matters:** A smartphone's CPU is a heterogeneous mix of "Prime", "Performance", and "Efficiency" cores. Scrutinizing only the strongest core (as done in performance benchmarks) is misleading for battery life. Efficiency cores (like Cortex-A520/A55) handle 80% of daily tasks (background sync, audio playback, idling). A chip with modern efficiency cores will significantly outlast one with older efficiency cores, even if they share the same prime core. To accurately predict battery impact, we must evaluate the **weighted average efficiency** of the entire CPU cluster.
 
-**Data Structure Mapping:** `3_2_cpu_structure.clusters[0].name`
+**Data Structure Mapping:** `5_1_battery_endurance.layer_b_hardware_efficiency.b_1_soc_efficiency.breakdown.cpu_architecture_score_aes` (calculated from `3_processing_power_and_performance.3_0_cpu_architecture_reference`)
 
-**CPU Core Scores:** **See Section 3.1.1 of scoring_rules.md** for the authoritative CPU Core Architecture Reference table.
+**Scoring Method:**
+**Architecture Efficiency Score (AES)**
 
-The scoring table is defined in Section 3.1.1 and is used identically here for battery efficiency calculations. This ensures consistency across all CPU-related scoring (performance, battery, etc.).
+*   *What is it?* The average quality of the cores, used as a key predictor for battery life.
+*   **Formula:** `Sum(Core_Score * Core_Count) / Total_Core_Count`
+    *   *Range is 0-10.*
+    *   **Core Scores:** See [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/scoring_rules.md) Section 3.0 for authoritative core scores.
+
+> [!NOTE]
+> **Why Weighted Average?** 
+1.  **Work vs. Speed:** Benchmarks measure **Speed** (Clock Frequency), which scales power quadratically ($P \propto V^2 \times f$). High benchmark scores often mean high power drain, not efficiency. AES measures **Work-per-Clock** (IPC), which scales performance linearly without the voltage penalty.
+2.  **The "Efficiency Core" Reality:** Battery life is dominated by the efficiency cores (e.g., Cortex-A520/A55) that handle 80% of daily background tasks (standby, audio, sync). Performance benchmarks test only the Prime Core. AES is the *only* metric that accounts for the generational quality of the efficiency cores, accurately predicting the device's idle/low-load power profile.
 
 **B.1.3 GPU Architecture Class (20% of SoC)**
 
 **Why this matters:** Similar to CPUs, newer GPU architectures deliver higher performance per watt.
 
-**Data Structure Mapping:** `3_3_gpu_performance.model`
+**Data Structure Mapping:** `3_3_0_gpu_architecture_reference.efficiency_score`
 
-**GPU Scores:** **See Section 3.3.1 of scoring_rules.md** for the authoritative GPU Architecture Reference table.
+**GPU Scores:** **See Section 3.3.0 of scoring_rules.md** for the authoritative GPU Architecture Reference table (Use the **Efficiency Score** column).
 
-The scoring table is defined in Section 3.3.1 and is used identically here for battery efficiency calculations. This ensures consistency across all GPU-related scoring (performance, battery, etc.).
+The scoring table is defined in Section 3.3.0. For battery calculations, we use the specific **Efficiency Score** which decouples raw performance from power draw (e.g., penalizing hot chips like Snapdragon 888). This score measures performance-per-watt rather than peak capability.
+
+> [!NOTE]
+> **Avoid Double Counting:** Process node benefits (e.g., 5nm vs 3nm) are handled in the **SoC Efficiency Score (Section 3.4)**, which is used in **Section B.1.1**. This GPU Efficiency Score focuses on the **architectural efficiency** and thermal stability of the GPU implementation itself, regardless of the node. Ideally, an efficient architecture on an efficient node gets high scores in both. A "hot" architecture on an efficient node would get a lower GPU score despite the good node score.
 
 **Formula:** `SoC_Efficiency = 0.5 × Process + 0.3 × CPU + 0.2 × GPU`
 
@@ -120,7 +137,7 @@ The scoring table is defined in Section 3.3.1 and is used identically here for b
 
 **Why this matters:** This metric captures the **intrinsic power efficiency** of the panel technology itself (pixel emission, backlight efficiency, black-level power draw), **independent of refresh rate**. It answers: *"How much energy does this panel consume to display a static image?"*
 
-**Data Structure Mapping:** `2_1_technology.value`
+**Data Structure Mapping:** `2_1_panel_architecture.value`
 
 **Panel Scores:** **See Section 2.1 of scoring_rules.md** for the authoritative Display Panel Architecture table.
 
@@ -133,7 +150,7 @@ The scoring table is defined in Section 2.1 and is used identically here for bat
 
 **Why this matters:** This metric captures the **dynamic power efficiency** related to screen updates. It answers: *"How often does the screen need to redraw, and how smart is it about not redrawing unnecessarily?"*
 
-**Data Structure Mapping:** `2_6_refresh_rate.max_hz`, `2_6_refresh_rate.min_hz`, `2_6_refresh_rate.adaptive`
+**Data Structure Mapping:** `2_6_refresh_rate_max_hz`, `2_display.refresh_rate_min_hz`, `2_display.refresh_rate_adaptive`
 
 **Difference from B.2.1:** This is where LTPO panels shine. Their ability to drop to 1Hz is rewarded here via the `effective_refresh` calculation.
 
@@ -155,7 +172,7 @@ Refresh_Score = clamp(Refresh_Score, 0, 10)
 
 **Why this matters:** Pushing more pixels requires more GPU power and a brighter backlight (or higher pixel drive) to achieve the same perceived brightness, increasing power consumption.
 
-**Data Structure Mapping:** `2_2_resolution_density.megapixels_mp`
+**Data Structure Mapping:** `2_display.megapixels_mp`
 
 **Scoring Range:**
 - **Max Score (10) at:** ≤ 1.0 MP (HD+)
@@ -273,7 +290,7 @@ This score is determined **strictly by the OS Generation**, not the brand.
 
 **Why this matters:** Bloatware and adware often run hidden background processes that prevent the phone from entering deep sleep, causing "phantom" battery drain even when the phone is not in use.
 
-**Data Structure Mapping:** Directly use SCC score of Section 6.3 System Cleanliness & Control from the file `scoring_rules.md`  
+**Data Structure Mapping:** Directly use SCC score of `6_3_system_cleanliness_control` from the file `scoring_rules.md`  
 
 **Formula:** `SOI = 0.60 × OS_Skin + 0.40 × SCC`
 
@@ -320,78 +337,78 @@ PA_Score = clamp(PA_Score, 0, 10)
 ## 🧮 PART 3: SCORING LOGIC (The 3 Cases)
 
 ### ✅ CASE 1: Both Benchmarks Available
-**Condition:** Target Phone A has scores from **both** GSMArena and PhoneArena.
+**Condition:** Target Phone has scores from **both** GSMArena and PhoneArena.
 
 **Method:**
 Simply take the average of the two normalized benchmark scores. The predictive model is ignored.
 
 **Formula:**
 ```
-Final_Score_A = (GSM_Score_A + PA_Score_A) / 2
+Final_Score = (GSM_Score + PA_Score) / 2
 ```
 
 **Example:**
-- **Phone A:** Galaxy S24 Ultra
+- **Target Phone:** Galaxy S24 Ultra
 - GSMArena: 16h 45m (16.75h) → `GSM_Score = 10 * (16.75 - 7.8) / (23.12 - 7.8) = 5.84`
 - PhoneArena: 10h 30m (10.5h) → `PA_Score = 10 * (10.5 - 3.6) / (11.42 - 3.6) = 8.82`
 - **Final Score:** `(5.84 + 8.82) / 2 = 7.33`
 
 
 ### ⚠️ CASE 2: Partial Data (One Benchmark Available)
-**Condition:** Target Phone A has a score from **only one** source (e.g., GSMArena).
+**Condition:** Target Phone has a score from **only one** source (e.g., GSMArena).
 
 **Method:**
 Use the single available normalized benchmark score.
 
 **Formula:**
 ```
-Final_Score_A = Available_Benchmark_Score_A
+Final_Score = Available_Benchmark_Score
 ```
 
 **Example:**
-- **Phone A:** Xiaomi 14 Pro (China exclusive)
+- **Target Phone:** Xiaomi 14 Pro (China exclusive)
 - GSMArena: 14h 10m (14.17h) → `GSM_Score = 10 * (14.17 - 7.8) / (23.12 - 7.8) = 4.16`
 - PhoneArena: N/A
 - **Final Score:** `4.16`
 
 
 ### 🔮 CASE 3: Interpolation (No Benchmarks Available)
-**Condition:** Target Phone A has **NO** benchmark data (e.g., unreleased or niche phone).
+**Condition:** Target Phone has **NO** benchmark data (e.g., unreleased or niche phone).
 
 **Method:** "Nearest Neighbor" Interpolation
-1.  Calculate `Predicted_Score_A` using the technical model (Part 1).
+1.  Calculate `Predicted_Target` using the technical model (Part 1).
 2.  Find **3 Reference Phones (Neighbor1, Neighbor2, Neighbor3)** that:
     *   Have **BOTH** GSMArena and PhoneArena scores (Case 1 phones).
-    *   Have the closest `Predicted_Score` to Phone A.
-3.  Calculate the **Correction Ratio** between A's prediction and the neighbors' average prediction.
+    *   Have the closest `Predicted_Score` to the Target Phone.
+3.  Calculate the **Correction Ratio** between Target's prediction and the neighbors' average prediction.
 4.  Apply this ratio to the neighbors' average **Benchmark Score**.
 
 **Step-by-Step Formula:**
 
 1.  **Find Neighbors:** Select Neighbor1, Neighbor2, Neighbor3 having:
     *   a) Scores from **BOTH** GSMArena and PhoneArena benchmarks.
-    *   b) Minimizing `|Predicted_Score_A - Predicted_Score_X|`.
+    *   b) Minimizing `|Predicted_Target - Predicted_Neighbor_X|`.
 2.  **Calculate Average Prediction of Neighbors:**
-    `Avg_Pred_Neighbors = (Predicted_Score_Neighbor1 + Predicted_Score_Neighbor2 + Predicted_Score_Neighbor3) / 3`
+    `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
 3.  **Calculate Correction Ratio:**
-    `Ratio = Predicted_Score_A / Avg_Pred_Neighbors`
+    `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
 4.  **Calculate Average Benchmark of Neighbors:**
-    `Avg_Bench_Neighbors = (Final_Score_Neighbor1 + Final_Score_Neighbor2 + Final_Score_Neighbor3) / 3`
+    `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
 5.  **Calculate Final Score:**
-    `Final_Score_A = Ratio * Avg_Bench_Neighbors`
+    `Final_Score = Ratio * Avg_Benchmark_Neighbors`
 
 **Example:**
-- **Target Phone A:** "FuturePhone 5" (No benchmarks)
-    - `Predicted_Score_A = 8.5` (High specs, large battery)
+- **Target Phone:** "FuturePhone 5" (No benchmarks)
+    - `Predicted_Target = 8.5` (High specs, large battery)
 - **Neighbors Found (Similar Specs, with Benchmarks):**
     - **Neighbor1:** `Predicted = 8.0`, `Benchmark = 7.2`
     - **Neighbor2:** `Predicted = 8.2`, `Benchmark = 7.4`
     - **Neighbor3:** `Predicted = 7.8`, `Benchmark = 7.0`
 - **Calculations:**
-    - `Avg_Pred_Neighbors = (8.0 + 8.2 + 7.8) / 3 = 8.0`
-    - `Avg_Bench_Neighbors = (7.2 + 7.4 + 7.0) / 3 = 7.2`
-    - `Ratio = 8.5 / 8.0 = 1.0625` (Phone A is predicted to be ~6.25% better than neighbors)
-    - `Final_Score_A = 1.0625 * 7.2 = 7.65`
+    - `Avg_Predicted_Neighbors = (8.0 + 8.2 + 7.8) / 3 = 8.0`
+    - `Avg_Benchmark_Neighbors = (7.2 + 7.4 + 7.0) / 3 = 7.2`
+    - `Ratio = 8.5 / 8.0 = 1.0625` (Target Phone is predicted to be ~6.25% better than neighbors)
+    - `Final_Score = 1.0625 * 7.2 = 7.65`
 
 **Why this works:**
-The neighbors generally perform worse in the real world than their raw specs suggest (Avg Bench 7.2 vs Avg Pred 8.0). Even though Phone A has a high predicted score of 8.5, we adjust it down to 7.65 to reflect the reality of similar devices, while still rewarding it for having better specs than the neighbors.
+The neighbors generally perform worse in the real world than their raw specs suggest (Avg Bench 7.2 vs Avg Pred 8.0). Even though the Target Phone has a high predicted score of 8.5, we adjust it down to 7.65 to reflect the reality of similar devices, while still rewarding it for having better specs than the neighbors.

@@ -47,17 +47,19 @@ import os
 PROCESS_NODE_MIN = 3
 PROCESS_NODE_MAX = 20
 
-# Layer B.1.2 CPU Class (See Section 3.1.1 of scoring_rules.md)
+# Layer B.1.2 CPU Class (See Section 3.1 of scoring_rules.md)
+# Format: "Core Name": (Score, Reference_Frequency_GHz)
 CPU_SCORES = {
-    "Cortex-X925": 10, "Cortex-X4": 10, "Apple A18": 10, "Apple A17": 10, "Apple A17 Pro": 10,
-    "Cortex-X3": 9,
-    "Cortex-X2": 8,
-    "Cortex-A720": 7, "Cortex-A715": 7,
-    "Cortex-A710": 6, "Cortex-A78": 6, "Cortex-A77": 6,
-    "Cortex-A76": 5, "Cortex-A75": 5,
-    "Cortex-A73": 4,
-    "Cortex-A55": 2, "Cortex-A520": 2, "Cortex-A510": 2,
-    "Cortex-A53": 0, "Cortex-A7": 0
+    "Cortex-X925": (10, 3.60), "Cortex-X4": (10, 3.30), 
+    "Apple A18": (10, 3.78), "Apple A17": (10, 3.78), "Apple A17 Pro": (10, 3.78),
+    "Cortex-X3": (9, 3.20),
+    "Cortex-X2": (8, 3.00),
+    "Cortex-A720": (7, 2.80), "Cortex-A715": (7, 2.80),
+    "Cortex-A710": (6, 2.50), "Cortex-A78": (6, 2.40), "Cortex-A77": (6, 2.40),
+    "Cortex-A76": (5, 2.20), "Cortex-A75": (5, 2.20),
+    "Cortex-A73": (4, 2.00),
+    "Cortex-A55": (2, 1.80), "Cortex-A520": (2, 2.00), "Cortex-A510": (2, 2.00),
+    "Cortex-A53": (0, 1.50), "Cortex-A7": (0, 1.50)
 }
 
 # Layer B.1.3 GPU Class (See Section 3.3.1 of scoring_rules.md)
@@ -201,34 +203,50 @@ def calc_layer_a(specs):
     """Calculate Layer A: Battery Energy (45%)"""
     battery = specs.get("Battery", {})
     
-    # Extract mAh from battery type string (e.g., "Li-Ion 5000 mAh, non-removable")
-    mah = 0
+    # Priority 0: Explicit Wh provided in specs (if available in future structure)
+    # Using 'Energy_Wh' key as purely hypothetical, or checking for it in Type string
+    wh = 0
+    
+    # Extract Wh directly from battery type string if possible (e.g., "19.25 Wh")
     battery_type = battery.get("Type", "")
     if battery_type:
-        match = re.search(r'(\d+)\s*mAh', battery_type)
-        if match:
-            mah = int(match.group(1))
-    
-    # Voltage detection with dual-cell support
-    voltage = 3.85  # Default single-cell
-    
-    # Priority 1: Check for dual-cell indicators in battery type string
-    if battery_type:
-        battery_type_lower = battery_type.lower()
-        if "dual-cell" in battery_type_lower or "dual cell" in battery_type_lower or "2s" in battery_type_lower:
-            voltage = 7.7  # Dual-cell configuration (2 × 3.85V in series)
-    
-    # Priority 2: High-power charging heuristic (≥120W almost always means dual-cell)
-    if voltage == 3.85:  # Only apply if not already detected as dual-cell
-        charging = battery.get("Charging", "")
-        if charging:
-            wired_match = re.search(r'(\d+)W', charging)
-            if wired_match:
-                wired_w = int(wired_match.group(1))
-                if wired_w >= 120:
-                    voltage = 7.7
-    
-    wh = (mah * voltage) / 1000
+        match_wh = re.search(r'(\d+(?:\.\d+)?)\s*Wh', battery_type, re.IGNORECASE)
+        if match_wh:
+            wh = float(match_wh.group(1))
+
+    # If Wh found, verify voltage for consistency but skip calculation
+    if wh > 0:
+        pass # wh is already set
+    else:
+        # Fallback: Calculate from mAh and Voltage
+        # Extract mAh from battery type string (e.g., "Li-Ion 5000 mAh, non-removable")
+        mah = 0
+        if battery_type:
+            match = re.search(r'(\d+)\s*mAh', battery_type)
+            if match:
+                mah = int(match.group(1))
+        
+        # Voltage detection with dual-cell support
+        voltage = 3.85  # Default single-cell
+        
+        # Priority 1: Check for dual-cell indicators in battery type string
+        if battery_type:
+            battery_type_lower = battery_type.lower()
+            if "dual-cell" in battery_type_lower or "dual cell" in battery_type_lower or "2s" in battery_type_lower:
+                voltage = 7.7  # Dual-cell configuration (2 × 3.85V in series)
+        
+        # Priority 2: High-power charging heuristic (≥120W almost always means dual-cell)
+        if voltage == 3.85:  # Only apply if not already detected as dual-cell
+            charging = battery.get("Charging", "")
+            if charging:
+                wired_match = re.search(r'(\d+)W', charging)
+                if wired_match:
+                    wired_w = int(wired_match.group(1))
+                    if wired_w >= 120:
+                        voltage = 7.7
+        
+        wh = (mah * voltage) / 1000
+        
     score = normalize_linear(wh, 8, 25)
     
     return {"wh": round(wh, 2), "score": round(score, 2)}
@@ -304,10 +322,194 @@ def calc_layer_b(specs):
     process_score = base_score + foundry_modifier
     process_score = clamp(process_score, 0, 10)
     
-    cpu_score = get_best_match(cpu_name, CPU_SCORES, default=5)
-    gpu_score = get_best_match(gpu_model, GPU_SCORES, default=5)
+    # refined CPU scoring with FSF
+    cpu_score_final = 0
     
-    soc_total = 0.5 * process_score + 0.3 * cpu_score + 0.2 * gpu_score
+    # Try to parse clusters from CPU string for detailed FSF calculation
+    # Format typically: "Octa-core (1x3.3 GHz Cortex-X4 & 3x3.2 GHz Cortex-A720 & 2x3.0 GHz Cortex-A720 & 2x2.3 GHz Cortex-A520)"
+    if cpu_str and "x" in cpu_str and "GHz" in cpu_str:
+        total_cluster_score = 0
+        total_cores = 0
+        
+        # Split by '&' or ',' to get clusters
+        cluster_strs = re.split(r'[&,]', cpu_str)
+        valid_clusters = False
+        
+        for c_str in cluster_strs:
+            # Parse "1x3.3 GHz Cortex-X4" or "4x2.8 GHz Kryo 385"
+            # Regex: (\d+)x([\d.]+) GHz (.*)
+            match = re.search(r'(\d+)x([\d.]+)\s*GHz\s+(.*)', c_str.strip())
+            if match:
+                valid_clusters = True
+                count = int(match.group(1))
+                freq = float(match.group(2))
+                name_part = match.group(3).strip()
+                
+                # Lookup score & ref freq
+                c_data = get_best_match(name_part, CPU_SCORES, default=(5, 2.0))
+                if isinstance(c_data, tuple):
+                    score = c_data[0]
+                    ref = c_data[1]
+                else:
+                    score = c_data
+                    ref = 2.0
+                
+                # Calc FSF
+                fsf = 1.0
+                if freq > 0 and ref > 0:
+                    fsf = 1 + (freq - ref) / ref
+                
+                fsf = clamp(fsf, 0.5, 1.5)
+                
+                total_cluster_score += (score * count * fsf)
+                total_cores += count
+        
+        if valid_clusters and total_cores > 0:
+            cpu_score_final = total_cluster_score / total_cores
+            
+    # Fallback if parsing failed or simple format
+    if cpu_score_final == 0:
+        cpu_data = get_best_match(cpu_name, CPU_SCORES, default=5)
+        if isinstance(cpu_data, tuple):
+            cpu_score_final = cpu_data[0]
+        else:
+            cpu_score_final = cpu_data
+            
+    cpu_score = cpu_score_final
+    # GPU Score Calculation
+    # Reference: scoring_rules.md Section 3.3
+    import math
+    
+    # Method A: Benchmark (Primary) - Dual Benchmark Support
+    tdm_score_raw = specs.get("3DMark_WLE", None)
+    gfx_score_raw = specs.get("GFXBench_Manhattan31_Offscreen", None)
+    
+    tdm_score = None
+    gfx_score = None
+    
+    # Benchmark 1: 3DMark Wild Life Extreme
+    if tdm_score_raw and tdm_score_raw > 0:
+        tdm_score = 10 * (math.log(tdm_score_raw) - math.log(500)) / (math.log(5000) - math.log(500))
+        tdm_score = clamp(tdm_score, 0, 10)
+    
+    # Benchmark 2: GFXBench Manhattan 3.1 Offscreen
+    if gfx_score_raw and gfx_score_raw > 0:
+        gfx_score = 10 * (math.log(gfx_score_raw) - math.log(15)) / (math.log(150) - math.log(15))
+        gfx_score = clamp(gfx_score, 0, 10)
+    
+    # Scoring Logic
+    gpu_confidence = "Unknown"
+    
+    # Case 1: Both benchmarks available
+    if tdm_score is not None and gfx_score is not None:
+        gpu_score = (tdm_score + gfx_score) / 2
+        diff = abs(tdm_score - gfx_score)
+        if diff <= 1.0:
+            gpu_confidence = "High"
+        elif diff <= 2.5:
+            gpu_confidence = "Medium"
+        else:
+            gpu_confidence = "Low"
+    
+    # Case 2: One benchmark available
+    elif tdm_score is not None:
+        gpu_score = tdm_score
+        gpu_confidence = "Unknown"
+    elif gfx_score is not None:
+        gpu_score = gfx_score
+        gpu_confidence = "Unknown"
+    
+    # Case 3: No benchmarks → Use Method C (Predicted)
+    else:
+        # GPU_DATA maps to (Arch_Score_0_10, Ref_Freq_MHz)
+        GPU_DATA = {
+            "Apple GPU": (10, 1398), "A18 Pro": (10, 1398), "A17 Pro": (10, 1398),
+            "Immortalis-G720": (10, 1300), "Immortalis-G720 MC12": (10, 1300),
+            "Adreno 750": (9, 903),
+            "Adreno 740": (9, 680), "Immortalis-G715": (9, 981), "Immortalis-G715 MC11": (9, 981),
+            "Adreno 730": (8, 900),
+            "Mali-G715": (8, 850), "Mali-G715 MC9": (8, 850), "Mali-G715 MC7": (7, 850),
+            "Mali-G710": (7, 850), "Mali-G710 MC10": (7, 850), "Adreno 660": (7, 840),
+            "Adreno 642L": (6, 490), "Mali-G610": (6, 850), "Mali-G610 MC6": (6, 850),
+            "Mali-G610 MC4": (5, 850),
+            "Mali-G68": (4, 900), "Mali-G68 MC4": (4, 900),
+            "Adreno 619": (4, 825),
+            "Mali-G57": (3, 950), "Mali-G57 MC3": (3, 950), "Mali-G57 MC2": (2, 950),
+            "Adreno 610": (2, 600),
+            "Mali-G52": (1, 850), "Mali-G52 MP2": (1, 850),
+            "PowerVR": (0, 680)
+        }
+    
+        gpu_match_data = get_best_match(gpu_model, GPU_DATA, default=(5, 800))
+        if isinstance(gpu_match_data, (int, float)):
+            gas = float(gpu_match_data)
+            ref_freq = 800.0
+        else:
+            gas = float(gpu_match_data[0])
+            ref_freq = float(gpu_match_data[1])
+    
+        # Step 2: FSF (Frequency Scaling Factor)
+        gpu_freq = specs.get("GPU_Freq", 0)
+        if gpu_freq and gpu_freq > 0:
+            fsf = 1 + (gpu_freq - ref_freq) / ref_freq
+        else:
+            fsf = 1.0  # Use reference if unknown
+        fsf = clamp(fsf, 0.5, 2.0)
+        
+        # Step 3: AFM (API & Feature Modifier)
+        gpu_features = specs.get("GPU_Features", "")
+        
+        # Part A: API Score (0-10)
+        api_score = 5.0  # Default OpenGL ES 3.2
+        if "Vulkan 1.3" in gpu_features:
+            api_score = 10.0
+        elif "Vulkan 1.2" in gpu_features:
+            api_score = 8.0
+        elif "Vulkan 1.1" in gpu_features:
+            api_score = 6.0
+        elif "OpenGL ES 3.2" in gpu_features:
+            api_score = 5.0
+        elif "OpenGL ES 3.1" in gpu_features:
+            api_score = 3.0
+        elif "OpenGL ES 3.0" in gpu_features:
+            api_score = 2.0
+        
+        # Part B: RT Score (0-10)
+        rt_score = 0.0
+        if "Ray Tracing" in gpu_features or "RT" in gpu_model:
+            rt_score = 10.0
+        
+        # AFM Formula: 0.7 + (0.2 * API/10) + (0.1 * RT/10)
+        afm = 0.7 + (0.2 * api_score / 10) + (0.1 * rt_score / 10)
+        
+        # Step 4: Calculate Final Score
+        # RC (Raw Capability) = GAS * FSF * AFM
+        rc = gas * fsf * afm
+        
+        # Logarithmic Normalization: 10 * (log(RC) - log(2)) / (log(20) - log(2))
+        if rc < 2: rc = 2
+        gpu_score = 10 * (math.log(rc) - math.log(2)) / (math.log(20) - math.log(2))
+        gpu_score = clamp(gpu_score, 0, 10)
+        gpu_confidence = "Predicted"
+    
+    # GPU Efficiency Score (New for Battery Model)
+    # Reference: Section 3.3.0 Efficiency Score Column
+    GPU_EFFICIENCY_SCORES = {
+        "A18 Pro": 10, "A17 Pro": 9, "A17": 9,
+        "Immortalis-G720": 10, "Adreno 750": 9, "Adreno 740": 9,
+        "Immortalis-G715": 9, "Adreno 730": 7, "Mali-G715": 9,
+        "Mali-G710": 8, "Adreno 660": 5, "Mali-G715 (Tensor G3)": 6,
+        "Mali-G715 MC7": 9, "Adreno 650": 6, "Adreno 642L": 8,
+        "Mali-G77": 6, "Mali-G68": 6, "Adreno 640": 5,
+        "Adreno 620": 6, "Adreno 619": 6, "Mali-G57": 5,
+        "Adreno 618": 5, "Adreno 610": 8, "Mali-G52": 4,
+        "PowerVR": 2
+    }
+    
+    gpu_eff_score = get_best_match(gpu_model, GPU_EFFICIENCY_SCORES, default=5)
+    
+    # Use Efficiency Score for SoC Calculation (not Performance Score)
+    soc_total = 0.5 * process_score + 0.3 * cpu_score + 0.2 * gpu_eff_score
     
     # B.2 Display
     display = specs.get("Display", {})
@@ -448,7 +650,8 @@ def calc_layer_b(specs):
         "soc_efficiency": {
             "process_node_score": round(process_score, 2),
             "cpu_architecture_score": round(cpu_score, 2),
-            "gpu_architecture_score": round(gpu_score, 2),
+            "gpu_efficiency_score": round(gpu_eff_score, 2),
+            "gpu_performance_score": round(gpu_score, 2),
             "total_soc_score": round(soc_total, 2)
         },
         "display_efficiency": {
@@ -607,6 +810,10 @@ def process_database(db_path):
         
         benchmarks = calc_benchmarks(phone)
         
+        # Inject cpu_architecture_score_aes into SoC Efficiency structure (consolidated)
+        if 'soc_efficiency' in layer_b:
+            layer_b['soc_efficiency']['cpu_architecture_score_aes'] = layer_b['soc_efficiency'].get('cpu_architecture_score', 0)
+
         # Store results in phone object
         phone['battery_scores'] = {
             'layer_a_energy': layer_a,
@@ -659,21 +866,21 @@ def process_database(db_path):
             
             if neighbors and len(neighbors) >= 3:
                 # Calculate average predicted score of neighbors
-                avg_pred_neighbors = sum(
+                avg_predicted_neighbors = sum(
                     n['battery_scores']['predicted_score'] for n in neighbors
                 ) / len(neighbors)
                 
                 # Calculate average final score of neighbors
-                avg_final_neighbors = sum(
+                avg_benchmark_neighbors = sum(
                     n['battery_scores'].get('final_score', n['battery_scores']['predicted_score']) 
                     for n in neighbors
                 ) / len(neighbors)
                 
                 # Calculate correction ratio
-                ratio = predicted_score / avg_pred_neighbors if avg_pred_neighbors > 0 else 1.0
+                ratio = predicted_score / avg_predicted_neighbors if avg_predicted_neighbors > 0 else 1.0
                 
                 # Apply ratio to neighbor average
-                final_score = ratio * avg_final_neighbors
+                final_score = ratio * avg_benchmark_neighbors
                 
                 neighbor_names = [f"Neighbor{i+1}: {n.get('model_name', 'Unknown')[:20]}" for i, n in enumerate(neighbors)]
                 source = f"Interpolated from neighbors (Ratio: {ratio:.3f}): {', '.join(neighbor_names)}"

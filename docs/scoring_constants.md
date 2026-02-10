@@ -4,12 +4,8 @@
 ## 1. Design & Ergonomics
 *   `Weight_Heaviest_Phone` = 250 (grams)
 *   `Weight_Lightest_Phone` = 140 (grams)
-*   `Thickness_Max_Penalty` = 6.0 (mm)
+*   `Thickness_Max_Penalty` = 7.0 (mm)
 *   `Thickness_Min_Penalty` = 10.0 (mm)
-*   `Bezel_Max_Penalty` = 4.0 (mm)
-*   `Bezel_Min_Penalty` = 1.0 (mm)
-*   `Screen_Size_Max_Score` = 6.8 (inches)
-*   `Screen_Size_Min_Score` = 5.5 (inches)
 
 ## 2. Display
 *   (No constants currently defined, uses direct formulas)
@@ -17,12 +13,12 @@
 ## 3. Performance (SoC & Memory)
 *   `GB6_Multi_Best_Phone` = 7500  (Snapdragon 8 Gen 3 / A17 Pro baseline)
 *   `GB6_Multi_Worst_Phone` = 1500 (Entry level)
-*   `Max_Freq_GHz_Best_Phone` = 3.8 (High performance core)
-*   `Max_Freq_GHz_Worst_Phone` = 1.8 (Efficiency core only)
-*   `PTS_Best_Phone` = 900 (Best multi-thread: CPS × AES × FSF at maximum)
-*   `PTS_Worst_Phone` = 18 (Worst multi-thread: CPS × AES × FSF at minimum)
-*   `STRS_Best_Phone` = 20 (Best single-thread: CAS × FSF of 10 × 2.0)
-*   `STRS_Worst_Phone` = 9 (Worst single-thread: CAS × FSF of 9 × 1.0)
+*   `PTS_Best_Phone` = 140 (Best multi-thread: Sum(FACS) at maximum)
+*   `PTS_Worst_Phone` = 5 (Worst multi-thread: Sum(FACS) at minimum)
+*   `STRS_Best_Phone` = 12 (Best single-thread: FACS of Prime Core [10 × 1.2])
+*   `STRS_Worst_Phone` = 5 (Worst single-thread: FACS of Cortex-A76 [5 × 1.0])
+*   `RC_Best_Phone` = 20 (Best GPU: GAS × FSF × AFM at maximum)
+*   `RC_Worst_Phone` = 2 (Worst GPU: GAS × FSF × AFM at minimum)
 *   `Process_Node_Best_nm` = 3 (Latest TSMC)
 *   `Process_Node_Worst_nm` = 20 (Legacy)
 *   `RAM_Max_GB` = 24

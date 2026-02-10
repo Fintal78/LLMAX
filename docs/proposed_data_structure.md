@@ -36,10 +36,7 @@ It includes all previously removed parameters, categorized as:
       "exact_extract": "Proof pending"
     },
     "model_aliases": {
-      "value": [
-        "SM-S928B",
-        "SM-S928U"
-      ],
+      "value": ["SM-S928B", "SM-S928U"],
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
@@ -64,9 +61,7 @@ It includes all previously removed parameters, categorized as:
       "exact_extract": "Proof pending"
     },
     "market_regions": {
-      "value": [
-        "Global"
-      ],
+      "value": ["Global"],
       "source": "TBD",
       "exact_extract": "Proof pending"
     }
@@ -88,7 +83,6 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-
       "predicted_score": 0.0,
       "final_score": 0.0
     },
@@ -190,13 +184,28 @@ It includes all previously removed parameters, categorized as:
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "panel_type": {
-      "value": "OLED",
+    "resolution_width_px": {
+      "value": 1440,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "resolution_height_px": {
+      "value": 3120,
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
     "megapixels_mp": {
-      "value": 6.9,
+      "value": 4.5,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "refresh_rate_min_hz": {
+      "value": 1,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "refresh_rate_adaptive": {
+      "value": true,
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
@@ -215,7 +224,6 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-
       "predicted_score": 0.0,
       "final_score": 0.0
     },
@@ -250,35 +258,17 @@ It includes all previously removed parameters, categorized as:
     },
     "2_5_hdr_format_support": {
       "formats": {
-        "value": [
-          "HDR10+",
-          "HDR10",
-          "HLG"
-        ],
+        "value": ["HDR10+", "HDR10", "HLG"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "2_6_refresh_rate": {
-      "max_hz": {
-        "value": 120,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "min_hz": {
-        "value": 1,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "adaptive": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+    "2_6_refresh_rate_max_hz": {
+      "value": 120,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
     },
     "2_7_touch_responsiveness": {
       "sampling_rate_hz": {
@@ -318,7 +308,12 @@ It includes all previously removed parameters, categorized as:
     }
   },
   "3_processing_power_and_performance": {
-    "cpu_specifications": {
+    "soc_name": {
+      "value": "Snapdragon 8 Gen 3",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "3_0_cpu_architecture_reference": {
       "clusters": [
         {
           "name": {
@@ -330,6 +325,10 @@ It includes all previously removed parameters, categorized as:
             "value": 1,
             "source": "TBD",
             "exact_extract": "Proof pending"
+          },
+          "score": {
+            "value": 10,
+            "description": "Section 3.0 Score"
           },
           "freq_ghz": {
             "value": 3.4,
@@ -348,6 +347,10 @@ It includes all previously removed parameters, categorized as:
             "source": "TBD",
             "exact_extract": "Proof pending"
           },
+          "score": {
+            "value": 7,
+            "description": "Section 3.0 Score"
+          },
           "freq_ghz": {
             "value": 3.15,
             "source": "TBD",
@@ -364,6 +367,10 @@ It includes all previously removed parameters, categorized as:
             "value": 2,
             "source": "TBD",
             "exact_extract": "Proof pending"
+          },
+          "score": {
+            "value": 7,
+            "description": "Section 3.0 Score"
           },
           "freq_ghz": {
             "value": 2.96,
@@ -382,47 +389,145 @@ It includes all previously removed parameters, categorized as:
             "source": "TBD",
             "exact_extract": "Proof pending"
           },
+          "score": {
+            "value": 2,
+            "description": "Section 3.0 Score"
+          },
           "freq_ghz": {
             "value": 2.27,
             "source": "TBD",
             "exact_extract": "Proof pending"
-          }
+          },
         }
       ]
     },
-    "3_1_soc_performance": {
-      "geekbench_6_multi_score": 7200,
+    "3_1_cpu_multi_core_performance": {
+      "geekbench_6_multi_score": {
+        "value": 7200,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "scoring_components": {
+        "facs": [
+          {
+            "name": "Cortex-X4",
+            "value": 10.0,
+            "description": "Frequency-Adjusted Core Score"
+          },
+          {
+            "name": "Cortex-A720",
+            "value": 39.9,
+            "description": "Frequency-Adjusted Core Score"
+          },
+          {
+            "name": "Cortex-A520",
+            "value": 4.6,
+            "description": "Frequency-Adjusted Core Score"
+          }
+        ]
+      },
       "predicted_score": 0.0,
       "final_score": 0.0
     },
     "3_2_cpu_architecture_single_core": {
-      "geekbench_6_single_score": 2200,
+      "geekbench_6_single_score": {
+        "value": 2200,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "scoring_components": {
+        "cas": {
+          "value": 10,
+          "description": "Core Architecture Score - strongest core"
+        },
+        "fsf": {
+          "value": 1.03,
+          "description": "Frequency Scaling Factor",
+          "actual_frequency_ghz": {
+            "value": 3.4,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        }
+      },
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_3_gpu_performance": {
+    "3_3_0_gpu_architecture_reference": {
       "gpu_model": {
         "value": "Adreno 750",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "vulkan_version": {
-        "value": "1.3",
+      "performance_score": {
+        "value": 9,
+        "description": "Section 3.3.0 Performance Score"
+      },
+      "efficiency_score": {
+        "value": 9,
+        "description": "Section 3.3.0 Efficiency Score (for battery calculations)"
+      }
+    },
+    "3_3_gpu_performance": {
+      "benchmark_1_3dmark_wle": {
+        "value": 4500,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "opengl_es_version": {
-        "value": "3.2",
+      "benchmark_2_gfxbench_manhattan31_offscreen": {
+        "value": 140,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "ray_tracing_support": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "scoring_components": {
+        "gas": {
+          "value": 9,
+          "description": "GPU Architecture Score from Section 3.3.0"
+        },
+        "fsf": {
+          "value": 1.0,
+          "description": "Frequency Scaling Factor",
+          "actual_frequency_mhz": {
+            "value": 903,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        },
+        "afm": {
+          "value": 1.0,
+          "description": "API & Feature Support Modifier",
+          "components": {
+            "api_score": {
+              "vulkan_version": {
+                "value": "1.3",
+                "source": "TBD",
+                "exact_extract": "Proof pending"
+              },
+              "opengl_es_version": {
+                "value": "3.2",
+                "source": "TBD",
+                "exact_extract": "Proof pending"
+              },
+              "score": 10.0,
+              "weight": 0.2,
+              "description": "API Support Score (20% of AFM)"
+            },
+            "rt_score": {
+              "ray_tracing_support": {
+                "value": true,
+                "source": "TBD",
+                "exact_extract": "Proof pending"
+              },
+              "score": 10.0,
+              "weight": 0.1,
+              "description": "Ray Tracing Capability Score (10% of AFM)"
+            }
+          }
+        }
       },
       "predicted_score": 0.0,
-      "final_score": 0.0
+      "final_score": 0.0,
+      "confidence": "High"
     },
     "3_4_efficiency_node": {
       "process_nm": {
@@ -470,10 +575,10 @@ It includes all previously removed parameters, categorized as:
         "exact_extract": "Proof pending"
       },
       "predicted_score": 0.0,
-      "final_score": 0.0
+      "final_score": 8.16
     },
     "3_6_ram_technology": {
-      "value": {
+      "technology": {
         "value": "LPDDR5X",
         "source": "TBD",
         "exact_extract": "Proof pending"
@@ -491,7 +596,7 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "3_8_storage_technology": {
-      "value": {
+      "technology": {
         "value": "UFS 4.0",
         "source": "TBD",
         "exact_extract": "Proof pending"
@@ -500,7 +605,7 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "3_9_storage_capacity": {
-      "max_gb": {
+      "capacity_gb": {
         "value": 1024,
         "source": "TBD",
         "exact_extract": "Proof pending"
@@ -509,7 +614,7 @@ It includes all previously removed parameters, categorized as:
       "final_score": 0.0
     },
     "3_10_storage_expandability": {
-      "value": {
+      "slot_type": {
         "value": "No Expansion Slot",
         "source": "TBD",
         "exact_extract": "Proof pending"
@@ -844,10 +949,7 @@ It includes all previously removed parameters, categorized as:
     },
     "4_16_multiframe_photo": {
       "features": {
-        "value": [
-          "Advanced HDR",
-          "Night Mode"
-        ],
+        "value": ["Advanced HDR", "Night Mode"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -862,9 +964,7 @@ It includes all previously removed parameters, categorized as:
     },
     "4_17_semantic_ai": {
       "features": {
-        "value": [
-          "Semantic Segmentation"
-        ],
+        "value": ["Semantic Segmentation"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -879,9 +979,7 @@ It includes all previously removed parameters, categorized as:
     },
     "4_18_generative_ai_tools": {
       "features": {
-        "value": [
-          "Magic Eraser"
-        ],
+        "value": ["Magic Eraser"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -890,60 +988,82 @@ It includes all previously removed parameters, categorized as:
     }
   },
   "5_battery_and_charging": {
+    "mah": {
+      "value": 5000,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "battery_voltage_v": {
+      "value": "Not available",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "battery_cell_configuration": {
+      "value": "dual-cell",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
     "5_1_battery_endurance": {
-      "mah": {
-        "value": 5000,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "battery_voltage_v": {
-        "value": "Not available",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-
-      "scoring_components": {
-        "layer_a_energy": {
-          "wh": 19.25,
-          "score": 6.62
+      "layer_a_energy": {
+        "wh": {
+          "value": 19.25,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         },
-        "layer_b_hei": {
-          "soc_efficiency": {
+        "score": 6.62
+      },
+      "layer_b_hardware_efficiency": {
+        "b_1_soc_efficiency": {
+          "dependencies": [
+            "3_processing_power_and_performance.3_4_efficiency_node",
+            "3_processing_power_and_performance.3_0_cpu_architecture_reference",
+            "3_processing_power_and_performance.3_3_0_gpu_architecture_reference"
+          ],
+          "breakdown": {
             "process_node_score": 8.48,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.74
+            "cpu_architecture_score_aes": 7.5,
+            "gpu_efficiency_score": "$ref:3_3_0_gpu_architecture_reference.efficiency_score"
           },
-          "display_efficiency": {
-            "panel_technology_score": 5,
-            "refresh_efficiency_score": 3.33,
-            "resolution_efficiency_score": 7.82,
-            "total_display_score": 5.26
-          },
-          "connectivity_efficiency": {
-            "cellular_score": 0,
-            "wifi_score": 0,
-            "total_connectivity_score": 0.0
-          },
-          "thermal_efficiency": {
-            "frame_material_score": 10,
-            "weight_score": 8.36,
-            "surface_area_score": 10,
-            "thickness_score": 6.5,
-            "part_a_chassis_score": 9.07,
-            "cooling_system_score": 7,
-            "thermal_demand_bonus": 0.13,
-            "tdsi_score": 8.16
-          },
-          "total_hei_score": 5.62
+          "score": 7.49
         },
-        "layer_c_soi": {
-          "os_skin_score": 10,
-          "scc_score": 10.0,
-          "total_soi_score": 10.0
-        }
+        "b_2_display_efficiency": {
+          "dependencies": [
+            "2_display.2_1_panel_architecture",
+            "2_display.megapixels_mp",
+            "2_display.refresh_rate_min_hz",
+            "2_display.refresh_rate_adaptive",
+            "2_display.2_6_refresh_rate_max_hz"
+          ],
+          "breakdown": {
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.21
+          },
+          "score": 7.42
+        },
+        "b_3_connectivity_efficiency": {
+          "dependencies": ["7_connectivity.7_1_cellular_capabilities", "7_connectivity.7_3_wifi_standard"],
+          "breakdown": {
+            "cellular_score": 0,
+            "wifi_score": 0
+          },
+          "score": 0.0
+        },
+        "b_4_thermal_efficiency": {
+          "dependencies": ["3_processing_power_and_performance.3_5_thermal_dissipation_stability"],
+          "score": 8.16
+        },
+        "total_hei_score": 6.78
       },
-      "predicted_score": 6.95,
+      "layer_c_software_optimization": {
+        "dependencies": ["6_software.os_version", "6_software.6_3_system_cleanliness_control"],
+        "breakdown": {
+          "c_1_os_generation": 10,
+          "c_2_bloatware": 6.0
+        },
+        "total_soi_score": 8.4
+      },
+      "predicted_score": 7.03,
       "benchmarks": {
         "gsmarena_active_use": {
           "hours": 16.75,
@@ -954,11 +1074,11 @@ It includes all previously removed parameters, categorized as:
           "normalized_score": 8.82
         }
       },
+      "final_score": 7.33,
       "score_adjustment": {
-        "booster": 1.055,
+        "booster": 1.042,
         "source": "GSMArena Active Use + PhoneArena Battery Life"
-      },
-      "final_score": 7.33
+      }
     },
     "5_2_wired_charging_speed": {
       "watts": {
@@ -1069,10 +1189,7 @@ It includes all previously removed parameters, categorized as:
   "7_connectivity_and_sensors": {
     "7_1_cellular_capabilities": {
       "features": {
-        "value": [
-          "5G mmWave",
-          "5G Sub-6"
-        ],
+        "value": ["5G mmWave", "5G Sub-6"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -1149,11 +1266,7 @@ It includes all previously removed parameters, categorized as:
     },
     "7_9_ecosystem_continuity": {
       "value": {
-        "value": [
-          "AirDrop",
-          "Handoff",
-          "Universal Clipboard"
-        ],
+        "value": ["AirDrop", "Handoff", "Universal Clipboard"],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -1265,10 +1378,7 @@ It includes all previously removed parameters, categorized as:
       },
       "acf": {
         "features": {
-          "value": [
-            "Directional/Audio Zoom",
-            "Wind noise reduction"
-          ],
+          "value": ["Directional/Audio Zoom", "Wind noise reduction"],
           "source": "TBD",
           "exact_extract": "Proof pending"
         },
@@ -1292,7 +1402,6 @@ It includes all previously removed parameters, categorized as:
       "predicted_score": 0.8,
       "final_score": 0.8
     },
-
     "9_2_repairability": {
       "ifixit_score": 8,
       "eu_repairability_index": {

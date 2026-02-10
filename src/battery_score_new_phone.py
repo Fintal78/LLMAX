@@ -164,27 +164,27 @@ def score_new_phone(db_path):
             
             if neighbors and len(neighbors) >= 3:
                 # Calculate average predicted score of neighbors
-                avg_pred_neighbors = sum(
+                avg_predicted_neighbors = sum(
                     n['battery_scores']['predicted_score'] for n in neighbors
                 ) / len(neighbors)
                 
                 # Calculate average final score of neighbors
-                avg_final_neighbors = sum(
+                avg_benchmark_neighbors = sum(
                     n['battery_scores']['final_score'] for n in neighbors
                 ) / len(neighbors)
                 
                 # Calculate correction ratio
-                ratio = predicted_score / avg_pred_neighbors if avg_pred_neighbors > 0 else 1.0
+                ratio = predicted_score / avg_predicted_neighbors if avg_predicted_neighbors > 0 else 1.0
                 
                 # Apply ratio to neighbor average
-                final_score = ratio * avg_final_neighbors
+                final_score = ratio * avg_benchmark_neighbors
                 
                 neighbor_names = [n.get('model_name', 'Unknown')[:30] for n in neighbors]
                 source = f"Interpolated from neighbors (Ratio: {ratio:.3f}): {', '.join(neighbor_names)}"
                 
                 print(f"    Found {len(neighbors)} neighbors")
-                print(f"    Neighbor avg predicted: {avg_pred_neighbors:.2f}")
-                print(f"    Neighbor avg final: {avg_final_neighbors:.2f}")
+                print(f"    Neighbor avg predicted: {avg_predicted_neighbors:.2f}")
+                print(f"    Neighbor avg final: {avg_benchmark_neighbors:.2f}")
                 print(f"    Correction ratio: {ratio:.3f}")
             else:
                 # Fallback if not enough neighbors

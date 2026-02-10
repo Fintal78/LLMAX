@@ -14,7 +14,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Determines structural integrity, thermal dissipation, and tactile quality.
 
-**Final Score Formula:**
+**Predicted Score Formula:**
 `Materials Score = (0.6 × Frame Material Score) + (0.4 × Back Material Score)`
 
 > [!NOTE]
@@ -64,7 +64,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Critical for device longevity and accident protection.
 
-**Final Score Formula:**
+**Predicted Score Formula:**
 `IP Score = (0.5 × Dust Protection Score) + (0.5 × Water Protection Score)`
 
 #### 1.2.A Dust Protection (First Digit of IP Code)
@@ -132,9 +132,10 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Calipers at the thickest point of the body (excluding camera protrusion).
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Affects pocketability and hand comfort.
-*Formula:* `Score = 10 - 10 * ((Thickness - 7.0) / (10.0 - 7.0))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ 7.0 mm
-*   **Min Score (0.0):** ≥ 10.0 mm
+*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_Max_Penalty) / (Thickness_Min_Penalty - Thickness_Max_Penalty))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Thickness_Max_Penalty
+*   **Min Score (0.0):** ≥ Thickness_Min_Penalty
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
 > This is a continuous linear scoring metric. Thinner is better.
 
@@ -143,9 +144,10 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Digital scale weight including battery.
 *   **Unit:** Grams (g)
 *   **Significance:** Determines long-term holding comfort and fatigue.
-*Formula:* `Score = 10 - 10 * ((Weight - 150) / (250 - 150))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ 150 g
-*   **Min Score (0.0):** ≥ 250 g
+*Formula:* `Score = 10 - 10 * ((Weight - Weight_Lightest_Phone) / (Weight_Heaviest_Phone - Weight_Lightest_Phone))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Weight_Lightest_Phone
+*   **Min Score (0.0):** ≥ Weight_Heaviest_Phone
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
 > This is a continuous linear scoring metric. Lighter is better.
 
@@ -314,12 +316,41 @@ This is a continuous linear scoring metric. Higher ratio means thinner bezels.
 
 ## 🟣 3. Processing Power & Performance
 
-### 🔹 3.1 SoC Performance (Sustained Outcome)
-*Description:* Measures actual delivered performance in standardized workloads, regardless of architecture, clocks, or vendor optimizations. This represents the "heavy lifting" capability of the device.
+#### 3.0 CPU Core Architecture Reference
 
+**Master Scoring Table** (used across all CPU performance calculations)
+
+This table provides the authoritative CPU core architecture scores used throughout the scoring system, including:
+- Section 3.1 Method C: Multi-Thread Performance (CPS calculation)
+- Section 3.2 Method C: Single-Thread Performance (CAS calculation)
+- Section 5.1 for Battery Endurance Scoring (Battery efficiency - SoC component)
+
+**Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
+
+| CPU Core Architecture        | Score  | Ref Freq (GHz) | Generation | Notes                          |
+|------------------------------|:------:|:--------------:|:----------:|--------------------------------|
+| **Apple A18 / A17 Pro / A17**| **10** | **3.78**       | 2023-2024  | Highest IPC, 3nm process       |
+| **Cortex-X925**              | **10** | **3.60**       | 2024       | ARMv9.2, latest flagship       |
+| **Cortex-X4**                | **10** | **3.30**       | 2023       | ARMv9, flagship performance    |
+| **Cortex-X3**                | **9**  | **3.20**       | 2022       | ARMv9 flagship                 |
+| **Cortex-X2**                | **8**  | **3.00**       | 2021       | ARMv9 early flagship           |
+| **Cortex-A720 / A715**       | **7**  | **2.80**       | 2023-2024  | ARMv9 modern performance       |
+| **Cortex-A710**              | **6**  | **2.50**       | 2021       | ARMv9 transitional             |
+| **Cortex-A78 / A77**         | **6**  | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship        |
+| **Cortex-A76 / A75**         | **5**  | **2.20**       | 2017-2018  | ARMv8.2 older flagship         |
+| **Cortex-A73**               | **4**  | **2.00**       | 2016       | ARMv8 budget performance       |
+| **Cortex-A55**               | **2**  | **1.80**       | 2017       | ARMv8.2 modern efficiency      |
+| **Cortex-A520 / A510**       | **2**  | **2.00**       | 2021-2023  | ARMv9 efficiency cores         |
+| **Cortex-A53 / A7**          | **0**  | **1.50**       | 2012-2014  | ARMv8 ancient efficiency       |
+
+> [!IMPORTANT]
+> **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
+
+### 🔹 3.1 CPU Multi-Core Performance (Sustained Outcome)
+*Description:* Measures actual delivered CPU performance in standardized workloads, ensuring the device can handle heavy multitasking and sustained processing.
 *   **Measurement:** Geekbench 6 Multi-Core Score.
 *   **Unit:** Points
-*   **Significance:** Primary indicator of sustained workloads, gaming potential, and multitasking capability.
+*   **Significance:** Primary indicator of sustained CPU workloads, gaming physics, and background multitasking.
 
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
@@ -330,85 +361,62 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 > [!NOTE]
 > **Why Logarithmic?** Performance utility follows diminishing returns. The difference between a laggy 500-point phone and a usable 1500-point phone is transformative. The difference between an 8500-point flagship and a 9500-point gaming beast is noticeable only in extreme niche scenarios.
 
-#### 3.1.1 CPU Core Architecture Reference
-
-**Master Scoring Table** (used across all CPU performance calculations)
-
-This table provides the authoritative CPU core architecture scores used throughout the scoring system, including:
-- Section 3.1 Method C: Multi-Thread Performance (CPS calculation)
-- Section 3.2 Method C: Single-Thread Performance (CAS calculation)
-- Battery Endurance Scoring (Battery efficiency - SoC component)
-
-**Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
-
-| CPU Core Architecture        | Score  | Generation | Notes                          |
-|------------------------------|--------|------------|--------------------------------|
-| **Apple A18 / A17 Pro / A17**| **10** | 2023-2024  | Highest IPC, 3nm process       |
-| **Cortex-X925**              | **10** | 2024       | ARMv9.2, latest flagship       |
-| **Cortex-X4**                | **10** | 2023       | ARMv9, flagship performance    |
-| **Cortex-X3**                | **9**  | 2022       | ARMv9 flagship                 |
-| **Cortex-X2**                | **8**  | 2021       | ARMv9 early flagship           |
-| **Cortex-A720 / A715**       | **7**  | 2023-2024  | ARMv9 modern performance       |
-| **Cortex-A710**              | **6**  | 2021       | ARMv9 transitional             |
-| **Cortex-A78 / A77**         | **6**  | 2019-2020  | ARMv8.2 legacy flagship        |
-| **Cortex-A76 / A75**         | **5**  | 2017-2018  | ARMv8.2 older flagship         |
-| **Cortex-A73**               | **4**  | 2016       | ARMv8 budget performance       |
-| **Cortex-A55**               | **2**  | 2017       | ARMv8.2 modern efficiency      |
-| **Cortex-A520 / A510**       | **2**  | 2021-2023  | ARMv9 efficiency cores         |
-| **Cortex-A53 / A7**          | **0**  | 2012-2014  | ARMv8 ancient efficiency       |
-
-> [!IMPORTANT]
-> **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
-
 #### Method B: Nearest Neighbor Interpolation (Secondary)
 If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Theoretical Score** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
 2.  **Calculate Correction Ratio:**
-    *   `Avg_Theoretical_Neighbors = (Theory_Neighbor1 + Theory_Neighbor2 + Theory_Neighbor3) / 3`
-    *   `Ratio = Theoretical_Target / Avg_Theoretical_Neighbors`
+    *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
 3.  **Apply to Benchmark:**
-    *   `Avg_Benchmark_Neighbors = (Bench_Neighbor1 + Bench_Neighbor2 + Bench_Neighbor3) / 3`
-    *   `Estimated_Score = Ratio * Avg_Benchmark_Neighbors`
+    *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
 
-#### Method C: Theoretical Calculation (Tertiary)
+#### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
-**Step 1: Calculate Cluster Power Score (CPS)**
-*   *What is it?* A sum of all CPU cores weighted by their strength.
-*   **Formula:** `Sum(Core_Weight * Core_Count)`
-*   **Core Weights:** See **Section 3.1.1 CPU Core Architecture Reference** for authoritative core scores.
+**Step 1: Frequency-Adjusted Core Score (FACS)**
+Instead of calculating a raw score and then scaling it globally, we calculate the throughput for **each cluster** individually.
 
-**Step 2: Architecture Efficiency Score (AES)**
-*   *What is it?* The average quality of the cores.
-*   **Formula:** `Sum(Core_Weight * Core_Count) / Total_Core_Count`
-    *   *Range is 0-10.
-    *   **Why AES?** CPS measures total throughput (quantity), while AES measures architectural efficiency (quality). A high CPS with low AES implies many weak cores (server-like), while high AES implies strong individual cores (consumer flagship).
+*   **FSF Formula:** `1 + (Actual_Freq - Ref_Freq) / Ref_Freq`
+    *   *Significance:* Scales the base architecture score based on whether the specific cluster is overclocked or underclocked.
+    *   **Reference:** See **Section 3.0** for Reference Frequencies.
+*   **FACS Formula:** `Core_Architecture_Score * Core_Count * FSF`
+    *   *Significance:* Represents the total throughput contribution of a specific core cluster, accounting for its architecture, count, and clock speed.
 
-**Step 3: Frequency Scaling Factor (FSF)**
-*   *What is it?* A multiplier for clock speed.
-*   **Formula:** `1 + (Max_Freq_GHz - Max_Freq_GHz_Worst_Phone) / (Max_Freq_GHz_Best_Phone - Max_Freq_GHz_Worst_Phone)`
-    *   *Range is 1-2.
-    *   **Why FSF?** Two SoCs with identical cores (e.g., Cortex-A78) will perform differently if one is clocked at 2.0GHz and the other at 3.0GHz. FSF accounts for this linear performance gain from clock speed.
-
-**Step 4: Calculate Final Score**
-1.  **Raw Throughput (PTS - Predicted Throughput Score):** `CPS * AES * FSF`
-2.  **Final Score:** `10 * (log(PTS) - log(PTS_Worst_Phone)) / (log(PTS_Best_Phone) - log(PTS_Worst_Phone))`
+**Step 2: Calculate Predicted Score**
+1.  **Raw Throughput (PTS):** `Sum(FACS_of_each_cluster)`
+2.  **Predicted Score:** `10 * (log(PTS) - log(PTS_Worst_Phone)) / (log(PTS_Best_Phone) - log(PTS_Worst_Phone))`
     *   **Parameters:** See `scoring_constants.md` for values.
 
 > **Example: Snapdragon 8 Gen 3**
-> *   **Specs:** 1x X4 (3.3GHz), 5x A720 (3.2GHz), 2x A520 (2.3GHz).
-> *   **CPS:** `(1*9) + (5*6) + (2*3)` = **45**
-> *   **AES:** `45 / 8` = **5.625**
-> *   **FSF:** `1 + (3.3 - Max_Freq_GHz_Worst_Phone)/(Max_Freq_GHz_Best_Phone - Max_Freq_GHz_Worst_Phone)` = `1 + (3.3 - 1.8)/2.0` = **1.75**
-> *   **Raw:** `45 * 5.625 * 1.75` = **442.97**
-> *   **Score:** `10 * (log(442.97)-log(PTS_Worst_Phone)) / (log(PTS_Best_Phone)-log(PTS_Worst_Phone))`
-> *   `10 * (log(442.97)-log(20)) / (log(600)-log(20))` = `10 * (2.646 - 1.301) / (2.778 - 1.301)` ≈ **9.1/10**
+> *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 3.0)
+> *   **Actual Specs:** 1x X4 @ 3.3GHz, 5x A720 @ 3.2GHz, 2x A520 @ 2.3GHz
+>
+> 1.  **Prime Cluster (X4):**
+>     *   FSF: `1 + (3.3 - 3.3)/3.3` = 1.0
+>     *   FACS: `10 (Score) * 1 (Count) * 1.0 (FSF)` = **10.0**
+> 2.  **Performance Cluster (A720):**
+>     *   FSF: `1 + (3.2 - 2.8)/2.8` = 1.14
+>     *   FACS: `7 (Score) * 5 (Count) * 1.14 (FSF)` = **39.9**
+> 3.  **Efficiency Cluster (A520):**
+>     *   FSF: `1 + (2.3 - 2.0)/2.0` = 1.15
+>     *   FACS: `2 (Score) * 2 (Count) * 1.15 (FSF)` = **4.6**
+>
+> *   **Raw (PTS):** `10.0 + 39.9 + 4.6` = **54.5**
+> *   **Predicted Score:** `10 * (log(54.5)-log(PTS_Worst_Phone)) / (log(PTS_Best_Phone)-log(PTS_Worst_Phone))`
+> *   `10 * (log(54.5)-log(5)) / (log(140)-log(5))` = `10 * (4.00 - 1.61) / (4.94 - 1.61)` = `10 * 2.39 / 3.33` ≈ **7.2/10**
 
 ### 🔹 3.2 CPU Architecture & Single-Core Efficiency
-*Description:* Measures the responsiveness of the CPU for immediate tasks like app launching and UI navigation. This isolates architectural efficiency and single-thread speed, independent of total core count.
+*Description:* Measures the responsiveness of the CPU for immediate tasks like app launching, web browsing, and UI navigation. This isolates architectural efficiency and single-thread speed.
 *   **Measurement:** Geekbench 6 Single-Core Score.
 *   **Unit:** Points
 *   **Significance:** Determines the "snappiness" of the UI and speed of light tasks.
+
+> [!TIP]
+> **Why do we need this separate from Section 3.1?**
+> *   **Section 3.1 (Multi-Core) measures CAPACITY (The Truck):** Determines if the phone *can* run heavy tasks (rendering, gaming) without bottling up.
+> *   **Section 3.2 (Single-Core) measures RESPONSIVENESS (The Sports Car):** Determines how *fast* a single task (like opening an app or scrolling a webpage) happens. 
+> A phone with many weak cores (high 3.1) can still feel "laggy" in UI interactions if individual cores are slow (low 3.2). Single-core speed is the primary driver of perceived fluidity in daily use.
 
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
@@ -421,106 +429,268 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 
 #### Method B: Nearest Neighbor Interpolation (Secondary)
 If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Theoretical Score** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
 2.  **Calculate Correction Ratio:**
-    *   `Avg_Theoretical_Neighbors = (Theory_Neighbor1 + Theory_Neighbor2 + Theory_Neighbor3) / 3`
-    *   `Ratio = Theoretical_Target / Avg_Theoretical_Neighbors`
+    *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
 3.  **Apply to Benchmark:**
-    *   `Avg_Benchmark_Neighbors = (Bench_Neighbor1 + Bench_Neighbor2 + Bench_Neighbor3) / 3`
-    *   `Estimated_Score = Ratio * Avg_Benchmark_Neighbors`
+    *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
 
-#### Method C: Theoretical Calculation (Tertiary)
+#### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Core Architecture Score (CAS)**
-*   *What is it?* The weight of the *single strongest core* in the system.
-*   **Weights:** See **Section 3.1.1 CPU Core Architecture Reference** for authoritative core scores.
+*   *What is it?* The score of the *single strongest core* in the system.
+*   **Scores:** See **Section 3.0 CPU Core Architecture Reference** for authoritative core scores.
 
 **Step 2: Frequency Scaling Factor (FSF)**
-*   *What is it?* A multiplier for clock speed.
-*   **Formula:** `1 + (Max_Freq_GHz - Max_Freq_GHz_Worst_Phone) / (Max_Freq_GHz_Best_Phone - Max_Freq_GHz_Worst_Phone)`
-    *   *Range is 1-2.
-    *   **Why FSF?** Single-core performance scales almost linearly with frequency for the same architecture. A 3.0GHz core is roughly 50% faster than a 2.0GHz core of the same type. FSF normalizes this between the worst and best phones in the dataset.
+*   *What is it?* A multiplier for clock speed variations.
+*   **Formula:** `1 + (Actual_Frequency_GHz - Reference_Frequency_GHz) / Reference_Frequency_GHz`
+    *   *Range:* Typically 0.8 - 1.3 (underclocked vs overclocked).
+    *   **Why FSF?** Single-core performance scales almost linearly with frequency for the same architecture. FSF normalizes this relative to the reference design.
+    *   **Reference:** See **Section 3.0** for Reference Frequencies.
 
-**Step 3: Calculate Final Score**
+**Step 3: Calculate Predicted Score**
 1.  **Raw Single-Thread (STRS - Single Thread Raw Score):** `CAS * FSF`
-2.  **Final Score:** `10 * (log(STRS) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
+2.  **Predicted Score:** `10 * (log(STRS) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
     *   **Parameters:** See `scoring_constants.md` for values.
 
-> **Example: Snapdragon 8 Gen 3**
-> *   **Specs:** Prime Core is Cortex-X4 at 3.3GHz.
-> *   **CAS:** Cortex-X4 = **9**
-> *   **FSF:** `1 + (3.3 - 1.8) / (3.8 - 1.8)` = `1 + 1.5/2.0` = **1.75**
-> *   **Raw:** `9 * 1.75` = **15.75**
-> *   **Score:** `10 * (log(15.75) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
-> *   `10 * (log(15.75) - log(9)) / (log(20) - log(9))` = `10 * (1.197 - 0.954) / (1.301 - 0.954)` = `10 * 0.700` ≈ **7.0/10**
+> **Example: Snapdragon 8 Gen 3 for Galaxy (Overclocked)**
+> *   **Specs:** Prime Core is Cortex-X4 at **3.4GHz**. Reference Frequency for X4 is **3.30GHz**.
+> *   **CAS:** Cortex-X4 = **10**
+> *   **FSF:** `1 + (3.4 - 3.3) / 3.3` ≈ **1.03**
+> *   **Raw (FACS):** `10 * 1.03` = **10.3**
+> *   **Predicted Score:** `10 * (log(10.3) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
+> *   `10 * (log(10.3) - log(5)) / (log(12) - log(5))` = `10 * (2.33 - 1.61) / (2.48 - 1.61)` = `10 * 0.72 / 0.87` ≈ **8.3/10**
 
-
-### 🔹 3.3 GPU Performance (Graphics & Gaming)
-*Description:* Measures the graphical processing power for gaming, rendering, and compute tasks. This score is a composite of raw architecture power, modern API support, and advanced feature capabilities.
-*   **Measurement:** Architecture Generation + API Support + Ray Tracing.
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Critical for high-fidelity gaming, UI smoothness, and future-proofing.
-
-#### 3.3.1 GPU Architecture Reference
+#### 3.3.0 GPU Architecture Reference
 
 **Master Scoring Table** (used across all GPU-related calculations)
 
 This table provides the authoritative GPU architecture scores used throughout the scoring system, including:
-- Section 3.3 GPU Performance (Base Architecture Score - Part 1)
-- Battery Endurance Scoring (Battery efficiency - SoC component)
+- Section 3.3 GPU Performance (Base Architecture Score)
+- Section 5.1 for Battery Endurance Scoring (Battery efficiency - SoC component)
 
 **Scoring Basis:** Based on GPU generation, compute units, and real-world graphics performance.
 
-| GPU Model                    | Score  | Generation | Notes                          |
-|------------------------------|--------|------------|--------------------------------|
-| **Apple GPU (A17/A18)**      | **10** | 2023-2024  | Highest mobile GPU performance |
-| **Immortalis-G720**          | **10** | 2023       | ARM flagship with ray tracing  |
-| **Adreno 750**               | **9**  | 2023       | Snapdragon 8 Gen 3             |
-| **Adreno 740**               | **9**  | 2022       | Snapdragon 8 Gen 2             |
-| **Adreno 730**               | **8**  | 2021       | Snapdragon 8 Gen 1             |
-| **Mali-G715**                | **8**  | 2022       | Dimensity 9000 series          |
-| **Mali-G710**                | **7**  | 2021       | Dimensity 8000 series          |
-| **Adreno 660**               | **7**  | 2020       | Snapdragon 888                 |
-| **Adreno 642L**              | **6**  | 2021       | Snapdragon 778G                |
-| **Mali-G610**                | **6**  | 2021       | Dimensity 1080                 |
-| **Adreno 619**               | **4**  | 2019       | Snapdragon 750G                |
-| **Mali-G68**                 | **4**  | 2020       | Dimensity 900                  |
-| **Mali-G57**                 | **2**  | 2018       | Budget Dimensity/Exynos        |
-| **Adreno 610**               | **2**  | 2019       | Snapdragon 665/680             |
-| **Mali-G52**                 | **0**  | 2018       | Entry-level budget             |
+> [!NOTE]
+> **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
+> - **Immortalis-G715 MC11** = 11 shader cores (flagship config)
+> - **Mali-G715 MC9** = 9 shader cores (high-end config)
+> - **Mali-G715 MC7** = 7 shader cores (mid-range config)
+> 
+> More cores = higher performance. Always match the exact MC count from device specifications (found on GSMArena under "Chipset" details).
+
+> [!TIP]
+> **Performance vs. Efficiency:**
+> *   **Performance Score:** Measures raw power (gaming/rendering). Used in Section 3.3.
+> *   **Efficiency Score:** Measures performance-per-watt (battery life). Used in Section 5.1.
+> *   *Why different?* Some chips (e.g., Snapdragon 888) have high performance but poor efficiency (heat/drain). Others (e.g., Snapdragon 778G) have lower peak performance but exceptional battery efficiency.
+> *   **Note on Process Node:** Process node benefits (e.g., 3nm vs 5nm) are scored separately in **Section 3.4**. This Efficiency Score focuses on **architectural efficiency** and thermal management.
+
+| GPU Model                    | Performance Score | Ref Freq (MHz) | Efficiency Score | Notes                          |
+|------------------------------|:-----------------:|:--------------:|:----------------:|--------------------------------|
+| **Apple GPU (A18 Pro)**      | **10**            | **1398**       | **10**           | 6-core (iPhone 16 Pro)         |
+| **Apple GPU (A17 Pro)**      | **10**            | **1398**       | **9**            | 6-core (iPhone 15 Pro)         |
+| **Immortalis-G720 MC12**     | **10**            | **1300**       | **10**           | Dimensity 9300                 |
+| **Adreno 750**               | **9**             | **903**        | **9**            | Snapdragon 8 Gen 3             |
+| **Adreno 740**               | **9**             | **680**        | **9**            | Snapdragon 8 Gen 2             |
+| **Immortalis-G715 MC11**     | **9**             | **981**        | **9**            | Dimensity 9200                 |
+| **Adreno 730**               | **8**             | **900**        | **7**            | Snapdragon 8 Gen 1             |
+| **Mali-G715 MC9**            | **8**             | **850**        | **9**            | Dimensity 9000                 |
+| **Mali-G710 MC10**           | **7**             | **850**        | **8**            | Dimensity 9000                 |
+| **Adreno 660**               | **7**             | **840**        | **5**            | Snapdragon 888 (Heat issues)   |
+| **Mali-G715 (Tensor G3)**    | **7**             | **890**        | **6**            | Google Tensor G3               |
+| **Mali-G715 MC7**            | **7**             | **850**        | **9**            | Dimensity 8200                 |
+| **Adreno 650**               | **6**             | **587**        | **6**            | Snapdragon 865                 |
+| **Adreno 642L**              | **6**             | **490**        | **8**            | Snapdragon 778G                |
+| **Mali-G610 MC6**            | **6**             | **850**        | **8**            | Dimensity 1080                 |
+| **Mali-G77 MC9**             | **6**             | **850**        | **6**            | Dimensity 1000+                |
+| **Mali-G610 MC4**            | **5**             | **850**        | **7**            | Dimensity 920                  |
+| **Adreno 640**               | **5**             | **585**        | **5**            | Snapdragon 855                 |
+| **Mali-G68 MC4**             | **4**             | **900**        | **6**            | Dimensity 900                  |
+| **Adreno 620**               | **4**             | **625**        | **6**            | Snapdragon 765G                |
+| **Adreno 619**               | **4**             | **825**        | **6**            | Snapdragon 750G                |
+| **Mali-G57 MC3**             | **3**             | **950**        | **5**            | Budget 5G                      |
+| **Adreno 618**               | **3**             | **610**        | **5**            | Snapdragon 730G                |
+| **Adreno 610**               | **2**             | **600**        | **8**            | Snapdragon 680                 |
+| **Mali-G57 MC2**             | **2**             | **950**        | **5**            | Entry 5G                       |
+| **Mali-G52 MP2**             | **1**             | **850**        | **4**            | Entry Level                    |
+| **PowerVR GE8320**           | **0**             | **680**        | **2**            | Ultra-budget legacy            |
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all GPU scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
+> **Reference Frequency Usage:** The "Reference Frequency" column provides the standard operating frequency for each GPU model. If the actual device frequency is unavailable on GSMArena, use this reference value for FSF calculation (FSF = 1.0).
 
-**Part 1: Base GPU Architecture Score (70%)**
-*   *What is it?* The core raw performance potential based on the GPU generation and tier.
-*   **Measurement:** GPU Model & Generation.
-*   **Scoring:** See **Section 3.3.1 GPU Architecture Reference** for authoritative GPU scores.
+### 🔹 3.3 GPU Performance (Graphics & Gaming)
+*Description:* Measures the graphical processing power for gaming, rendering, and compute tasks. This score reflects the device's ability to drive high-fidelity visuals at high frame rates.
+*   **Measurement:** 3DMark Wild Life Extreme Score.
+*   **Unit:** Points
+*   **Significance:** Critical for AAA gaming, ray tracing, and UI smoothness on high-refresh-rate displays.
 
-**Part 2: API & Feature Support Modifier (20%)**
-*   *What is it?* Support for modern graphics APIs that enable advanced visual effects and efficiency.
+#### Method A: Benchmark (Primary)
+**Direct Benchmark Score**
+This is the preferred method when real-world benchmark data is available from either or both sources.
+
+**Benchmark 1: 3DMark Wild Life Extreme**
+*   **Source:** [UL Benchmarks Leaderboard](https://benchmarks.ul.com/compare/best-smartphones)
+*   **Metric:** Wild Life Extreme Score (Points)
+*   **Normalization:**
+    *   **Max Score (10.0):** ≥ 5000 points
+    *   **Min Score (0.0):** ≤ 500 points
+*   **Formula:** `3DM_Score = 10 * (log(Score) - log(500)) / (log(5000) - log(500))` (Clamped 0-10)
+
+**Benchmark 2: GFXBench Manhattan 3.1 Offscreen**
+*   **Source:** [GFXBench Database](https://gfxbench.com)
+*   **Metric:** Manhattan 3.1 Offscreen (FPS)
+*   **Normalization:**
+    *   **Max Score (10.0):** ≥ 150 FPS
+    *   **Min Score (0.0):** ≤ 15 FPS
+*   **Formula:** `GFX_Score = 10 * (log(FPS) - log(15)) / (log(150) - log(15))` (Clamped 0-10)
+
+> [!NOTE]
+> **Why Logarithmic for Both?** Graphics performance scales exponentially. The difference between 15 FPS and 30 FPS (unplayable vs playable) is massive for user experience, while 120 FPS vs 150 FPS shows diminishing returns on mobile screens.
+
+**Scoring Logic:**
+
+**Case 1: Both Benchmarks Available**
+```
+Final_Score = (3DM_Score + GFX_Score) / 2
+```
+
+**Case 2: One Benchmark Available**
+```
+Final_Score = 3DM_Score  OR  GFX_Score
+```
+
+**Case 3: No Benchmarks Available**
+Proceed to Method B (Nearest Neighbor Interpolation).
+
+**Confidence Score:**
+*   **High:** Both benchmarks available, absolute difference ≤ 1.0 point.
+*   **Medium:** Both benchmarks available, absolute difference ≤ 2.5 points.
+*   **Low:** Both benchmarks available, absolute difference > 2.5 points.
+*   **Unknown:** Only one benchmark available.
+
+**Example 1: Both Benchmarks (High Confidence)**
+- **Device:** Snapdragon 8 Gen 3 Phone
+- 3DMark: 4500 points → `3DM_Score = 10 * (log(4500) - log(500)) / (log(5000) - log(500)) = 9.3`
+- GFXBench: 140 FPS → `GFX_Score = 10 * (log(140) - log(15)) / (log(150) - log(15)) = 9.5`
+- **Final Score:** `(9.3 + 9.5) / 2 = 9.4`
+- **Confidence:** High (difference = 0.2 points)
+
+**Example 2: One Benchmark (Unknown Confidence)**
+- **Device:** New Release
+- 3DMark: 3000 points → `3DM_Score = 10 * (log(3000) - log(500)) / (log(5000) - log(500)) = 7.8`
+- GFXBench: N/A
+- **Final Score:** `7.8`
+- **Confidence:** Unknown (single source)
+
+#### Method B: Nearest Neighbor Interpolation (Secondary)
+If the specific device has **no benchmark data from either source**, but we have data for other devices:
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark and/or GFXBench) and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
+2.  **Calculate Correction Ratio:**
+    *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+3.  **Apply to Benchmark:**
+    *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+
+#### Method C: Predicted Calculation (Tertiary)
+Used as a standalone fallback or as the **Predictor** for Method B.
+
+**Step 1: GPU Architecture Score (GAS)**
+*   *What is it?* The base capability of the GPU architecture.
+*   **Lookup:** Find the exact GPU Model (including MC count for Mali/Immortalis) in **Section 3.3.0** table above.
+*   **Source:** GSMArena lists full GPU name under "Chipset" section (e.g., "Mali-G715 MC9").
+
+**Step 2: Frequency Scaling Factor (FSF)**
+*   *What is it?* A multiplier for clock speed variations.
+*   **Formula:** `1 + (Actual_Frequency_MHz - Reference_Frequency_MHz) / Reference_Frequency_MHz`
+    *   *Significance:* Scales the base architecture score (GAS) based on whether the GPU is overclocked or underclocked relative to the reference design.
+    *   **Reference:** See **Section 3.3.0** for Reference Frequencies.
+    *   *Example:* Adreno 750 @ 903 MHz (reference) → `1 + (903 - 903)/903 = 1.0`
+    *   *Example:* Adreno 750 @ 1000 MHz (overclocked) → `1 + (1000 - 903)/903 = 1.11`
+
+**Step 3: API & Feature Support Modifier (AFM)**
+*   *What is it?* A composite modifier reflecting modern graphics API capabilities and advanced rendering features.
+*   **Formula:** `0.7 + (0.2 * API_Score / 10) + (0.1 * RT_Score / 10)`
+    *   *Range is 0.7-1.0.*
+    *   **Best configurations** (Vulkan 1.3 + Hardware RT): Modifier = **1.0** (no penalty)
+    *   **Worst configurations** (Legacy OpenGL ES, no RT): Modifier = **0.7** (30% penalty)
+*   **Why this matters:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering, improved synchronization, and compute shader capabilities. Hardware ray tracing enables realistic lighting effects that would otherwise require multiple rendering passes.
+
+**Part A: API Support Score (20% of AFM)**
 *   **Measurement:** Vulkan / OpenGL ES Version.
-*   **Why this matters:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance out of the hardware.
-| Score    | Feature Support                | Description                    |
+*   **Unit:** Score (0-10)
+*   **Significance:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering, improved synchronization, and compute shader capabilities.
+
+| Score    | API Support                    | Description                    |
 | :------- | :----------------------------- | :----------------------------- |
-| **10.0** | **Vulkan 1.3 + Adv. Compute**  | State-of-the-art API support   |
+| **10.0** | **Vulkan 1.3**                 | State-of-the-art API support   |
 | **8.0**  | **Vulkan 1.2**                 | Modern standard                |
 | **6.0**  | **Vulkan 1.1**                 | Previous generation standard   |
-| **4.0**  | **OpenGL ES 3.2 Only**         | Legacy Android graphics        |
+| **5.0**  | **OpenGL ES 3.2**              | Legacy Android graphics        |
+| **3.0**  | **OpenGL ES 3.1**              | Mid-range legacy               |
 | **2.0**  | **OpenGL ES 3.0**              | Very old                       |
 | **0.0**  | **OpenGL ES ≤ 2.0**            | Obsolete                       |
 
-**Part 3: Ray Tracing Capability Modifier (10%)**
-*   *What is it?* Hardware acceleration for realistic lighting and reflections.
+> [!NOTE]
+> **Vulkan Version Differences:**
+> - **Vulkan 1.3** (2022): Integrated 23 extensions into core, including dynamic rendering, improved synchronization API, shader integer dot product for ML acceleration
+> - **Vulkan 1.2** (2020): Integrated 23 extensions including timeline semaphores, descriptor indexing, unified memory model
+> - **Vulkan 1.1** (2018): Integrated multi-view rendering, YCbCr support, memory/sync interoperability
+>
+> All Vulkan versions provide significantly better performance and lower CPU overhead than OpenGL ES.
+
+> [!IMPORTANT]
+> **Multi-API Support & Scoring Logic:**
+>
+> Mobile devices support **BOTH Vulkan and OpenGL ES simultaneously**. Android supports all versions of both APIs, with approximately 85% of active devices supporting Vulkan.
+>
+> **ANGLE Translation Layer:** Some modern devices (e.g., certain Exynos chipsets) run OpenGL ES on top of Vulkan using the ANGLE translation layer. This **does not** make OpenGL ES better - ANGLE adds translation overhead, making it slower than native Vulkan. It simply means the device doesn't need separate OpenGL ES drivers.
+>
+> **Scoring Rule:** When a device supports multiple graphics APIs, **use the highest-scoring API** for the predicted score.
+>
+> **Example:**
+> - Device supports: Vulkan 1.3 (score 10.0) + OpenGL ES 3.2 (score 5.0)
+> - **API Score: 10.0** (Vulkan takes priority as the better API)
+>
+> **Rationale:** Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
+
+**Part B: Ray Tracing Capability Score (10% of AFM)**
 *   **Measurement:** Hardware Ray Tracing Support (Yes/No).
-*   **Why this matters:** Indicates architectural modernity and readiness for next-gen mobile gaming.
+*   **Unit:** Score (0-10)
+*   **Significance:** Dedicated Ray Tracing (RT) cores enable real-time path tracing and global illumination effects that dramatically improve visual fidelity in modern mobile games. Software-based ray tracing is too slow for real-time use on mobile GPUs.
+
 | Score    | HW Ray Tracing | Description                    |
 | :------- | :------------- | :----------------------------- |
-| **10.0** | **Yes**        | Hardware-accelerated RT        |
+| **10.0** | **Yes**        | Hardware-accelerated RT cores  |
 | **0.0**  | **No**         | Software fallback or none      |
 
-**Final Formula:** `Score = (0.7 * Architecture) + (0.2 * API) + (0.1 * Ray_Tracing)`
+**Step 4: Calculate Predicted Score**
+1.  **Raw Capability Score (RC):** `GAS * FSF * AFM`
+2.  **Predicted Score:** `10 * (log(RC) - log(RC_Worst_Phone)) / (log(RC_Best_Phone) - log(RC_Worst_Phone))`
+    *   **Max Score (10.0):** RC ≥ RC_Best_Phone
+    *   **Min Score (0.0):** RC ≤ RC_Worst_Phone
+    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
+
+> **Example: Adreno 750 (Snapdragon 8 Gen 3)**
+> *   **GAS:** 9 (from table)
+> *   **FSF:** 1.0 (903MHz reference)
+> *   **AFM:** `0.7 + (0.2 * 10/10) + (0.1 * 10/10)` = `0.7 + 0.2 + 0.1` = **1.0** (Vulkan 1.3 + Hardware RT)
+> *   **RC:** 9 * 1.0 * 1.0 = **9.0**
+> *   **Predicted Score:** `10 * (log(9.0) - log(RC_Worst_Phone)) / (log(RC_Best_Phone) - log(RC_Worst_Phone))`
+> *   `10 * (log(9.0) - log(2)) / (log(20) - log(2))` = `10 * (0.954 - 0.301) / (1.301 - 0.301)` = **6.5/10**
+> 
+> **Example: Adreno 750 with Legacy API (OpenGL ES 3.2, No RT)**
+> *   **GAS:** 9
+> *   **FSF:** 1.0
+> *   **AFM:** `0.7 + (0.2 * 5/10) + (0.1 * 0/10)` = `0.7 + 0.1 + 0` = **0.8**
+> *   **RC:** 9 * 1.0 * 0.8 = **7.2**
+> *   **PTS:** **7.2**
+> *   **Predicted Score:** `10 * (log(7.2) - log(2)) / (log(20) - log(2))` = `10 * (0.857 - 0.301) / (1.301 - 0.301)` = **5.6/10**
 
 ### 🔹 3.4 Efficiency (Process Node)
 *Description:* Chip manufacturing technology. Smaller numbers (e.g., 3nm) mean the chip is more advanced, using less battery and generating less heat.
@@ -528,12 +698,13 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Unit:** Nanometers (nm)
 *   **Significance:** Major factor in power efficiency and thermal performance.
 *Formula:*
-1.  **Calculate Base Score:** `10 * (log(20) - log(Node)) / (log(20) - log(3)) - 0.3`
+1.  **Calculate Base Score:** `10 * (log(Process_Node_Worst_nm) - log(Node)) / (log(Process_Node_Worst_nm) - log(Process_Node_Best_nm)) - 0.3`
     *   *Note:* The `- 0.3` ensures that a perfect 10.0 is only achievable with the TSMC modifier.
-2.  **Apply Modifier:** `Final_Score = Base_Score + Foundry_Modifier` (Clamped 0-10)
+2.  **Apply Modifier:** `Predicted_Score = Base_Score + Foundry_Modifier` (Clamped 0-10)
 
-*   **Max Score (10.0):** ≤ 3nm (TSMC Only)
-*   **Min Score (0.0):** ≥ 20nm
+*   **Max Score (10.0):** ≤ Process_Node_Best_nm
+*   **Min Score (0.0):** ≥ Process_Node_Worst_nm
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
 **Foundry Efficiency Modifier:**
 | Foundry           | Modifier | Why?                                                                        |
@@ -604,7 +775,7 @@ This table provides the authoritative GPU architecture scores used throughout th
 > [!NOTE]
 > **Data Structure Mapping:** `1_4_dimensions.thickness_mm`
 
-**Part A Final Score:**  
+**Part A Score:**  
 `Part_A = (0.40 × A1) + (0.25 × A2) + (0.20 × A3) + (0.15 × A4)`
 
 **Part B: Internal Cooling System Class (50%)**
@@ -640,7 +811,7 @@ This table provides the authoritative GPU architecture scores used throughout th
 **Final Formula:**
 1.  **Calculate Physical Capability:** `Physical_Score = (0.5 × Part_A) + (0.5 × Part_B)`
 2.  **Calculate Load Compensation:** `Load_Bonus = (10 - Section_3_1_Score) * 0.5`
-3.  **Final TDSI:** `TDSI = Physical_Score + Load_Bonus` (Clamped 0-10)
+3.  **TDSI:** `TDSI = Physical_Score + Load_Bonus` (Clamped 0-10)
 
 
 ### 🔹 3.6 RAM Technology - Memory Technology Efficiency Index (MTEI)
@@ -663,9 +834,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Total physical RAM.
 *   **Unit:** Gigabytes (GB)
 *   **Significance:** Determines multitasking capability and app retention.
-*Formula:* `Score = 10 * (log(GB) - log(2)) / (log(24) - log(2))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 24 GB
-*   **Min Score (0.0):** ≤ 2 GB
+*Formula:* `Score = 10 * (log(GB) - log(RAM_Min_GB)) / (log(RAM_Max_GB) - log(RAM_Min_GB))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ RAM_Max_GB
+*   **Min Score (0.0):** ≤ RAM_Min_GB
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 > [!NOTE]
 > **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB dramatically improves multitasking and system stability. However, going from 16GB to 24GB offers minimal tangible benefit for current mobile applications.
 
@@ -690,9 +862,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Total internal non-volatile memory.
 *   **Unit:** Gigabytes (GB)
 *   **Significance:** Determines capacity for apps, media, and files.
-*Formula:* `Score = 10 * (log(GB) - log(16)) / (log(1024) - log(16))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 1024 GB (1 TB)
-*   **Min Score (0.0):** ≤ 16 GB
+*Formula:* `Score = 10 * (log(GB) - log(Storage_Min_GB)) / (log(Storage_Max_GB) - log(Storage_Min_GB))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Storage_Max_GB
+*   **Min Score (0.0):** ≤ Storage_Min_GB
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 > [!NOTE]
 > **Why Logarithmic?** Similar to RAM, storage utility is non-linear. 64GB to 128GB is a critical upgrade that prevents "storage full" anxiety. 512GB to 1TB is a luxury for power users, with less impact on daily basic functionality.
 
@@ -1097,9 +1270,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Peak power input via wired connection.
 *   **Unit:** Watts (W)
 *   **Significance:** Reduces downtime when battery is low.
-*Formula:* `Score = 10 * (log(Watts) - log(5)) / (log(120) - log(5))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 120W
-*   **Min Score (0.0):** ≤ 5W
+*Formula:* `Score = 10 * (log(Watts) - log(Wired_Charging_Min_W)) / (log(Wired_Charging_Max_W) - log(Wired_Charging_Min_W))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Wired_Charging_Max_W
+*   **Min Score (0.0):** ≤ Wired_Charging_Min_W
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Logarithmic?** Time-to-charge follows a diminishing return curve. Upgrading from 10W to 60W saves massive amounts of time (hours). Upgrading from 120W to 240W saves only minutes, as the battery chemistry limits sustained peak speeds.
 
@@ -1108,9 +1282,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Peak power input via wireless coil.
 *   **Unit:** Watts (W)
 *   **Significance:** Convenience and ease of topping up.
-*Formula:* `Score = 10 * (log(Watts) - log(7.5)) / (log(50) - log(7.5))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 50W
-*   **Min Score (0.0):** ≤ 7.5W
+*Formula:* `Score = 10 * (log(Watts) - log(Wireless_Charging_Min_W)) / (log(Wireless_Charging_Max_W) - log(Wireless_Charging_Min_W))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Wireless_Charging_Max_W
+*   **Min Score (0.0):** ≤ Wireless_Charging_Min_W
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Logarithmic?** Similar to wired charging, the convenience gain from 5W to 15W is significant (usable charging vs trickle). Beyond 50W, thermal limits often throttle speeds, reducing the real-world time savings.
 
@@ -1119,9 +1294,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Peak power output via wireless coil.
 *   **Unit:** Watts (W)
 *   **Significance:** Convenient for emergency top-ups of accessories on the go.
-*Formula:* `Score = 10 * (Watts / 10)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ 10W (Fast Reverse)
+*Formula:* `Score = 10 * (Watts / Reverse_Wireless_Max_W)` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Reverse_Wireless_Max_W (Fast Reverse)
     *   **Min Score (0.0):** 0W (None)
+    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Linear?** The range of reverse wireless charging is narrow (typically 4.5W to 10W). A linear scale accurately reflects that 10W is roughly twice as fast/useful as 4.5W for small accessory batteries.
 
@@ -1130,9 +1306,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Peak power output via USB-C port.
 *   **Unit:** Watts (W)
 *   **Significance:** Useful for sharing power with other phones or charging larger accessories.
-*Formula:* `Score = 10 * (Watts / 10)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ 10W
+*Formula:* `Score = 10 * (Watts / Reverse_Wired_Max_W)` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Reverse_Wired_Max_W
     *   **Min Score (0.0):** 0W (None)
+    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Linear?** Similar to wireless reverse, the output range is small (4.5W to ~10W). Linear scaling provides a fair and intuitive distribution of scores based on raw power output.
 
@@ -1155,9 +1332,10 @@ This table provides the authoritative GPU architecture scores used throughout th
 *   **Measurement:** Manufacturer update policy commitment.
 *   **Unit:** Years
 *   **Significance:** Device longevity, security, and resale value.
-*Formula:* `Score = 10 * (log(Years) - log(1)) / (log(7) - log(1))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 7 Years
-*   **Min Score (0.0):** ≤ 1 Year
+*Formula:* `Score = 10 * (log(Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Support_Years_Max
+*   **Min Score (0.0):** ≤ Support_Years_Min
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
 > [!NOTE]
 > **Why Logarithmic?** The value of support diminishes over time as hardware ages. The difference between 1 and 3 years is critical for security. The difference between 5 and 7 years is less impactful as many users upgrade before then.
 
@@ -1693,9 +1871,10 @@ MAR is a weighted composite of three subsections:
 *   **Measurement:** Manufacturer's Suggested Retail Price (MSRP) at launch or current average market price.
 *   **Unit:** USD ($)
 *   **Significance:** Primary barrier to entry and value determinant.
-*Formula:* `Score = 10 - 10 * (log(Price) - log(100)) / (log(1600) - log(100))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ $100
-*   **Min Score (0.0):** ≥ $1600
+*Formula:* `Score = 10 - 10 * (log(Price) - log(Price_Anchor_Best_USD)) / (log(Price_Anchor_Worst_USD) - log(Price_Anchor_Best_USD))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Price_Anchor_Best_USD
+*   **Min Score (0.0):** ≥ Price_Anchor_Worst_USD
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 9*
 > [!NOTE]
 > **Why Logarithmic?** Price sensitivity is relative. A $50 increase on a $150 phone is a massive 33% hike, whereas a $50 increase on a $1000 phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.
 
