@@ -313,10 +313,71 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > [!NOTE]
 This is a continuous linear scoring metric. Higher ratio means thinner bezels.
 
+### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
+*Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
+*   **Measurement:** DXOMARK Display Score.
+*   **Unit:** DXO Score (0-160+)
+*   **Significance:** Real-world validation of display quality across readability, color accuracy, motion, and touch responsiveness.
+
+#### Method A: Benchmark (Primary)
+**Direct Benchmark Score**
+This is the preferred method when a direct DXOMARK Display score is available. It provides the most accurate representation of real-world display quality.
+*   **Source:** [DXOMARK Display](https://www.dxomark.com/smartphones/#display)
+*   **Normalization:**
+    *   **Max Score (10.0):** ≥ DXO_Display_Max (e.g., 160)
+    *   **Min Score (0.0):** ≤ DXO_Display_Min (e.g., 60)
+    *   **Formula:** `Score = 10 * (log(DXO_Score) - log(DXO_Display_Min)) / (log(DXO_Display_Max) - log(DXO_Display_Min))` (Clamped 0-10)
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 2*
+
+> [!NOTE]
+> **Why Logarithmic?** Visual perception quality follows diminishing returns (Weber-Fechner law). An improvement of **10 points** at the low end (e.g., 60 to 70) represents a fundamental fix to usability flaws (e.g., becoming readable in sunlight). The same **10-point** improvement at the high end (e.g., 140 to 150) represents subtle refinements in peak HDR highlights or calibration that are barely perceptible to the human eye. Logarithmic scaling correctly assigns more value to these early, critical gains.
+
+#### Method B: Nearest Neighbor Interpolation (Secondary)
+If the specific device has no benchmark, but we have data for other devices:
+
+**1. Identify Neighbors via Feature Distance (Minimum Variance)**
+Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** display sub-features.
+*   **Search Space:** All phones with known DXOMARK Display scores (Method A).
+*   **Distance Metric:** Euclidean Distance in the 10-dimensional feature space (Sections 2.1–2.10).
+    *   `Distance = Sqrt( Sum( (SubScore_Target_i - SubScore_Neighbor_i)^2 ) )`
+    *   *Where i = 2.1 to 2.10 (each sub-section's individual Predicted Score)*
+    *   **Sub-Section Predicted Scores:** These are the individual scores calculated from technical specs for each display attribute:
+        *   `SubScore_2.1` = Panel Architecture Score (OLED/LCD/etc.)
+        *   `SubScore_2.2` = PPI Score
+        *   `SubScore_2.3` = Peak Brightness Score
+        *   ... (through SubScore_2.10)
+    *   **Important:** Calculation uses **Predicted Scores** (Specs only), not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity, unaffected by whether a review exists for them.
+*   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
+
+> [!TIP]
+> **Why this is robust:** This method ensures we compare apples to apples. A phone with a "High Res / Low Refresh" screen will match with other "High Res / Low Refresh" phones, rather than "Low Res / High Refresh" phones, even if they have the same overall predicted score.
+
+**2. Calculate Correction Ratio:**
+*   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
+*   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
+
+**3. Apply to Benchmark:**
+*   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+*   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+
+#### Method C: Predicted Calculation (Tertiary)
+Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
+
+**Formula:** `Predicted_Score = Average(SubScore_2.1, SubScore_2.2, ..., SubScore_2.10)`
+*   *This is the **overall Predicted Score** for the entire display, calculated as the average of all the sub-section Predicted Scores.*
+*   **Important:** Use the **Predicted Score** (before boosters) for all sub-sections. This ensures neutrality and prevents selection bias (reviewed vs. unreviewed phones) from skewing the technical baseline.
+
+> [!IMPORTANT]
+> **Terminology Clarification:**
+> - **Sub-Section Predicted Score** (e.g., `SubScore_2.3`): Individual score for a single display attribute (Brightness, PPI, etc.) calculated from technical specs in Sections 2.1–2.10. Used in **Method B Step 1** for calculating the Euclidean Distance to find neighbors.
+> - **Overall Predicted Score** (`Predicted_Score` from Method C): The aggregate display score, calculated as the average of all the sub-section Predicted Scores. Used in **Method B Step 2** for calculating the correction ratio.
+
 
 ## 🟣 3. Processing Power & Performance
 
-#### 3.0 CPU Core Architecture Reference
+#### 3.1.0 CPU Core Architecture Reference
 
 **Master Scoring Table** (used across all CPU performance calculations)
 
@@ -327,21 +388,21 @@ This table provides the authoritative CPU core architecture scores used througho
 
 **Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
 
-| CPU Core Architecture        | Score  | Ref Freq (GHz) | Generation | Notes                          |
-|------------------------------|:------:|:--------------:|:----------:|--------------------------------|
-| **Apple A18 / A17 Pro / A17**| **10** | **3.78**       | 2023-2024  | Highest IPC, 3nm process       |
-| **Cortex-X925**              | **10** | **3.60**       | 2024       | ARMv9.2, latest flagship       |
-| **Cortex-X4**                | **10** | **3.30**       | 2023       | ARMv9, flagship performance    |
-| **Cortex-X3**                | **9**  | **3.20**       | 2022       | ARMv9 flagship                 |
-| **Cortex-X2**                | **8**  | **3.00**       | 2021       | ARMv9 early flagship           |
-| **Cortex-A720 / A715**       | **7**  | **2.80**       | 2023-2024  | ARMv9 modern performance       |
-| **Cortex-A710**              | **6**  | **2.50**       | 2021       | ARMv9 transitional             |
-| **Cortex-A78 / A77**         | **6**  | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship        |
-| **Cortex-A76 / A75**         | **5**  | **2.20**       | 2017-2018  | ARMv8.2 older flagship         |
-| **Cortex-A73**               | **4**  | **2.00**       | 2016       | ARMv8 budget performance       |
-| **Cortex-A55**               | **2**  | **1.80**       | 2017       | ARMv8.2 modern efficiency      |
-| **Cortex-A520 / A510**       | **2**  | **2.00**       | 2021-2023  | ARMv9 efficiency cores         |
-| **Cortex-A53 / A7**          | **0**  | **1.50**       | 2012-2014  | ARMv8 ancient efficiency       |
+| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                          |
+|------------------------------|:---------:|:--------------:|:----------:|--------------------------------|
+| **Apple A18 / A17 Pro / A17**| **10**    | **3.78**       | 2023-2024  | Highest IPC, 3nm process       |
+| **Cortex-X925**              | **10**    | **3.60**       | 2024       | ARMv9.2, latest flagship       |
+| **Cortex-X4**                | **10**    | **3.30**       | 2023       | ARMv9, flagship performance    |
+| **Cortex-X3**                | **9**     | **3.20**       | 2022       | ARMv9 flagship                 |
+| **Cortex-X2**                | **8**     | **3.00**       | 2021       | ARMv9 early flagship           |
+| **Cortex-A720 / A715**       | **7**     | **2.80**       | 2023-2024  | ARMv9 modern performance       |
+| **Cortex-A710**              | **6**     | **2.50**       | 2021       | ARMv9 transitional             |
+| **Cortex-A78 / A77**         | **6**     | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship        |
+| **Cortex-A76 / A75**         | **5**     | **2.20**       | 2017-2018  | ARMv8.2 older flagship         |
+| **Cortex-A73**               | **4**     | **2.00**       | 2016       | ARMv8 budget performance       |
+| **Cortex-A55**               | **2**     | **1.80**       | 2017       | ARMv8.2 modern efficiency      |
+| **Cortex-A520 / A510**       | **2**     | **2.00**       | 2021-2023  | ARMv9 efficiency cores         |
+| **Cortex-A53 / A7**          | **0**     | **1.50**       | 2012-2014  | ARMv8 ancient efficiency       |
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
@@ -379,7 +440,7 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 
 *   **FSF Formula:** `1 + (Actual_Freq - Ref_Freq) / Ref_Freq`
     *   *Significance:* Scales the base architecture score based on whether the specific cluster is overclocked or underclocked.
-    *   **Reference:** See **Section 3.0** for Reference Frequencies.
+    *   **Reference:** See **Section 3.1.0** for Reference Frequencies.
 *   **FACS Formula:** `Core_Architecture_Score * Core_Count * FSF`
     *   *Significance:* Represents the total throughput contribution of a specific core cluster, accounting for its architecture, count, and clock speed.
 
@@ -475,49 +536,67 @@ This table provides the authoritative GPU architecture scores used throughout th
 **Scoring Basis:** Based on GPU generation, compute units, and real-world graphics performance.
 
 > [!NOTE]
+> **Understanding the GPU Performance Table**
+> 
+> This table scores GPUs across three dimensions:
+> 
+> **1. Standard Graphics (0-10):** Traditional 3D gaming performance
+> *   **Used in:** Section 3.3 (GPU Performance scoring)
+> *   Measures polygon rendering, texture processing, and shader execution
+> *   The foundation of all mobile games (Genshin Impact, PUBG, etc.)
+> *   Higher scores = smoother gameplay at higher settings
+> 
+> **2. Ray Tracing (0-10):** Advanced realistic lighting, shadows, and reflections
+> *   **Used in:** Section 3.3 (GPU Performance scoring)
+> *   Ray tracing simulates how light bounces in the real world, creating photorealistic reflections (mirrors, water), accurate shadows, and global illumination
+> *   **Score 0:** No hardware support - GPU cannot accelerate ray tracing at all
+> *   **Score 1-5:** Basic hardware support - can run simple Ray Tracing (RT) effects but with significant performance cost
+> *   **Score 6-8:** Capable hardware - handles RT effects in modern games (e.g., Resident Evil Village Mobile) with acceptable framerates
+> *   **Score 9-10:** Flagship-tier - delivers smooth RT performance even in demanding scenarios
+> *   *Why the variation?* Ray tracing requires dedicated hardware units (RT cores). More cores + newer architecture = higher score. For example, Adreno 750 has more RT cores than Adreno 740, hence 10 vs 8.
+> 
+> **3. Efficiency (0-10):** Performance-per-watt (battery impact)
+> *   **Used in:** Section 5.1 (Battery Endurance calculations)
+> *   Measures how much performance you get per unit of power consumed
+> *   *Why separate from performance?* Some GPUs (e.g., Snapdragon 888's Adreno 660) have high Standard Graphics scores but terrible efficiency (overheats, drains battery). Others (e.g., Snapdragon 778G's Adreno 642L) have moderate performance but excellent efficiency.
+> *   **Process node benefits** (3nm vs 5nm) are scored separately in Section 3.4. This Efficiency score focuses on architectural design and thermal management.
+> 
+| GPU Model                | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                          |
+| :----------------------- | :---------------: | :---------: | :------------: | :--------: | :----------------------------- |
+| **Immortalis-G720 MC12** | **10**            | **10**      | **1300**       | **10**     | Dimensity 9300 (Top tier)      |
+| **Adreno 750**           | **10**            | **10**      | **903**        | **9**      | Snapdragon 8 Gen 3             |
+| **Adreno 740**           | **9**             | **8**       | **680**        | **9**      | Snapdragon 8 Gen 2             |
+| **Immortalis-G715 MC11** | **9**             | **8**       | **981**        | **9**      | Dimensity 9200                 |
+| **Apple GPU (A18 Pro)**  | **9**             | **9**       | **1398**       | **10**     | 6-core (iPhone 16 Pro)         |
+| **Apple GPU (A17 Pro)**  | **8**             | **7**       | **1398**       | **9**      | 6-core (iPhone 15 Pro)         |
+| **Adreno 730**           | **8**             | **6**       | **900**        | **7**      | Snapdragon 8 Gen 1             |
+| **Mali-G715 MC9**        | **8**             | **6**       | **850**        | **9**      | Dimensity 9000                 |
+| **Mali-G710 MC10**       | **7**             | **5**       | **850**        | **8**      | Dimensity 9000                 |
+| **Adreno 660**           | **7**             | **0**       | **840**        | **5**      | Snapdragon 888 (No RT)         |
+| **Mali-G715 (Tensor G3)**| **7**             | **4**       | **890**        | **6**      | Google Tensor G3               |
+| **Mali-G715 MC7**        | **7**             | **5**       | **850**        | **9**      | Dimensity 8200                 |
+| **Adreno 650**           | **6**             | **0**       | **587**        | **6**      | Snapdragon 865                 |
+| **Adreno 642L**          | **6**             | **0**       | **490**        | **8**      | Snapdragon 778G                |
+| **Mali-G610 MC6**        | **6**             | **0**       | **850**        | **8**      | Dimensity 1080                 |
+| **Mali-G77 MC9**         | **6**             | **0**       | **850**        | **6**      | Dimensity 1000+                |
+| **Adreno 640**           | **5**             | **0**       | **585**        | **5**      | Snapdragon 855                 |
+| **Mali-G610 MC4**        | **5**             | **0**       | **850**        | **7**      | Dimensity 920                  |
+| **Adreno 620**           | **4**             | **0**       | **625**        | **6**      | Snapdragon 765G                |
+| **Adreno 619**           | **4**             | **0**       | **825**        | **6**      | Snapdragon 750G                |
+| **Mali-G68 MC4**         | **4**             | **0**       | **900**        | **6**      | Dimensity 900                  |
+| **Adreno 618**           | **3**             | **0**       | **610**        | **5**      | Snapdragon 730G                |
+| **Mali-G57 MC3**         | **3**             | **0**       | **950**        | **5**      | Budget 5G                      |
+| **Adreno 610**           | **2**             | **0**       | **600**        | **8**      | Snapdragon 680                 |
+| **Mali-G57 MC2**         | **2**             | **0**       | **950**        | **5**      | Entry 5G                       |
+| **Mali-G52 MP2**         | **1**             | **0**       | **850**        | **4**      | Entry Level                    |
+| **PowerVR GE8320**       | **0**             | **0**       | **680**        | **2**      | Ultra-budget legacy            |
+
+> [!NOTE]
 > **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
 > - **Immortalis-G715 MC11** = 11 shader cores (flagship config)
 > - **Mali-G715 MC9** = 9 shader cores (high-end config)
 > - **Mali-G715 MC7** = 7 shader cores (mid-range config)
-> 
 > More cores = higher performance. Always match the exact MC count from device specifications (found on GSMArena under "Chipset" details).
-
-> [!TIP]
-> **Performance vs. Efficiency:**
-> *   **Performance Score:** Measures raw power (gaming/rendering). Used in Section 3.3.
-> *   **Efficiency Score:** Measures performance-per-watt (battery life). Used in Section 5.1.
-> *   *Why different?* Some chips (e.g., Snapdragon 888) have high performance but poor efficiency (heat/drain). Others (e.g., Snapdragon 778G) have lower peak performance but exceptional battery efficiency.
-> *   **Note on Process Node:** Process node benefits (e.g., 3nm vs 5nm) are scored separately in **Section 3.4**. This Efficiency Score focuses on **architectural efficiency** and thermal management.
-
-| GPU Model                    | Performance Score | Ref Freq (MHz) | Efficiency Score | Notes                          |
-|------------------------------|:-----------------:|:--------------:|:----------------:|--------------------------------|
-| **Apple GPU (A18 Pro)**      | **10**            | **1398**       | **10**           | 6-core (iPhone 16 Pro)         |
-| **Apple GPU (A17 Pro)**      | **10**            | **1398**       | **9**            | 6-core (iPhone 15 Pro)         |
-| **Immortalis-G720 MC12**     | **10**            | **1300**       | **10**           | Dimensity 9300                 |
-| **Adreno 750**               | **9**             | **903**        | **9**            | Snapdragon 8 Gen 3             |
-| **Adreno 740**               | **9**             | **680**        | **9**            | Snapdragon 8 Gen 2             |
-| **Immortalis-G715 MC11**     | **9**             | **981**        | **9**            | Dimensity 9200                 |
-| **Adreno 730**               | **8**             | **900**        | **7**            | Snapdragon 8 Gen 1             |
-| **Mali-G715 MC9**            | **8**             | **850**        | **9**            | Dimensity 9000                 |
-| **Mali-G710 MC10**           | **7**             | **850**        | **8**            | Dimensity 9000                 |
-| **Adreno 660**               | **7**             | **840**        | **5**            | Snapdragon 888 (Heat issues)   |
-| **Mali-G715 (Tensor G3)**    | **7**             | **890**        | **6**            | Google Tensor G3               |
-| **Mali-G715 MC7**            | **7**             | **850**        | **9**            | Dimensity 8200                 |
-| **Adreno 650**               | **6**             | **587**        | **6**            | Snapdragon 865                 |
-| **Adreno 642L**              | **6**             | **490**        | **8**            | Snapdragon 778G                |
-| **Mali-G610 MC6**            | **6**             | **850**        | **8**            | Dimensity 1080                 |
-| **Mali-G77 MC9**             | **6**             | **850**        | **6**            | Dimensity 1000+                |
-| **Mali-G610 MC4**            | **5**             | **850**        | **7**            | Dimensity 920                  |
-| **Adreno 640**               | **5**             | **585**        | **5**            | Snapdragon 855                 |
-| **Mali-G68 MC4**             | **4**             | **900**        | **6**            | Dimensity 900                  |
-| **Adreno 620**               | **4**             | **625**        | **6**            | Snapdragon 765G                |
-| **Adreno 619**               | **4**             | **825**        | **6**            | Snapdragon 750G                |
-| **Mali-G57 MC3**             | **3**             | **950**        | **5**            | Budget 5G                      |
-| **Adreno 618**               | **3**             | **610**        | **5**            | Snapdragon 730G                |
-| **Adreno 610**               | **2**             | **600**        | **8**            | Snapdragon 680                 |
-| **Mali-G57 MC2**             | **2**             | **950**        | **5**            | Entry 5G                       |
-| **Mali-G52 MP2**             | **1**             | **850**        | **4**            | Entry Level                    |
-| **PowerVR GE8320**           | **0**             | **680**        | **2**            | Ultra-budget legacy            |
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all GPU scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
@@ -525,106 +604,79 @@ This table provides the authoritative GPU architecture scores used throughout th
 
 ### 🔹 3.3 GPU Performance (Graphics & Gaming)
 *Description:* Measures the graphical processing power for gaming, rendering, and compute tasks. This score reflects the device's ability to drive high-fidelity visuals at high frame rates.
-*   **Measurement:** 3DMark Wild Life Extreme Score.
-*   **Unit:** Points
+*   **Measurement:** Composite of Standard Graphics (90%) and Ray Tracing (10%).
+*   **Unit:** Points (0-10)
 *   **Significance:** Critical for AAA gaming, ray tracing, and UI smoothness on high-refresh-rate displays.
 
-#### Method A: Benchmark (Primary)
+#### Part 1: Standard Graphics Score (SGS)
+*Focus:* Traditional rasterization performance (Geometry, Textures, Shaders) and API efficiency.
+*   **Primary Source:** 3DMark Steel Nomad Light.
+
+**Method A: Benchmark (Primary)**
 **Direct Benchmark Score**
-This is the preferred method when real-world benchmark data is available from either or both sources.
+This is the preferred method when real-world benchmark data is available.
 
-**Benchmark 1: 3DMark Wild Life Extreme**
-*   **Source:** [UL Benchmarks Leaderboard](https://benchmarks.ul.com/compare/best-smartphones)
-*   **Metric:** Wild Life Extreme Score (Points)
+**Benchmark Source: 3DMark Steel Nomad Light**
+*   **Source:** UL Benchmarks Leaderboard
+*   **Metric:** Steel Nomad Light Score (Points)
+*   **Perimeter Justification:**
+    *   **INCLUDES:** Rasterization (Geometry, Textures, Shaders), API Efficiency (Vulkan/Metal driver overhead).
+    *   **EXCLUDES:** Ray Tracing (Hardware RT cores are unused). *Why? Steel Nomad Light is designed to run on a wide range of devices including those without RT support. RT performance is measured separately.*
 *   **Normalization:**
-    *   **Max Score (10.0):** ≥ 5000 points
-    *   **Min Score (0.0):** ≤ 500 points
-*   **Formula:** `3DM_Score = 10 * (log(Score) - log(500)) / (log(5000) - log(500))` (Clamped 0-10)
-
-**Benchmark 2: GFXBench Manhattan 3.1 Offscreen**
-*   **Source:** [GFXBench Database](https://gfxbench.com)
-*   **Metric:** Manhattan 3.1 Offscreen (FPS)
-*   **Normalization:**
-    *   **Max Score (10.0):** ≥ 150 FPS
-    *   **Min Score (0.0):** ≤ 15 FPS
-*   **Formula:** `GFX_Score = 10 * (log(FPS) - log(15)) / (log(150) - log(15))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ GPU_SteelNomad_Max
+    *   **Min Score (0.0):** ≤ GPU_SteelNomad_Min
+*   **Formula:** `SGS_Bench = 10 * (log(Score) - log(GPU_SteelNomad_Min)) / (log(GPU_SteelNomad_Max) - log(GPU_SteelNomad_Min))` (Clamped 0-10)
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
 > [!NOTE]
-> **Why Logarithmic for Both?** Graphics performance scales exponentially. The difference between 15 FPS and 30 FPS (unplayable vs playable) is massive for user experience, while 120 FPS vs 150 FPS shows diminishing returns on mobile screens.
+> **Why Logarithmic?** Graphics performance scales exponentially in user experience. The difference between 500 points (entry-level, struggles with basic games) and 900 points (smooth gameplay in most titles) is transformative. However, the difference between 1400 points (flagship) and 1800 points (top-tier flagship) shows diminishing returns - both deliver excellent performance, and the improvement is barely noticeable in real-world use.
 
 **Scoring Logic:**
+*   **Data Available:** `SGS = SGS_Bench`
+*   **No Data Available:** Proceed to Method B.
 
-**Case 1: Both Benchmarks Available**
-```
-Final_Score = (3DM_Score + GFX_Score) / 2
-```
+**Method B: Nearest Neighbor Interpolation (Secondary)**
+If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for other devices:
 
-**Case 2: One Benchmark Available**
-```
-Final_Score = 3DM_Score  OR  GFX_Score
-```
-
-**Case 3: No Benchmarks Available**
-Proceed to Method B (Nearest Neighbor Interpolation).
-
-**Confidence Score:**
-*   **High:** Both benchmarks available, absolute difference ≤ 1.0 point.
-*   **Medium:** Both benchmarks available, absolute difference ≤ 2.5 points.
-*   **Low:** Both benchmarks available, absolute difference > 2.5 points.
-*   **Unknown:** Only one benchmark available.
-
-**Example 1: Both Benchmarks (High Confidence)**
-- **Device:** Snapdragon 8 Gen 3 Phone
-- 3DMark: 4500 points → `3DM_Score = 10 * (log(4500) - log(500)) / (log(5000) - log(500)) = 9.3`
-- GFXBench: 140 FPS → `GFX_Score = 10 * (log(140) - log(15)) / (log(150) - log(15)) = 9.5`
-- **Final Score:** `(9.3 + 9.5) / 2 = 9.4`
-- **Confidence:** High (difference = 0.2 points)
-
-**Example 2: One Benchmark (Unknown Confidence)**
-- **Device:** New Release
-- 3DMark: 3000 points → `3DM_Score = 10 * (log(3000) - log(500)) / (log(5000) - log(500)) = 7.8`
-- GFXBench: N/A
-- **Final Score:** `7.8`
-- **Confidence:** Unknown (single source)
-
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the specific device has **no benchmark data from either source**, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark and/or GFXBench) and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the closest **Predicted SGS** (calculated via Method C) to the target device.
 2.  **Calculate Correction Ratio:**
-    *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
-    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   `Avg_Predicted_SGS_Neighbors = (Predicted_SGS_Neighbor1 + Predicted_SGS_Neighbor2 + Predicted_SGS_Neighbor3) / 3`
+    *   `Ratio = Predicted_SGS_Target / Avg_Predicted_SGS_Neighbors`
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+    *   `SGS = Ratio * Avg_Benchmark_Neighbors`
 
-#### Method C: Predicted Calculation (Tertiary)
+> [!NOTE]
+> **Why Simple Proximity vs Euclidean Distance?**
+> Unlike Display or Battery where multiple independent factors (Brightness, Color, Refresh Rate) contribute equally to the score, GPU performance is dominated by a single factor: **Base Architecture Score (GAS)** (75% weight). Devices with similar Predicted SGS scores almost certainly share the same or immediate-neighbor GPU architecture. Therefore, selecting neighbors based on **Closest Predicted Score** is computationally efficient and effectively groups devices by hardware generation without needing complex multi-dimensional distance calculations.
+
+**Method C: Predicted Standard Graphics (Tertiary)**
 Used as a standalone fallback or as the **Predictor** for Method B.
 
-**Step 1: GPU Architecture Score (GAS)**
-*   *What is it?* The base capability of the GPU architecture.
-*   **Lookup:** Find the exact GPU Model (including MC count for Mali/Immortalis) in **Section 3.3.0** table above.
-*   **Source:** GSMArena lists full GPU name under "Chipset" section (e.g., "Mali-G715 MC9").
+**Step 1: Get Base Scores (GAS)**
+*   **What is it?** The base capability of the GPU architecture.
+*   **Lookup:** Find the exact GPU Model in **Section 3.3.0 table** above. Use the **Standard Graphics** value.
+*   **Source:** GSMArena lists full GPU name under "Chipset" section.
 
 **Step 2: Frequency Scaling Factor (FSF)**
-*   *What is it?* A multiplier for clock speed variations.
+*   **What is it?** A multiplier for clock speed variations.
 *   **Formula:** `1 + (Actual_Frequency_MHz - Reference_Frequency_MHz) / Reference_Frequency_MHz`
     *   *Significance:* Scales the base architecture score (GAS) based on whether the GPU is overclocked or underclocked relative to the reference design.
     *   **Reference:** See **Section 3.3.0** for Reference Frequencies.
     *   *Example:* Adreno 750 @ 903 MHz (reference) → `1 + (903 - 903)/903 = 1.0`
     *   *Example:* Adreno 750 @ 1000 MHz (overclocked) → `1 + (1000 - 903)/903 = 1.11`
 
-**Step 3: API & Feature Support Modifier (AFM)**
-*   *What is it?* A composite modifier reflecting modern graphics API capabilities and advanced rendering features.
-*   **Formula:** `0.7 + (0.2 * API_Score / 10) + (0.1 * RT_Score / 10)`
-    *   *Range is 0.7-1.0.*
-    *   **Best configurations** (Vulkan 1.3 + Hardware RT): Modifier = **1.0** (no penalty)
-    *   **Worst configurations** (Legacy OpenGL ES, no RT): Modifier = **0.7** (30% penalty)
-*   **Why this matters:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering, improved synchronization, and compute shader capabilities. Hardware ray tracing enables realistic lighting effects that would otherwise require multiple rendering passes.
+**Step 3: API & Feature Support Modifier (AFM - SGS Component)**
+*   **What is it?** A modifier focusing **exclusively on API Efficiency for Rasterization**.
+*   **Formula:** `0.75 + (0.25 * API_Score / 10)`
+    *   *Max Value:* 1.0 (Vulkan 1.3)
+    *   *Min Value:* 0.75 (Legacy OpenGL only)
+    *   *Why this formula?* Ranges from 0.75 (25% penalty relative to baseline) to 1.0 (0% penalty). The +0.75 ensures the API modifier doesn't overly crush the score of older capable hardware, while still rewarding modern efficiency.
 
-**Part A: API Support Score (20% of AFM)**
-*   **Measurement:** Vulkan / OpenGL ES Version.
+**API Support Score Table (Detailed)**
+*   **Measurement:** Highest supported Vulkan / OpenGL ES Version.
 *   **Unit:** Score (0-10)
-*   **Significance:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering, improved synchronization, and compute shader capabilities.
+*   **Significance:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering and compute shader capabilities.
 
 | Score    | API Support                    | Description                    |
 | :------- | :----------------------------- | :----------------------------- |
@@ -636,14 +688,6 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 | **2.0**  | **OpenGL ES 3.0**              | Very old                       |
 | **0.0**  | **OpenGL ES ≤ 2.0**            | Obsolete                       |
 
-> [!NOTE]
-> **Vulkan Version Differences:**
-> - **Vulkan 1.3** (2022): Integrated 23 extensions into core, including dynamic rendering, improved synchronization API, shader integer dot product for ML acceleration
-> - **Vulkan 1.2** (2020): Integrated 23 extensions including timeline semaphores, descriptor indexing, unified memory model
-> - **Vulkan 1.1** (2018): Integrated multi-view rendering, YCbCr support, memory/sync interoperability
->
-> All Vulkan versions provide significantly better performance and lower CPU overhead than OpenGL ES.
-
 > [!IMPORTANT]
 > **Multi-API Support & Scoring Logic:**
 >
@@ -653,44 +697,51 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 >
 > **Scoring Rule:** When a device supports multiple graphics APIs, **use the highest-scoring API** for the predicted score.
 >
-> **Example:**
-> - Device supports: Vulkan 1.3 (score 10.0) + OpenGL ES 3.2 (score 5.0)
-> - **API Score: 10.0** (Vulkan takes priority as the better API)
+> *Example:*
+> *   Device supports: Vulkan 1.3 (score 10.0) + OpenGL ES 3.2 (score 5.0)
+> *   API Score: 10.0 (Vulkan takes priority as the better API)
+> *   *Rationale:* Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
+
+**Step 4: Calculate Predicted SGS**
+1.  **Raw Capability Score (RC):** `GAS * FSF * API_Modifier`
+2.  **Predicted SGS:** `10 * (log(RC) - log(0.5)) / (log(12.5) - log(0.5))`
+    *   *Note:* Uses the calibrated RC constants (Best=12.5, Worst=0.5).
+
+#### Part 2: Ray Tracing Score (RTS)
+*Focus:* Advanced lighting physics (Reflection, Refraction, Shadows).
+*   **Measurement:** Direct Hardware Capability.
+*   **Logic:** Retrieve **Ray Tracing** (0-10) score directly from **Section 3.3.0 Table** above.
+*   **Why no benchmark?** Ray Tracing is a specific hardware feature. Using the architectural capability score is the most accurate predictor of support and performance tier for this specific feature subset.
+
+#### Final Section 3.3 Score Calculation
+Weighted combination of Standard Graphics (Raster) and Ray Tracing.
+
+**Formula:** `Final_Score = (SGS * 0.9) + (RTS * 0.1)`
+
+> [!TIP]
+> **Example 1: Top-Tier Flagship (Snapdragon 8 Gen 3 / Adreno 750)**
+> *   **Step 1: Determine Standard Graphics Score (SGS)**
+>     *   **Method A (Benchmark):** Available. Score = 1800+ → **SGS = 10.0**
+>     *   *(For reference only: Method C Predictor would give ~9.3)*
+> *   **Step 2: Determine Ray Tracing Score (RTS)**
+>     *   **Table Lookup:** Adreno 750 → **RTS = 10.0**
+> *   **Step 3: Calculate Final Score**
+>     *   `Final = (SGS * 0.9) + (RTS * 0.1)`
+>     *   `Final = (10.0 * 0.9) + (10.0 * 0.1) = 9.0 + 1.0 = 10.0`
 >
-> **Rationale:** Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
+> **Example 2: Mid-Range Device (Snapdragon 778G / Adreno 642L)**
+> *   **Step 1: Determine Standard Graphics Score (SGS)**
+>     *   **Method A (Benchmark):** Not Available in Database.
+>     *   **Method B (Neighbors):** Found 3 similar devices (Galaxy A52s, Xiaomi 11 Lite, Moto Edge 20).
+>         *   Avg Neighbor Benchmark: 750 points (Steel Nomad Light).
+>         *   Correction Ratio: ~1.02 (Target has slightly higher clock).
+>         *   Estimated Benchmark: `750 * 1.02 = 765`.
+>         *   **SGS:** `10 * (log(765) - log(500)) / (log(1800) - log(500)) = 3.3`
+> *   **Step 2: Determine Ray Tracing Score (RTS)**
+>     *   **Table Lookup:** Adreno 642L → **RTS = 0.0**
+> *   **Step 3: Calculate Final Score**
+>     *   `Final = (3.3 * 0.9) + (0.0 * 0.1) = 2.97`
 
-**Part B: Ray Tracing Capability Score (10% of AFM)**
-*   **Measurement:** Hardware Ray Tracing Support (Yes/No).
-*   **Unit:** Score (0-10)
-*   **Significance:** Dedicated Ray Tracing (RT) cores enable real-time path tracing and global illumination effects that dramatically improve visual fidelity in modern mobile games. Software-based ray tracing is too slow for real-time use on mobile GPUs.
-
-| Score    | HW Ray Tracing | Description                    |
-| :------- | :------------- | :----------------------------- |
-| **10.0** | **Yes**        | Hardware-accelerated RT cores  |
-| **0.0**  | **No**         | Software fallback or none      |
-
-**Step 4: Calculate Predicted Score**
-1.  **Raw Capability Score (RC):** `GAS * FSF * AFM`
-2.  **Predicted Score:** `10 * (log(RC) - log(RC_Worst_Phone)) / (log(RC_Best_Phone) - log(RC_Worst_Phone))`
-    *   **Max Score (10.0):** RC ≥ RC_Best_Phone
-    *   **Min Score (0.0):** RC ≤ RC_Worst_Phone
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
-
-> **Example: Adreno 750 (Snapdragon 8 Gen 3)**
-> *   **GAS:** 9 (from table)
-> *   **FSF:** 1.0 (903MHz reference)
-> *   **AFM:** `0.7 + (0.2 * 10/10) + (0.1 * 10/10)` = `0.7 + 0.2 + 0.1` = **1.0** (Vulkan 1.3 + Hardware RT)
-> *   **RC:** 9 * 1.0 * 1.0 = **9.0**
-> *   **Predicted Score:** `10 * (log(9.0) - log(RC_Worst_Phone)) / (log(RC_Best_Phone) - log(RC_Worst_Phone))`
-> *   `10 * (log(9.0) - log(2)) / (log(20) - log(2))` = `10 * (0.954 - 0.301) / (1.301 - 0.301)` = **6.5/10**
-> 
-> **Example: Adreno 750 with Legacy API (OpenGL ES 3.2, No RT)**
-> *   **GAS:** 9
-> *   **FSF:** 1.0
-> *   **AFM:** `0.7 + (0.2 * 5/10) + (0.1 * 0/10)` = `0.7 + 0.1 + 0` = **0.8**
-> *   **RC:** 9 * 1.0 * 0.8 = **7.2**
-> *   **PTS:** **7.2**
-> *   **Predicted Score:** `10 * (log(7.2) - log(2)) / (log(20) - log(2))` = `10 * (0.857 - 0.301) / (1.301 - 0.301)` = **5.6/10**
 
 ### 🔹 3.4 Efficiency (Process Node)
 *Description:* Chip manufacturing technology. Smaller numbers (e.g., 3nm) mean the chip is more advanced, using less battery and generating less heat.
@@ -880,6 +931,113 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 | **8.0**  | **Hybrid SIM/MicroSD Slot** | Galaxy A54, Redmi Note 13     |
 | **5.0**  | **Proprietary Expansion**   | Huawei (NM Card)              |
 | **0.0**  | **No Expansion Slot**       | S24 Ultra, iPhone 15, Pixel 8 |
+
+
+### 🔹 3.11 AI Hardware Performance (Neural Processor)
+*Description:* Measures the raw hardware acceleration for AI/ML tasks. The Neural Processing Unit (NPU) or AI Processing Unit (APU) is a dedicated chip that handles AI workloads. This score reflects the device's ability to run on-device generative AI, real-time translation, and advanced image processing *quickly*.
+*   **Measurement:** Geekbench AI (Quantized INT8 Score).
+*   **Unit:** Points
+*   **Significance:** Critical for future-proofing and enabling smooth operation of modern "AI Phone" features.
+
+> [!IMPORTANT]
+> **Hardware vs. Software:** This section measures **Hardware Capability** (The Engine). It is distinct from **Section 6.2 (AI Feature Suite)** which measures the *features* the software actually provides (The Destination). A powerful Neural Processing Unit (NPU) (high 3.11 score) is required to run advanced features smoothly, but doesn't guarantee they are installed.
+
+**SoC Neural Processing Unit (NPU) / AI Accelerator Reference Table**
+
+This table provides the authoritative AI scores for major SoCs, reflecting their Neural Processing Unit (NPU) hardware acceleration capabilities (INT8/FP16) for machine learning.
+
+| SoC Model                | NPU / Neural Engine      | AI Score (0-10) |
+| :----------------------- | :----------------------- | :-------------- | 
+| **Snapdragon 8 Gen 3**   | Hexagon (2024)           | **10**          |
+| **Dimensity 9300**       | APU 790                  | **10**          |
+| **Apple A18 Pro**        | 16-core Neural Engine    | **9**           |
+| **Snapdragon 8 Gen 2**   | Hexagon (2023)           | **8**           |
+| **Apple A17 Pro**        | 16-core Neural Engine    | **8**           |
+| **Tensor G3**            | Google TPU (2023)        | **7**           |
+| **Dimensity 9200**       | APU 690                  | **7**           |
+| **Snapdragon 8 Gen 1**   | Hexagon (2022)           | **6**           |
+| **Tensor G2**            | Google TPU (2022)        | **5**           |
+| **Snapdragon 888**       | Hexagon 780              | **4**           |
+| **Mid-Range (7 Gen 3)**  | Hexagon (Mid)            | **4**           |
+| **Budget**               | N/A or DSP only          | **1**           |
+
+#### Method A: Benchmark (Primary)
+**Direct Benchmark Score**
+This is the preferred method when a direct Geekbench AI score is available. It provides the most accurate representation of real-world AI/NPU performance.
+*   **Source:** [Geekbench AI Leaderboard](https://browser.geekbench.com/ai-benchmarks)
+*   **Metric:** Quantized Score (INT8)
+    *   *Why Quantized?* Mobile NPUs are optimized for integer math (INT8) for efficiency. Evaluating FLOAT32 often falls back to the CPU/GPU, missing the NPU's true potential.
+*   **Normalization:**
+    *   **Max Score (10.0):** ≥ AI_GB_Quant_Max (e.g., 4500)
+    *   **Min Score (0.0):** ≤ AI_GB_Quant_Min (e.g., 500)
+*   **Formula:** `Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Min)) / (log(AI_GB_Quant_Max) - log(AI_GB_Quant_Min))` (Clamped 0-10)
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
+
+> [!NOTE]
+> **Why Logarithmic?** AI performance utility follows diminishing returns. The difference between a sluggish 500-point device (struggles with basic voice commands) and a capable 1500-point device (handles real-time translation) is transformative. The difference between a 3500-point flagship and a 4500-point ultra-flagship is noticeable only in extreme edge cases like running large LLMs locally.
+
+#### Method B: Nearest Neighbor Interpolation (Secondary)
+If the specific device has no benchmark, but we have data for other devices:
+
+**1. Identify Neighbors via Feature Distance (Minimum Variance)**
+Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** AI-relevant hardware components.
+*   **Search Space:** All phones with known Geekbench AI scores (Method A).
+*   **Distance Metric:** Weighted Euclidean Distance.
+    *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
+    *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
+        *   `AI` (table above 3.11), `RAM_Tech` (Sec 3.6), `GPU` (Sec 3.3), `RAM_Cap` (Sec 3.7), `Process` (Sec 3.4).
+    *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
+    *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
+*   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
+
+> [!TIP]
+> **Why this is robust:** This method ensures we compare apples to apples. A phone with a **High NPU Score + Low RAM Bandwidth** will match with similar devices, rather than matching with a **Low NPU Score + High RAM Bandwidth** device, even if they have the same Overall Predicted Score. This is critical because AI workloads scale differently with compute vs. bandwidth.
+
+**2. Calculate Correction Ratio:**
+*   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
+*   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+
+**3. Apply to Benchmark:**
+*   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+*   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+
+#### Method C: Predicted Calculation (Tertiary)
+Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
+
+**Step 1: Gather Components**
+The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
+
+1.  **SoC AI Score (40%) – The Engine**
+    *   **Source:** Retrieve `AI Score` from **the table 3.11 above**.
+    *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
+
+2.  **RAM Technology Score (25%) – The Highway**
+    *   **Source:** Retrieve Score from **Section 3.6**.
+    *   **Rationale:** An engine is useless without fuel. AI models require massive amounts of data to be fed to the NPU instantly. If the "highway" (Memory Bandwidth) is too narrow, the NPU sits idle waiting for data. Faster RAM (e.g., LPDDR5X) directly translates to faster AI response times.
+
+3.  **GPU Performance Score (15%) – The Backup Engine**
+    *   **Source:** Retrieve Score from **Section 3.3**.
+    *   **Rationale:** While the NPU handles most tasks, some complex AI instructions (floating point math) are too specific for it. In these cases, the system falls back to the Graphics Unit (GPU). A strong GPU ensures the phone doesn't choke on these complex tasks.
+
+4.  **RAM Capacity Score (10%) – The Warehouse**
+    *   **Source:** Retrieve Score from **Section 3.7**.
+    *   **Rationale:** This measures *how big* of a model you can run. 8GB is the bare minimum for modern "On-Device AI". If the warehouse is too small, the phone has to constantly swap data in and out, drastically slowing down performance. *Note: having excess RAM (e.g., 24GB) doesn't make a small task faster, which is why this weight is limited to 10%.*
+
+5.  **Process Node Score (10%) – Efficiency**
+    *   **Source:** Retrieve Score from **Section 3.4**.
+    *   **Rationale:** AI calculations generate significant heat. A more efficient chip (e.g., 3nm vs 5nm) determines whether the device can run at top speed for sustained periods or if it will slow down (throttle) to cool off.
+
+**Step 2: Calculate Predicted Score**
+`Predicted_Score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process)`
+
+> **Example: Snapdragon 8 Gen 3 (12GB RAM)**
+> *   **AI Score:** 10.0
+> *   **RAM Tech:** 10.0 (LPDDR5X)
+> *   **GPU Score:** 10.0 (Adreno 750)
+> *   **RAM Cap:** 8.5 (12GB)
+> *   **Process:** 9.0 (4nm TSMC)
+> *   **Predicted:** `4.0 + 2.5 + 1.5 + 0.85 + 0.9` = **9.75/10**
 
 
 ## 🟣 4. Camera Systems
@@ -1339,11 +1497,11 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > [!NOTE]
 > **Why Logarithmic?** The value of support diminishes over time as hardware ages. The difference between 1 and 3 years is critical for security. The difference between 5 and 7 years is less impactful as many users upgrade before then.
 
-### 🔹 6.2 AI User Capability Index (AUCI)
-*Description:* Evaluates how much practical AI capability a user actually gets on a smartphone today. Focuses strictly on user-visible outcomes, not marketing claims or internal architecture.
+### 🔹 6.2 AI Feature Suite
+*Description:* Evaluates the *software features* and practical AI tools available to the user. This measures "what you can do" (features), distinct from **Section 3.11** which measures "how fast it runs" (hardware power).
 *   **Measurement:** Manufacturer feature lists, OS documentation, and verified reviews.
 *   **Unit:** Composite Index (0-10)
-*   **Significance:** Determines the breadth and independence of AI features available to the user.
+*   **Significance:** Determines the breadth of AI tools available to the user, regardless of underlying hardware speed.
 
 **Guiding Question:** *"What useful AI features does the user have access to, and how independently can the phone run them?"*
 

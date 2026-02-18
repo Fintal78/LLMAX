@@ -100,7 +100,7 @@ The process node scoring formula, including logarithmic calculation and foundry 
 
 **Why this matters:** A smartphone's CPU is a heterogeneous mix of "Prime", "Performance", and "Efficiency" cores. Scrutinizing only the strongest core (as done in performance benchmarks) is misleading for battery life. Efficiency cores (like Cortex-A520/A55) handle 80% of daily tasks (background sync, audio playback, idling). A chip with modern efficiency cores will significantly outlast one with older efficiency cores, even if they share the same prime core. To accurately predict battery impact, we must evaluate the **weighted average efficiency** of the entire CPU cluster.
 
-**Data Structure Mapping:** `5_1_battery_endurance.layer_b_hardware_efficiency.b_1_soc_efficiency.breakdown.cpu_architecture_score_aes` (calculated from `3_processing_power_and_performance.3_0_cpu_architecture_reference`)
+**Data Structure Mapping:** `5_1_battery_endurance.layer_b_hardware_efficiency.b_1_soc_efficiency.breakdown.cpu_architecture_score_aes` (calculated from `3_processing_power_and_performance.3_1_0_soc_reference`)
 
 **Scoring Method:**
 **Architecture Efficiency Score (AES)**
@@ -108,7 +108,7 @@ The process node scoring formula, including logarithmic calculation and foundry 
 *   *What is it?* The average quality of the cores, used as a key predictor for battery life.
 *   **Formula:** `Sum(Core_Score * Core_Count) / Total_Core_Count`
     *   *Range is 0-10.*
-    *   **Core Scores:** See [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/scoring_rules.md) Section 3.0 for authoritative core scores.
+    *   **Core Scores:** See [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/scoring_rules.md) Section 3.1.0 for authoritative core scores.
 
 > [!NOTE]
 > **Why Weighted Average?** 

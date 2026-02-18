@@ -17,14 +17,22 @@
 *   `PTS_Worst_Phone` = 5 (Worst multi-thread: Sum(FACS) at minimum)
 *   `STRS_Best_Phone` = 12 (Best single-thread: FACS of Prime Core [10 × 1.2])
 *   `STRS_Worst_Phone` = 5 (Worst single-thread: FACS of Cortex-A76 [5 × 1.0])
-*   `RC_Best_Phone` = 20 (Best GPU: GAS × FSF × AFM at maximum)
-*   `RC_Worst_Phone` = 2 (Worst GPU: GAS × FSF × AFM at minimum)
+*   `RC_Best_Phone` = 12.5 (Best GPU: GAS × FSF × AFM at maximum)
+*   `RC_Worst_Phone` = 0.5 (Worst GPU: GAS × FSF × AFM at minimum)
 *   `Process_Node_Best_nm` = 3 (Latest TSMC)
 *   `Process_Node_Worst_nm` = 20 (Legacy)
 *   `RAM_Max_GB` = 24
 *   `RAM_Min_GB` = 2
 *   `Storage_Max_GB` = 1024
 *   `Storage_Min_GB` = 16
+*   `AI_GB_Quant_Max` = 4500 (Snapdragon 8 Gen 3 / A17 Pro)
+*   `AI_GB_Quant_Min` = 500  (Legacy/Entry)
+*   `GPU_SteelNomad_Max` = 1800 (Snapdragon 8 Gen 3)
+*   `GPU_SteelNomad_Min` = 500 (Mainstream)
+
+## 2. Display
+*   `DXO_Display_Max` = 160
+*   `DXO_Display_Min` = 60
 
 ## 4. Camera Systems
 *   `Main_Sensor_Max_Inch` = 1.0
@@ -61,6 +69,8 @@
 *   `Reverse_Wireless_Min_W` = 4.5
 *   `Reverse_Wired_Max_W` = 10
 *   `Reverse_Wired_Min_W` = 4.5
+*   `DXO_Battery_Max` = 160
+*   `DXO_Battery_Min` = 50
 
 ## 6. Software & Support
 *   `Support_Years_Max` = 7

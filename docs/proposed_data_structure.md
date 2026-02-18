@@ -1,18 +1,12 @@
 # Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is strictly aligned with the `scoring_rules.md` v8.0.
-It includes all previously removed parameters, categorized as:
-1.  **Numbered Keys:** Directly scorable criteria (e.g., `1_1_materials`).
-2.  **Unnumbered Keys:** Contextual metadata (e.g., `colors`, `dimensions`).
-3.  **"To be scored":** Parameters that need new scoring rules (e.g., `npu_tops`).
 
 ```json
 {
   "meta": {
     "schema_version": "5.1",
-    "updated_at": "2025-12-14T21:00:00Z",
-    "data_source": "Multi-source aggregation",
-    "completeness_score": 1.0
+    "last_updated": "2025-12-14"
   },
   "identity": {
     "id": {
@@ -30,38 +24,13 @@ It includes all previously removed parameters, categorized as:
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "series": {
-      "value": "Galaxy S",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
     "model_aliases": {
       "value": ["SM-S928B", "SM-S928U"],
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "codename": {
-      "value": "Eureka",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
     "release_date": {
       "value": "2024-01-24",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "announce_date": {
-      "value": "2024-01-17",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "status": {
-      "value": "Available",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "market_regions": {
-      "value": ["Global"],
       "source": "TBD",
       "exact_extract": "Proof pending"
     }
@@ -305,6 +274,16 @@ It includes all previously removed parameters, categorized as:
       },
       "predicted_score": 0.0,
       "final_score": 0.0
+    },
+    "2_11_display_benchmark_final_scoring": {
+      "dxomark_display_score": {
+        "value": 150,
+        "source": "https://www.dxomark.com/smartphones/#display",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0,
+      "description": "predicted_score = Average of SubScores 2.1-2.10 (Method C). final_score = DXOMARK benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
     }
   },
   "3_processing_power_and_performance": {
@@ -313,93 +292,22 @@ It includes all previously removed parameters, categorized as:
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "3_0_cpu_architecture_reference": {
-      "clusters": [
-        {
-          "name": {
-            "value": "Cortex-X4",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "count": {
-            "value": 1,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "score": {
-            "value": 10,
-            "description": "Section 3.0 Score"
-          },
-          "freq_ghz": {
-            "value": 3.4,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        {
-          "name": {
-            "value": "Cortex-A720",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "count": {
-            "value": 3,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "score": {
-            "value": 7,
-            "description": "Section 3.0 Score"
-          },
-          "freq_ghz": {
-            "value": 3.15,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        {
-          "name": {
-            "value": "Cortex-A720",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "count": {
-            "value": 2,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "score": {
-            "value": 7,
-            "description": "Section 3.0 Score"
-          },
-          "freq_ghz": {
-            "value": 2.96,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        {
-          "name": {
-            "value": "Cortex-A520",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "count": {
-            "value": 2,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "score": {
-            "value": 2,
-            "description": "Section 3.0 Score"
-          },
-          "freq_ghz": {
-            "value": 2.27,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-        }
-      ]
+    "3_1_0_soc_reference": {
+      "cortex_x4": {
+        "count": 1,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "cortex_a720": {
+        "count": 5,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "cortex_a520": {
+        "count": 2,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      }
     },
     "3_1_cpu_multi_core_performance": {
       "geekbench_6_multi_score": {
@@ -459,9 +367,13 @@ It includes all previously removed parameters, categorized as:
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "performance_score": {
-        "value": 9,
-        "description": "Section 3.3.0 Performance Score"
+      "standard_graphics_score": {
+        "value": 10,
+        "description": "Section 3.3.0 Standard Graphics Score"
+      },
+      "ray_tracing_score": {
+        "value": 10,
+        "description": "Section 3.3.0 Ray Tracing Score"
       },
       "efficiency_score": {
         "value": 9,
@@ -469,20 +381,16 @@ It includes all previously removed parameters, categorized as:
       }
     },
     "3_3_gpu_performance": {
-      "benchmark_1_3dmark_wle": {
-        "value": 4500,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "benchmark_2_gfxbench_manhattan31_offscreen": {
-        "value": 140,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "benchmark_steel_nomad_light": {
+        "value": 1800,
+        "source": "UL Benchmarks Leaderboard",
+        "exact_extract": "Proof pending",
+        "description": "3DMark Steel Nomad Light Score (Vulkan 1.1 Rasterization)"
       },
       "scoring_components": {
         "gas": {
-          "value": 9,
-          "description": "GPU Architecture Score from Section 3.3.0"
+          "value": "3_3_0_gpu_architecture_reference.standard_graphics_score",
+          "description": "GPU Architecture Score (Standard Graphics) from Section 3.3.0"
         },
         "fsf": {
           "value": 1.0,
@@ -491,42 +399,48 @@ It includes all previously removed parameters, categorized as:
             "value": 903,
             "source": "TBD",
             "exact_extract": "Proof pending"
+          },
+          "reference_frequency_mhz": {
+            "value": "3_3_0_gpu_architecture_reference.reference_frequency_mhz",
+            "description": "Reference frequency from Section 3.3.0 for FSF calculation"
           }
         },
-        "afm": {
+        "api_modifier": {
           "value": 1.0,
-          "description": "API & Feature Support Modifier",
+          "description": "API Efficiency Modifier (0.75-1.0)",
+          "formula": "0.75 + (0.25 * API_Score / 10)",
           "components": {
-            "api_score": {
-              "vulkan_version": {
-                "value": "1.3",
-                "source": "TBD",
-                "exact_extract": "Proof pending"
-              },
-              "opengl_es_version": {
-                "value": "3.2",
-                "source": "TBD",
-                "exact_extract": "Proof pending"
-              },
-              "score": 10.0,
-              "weight": 0.2,
-              "description": "API Support Score (20% of AFM)"
+            "vulkan_version": {
+              "value": "1.3",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
             },
-            "rt_score": {
-              "ray_tracing_support": {
-                "value": true,
-                "source": "TBD",
-                "exact_extract": "Proof pending"
-              },
-              "score": 10.0,
-              "weight": 0.1,
-              "description": "Ray Tracing Capability Score (10% of AFM)"
+            "opengl_es_version": {
+              "value": "3.2",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "api_score": {
+              "value": 10.0,
+              "description": "Highest API score (Vulkan 1.3 = 10.0)"
             }
           }
+        },
+        "rts": {
+          "reference": "3_3_0_gpu_architecture_reference.ray_tracing_score",
+          "description": "Ray Tracing Score from Section 3.3.0 (0-10)"
         }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0,
+      "sgs": {
+        "value": 10.0,
+        "description": "Standard Graphics Score (from Method A/B/C)",
+        "method_used": "A"
+      },
+      "final_score": {
+        "value": 10.0,
+        "formula": "(SGS * 0.9) + (RTS * 0.1)",
+        "description": "Final GPU Performance Score"
+      },
       "confidence": "High"
     },
     "3_4_efficiency_node": {
@@ -621,6 +535,16 @@ It includes all previously removed parameters, categorized as:
       },
       "predicted_score": 0.0,
       "final_score": 0.0
+    },
+    "3_11_npu_hardware_performance": {
+      "geekbench_ai_score_quantized": {
+        "value": 4500,
+        "source": "https://browser.geekbench.com/ai-benchmarks",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 9.75,
+      "final_score": 9.75,
+      "description": "predicted_score = Weighted formula: (0.40*SoC_AI) + (0.25*RAM_Tech) + (0.15*GPU) + (0.10*RAM_Cap) + (0.10*Process) (Method C). final_score = Geekbench AI benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
     }
   },
   "4_camera_systems": {
@@ -1151,7 +1075,7 @@ It includes all previously removed parameters, categorized as:
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "6_2_ai_user_capability_index": {
+    "6_2_ai_feature_suite": {
       "visual_screen_search": {
         "value": true,
         "source": "TBD",
