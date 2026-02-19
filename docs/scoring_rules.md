@@ -132,9 +132,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Calipers at the thickest point of the body (excluding camera protrusion).
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Affects pocketability and hand comfort.
-*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_Max_Penalty) / (Thickness_Min_Penalty - Thickness_Max_Penalty))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ Thickness_Max_Penalty
-*   **Min Score (0.0):** ≥ Thickness_Min_Penalty
+*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_mm_Min) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Thickness_mm_Min
+*   **Min Score (0.0):** ≥ Thickness_mm_Max
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
 > This is a continuous linear scoring metric. Thinner is better.
@@ -144,9 +144,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Digital scale weight including battery.
 *   **Unit:** Grams (g)
 *   **Significance:** Determines long-term holding comfort and fatigue.
-*Formula:* `Score = 10 - 10 * ((Weight - Weight_Lightest_Phone) / (Weight_Heaviest_Phone - Weight_Lightest_Phone))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ Weight_Lightest_Phone
-*   **Min Score (0.0):** ≥ Weight_Heaviest_Phone
+*Formula:* `Score = 10 - 10 * ((Weight - Weight_g_Min) / (Weight_g_Max - Weight_g_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Weight_g_Min
+*   **Min Score (0.0):** ≥ Weight_g_Max
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
 > This is a continuous linear scoring metric. Lighter is better.
@@ -156,9 +156,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Device Width
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Narrower phones are significantly easier to grip and use one-handed.
-*Formula:* `Score = 10 - 10 * ((Width - 70.0) / (80.0 - 70.0))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ 70.0 mm (Compact / Easy Grip)
-*   **Min Score (0.0):** ≥ 80.0 mm (Wide / Two-Handed Use)
+*Formula:* `Score = 10 - 10 * ((Width - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Width_mm_Min
+*   **Min Score (0.0):** ≥ Width_mm_Max
 > [!NOTE]
 > This is a continuous linear scoring metric. Narrower is better for ergonomics. While curvature affects feel, width is the absolute limit for hand size.
 
@@ -199,9 +199,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Significance:** Determines visual sharpness and clarity of text.
 *   **Data Structure Mapping:** `2_2_resolution_density.ppi`
 
-*Formula:* `Score = 10 * (log(PPI) - log(200)) / (log(600) - log(200))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 600 PPI
-*   **Min Score (0.0):** ≤ 200 PPI
+*Formula:* `Score = 10 * (log(PPI) - log(Display_PPI_Min)) / (log(Display_PPI_Max) - log(Display_PPI_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_PPI_Max
+*   **Min Score (0.0):** ≤ Display_PPI_Min
 > [!NOTE]
 > **Why Logarithmic?** Human visual acuity has diminishing returns. The difference in sharpness between 200 and 300 PPI is immediately obvious, while the difference between 500 and 600 PPI is barely perceptible to the naked eye.
 
@@ -210,9 +210,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Peak brightness on a 1% window (APL) or High Brightness Mode (HBM).
 *   **Unit:** Nits (cd/m²)
 *   **Significance:** Critical for outdoor visibility and HDR content impact.
-*Formula:* `Score = 10 * (log(Nits) - log(400)) / (log(4500) - log(400))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 4500 nits
-*   **Min Score (0.0):** ≤ 400 nits
+*Formula:* `Score = 10 * (log(Nits) - log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) - log(Display_Brightness_Nits_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_Brightness_Nits_Max
+*   **Min Score (0.0):** ≤ Display_Brightness_Nits_Min
 > [!NOTE]
 > **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a significant doubling in brightness, whereas a jump from 3000 to 3500 nits is perceived as a much smaller increase.
 
@@ -222,9 +222,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Percentage (%)
 *   **Significance:** Determines real-world color vibrancy and HDR reproduction capability.
 
-*Formula:* `Score = 10 * (P3_percent - 65) / (100 - 65)` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 100% DCI-P3
-*   **Min Score (0.0):** ≤ 65% DCI-P3
+*Formula:* `Score = 10 * (P3_percent - Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max - Display_P3_Coverage_Percent_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_P3_Coverage_Percent_Max
+*   **Min Score (0.0):** ≤ Display_P3_Coverage_Percent_Min
 
 > [!NOTE]
 > **Why this works:** DCI-P3 is the industry HDR content standard. The scale is continuous, fully quantitative, and automation-friendly. The 65% floor captures budget LCD devices while maintaining meaningful differentiation across the 35-point range.
@@ -261,9 +261,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** High-speed camera analysis or system reporting.
 *   **Unit:** Hertz (Hz)
 *   **Significance:** Determines the smoothness of motion and animations.
-*Formula:* `Score = 10 * (log(Hz) - log(45)) / (log(165) - log(45))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 165 Hz
-*   **Min Score (0.0):** ≤ 45 Hz
+*Formula:* `Score = 10 * (log(Hz) - log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) - log(Display_Refresh_Rate_Hz_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_Refresh_Rate_Hz_Max
+*   **Min Score (0.0):** ≤ Display_Refresh_Rate_Hz_Min
 > [!NOTE]
 > **Why Logarithmic?** Motion smoothness perception follows Weber's Law. The upgrade from 60Hz to 120Hz is a massive leap in fluidity. The step from 120Hz to 144Hz or 165Hz is much harder to perceive for the average user.
 
@@ -272,9 +272,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Touch latency testing (time from touch to signal).
 *   **Unit:** Hertz (Hz)
 *   **Significance:** Critical for competitive gaming and UI fluidity.
-*Formula:* `Score = 10 * (log(Hz) - log(60)) / (log(960) - log(60))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 960 Hz
-*   **Min Score (0.0):** ≤ 60 Hz
+*Formula:* `Score = 10 * (log(Hz) - log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) - log(Display_Touch_Sampling_Hz_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_Touch_Sampling_Hz_Max
+*   **Min Score (0.0):** ≤ Display_Touch_Sampling_Hz_Min
 > [!NOTE]
 > **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz provides a noticeably "stickier" feel. Beyond 480Hz, the improvements in reaction time are smaller than the average human reaction variance.
 
@@ -283,9 +283,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Oscilloscope or flicker meter at low brightness levels.
 *   **Unit:** Hertz (Hz)
 *   **Significance:** Reduces eye strain and headaches for sensitive users.
-*Formula:* `Score = 10 * (log(Hz) - log(120)) / (log(3840) - log(120))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 3840 Hz
-*   **Min Score (0.0):** ≤ 120 Hz
+*Formula:* `Score = 10 * (log(Hz) - log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) - log(Display_PWM_Hz_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_PWM_Hz_Max
+*   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
 > [!NOTE]
 > **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The jump from 240Hz to 480Hz significantly reduces visible flicker for sensitive eyes, whereas the difference between 2000Hz and 3000Hz is marginal.
 
@@ -296,9 +296,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Diagonal length of the active display area.
 *   **Unit:** Inches (")
 *   **Significance:** Determines immersion level and device footprint.
-*Formula:* `Score = 10 * ((Size - 4.5) / (7.6 - 4.5))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 7.6"
-*   **Min Score (0.0):** ≤ 4.5"
+*Formula:* `Score = 10 * ((Size - Display_Size_Inch_Min) / (Display_Size_Inch_Max - Display_Size_Inch_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_Size_Inch_Max
+*   **Min Score (0.0):** ≤ Display_Size_Inch_Min
 > [!NOTE]
 > This is a continuous linear scoring metric. Larger screens provide more immersion.
 
@@ -307,9 +307,9 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** (Active Display Area / Total Frontal Area) * 100.
 *   **Unit:** Percentage (%)
 *   **Significance:** Aesthetic modernity and immersion.
-*Formula:* `Score = 10 * ((Ratio - 60) / (93 - 60))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 93%
-*   **Min Score (0.0):** ≤ 60%
+*Formula:* `Score = 10 * ((Ratio - Display_SBR_Percent_Min) / (Display_SBR_Percent_Max - Display_SBR_Percent_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_SBR_Percent_Max
+*   **Min Score (0.0):** ≤ Display_SBR_Percent_Min
 > [!NOTE]
 This is a continuous linear scoring metric. Higher ratio means thinner bezels.
 
@@ -324,9 +324,9 @@ This is a continuous linear scoring metric. Higher ratio means thinner bezels.
 This is the preferred method when a direct DXOMARK Display score is available. It provides the most accurate representation of real-world display quality.
 *   **Source:** [DXOMARK Display](https://www.dxomark.com/smartphones/#display)
 *   **Normalization:**
-    *   **Max Score (10.0):** ≥ DXO_Display_Max (e.g., 160)
-    *   **Min Score (0.0):** ≤ DXO_Display_Min (e.g., 60)
-    *   **Formula:** `Score = 10 * (log(DXO_Score) - log(DXO_Display_Min)) / (log(DXO_Display_Max) - log(DXO_Display_Min))` (Clamped 0-10)
+    *   **Formula:** `Score = 10 * (log(DXO_Score) - log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) - log(Display_DXO_Score_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Display_DXO_Score_Max
+    *   **Min Score (0.0):** ≤ Display_DXO_Score_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 2*
 
 > [!NOTE]
@@ -420,9 +420,9 @@ This table provides the authoritative CPU core architecture scores used througho
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
 This is the preferred method when a direct Geekbench 6 score is available. It provides the most accurate representation of real-world performance.
-`Score = 10 * (log(Score) - log(GB6_Multi_Worst_Phone)) / (log(GB6_Multi_Best_Phone) - log(GB6_Multi_Worst_Phone))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ GB6_Multi_Best_Phone
-*   **Min Score (0.0):** ≤ GB6_Multi_Worst_Phone
+*   **Formula:** `Score = 10 * (log(Score) - log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) - log(CPU_GB6_Multi_Score_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ CPU_GB6_Multi_Score_Max
+*   **Min Score (0.0):** ≤ CPU_GB6_Multi_Score_Min
 > [!NOTE]
 > **Why Logarithmic?** Performance utility follows diminishing returns. The difference between a laggy 500-point phone and a usable 1500-point phone is transformative. The difference between an 8500-point flagship and a 9500-point gaming beast is noticeable only in extreme niche scenarios.
 
@@ -458,7 +458,7 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 
 **Step 2: Calculate Predicted Score**
 1.  **Raw Throughput (PTS):** `Sum(FACS_of_each_cluster)`
-2.  **Predicted Score:** `10 * (log(PTS) - log(PTS_Worst_Phone)) / (log(PTS_Best_Phone) - log(PTS_Worst_Phone))`
+2.  **Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
     *   **Parameters:** See `scoring_constants.md` for values.
 
 > **Example: Snapdragon 8 Gen 3**
@@ -476,7 +476,7 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 >     *   FACS: `2 (Score) * 2 (Count) * 1.15 (FSF)` = **4.6**
 >
 > *   **Raw (PTS):** `10.0 + 39.9 + 4.6` = **54.5**
-> *   **Predicted Score:** `10 * (log(54.5)-log(PTS_Worst_Phone)) / (log(PTS_Best_Phone)-log(PTS_Worst_Phone))`
+> *   **Predicted Score:** `10 * (log(54.5)-log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max)-log(CPU_PTS_Score_Min))`
 > *   `10 * (log(54.5)-log(5)) / (log(140)-log(5))` = `10 * (4.00 - 1.61) / (4.94 - 1.61)` = `10 * 2.39 / 3.33` ≈ **7.2/10**
 
 ### 🔹 3.2 CPU Architecture & Single-Core Efficiency
@@ -494,9 +494,9 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
 This is the preferred method when a direct Geekbench 6 score is available. It provides the most accurate representation of real-world performance.
-`Score = 10 * (log(Score) - log(GB6_Single_Worst_Phone)) / (log(GB6_Single_Best_Phone) - log(GB6_Single_Worst_Phone))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ GB6_Single_Best_Phone
-*   **Min Score (0.0):** ≤ GB6_Single_Worst_Phone
+`Score = 10 * (log(Score) - log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) - log(CPU_GB6_Single_Score_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ CPU_GB6_Single_Score_Max
+*   **Min Score (0.0):** ≤ CPU_GB6_Single_Score_Min
 > [!NOTE]
 > **Why Logarithmic?** Single-core speed has a direct but diminishing impact on UI fluidity. Moving from 300 to 1000 points dramatically reduces UI stutters. Moving from 2000 to 2500 points yields millisecond gains that are harder to perceive.
 
@@ -533,7 +533,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 3: Calculate Predicted Score**
 1.  **Raw Single-Thread (STRS - Single Thread Raw Score):** `CAS * FSF`
-2.  **Predicted Score:** `10 * (log(STRS) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
+2.  **Predicted Score:** `10 * (log(STRS) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))`
     *   **Parameters:** See `scoring_constants.md` for values.
 
 > **Example: Snapdragon 8 Gen 3 for Galaxy (Overclocked)**
@@ -541,7 +541,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > *   **CAS:** Cortex-X4 = **10**
 > *   **FSF:** `3.4 / 3.3` ≈ **1.03**
 > *   **Raw (FACS):** `10 * 1.03` = **10.3**
-> *   **Predicted Score:** `10 * (log(10.3) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
+> *   **Predicted Score:** `10 * (log(10.3) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))`
 > *   `10 * (log(10.3) - log(5)) / (log(12) - log(5))` = `10 * (2.33 - 1.61) / (2.48 - 1.61)` = `10 * 0.72 / 0.87` ≈ **8.3/10**
 
 #### 3.3.0 GPU Architecture Reference
@@ -642,9 +642,9 @@ This is the preferred method when real-world benchmark data is available.
     *   **INCLUDES:** Rasterization (Geometry, Textures, Shaders), API Efficiency (Vulkan/Metal driver overhead).
     *   **EXCLUDES:** Ray Tracing (Hardware RT cores are unused). *Why? Steel Nomad Light is designed to run on a wide range of devices including those without RT support. RT performance is measured separately.*
 *   **Normalization:**
-    *   **Max Score (10.0):** ≥ GPU_SteelNomad_Max
-    *   **Min Score (0.0):** ≤ GPU_SteelNomad_Min
-*   **Formula:** `SGS_Bench = 10 * (log(Score) - log(GPU_SteelNomad_Min)) / (log(GPU_SteelNomad_Max) - log(GPU_SteelNomad_Min))` (Clamped 0-10)
+    *   **Formula:** `SGS_Bench = 10 * (log(Score) - log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) - log(GPU_SteelNomad_Score_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ GPU_SteelNomad_Score_Max
+    *   **Min Score (0.0):** ≤ GPU_SteelNomad_Score_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
 > [!NOTE]
@@ -726,8 +726,10 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 4: Calculate Predicted SGS**
 1.  **Raw Capability Score (RC):** `GAS * FSF * API_Modifier`
-2.  **Predicted SGS:** `10 * (log(RC) - log(0.5)) / (log(12.5) - log(0.5))`
-    *   *Note:* Uses the calibrated RC constants (Best=12.5, Worst=0.5).
+2.  **Predicted SGS:** `10 * (log(RC) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min))`
+    *   **Max Score (10.0):** ≥ GPU_RC_Score_Max
+    *   **Min Score (0.0):** ≤ GPU_RC_Score_Min
+    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
 #### Part 2: Ray Tracing Score (RTS)
 *Focus:* Advanced lighting physics (Reflection, Refraction, Shadows).
@@ -771,26 +773,26 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Unit:** Nanometers (nm)
 *   **Significance:** Major factor in power efficiency and thermal performance.
 *Formula:*
-1.  **Calculate Base Score:** `10 * (log(Process_Node_Worst_nm) - log(Node)) / (log(Process_Node_Worst_nm) - log(Process_Node_Best_nm)) - 0.3`
-    *   *Note:* The `- 0.3` ensures that a perfect 10.0 is only achievable with the TSMC modifier.
-2.  **Apply Modifier:** `Predicted_Score = Base_Score + Foundry_Modifier` (Clamped 0-10)
+1.  **Node Score:** `10 * (log(SoC_Process_Node_nm_Max) - log(Node)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
+2.  **Foundry Score:** See Foundry Efficiency table below.
+3.  **Predicted Score:** `(0.9 × Node_Score) + (0.1 × Foundry_Score)` (Clamped 0-10)
 
-*   **Max Score (10.0):** ≤ Process_Node_Best_nm
-*   **Min Score (0.0):** ≥ Process_Node_Worst_nm
+*   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
+*   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
-**Foundry Efficiency Modifier:**
-| Foundry           | Modifier | Why?                                                                        |
-| :---------------- | :------- | :-------------------------------------------------------------------------- |
-| **TSMC**          | **+0.3** | 20-30% better power efficiency at same node label (empirically proven).     |
-| **Samsung**       | **0.0**  | Standard efficiency baseline.                                               |
-| **SMIC / Others** | **-0.3** | Generally lower yield/efficiency than leaders.                              |
+**Foundry Efficiency Score:**
+| Foundry           | Foundry Score | Why?                                                                        |
+| :---------------- | :-----------: | :-------------------------------------------------------------------------- |
+| **TSMC**          | **10**        | 20-30% better power efficiency at same node label (empirically proven).     |
+| **Samsung**       | **5**         | Standard efficiency baseline.                                               |
+| **SMIC / Others** | **0**         | Generally lower yield/efficiency than leaders.                              |
 
 > [!NOTE]
-> **Why Logarithmic & 20nm Cap?** Transistor density and power efficiency scale non-linearly. A shrink from 10nm to 5nm is a massive leap compared to 20nm to 15nm. We cap the scale at 20nm (extended from 16nm) because almost all relevant modern devices are ≤20nm, ensuring the score resolution is focused where it matters most.
+> **Why Logarithmic?** Transistor density and power efficiency scale non-linearly. A shrink from a mid-range node to a cutting-edge node is a massive leap, while equivalent absolute reductions at larger nodes yield diminishing returns. The scale is capped at `SoC_Process_Node_nm_Max` because almost all relevant modern devices fall within this range, ensuring score resolution is focused where it matters most.
 
 > [!NOTE]
-> **Unified Formula for Battery Scoring:** This exact formula is also used in the Battery Endurance Score model (Section 5.1, see [battery_scoring_model.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/battery_scoring_model.md) B.1.1) because process node efficiency directly impacts battery life. Foundry differences (TSMC vs Samsung) affect power consumption by 20-30%, so the foundry modifier must be included in battery life predictions.
+> **Unified Formula for Battery Scoring:** This exact formula is also used in the Battery Endurance Score model (Section 5.1, see [battery_scoring_model.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/battery_scoring_model.md) B.1.1) because process node efficiency directly impacts battery life. Foundry differences (TSMC vs Samsung) affect power consumption by 20-30%, so the foundry score must be included in battery life predictions.
 
 ### 🔹 3.5 Thermal Dissipation & Stability Index (TDSI)
 *Description:* A composite index measuring the device's ability to sustain performance and shed heat. It combines the physical thermal capacity of the chassis with the sophistication of the internal cooling solution.
@@ -822,9 +824,9 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Unit:** Grams (g)
 *   **Significance:** Heavier phones have more thermal mass to absorb heat spikes.
 
-*Formula:* `Score = 10 * (Weight_g - Weight_Lightest_Phone) / (Weight_Heaviest_Phone - Weight_Lightest_Phone)` (Clamped 0-10)
-*   **Max Score (10.0):** obtained for Heaviest Phone (Weight_Heaviest_Phone)
-*   **Min Score (0.0):** obtained for Lightest Phone (Weight_Lightest_Phone)
+*Formula:* `Score = 10 * (Weight_g - Thermal_Weight_g_Min) / (Thermal_Weight_g_Max - Thermal_Weight_g_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Weight_g_Max
+*   **Min Score (0.0):** ≤ Thermal_Weight_g_Min
 
 **A3 — Heat Dissipation Surface Area (20% of Part A)**
 *   **Measurement:** Physical dimensions from spec sheet.
@@ -832,18 +834,18 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Significance:** Bigger phones dissipate heat better through larger surface area.
 
 *Formula:* `Surface = Height_mm × Width_mm`  
-*Formula:* `Score = 10 * (Surface - 6000) / (9000 - 6000)` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 9000 mm²
-*   **Min Score (0.0):** ≤ 6000 mm²
+*Formula:* `Score = 10 * (Surface - Thermal_Surface_Area_mm2_Min) / (Thermal_Surface_Area_mm2_Max - Thermal_Surface_Area_mm2_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Surface_Area_mm2_Max
+*   **Min Score (0.0):** ≤ Thermal_Surface_Area_mm2_Min
 
 **A4 — Device Thickness (15% of Part A)**
 *   **Measurement:** Device thickness from manufacturer specifications.
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Thicker phones have more internal volume for heat dissipation and airflow, allowing for better passive cooling and thermal capacity.
 
-*Formula:* `Score = 10 * (Thickness_mm - 6) / (10 - 6)` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 10 mm
-*   **Min Score (0.0):** ≤ 6 mm
+*Formula:* `Score = 10 * (Thickness_mm - Thermal_Thickness_mm_Min) / (Thermal_Thickness_mm_Max - Thermal_Thickness_mm_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Thickness_mm_Max
+*   **Min Score (0.0):** ≤ Thermal_Thickness_mm_Min
 
 > [!NOTE]
 > **Data Structure Mapping:** `1_4_dimensions.thickness_mm`
@@ -907,9 +909,9 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Measurement:** Total physical RAM.
 *   **Unit:** Gigabytes (GB)
 *   **Significance:** Determines multitasking capability and app retention.
-*Formula:* `Score = 10 * (log(GB) - log(RAM_Min_GB)) / (log(RAM_Max_GB) - log(RAM_Min_GB))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ RAM_Max_GB
-*   **Min Score (0.0):** ≤ RAM_Min_GB
+*Formula:* `Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ RAM_GB_Max
+*   **Min Score (0.0):** ≤ RAM_GB_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 > [!NOTE]
 > **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB dramatically improves multitasking and system stability. However, going from 16GB to 24GB offers minimal tangible benefit for current mobile applications.
@@ -935,9 +937,9 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Measurement:** Total internal non-volatile memory.
 *   **Unit:** Gigabytes (GB)
 *   **Significance:** Determines capacity for apps, media, and files.
-*Formula:* `Score = 10 * (log(GB) - log(Storage_Min_GB)) / (log(Storage_Max_GB) - log(Storage_Min_GB))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Storage_Max_GB
-*   **Min Score (0.0):** ≤ Storage_Min_GB
+*Formula:* `Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Storage_GB_Max
+*   **Min Score (0.0):** ≤ Storage_GB_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 > [!NOTE]
 > **Why Logarithmic?** Similar to RAM, storage utility is non-linear. 64GB to 128GB is a critical upgrade that prevents "storage full" anxiety. 512GB to 1TB is a luxury for power users, with less impact on daily basic functionality.
@@ -990,9 +992,9 @@ This is the preferred method when a direct Geekbench AI score is available. It p
 *   **Metric:** Quantized Score (INT8)
     *   *Why Quantized?* Mobile NPUs are optimized for integer math (INT8) for efficiency. Evaluating FLOAT32 often falls back to the CPU/GPU, missing the NPU's true potential.
 *   **Normalization:**
-    *   **Max Score (10.0):** ≥ AI_GB_Quant_Max (e.g., 4500)
-    *   **Min Score (0.0):** ≤ AI_GB_Quant_Min (e.g., 500)
-*   **Formula:** `Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Min)) / (log(AI_GB_Quant_Max) - log(AI_GB_Quant_Min))` (Clamped 0-10)
+    *   **Formula:** `Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ AI_GB_Quant_Score_Max
+    *   **Min Score (0.0):** ≤ AI_GB_Quant_Score_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
 
 > [!NOTE]
@@ -1071,9 +1073,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Diagonal sensor size (Type 1/x").
 *   **Unit:** Optical Format (Inches)
 *   **Significance:** The most critical hardware factor for image quality (noise, dynamic range).
-*Formula:* `Score = 10 * (log(Size_Inch) - log(0.25)) / (log(1.0) - log(0.25))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 1.0 inch
-*   **Min Score (0.0):** ≤ 0.25 inch (1/4")
+*Formula:* `Score = 10 * (log(Size_Inch) - log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) - log(Camera_Main_Sensor_Inch_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Main_Sensor_Inch_Max
+*   **Min Score (0.0):** ≤ Camera_Main_Sensor_Inch_Min
 > [!NOTE]
 > **Why Logarithmic?** Sensor area grows quadratically with diagonal size, but photographic benefits (dynamic range, noise) follow a diminishing return curve in mobile form factors. A 1-inch sensor is a massive leap over 1/2-inch, but further increases face optical constraints.
 
@@ -1082,9 +1084,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Focal length / Entrance pupil diameter.
 *   **Unit:** f-stop (f/number)
 *   **Significance:** Determines light gathering and depth of field.
-*Formula:* `Score = 10 - 10 * ((f_stop - 1.4) / (2.4 - 1.4))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ f/1.4
-*   **Min Score (0.0):** ≥ f/2.4
+*Formula:* `Score = 10 - 10 * ((f_stop - Camera_Main_Aperture_f_Min) / (Camera_Main_Aperture_f_Max - Camera_Main_Aperture_f_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Camera_Main_Aperture_f_Min
+*   **Min Score (0.0):** ≥ Camera_Main_Aperture_f_Max
 > [!NOTE]
 > This is a continuous linear scoring metric. Lower f-number is better (wider aperture).
 
@@ -1093,9 +1095,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Total effective pixel count.
 *   **Unit:** Megapixels (MP)
 *   **Significance:** Allows for digital zooming and fine detail capture.
-*Formula:* `Score = 10 * (log(MP) - log(12)) / (log(200) - log(12))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 200 MP
-*   **Min Score (0.0):** ≤ 12 MP
+*Formula:* `Score = 10 * (log(MP) - log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) - log(Camera_Main_Resolution_MP_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Main_Resolution_MP_Max
+*   **Min Score (0.0):** ≤ Camera_Main_Resolution_MP_Min
 > [!NOTE]
 > **Why Logarithmic?** Moving from 12MP to 50MP provides a significant jump in detail for cropping. However, moving from 100MP to 200MP offers diminishing returns due to lens diffraction limits and file size management.
 
@@ -1127,9 +1129,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Focal length ratio relative to the main camera.
 *   **Unit:** Optical Magnification (x)
 *   **Significance:** Enables capturing distant subjects without quality loss.
-*Formula:* `Score = 10 * (log(Zoom) - log(1)) / (log(10) - log(1))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 10x Optical
-*   **Min Score (0.0):** 1x (No Zoom)
+*Formula:* `Score = 10 * (log(Zoom) - log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) - log(Camera_Zoom_Optical_x_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Zoom_Optical_x_Max
+*   **Min Score (0.0):** ≤ Camera_Zoom_Optical_x_Min
 > [!NOTE]
 > **Why Logarithmic?** The difference in reach between 1x and 3x is transformative for composition. The difference between 10x and 12x is much less significant in terms of framing capability.
 
@@ -1149,18 +1151,18 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 **4.6.2 Ultrawide Field of View**
 *   *Why it matters:* Wider FOV captures more of the scene; this is the primary purpose of an ultrawide lens.
 *   **Measurement:** Manufacturer FOV spec (degrees).
-*   *Formula:* `Score = 10 * (FOV - 100) / (130 - 100)` (Clamped 0-10)
-    *   **10.0:** ≥ 130°
-    *   **0.0:** ≤ 100°
+*   *Formula:* `Score = 10 * (FOV - Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max - Camera_Ultrawide_FOV_Deg_Min)` (Clamped 0-10)
+    *   **10.0:** ≥ Camera_Ultrawide_FOV_Deg_Max
+    *   **0.0:** ≤ Camera_Ultrawide_FOV_Deg_Min
 > [!NOTE]
 > **Why Linear?** Field of View is a direct geometric measurement where each degree adds roughly equal value to the composition. The difference between 100° and 110° is perceptually similar to the difference between 110° and 120° in terms of "wideness".
 
 **4.6.3 Ultrawide Sensor Size**
 *   *Why it matters:* Larger sensors perform better in low light and have better dynamic range.
 *   **Measurement:** Optical format (e.g., 1/2.0").
-*   *Formula:* `Score = 10 * (log(Size) - log(0.25)) / (log(0.5) - log(0.25))` (Clamped 0-10)
-    *   **10.0:** ≥ 1/2"
-    *   **0.0:** ≤ 1/4"
+*   *Formula:* `Score = 10 * (log(Size) - log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) - log(Camera_Ultrawide_Sensor_Inch_Min))` (Clamped 0-10)
+    *   **10.0:** ≥ Camera_Ultrawide_Sensor_Inch_Max
+    *   **0.0:** ≤ Camera_Ultrawide_Sensor_Inch_Min
 > [!NOTE]
 > **Why Logarithmic?** Sensor area grows quadratically with diagonal size, but photographic benefits (dynamic range, noise) follow a diminishing return curve. Moving from a tiny 1/4" sensor to a 1/2.5" sensor is a massive leap in quality, while moving from 1/2" to 1/1.5" offers smaller relative gains for an ultrawide module.
 
@@ -1185,9 +1187,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 **4.7.2 Minimum Focus Distance**
 *   *Why it matters:* The physical limit of how close you can get.
 *   **Measurement:** Minimum focus distance (cm).
-*   *Formula:* `Score = 10 - 10 * ((Distance - 1.5) / (10 - 1.5))` (Clamped 0-10)
-    *   **10.0:** ≤ 1.5 cm
-    *   **0.0:** ≥ 10 cm
+*   *Formula:* `Score = 10 - 10 * ((Distance - Camera_Macro_Dist_cm_Min) / (Camera_Macro_Dist_cm_Max - Camera_Macro_Dist_cm_Min))` (Clamped 0-10)
+    *   **10.0:** ≤ Camera_Macro_Dist_cm_Min
+    *   **0.0:** ≥ Camera_Macro_Dist_cm_Max
 > [!NOTE]
 > **Why Linear?** In the macro range (1.5cm - 10cm), every centimeter closer allows for significantly more magnification. While magnification itself is non-linear, a linear scoring penalty for every centimeter lost is a fair and intuitive way to grade the "closeness" capability.
 
@@ -1195,8 +1197,8 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Autofocus Ultrawide (Score 10).
 *   **Measurement:** Sensor Resolution (MP).
 *   *Formula:* `Score = clamp(MP, 0, 6)`
-    *   **Max Score (6.0):** ≥ 6 MP (Decent utility)
-    *   **Min Score (0.0):** 0 MP (None)
+    *   **Max Score (6.0):** ≥ 6 MP
+    *   **Min Score (0.0):** 0 MP (No dedicated macro lens)
 > [!NOTE]
 > **Why Linear?** The useful range for dedicated macro lenses is narrow (typically 2MP to 5MP). A simple linear progression (`MP`) accurately maps the hardware capability: 0MP is useless (0), 2MP is weak (2), and 5MP is decent (5). This avoids overvaluing low-res "gimmick" sensors.
 
@@ -1224,9 +1226,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Maximum FPS.
 *   **Unit:** Frames per second (FPS)
 *   **Significance:** Higher FPS (Frames Per Second) enables smoother motion and better motion clarity.
-*Formula:* `Score = 10 * (log(FPS) - log(5)) / (log(120) - log(5))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 120 FPS
-*   **Min Score (0.0):** ≤ 5 FPS
+*Formula:* `Score = 10 * (log(FPS) - log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) - log(Camera_Video_FPS_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Video_FPS_Max
+*   **Min Score (0.0):** ≤ Camera_Video_FPS_Min
 > [!NOTE]
 > **Why Logarithmic?** The perception of smoothness is non-linear. The jump from 30fps to 60fps is dramatic (doubling smoothness), while 60fps to 120fps is noticeable but less transformative for standard video consumption.
 
@@ -1300,10 +1302,10 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Maximum slow-motion FPS and resolution.
 *   **Unit:** FPS @ Resolution (MP/s)
 *   **Significance:** Enables creative effects and analysis of fast motion.
-*Formula:* `Score = 10 * (log(MP_s) - log(32)) / (log(1000) - log(32))` (Clamped 0-10)
+*Formula:* `Score = 10 * (log(MP_s) - log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) - log(Camera_SlowMo_MPs_Min))` (Clamped 0-10)
     *   `MP_s = Resolution_MP * FPS`
-*   **Max Score (10.0):** ≥ 1000 MP/s (e.g., 4K @ 120fps)
-*   **Min Score (0.0):** ≤ 32 MP/s (e.g., 720p @ 30fps)
+*   **Max Score (10.0):** ≥ Camera_SlowMo_MPs_Max
+*   **Min Score (0.0):** ≤ Camera_SlowMo_MPs_Min
 > [!NOTE]
 > **Why Logarithmic?** Slow motion quality depends on both resolution and speed. A logarithmic scale on total pixels-per-second (MP/s) fairly balances high-res/low-fps against low-res/high-fps modes, rewarding the total data throughput capability.
 
@@ -1314,9 +1316,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Front camera megapixel count.
 *   **Unit:** Megapixels (MP)
 *   **Significance:** Determines selfie detail and cropping flexibility.
-*Formula:* `Score = 10 * (log(MP) - log(5)) / (log(32) - log(5))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ 32 MP
-*   **Min Score (0.0):** ≤ 5 MP
+*Formula:* `Score = 10 * (log(MP) - log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) - log(Camera_Front_Resolution_MP_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Front_Resolution_MP_Max
+*   **Min Score (0.0):** ≤ Camera_Front_Resolution_MP_Min
 > [!NOTE]
 > **Why Logarithmic?** Selfie detail benefits diminish rapidly after a certain point. 32MP is sufficient for high-quality prints; beyond that, sensor size matters more than pixel count.
 
@@ -1347,11 +1349,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *What it measures:* The maximum spatial resolution (pixel count) the front camera can record.
 *   **Measurement:** Maximum supported front video resolution (long edge in pixels).
 *   **Why it matters:** Higher resolution provides more detail for cropping, digital stabilization, and future-proofing. 4K allows for 1080p crops without quality loss, while 720p limits editing flexibility.
-*   *Formula:* `ResScore = 10 * (log(px) - log(1280)) / (log(3840) - log(1280))` (Clamped 0-10)
+*   *Formula:* `ResScore = 10 * (log(px) - log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) - log(Camera_Front_Video_Res_Width_Min))` (Clamped 0-10)
     *   **Variables:**
         *   `px` = Long edge resolution in pixels (e.g., 3840 for 4K, 1920 for 1080p, 1280 for 720p)
-    *   **Max Score (10.0):** 4K (3840px long edge)
-    *   **Min Score (0.0):** 720p (1280px long edge)
+    *   **Max Score (10.0):** ≥ Camera_Front_Video_Res_Width_Max
+    *   **Min Score (0.0):** ≤ Camera_Front_Video_Res_Width_Min
 > [!NOTE]
 > **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The jump from 720p to 1080p is dramatic for clarity, but 1080p to 4K is less noticeable on small screens, though valuable for cropping and editing.
 
@@ -1359,11 +1361,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
 *   **Measurement:** Maximum FPS at the highest supported resolution.
 *   **Why it matters:** Higher frame rates (60fps) create smoother motion for vlogs and video calls, reducing motion blur and improving the perception of fluidity. 24fps is cinematic but can appear choppy for fast movement.
-*   *Formula:* `FPSScore = 10 * (log(FPS) - log(24)) / (log(60) - log(24))` (Clamped 0-10)
+*   *Formula:* `FPSScore = 10 * (log(FPS) - log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) - log(Camera_Front_Video_FPS_Min))` (Clamped 0-10)
     *   **Variables:**
         *   `FPS` = Maximum sustained frame rate (e.g., 60, 30, 24)
-    *   **Max Score (10.0):** 60 FPS
-    *   **Min Score (0.0):** 24 FPS
+    *   **Max Score (10.0):** ≥ Camera_Front_Video_FPS_Max
+    *   **Min Score (0.0):** ≤ Camera_Front_Video_FPS_Min
 > [!NOTE]
 > **Why Logarithmic?** Frame rate perception is non-linear. The difference between 24fps and 30fps is barely noticeable, but 30fps to 60fps is a significant smoothness upgrade for motion-heavy content.
 
@@ -1450,9 +1452,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Peak power input via wired connection.
 *   **Unit:** Watts (W)
 *   **Significance:** Reduces downtime when battery is low.
-*Formula:* `Score = 10 * (log(Watts) - log(Wired_Charging_Min_W)) / (log(Wired_Charging_Max_W) - log(Wired_Charging_Min_W))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Wired_Charging_Max_W
-*   **Min Score (0.0):** ≤ Wired_Charging_Min_W
+*Formula:* `Score = 10 * (log(Watts) - log(Battery_Wired_Charging_W_Min)) / (log(Battery_Wired_Charging_W_Max) - log(Battery_Wired_Charging_W_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Battery_Wired_Charging_W_Max
+*   **Min Score (0.0):** ≤ Battery_Wired_Charging_W_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Logarithmic?** Time-to-charge follows a diminishing return curve. Upgrading from 10W to 60W saves massive amounts of time (hours). Upgrading from 120W to 240W saves only minutes, as the battery chemistry limits sustained peak speeds.
@@ -1462,9 +1464,9 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Peak power input via wireless coil.
 *   **Unit:** Watts (W)
 *   **Significance:** Convenience and ease of topping up.
-*Formula:* `Score = 10 * (log(Watts) - log(Wireless_Charging_Min_W)) / (log(Wireless_Charging_Max_W) - log(Wireless_Charging_Min_W))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Wireless_Charging_Max_W
-*   **Min Score (0.0):** ≤ Wireless_Charging_Min_W
+*Formula:* `Score = 10 * (log(Watts) - log(Battery_Wireless_Charging_W_Min)) / (log(Battery_Wireless_Charging_W_Max) - log(Battery_Wireless_Charging_W_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Battery_Wireless_Charging_W_Max
+*   **Min Score (0.0):** ≤ Battery_Wireless_Charging_W_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
 > **Why Logarithmic?** Similar to wired charging, the convenience gain from 5W to 15W is significant (usable charging vs trickle). Beyond 50W, thermal limits often throttle speeds, reducing the real-world time savings.
@@ -1474,8 +1476,8 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Peak power output via wireless coil.
 *   **Unit:** Watts (W)
 *   **Significance:** Convenient for emergency top-ups of accessories on the go.
-*Formula:* `Score = 10 * (Watts / Reverse_Wireless_Max_W)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ Reverse_Wireless_Max_W (Fast Reverse)
+*Formula:* `Score = 10 * (Watts / Battery_Reverse_Wireless_W_Max)` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Battery_Reverse_Wireless_W_Max
     *   **Min Score (0.0):** 0W (None)
     *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
@@ -1486,8 +1488,8 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Peak power output via USB-C port.
 *   **Unit:** Watts (W)
 *   **Significance:** Useful for sharing power with other phones or charging larger accessories.
-*Formula:* `Score = 10 * (Watts / Reverse_Wired_Max_W)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ Reverse_Wired_Max_W
+*Formula:* `Score = 10 * (Watts / Battery_Reverse_Wired_W_Max)` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Battery_Reverse_Wired_W_Max
     *   **Min Score (0.0):** 0W (None)
     *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
@@ -1709,11 +1711,11 @@ SCC = Platform_Cleanliness_Score (direct lookup from skin field)
 Codec_Score = clamp(Bitrate_Component + Bit_Depth_Component, 0, 5.0)
 
 Where:
-  Bitrate_Component = (Bitrate_kbps / Bitrate_kbps_Best_Device) * 3.5
+  Bitrate_Component = (Bitrate_kbps / Audio_Bitrate_kbps_Max) * 3.5
   Bit_Depth_Component = 1.5 if (bit_depth ≥ 24) else 0.0
 
 Constants:
-  Bitrate_kbps_Best_Device = See scoring_constants.md Section 7
+  Audio_Bitrate_kbps_Max = See scoring_constants.md Section 7
 ```
 
 **Fallback Lookup Table:**
@@ -2051,9 +2053,9 @@ MAR is a weighted composite of three subsections:
 *   **Measurement:** Manufacturer's Suggested Retail Price (MSRP) at launch or current average market price.
 *   **Unit:** USD ($)
 *   **Significance:** Primary barrier to entry and value determinant.
-*Formula:* `Score = 10 - 10 * (log(Price) - log(Price_Anchor_Best_USD)) / (log(Price_Anchor_Worst_USD) - log(Price_Anchor_Best_USD))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ Price_Anchor_Best_USD
-*   **Min Score (0.0):** ≥ Price_Anchor_Worst_USD
+*Formula:* `Score = 10 - 10 * (log(Price) - log(Price_USD_Min)) / (log(Price_USD_Max) - log(Price_USD_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≤ Price_USD_Min
+*   **Min Score (0.0):** ≥ Price_USD_Max
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 9*
 > [!NOTE]
 > **Why Logarithmic?** Price sensitivity is relative. A $50 increase on a $150 phone is a massive 33% hike, whereas a $50 increase on a $1000 phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.

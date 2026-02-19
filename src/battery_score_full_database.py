@@ -37,15 +37,18 @@ SEE ALSO:
 - docs/BATTERY_SCORING_PROCESS.md - Complete lifecycle documentation
 """
 
-import json
-import re
+import sys
 import os
 
-# --- Constants & Tables ---
+# Ensure src is in path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from src.scoring_utils import load_constants
+
+SCORING_CONSTANTS = load_constants()
 
 # Layer B.1.1 Process Node (Continuous)
-PROCESS_NODE_MIN = 3
-PROCESS_NODE_MAX = 20
+PROCESS_NODE_MIN = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Min', 3)
+PROCESS_NODE_MAX = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Max', 20)
 
 # Layer B.1.2 CPU Class (See Section 3.1 of scoring_rules.md)
 # Format: "Core Name": (Score, Reference_Frequency_GHz)
@@ -247,7 +250,9 @@ def calc_layer_a(specs):
         
         wh = (mah * voltage) / 1000
         
-    score = normalize_linear(wh, 8, 25)
+    wh_min = SCORING_CONSTANTS.get('Battery_Energy_Wh_Min', 8)
+    wh_max = SCORING_CONSTANTS.get('Battery_Energy_Wh_Max', 25)
+    score = normalize_linear(wh, wh_min, wh_max)
     
     return {"wh": round(wh, 2), "score": round(score, 2)}
 
@@ -308,18 +313,21 @@ def calc_layer_b(specs):
         elif "SMIC" in chipset:
             foundry = "SMIC"
     
-    # Unified logarithmic formula (see Section 3.4 of scoring_rules.md)
+    # Unified weighted formula (see Section 3.4 of scoring_rules.md)
     import math
-    base_score = 10 * (math.log(20) - math.log(process_nm)) / (math.log(20) - math.log(3)) - 0.3
+    p_min = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Min', 3)
+    p_max = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Max', 20)
+    node_score = 10 * (math.log(p_max) - math.log(process_nm)) / (math.log(p_max) - math.log(p_min))
+    node_score = clamp(node_score, 0, 10)
     
-    # Foundry modifier: TSMC +0.3, Samsung 0.0, SMIC -0.3
-    foundry_modifier = 0.0
+    # Foundry score: TSMC 10, Samsung 5, SMIC/Others 0
+    foundry_score = 5  # Default: Samsung
     if foundry == "TSMC":
-        foundry_modifier = 0.3
+        foundry_score = 10
     elif foundry == "SMIC":
-        foundry_modifier = -0.3
+        foundry_score = 0
     
-    process_score = base_score + foundry_modifier
+    process_score = (0.9 * node_score) + (0.1 * foundry_score)
     process_score = clamp(process_score, 0, 10)
     
     # refined CPU scoring with FSF
@@ -530,7 +538,9 @@ def calc_layer_b(specs):
         max_hz = 90
     
     effective_refresh = (min_hz + max_hz) / 2 if adaptive else max_hz
-    refresh_score = 10 - 10 * (effective_refresh - 30) / (165 - 30)
+    bat_hz_min = SCORING_CONSTANTS.get('Battery_Refresh_Effective_Hz_Min', 30)
+    bat_hz_max = SCORING_CONSTANTS.get('Battery_Refresh_Effective_Hz_Max', 165)
+    refresh_score = 10 - 10 * (effective_refresh - bat_hz_min) / (bat_hz_max - bat_hz_min)
     refresh_score = clamp(refresh_score, 0, 10)
     
     # Extract resolution
@@ -544,7 +554,9 @@ def calc_layer_b(specs):
             height = int(res_match.group(2))
     
     pixel_mp = (width * height) / 1_000_000
-    res_score = 10 - 10 * (pixel_mp - 1.0) / (8.3 - 1.0)
+    bat_mp_min = SCORING_CONSTANTS.get('Battery_Resolution_MP_Min', 1.0)
+    bat_mp_max = SCORING_CONSTANTS.get('Battery_Resolution_MP_Max', 8.3)
+    res_score = 10 - 10 * (pixel_mp - bat_mp_min) / (bat_mp_max - bat_mp_min)
     res_score = clamp(res_score, 0, 10)
     
     display_total = 0.35 * panel_score + 0.35 * refresh_score + 0.30 * res_score
@@ -591,8 +603,10 @@ def calc_layer_b(specs):
         weight_match = re.search(r'(\d+)\s*g', weight_str)
         if weight_match:
             weight_g = int(weight_match.group(1))
-    # Assuming Weight_Lightest_Phone = 140g, Weight_Heaviest_Phone = 250g
-    weight_score = 10 * (weight_g - 140) / (250 - 140)
+    # Thermal_Weight_g_Min = 140g, Thermal_Weight_g_Max = 250g (see scoring_constants.md)
+    t_w_min = SCORING_CONSTANTS.get('Thermal_Weight_g_Min', 140)
+    t_w_max = SCORING_CONSTANTS.get('Thermal_Weight_g_Max', 250)
+    weight_score = 10 * (weight_g - t_w_min) / (t_w_max - t_w_min)
     weight_score = clamp(weight_score, 0, 10)
     
     # A3: Heat Dissipation Surface Area (20% of Part A)
@@ -606,16 +620,21 @@ def calc_layer_b(specs):
             height_mm = float(dim_match.group(1))
             width_mm = float(dim_match.group(2))
     surface_area = height_mm * width_mm
-    surface_score = 10 * (surface_area - 6000) / (9000 - 6000)
+    t_sa_min = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Min', 6000)
+    t_sa_max = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Max', 9000)
+    surface_score = 10 * (surface_area - t_sa_min) / (t_sa_max - t_sa_min)
     surface_score = clamp(surface_score, 0, 10)
     
     # A4: Device Thickness (15% of Part A)
-    thickness = 8.0  # Default
+    thickness_score = 10 * (thickness - 6) / (10 - 6)
     if dim_str:
         thick_match = re.search(r'x\s*([\d.]+)\s*mm.*?\(\d+\.\d+\s*in\)$', dim_str)
         if thick_match:
             thickness = float(thick_match.group(1))
-    thickness_score = 10 * (thickness - 6) / (10 - 6)
+    
+    t_th_min = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Min', 6.0)
+    t_th_max = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Max', 10.0)
+    thickness_score = 10 * (thickness - t_th_min) / (t_th_max - t_th_min)
     thickness_score = clamp(thickness_score, 0, 10)
     
     # Part A Total

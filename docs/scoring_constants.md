@@ -1,84 +1,152 @@
+# Scoring Constants
 
-# Scoring Constants & Parameters
+> [!IMPORTANT]
+> **Naming Convention:**
+> *   `_Min` = The **Mathematical Minimum** value of the range.
+> *   `_Max` = The **Mathematical Maximum** value of the range.
+>
+> **Score Mapping:**
+> *   **Higher-is-Better Metrics** (e.g., Battery Wh, PPI): Score 0 = `_Min`, Score 10 = `_Max`.
+> *   **Lower-is-Better Metrics** (e.g., Price, Weight, Thickness): Score 0 = `_Max`, Score 10 = `_Min`.
 
-## 1. Design & Ergonomics
-*   `Weight_Heaviest_Phone` = 250 (grams)
-*   `Weight_Lightest_Phone` = 140 (grams)
-*   `Thickness_Max_Penalty` = 7.0 (mm)
-*   `Thickness_Min_Penalty` = 10.0 (mm)
+**1. Design & Ergonomics**
 
-## 2. Display
-*   (No constants currently defined, uses direct formulas)
+### 1.4 Dimensions (Thickness)
+*   `Thickness_mm_Min` = 6.0 (Score 10), `Thickness_mm_Max` = 10.0 (Score 0)
 
-## 3. Performance (SoC & Memory)
-*   `GB6_Multi_Best_Phone` = 7500  (Snapdragon 8 Gen 3 / A17 Pro baseline)
-*   `GB6_Multi_Worst_Phone` = 1500 (Entry level)
-*   `PTS_Best_Phone` = 140 (Best multi-thread: Sum(FACS) at maximum)
-*   `PTS_Worst_Phone` = 5 (Worst multi-thread: Sum(FACS) at minimum)
-*   `STRS_Best_Phone` = 12 (Best single-thread: FACS of Prime Core [10 × 1.2])
-*   `STRS_Worst_Phone` = 5 (Worst single-thread: FACS of Cortex-A76 [5 × 1.0])
-*   `RC_Best_Phone` = 12.5 (Best GPU: GAS × FSF × AFM at maximum)
-*   `RC_Worst_Phone` = 0.5 (Worst GPU: GAS × FSF × AFM at minimum)
-*   `Process_Node_Best_nm` = 3 (Latest TSMC)
-*   `Process_Node_Worst_nm` = 20 (Legacy)
-*   `RAM_Max_GB` = 24
-*   `RAM_Min_GB` = 2
-*   `Storage_Max_GB` = 1024
-*   `Storage_Min_GB` = 16
-*   `AI_GB_Quant_Max` = 4500 (Snapdragon 8 Gen 3 / A17 Pro)
-*   `AI_GB_Quant_Min` = 500  (Legacy/Entry)
-*   `GPU_SteelNomad_Max` = 1800 (Snapdragon 8 Gen 3)
-*   `GPU_SteelNomad_Min` = 500 (Mainstream)
+### 1.5 Weight
+*   `Weight_g_Min` = 140 (Score 10), `Weight_g_Max` = 250 (Score 0)
 
-## 2. Display
-*   `DXO_Display_Max` = 160
-*   `DXO_Display_Min` = 60
+### 1.6 Ergonomics (Width)
+*   `Width_mm_Min` = 70.0 (Score 10), `Width_mm_Max` = 80.0 (Score 0)
 
-## 4. Camera Systems
-*   `Main_Sensor_Max_Inch` = 1.0
-*   `Main_Sensor_Min_Inch` = 0.25
-*   `Main_Pixel_Max_MP` = 200
-*   `Main_Pixel_Min_MP` = 12
-*   `Aperture_Max_Score_f` = 1.4
-*   `Aperture_Min_Score_f` = 2.4
-*   `Zoom_Max_Optical_x` = 10
-*   `Zoom_Min_Optical_x` = 1
-*   `Ultrawide_FOV_Max_Deg` = 130
-*   `Ultrawide_FOV_Min_Deg` = 100
-*   `Macro_Min_Dist_cm` = 2
-*   `Macro_Max_Dist_cm` = 10
-*   `Macro_Dedicated_Max_MP` = 5
-*   `Macro_Dedicated_Min_MP` = 0
-*   `Video_FPS_Max_Score` = 120
-*   `Video_FPS_Min_Score` = 5
-*   `SlowMo_MPs_Max_Score` = 1000 (4K @ 120fps)
-*   `SlowMo_MPs_Min_Score` = 32 (~720p @ 30fps)
-*   `Front_Cam_Max_MP` = 32
-*   `Front_Cam_Min_MP` = 5
-*   `Front_Video_Max_Res_Px` = 3840 (4K)
-*   `Front_Video_Min_Res_Px` = 1280 (720p)
-*   `Front_Video_Max_FPS` = 60
-*   `Front_Video_Min_FPS` = 24
+**2. Display**
 
-## 5. Battery & Charging
-*   `Wired_Charging_Max_W` = 120
-*   `Wired_Charging_Min_W` = 5
-*   `Wireless_Charging_Max_W` = 50
-*   `Wireless_Charging_Min_W` = 7.5
-*   `Reverse_Wireless_Max_W` = 10
-*   `Reverse_Wireless_Min_W` = 4.5
-*   `Reverse_Wired_Max_W` = 10
-*   `Reverse_Wired_Min_W` = 4.5
-*   `DXO_Battery_Max` = 160
-*   `DXO_Battery_Min` = 50
+### 2.2 Resolution Density
+*   `Display_PPI_Min` = 200 (Score 0), `Display_PPI_Max` = 600 (Score 10)
 
-## 6. Software & Support
-*   `Support_Years_Max` = 7
-*   `Support_Years_Min` = 1
+### 2.3 Brightness (Peak)
+*   `Display_Brightness_Nits_Min` = 400 (Score 0), `Display_Brightness_Nits_Max` = 4500 (Score 10)
 
-## 7. Connectivity & Audio
-*   `Bitrate_kbps_Best_Device` = 1200 (Baseline: aptX Lossless)
+### 2.4 Color Gamut
+*   `Display_P3_Coverage_Percent_Min` = 65 (Score 0), `Display_P3_Coverage_Percent_Max` = 100 (Score 10)
 
-## 9. Financial & Value
-*   `Price_Anchor_Best_USD` = 100
-*   `Price_Anchor_Worst_USD` = 1600
+### 2.6 Motion Smoothness
+*   `Display_Refresh_Rate_Hz_Min` = 45 (Score 0), `Display_Refresh_Rate_Hz_Max` = 165 (Score 10)
+
+### 2.7 Touch Responsiveness
+*   `Display_Touch_Sampling_Hz_Min` = 60 (Score 0), `Display_Touch_Sampling_Hz_Max` = 960 (Score 10)
+
+### 2.8 Eye Comfort
+*   `Display_PWM_Hz_Min` = 120 (Score 0), `Display_PWM_Hz_Max` = 3840 (Score 10)
+
+### 2.9 Screen Size
+*   `Display_Size_Inch_Min` = 4.5 (Score 0), `Display_Size_Inch_Max` = 7.6 (Score 10)
+
+### 2.10 Screen-to-Body Ratio
+*   `Display_SBR_Percent_Min` = 60 (Score 0), `Display_SBR_Percent_Max` = 93 (Score 10)
+
+### 2.11 Display Benchmark
+*   `Display_DXO_Score_Min` = 60 (Score 0), `Display_DXO_Score_Max` = 160 (Score 10)
+
+**3. Performance (SoC & Memory)**
+
+### 3.1 CPU Multi-Core
+*   `CPU_GB6_Multi_Score_Min` = 1500 (Score 0), `CPU_GB6_Multi_Score_Max` = 7500 (Score 10)
+*   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 140 (Score 10)
+
+### 3.2 CPU Single-Core
+*   `CPU_GB6_Single_Score_Min` = 400 (Score 0), `CPU_GB6_Single_Score_Max` = 3000 (Score 10)
+*   `CPU_STRS_Score_Min` = 5 (Score 0), `CPU_STRS_Score_Max` = 12 (Score 10)
+
+### 3.3 GPU Performance
+*   `GPU_SteelNomad_Score_Min` = 500 (Score 0), `GPU_SteelNomad_Score_Max` = 1800 (Score 10)
+*   `GPU_RC_Score_Min` = 0.5 (Score 0), `GPU_RC_Score_Max` = 12.5 (Score 10)
+
+### 3.4 Efficiency (Process Node)
+*   `SoC_Process_Node_nm_Min` = 3 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 20 (Score 0 for Node component)
+
+### 3.5 Thermal Dissipation (TDSI)
+*   `Thermal_Weight_g_Min` = 140 (Score 0), `Thermal_Weight_g_Max` = 250 (Score 10) (*Heavier is better for thermal mass*)
+*   `Thermal_Surface_Area_mm2_Min` = 6000 (Score 0), `Thermal_Surface_Area_mm2_Max` = 9000 (Score 10)
+*   `Thermal_Thickness_mm_Min` = 6.0 (Score 0), `Thermal_Thickness_mm_Max` = 10.0 (Score 10) (*Thicker is better for thermal mass*)
+
+### 3.7 RAM Capacity
+*   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)
+
+### 3.9 Storage Capacity
+*   `Storage_GB_Min` = 16 (Score 0), `Storage_GB_Max` = 1024 (Score 10)
+
+### 3.11 AI Hardware
+*   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 4500 (Score 10)
+
+**4. Camera Systems**
+
+### 4.1 Main Sensor Size
+*   `Camera_Main_Sensor_Inch_Min` = 0.25 (Score 0), `Camera_Main_Sensor_Inch_Max` = 1.0 (Score 10)
+
+### 4.2 Main Aperture
+*   `Camera_Main_Aperture_f_Min` = 1.4 (Score 10), `Camera_Main_Aperture_f_Max` = 2.4 (Score 0)
+
+### 4.3 Main Resolution
+*   `Camera_Main_Resolution_MP_Min` = 12 (Score 0), `Camera_Main_Resolution_MP_Max` = 200 (Score 10)
+
+### 4.5 Zoom Capability
+*   `Camera_Zoom_Optical_x_Min` = 1 (Score 0), `Camera_Zoom_Optical_x_Max` = 10 (Score 10)
+
+### 4.6 Ultrawide Camera
+*   `Camera_Ultrawide_FOV_Deg_Min` = 100 (Score 0), `Camera_Ultrawide_FOV_Deg_Max` = 130 (Score 10)
+*   `Camera_Ultrawide_Sensor_Inch_Min` = 0.25 (Score 0), `Camera_Ultrawide_Sensor_Inch_Max` = 0.5 (Score 10)
+
+### 4.7 Macro Capability
+*   `Camera_Macro_Dist_cm_Min` = 1.5 (Score 10), `Camera_Macro_Dist_cm_Max` = 10 (Score 0)
+
+### 4.9 Rear Video Frame Rate
+*   `Camera_Video_FPS_Min` = 5 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)
+
+### 4.12 Slow Motion
+*   `Camera_SlowMo_MPs_Min` = 32 (Score 0), `Camera_SlowMo_MPs_Max` = 1000 (Score 10)
+
+### 4.13 Front Resolution
+*   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)
+
+### 4.15 Front Video
+*   `Camera_Front_Video_Res_Width_Min` = 1280 (Score 0), `Camera_Front_Video_Res_Width_Max` = 3840 (Score 10)
+*   `Camera_Front_Video_FPS_Min` = 24 (Score 0), `Camera_Front_Video_FPS_Max` = 60 (Score 10)
+
+**5. Battery & Charging**
+
+### 5.1 Battery Endurance (Model)
+*   `Battery_Energy_Wh_Min` = 8 (Score 0), `Battery_Energy_Wh_Max` = 25 (Score 10)
+*   `Battery_Refresh_Effective_Hz_Min` = 30 (Score 10), `Battery_Refresh_Effective_Hz_Max` = 165 (Score 0) (*Lower is better for efficiency*)
+*   `Battery_Resolution_MP_Min` = 1.0 (Score 10), `Battery_Resolution_MP_Max` = 8.3 (Score 0) (*Lower is better for efficiency*)
+*   `Battery_GSMArena_Hours_Min` = 7.8 (Score 0), `Battery_GSMArena_Hours_Max` = 23.12 (Score 10)
+*   `Battery_PhoneArena_Hours_Min` = 3.6 (Score 0), `Battery_PhoneArena_Hours_Max` = 11.42 (Score 10)
+*   `Battery_DXO_Score_Min` = 50 (Score 0), `Battery_DXO_Score_Max` = 160 (Score 10)
+
+### 5.2 Wired Charging
+*   `Battery_Wired_Charging_W_Min` = 5 (Score 0), `Battery_Wired_Charging_W_Max` = 120 (Score 10)
+
+### 5.3 Wireless Charging
+*   `Battery_Wireless_Charging_W_Min` = 7.5 (Score 0), `Battery_Wireless_Charging_W_Max` = 50 (Score 10)
+
+### 5.4 Reverse Wireless
+*   `Battery_Reverse_Wireless_W_Max` = 10 (Score 10)
+
+### 5.5 Reverse Wired
+*   `Battery_Reverse_Wired_W_Max` = 10 (Score 10)
+
+**6. Software & Support**
+
+### 6.1 Support Longevity
+*   `Support_Years_Min` = 1 (Score 0), `Support_Years_Max` = 7 (Score 10)
+
+**7. Connectivity & Audio**
+
+### 7.4 Bluetooth & Codecs
+*   `Audio_Bitrate_kbps_Max` = 1200 (Score 10)
+
+**9. Financial**
+
+### 9.1 Price
+*   `Price_USD_Min` = 100 (Score 10), `Price_USD_Max` = 1600 (Score 0)

@@ -40,14 +40,18 @@ SEE ALSO:
 - docs/BATTERY_SCORING_PROCESS.md - Complete lifecycle documentation
 """
 
-import json
-import re
+import sys
+import os
 
-# --- Constants & Tables ---
+# Ensure src is in path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from src.scoring_utils import load_constants
+
+SCORING_CONSTANTS = load_constants()
 
 # Layer B.1.1 Process Node (Continuous)
-PROCESS_NODE_MIN = 3
-PROCESS_NODE_MAX = 20
+PROCESS_NODE_MIN = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Min', 3)
+PROCESS_NODE_MAX = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Max', 20)
 
 # Layer B.1.2 CPU Class (See Section 3.1.1 of scoring_rules.md)
 # Format: "Core Name": (Score, Reference_Frequency_GHz)
@@ -245,8 +249,8 @@ def calc_soc_performance_score(geekbench_multi):
     import math
     if geekbench_multi <= 0: return 0
     
-    gb_min = 1500
-    gb_max = 7500
+    gb_min = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Min', 1500)
+    gb_max = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Max', 7500)
     
     score = 10 * (math.log(geekbench_multi) - math.log(gb_min)) / (math.log(gb_max) - math.log(gb_min))
     return clamp(score, 0, 10)
@@ -302,9 +306,10 @@ def calc_layer_a(data):
             voltage = 7.7
         
         wh = (mah * voltage) / 1000
-
     
-    score = normalize_linear(wh, 8, 25)
+    wh_min = SCORING_CONSTANTS.get('Battery_Energy_Wh_Min', 8)
+    wh_max = SCORING_CONSTANTS.get('Battery_Energy_Wh_Max', 25)
+    score = normalize_linear(wh, wh_min, wh_max)
     
     return {"wh": round(wh, 2), "score": round(score, 2)}
 
@@ -314,19 +319,24 @@ def calc_layer_b(data):
     process_nm = get_val(data, ["3_processing_power_and_performance", "3_4_efficiency_node", "process_nm"], 4)
     foundry = get_val(data, ["3_processing_power_and_performance", "3_4_efficiency_node", "foundry"], "Samsung")
     
-    # Unified logarithmic formula
+    # Unified weighted formula (see Section 3.4 of scoring_rules.md)
     import math
     if not isinstance(process_nm, (int, float)): process_nm = 4
-    base_score = 10 * (math.log(20) - math.log(process_nm)) / (math.log(20) - math.log(3)) - 0.3
     
-    foundry_modifier = 0.0
+    p_min = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Min', 3)
+    p_max = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Max', 20)
+    node_score = 10 * (math.log(p_max) - math.log(process_nm)) / (math.log(p_max) - math.log(p_min))
+    node_score = clamp(node_score, 0, 10)
+    
+    # Foundry score: TSMC 10, Samsung 5, SMIC/Others 0
+    foundry_score = 5  # Default: Samsung
     if isinstance(foundry, str):
         if "TSMC" in foundry:
-            foundry_modifier = 0.3
+            foundry_score = 10
         elif "SMIC" in foundry or foundry in ["Other", "Unknown"]:
-            foundry_modifier = -0.3
+            foundry_score = 0
     
-    process_score = clamp(base_score + foundry_modifier, 0, 10)
+    process_score = clamp((0.9 * node_score) + (0.1 * foundry_score), 0, 10)
 
     # CPU
     # CPU: Architecture Efficiency Score (AES)
@@ -447,7 +457,9 @@ def calc_layer_b(data):
     if not isinstance(min_hz, (int, float)): min_hz = 60
     
     effective_refresh = (min_hz + max_hz) / 2 if adaptive else max_hz
-    refresh_score = clamp(10 - 10 * (effective_refresh - 30) / (165 - 30), 0, 10)
+    bat_hz_min = SCORING_CONSTANTS.get('Battery_Refresh_Effective_Hz_Min', 30)
+    bat_hz_max = SCORING_CONSTANTS.get('Battery_Refresh_Effective_Hz_Max', 165)
+    refresh_score = clamp(10 - 10 * (effective_refresh - bat_hz_min) / (bat_hz_max - bat_hz_min), 0, 10)
 
     # Resolution
     # Path: 2_display -> megapixels_mp
@@ -458,7 +470,9 @@ def calc_layer_b(data):
         h = get_val(data, ["2_display", "resolution_height_px"], 2400)
         pixel_mp = (w * h) / 1_000_000
     
-    res_score = clamp(10 - 10 * (pixel_mp - 1.0) / (8.3 - 1.0), 0, 10)
+    bat_mp_min = SCORING_CONSTANTS.get('Battery_Resolution_MP_Min', 1.0)
+    bat_mp_max = SCORING_CONSTANTS.get('Battery_Resolution_MP_Max', 8.3)
+    res_score = clamp(10 - 10 * (pixel_mp - bat_mp_min) / (bat_mp_max - bat_mp_min), 0, 10)
 
     display_total = 0.35 * panel_score + 0.35 * refresh_score + 0.30 * res_score
 
@@ -482,18 +496,27 @@ def calc_layer_b(data):
     
     weight_g = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "weight_g"], 200)
     if not isinstance(weight_g, (int, float)): weight_g = 200
-    weight_score = clamp(10 * (weight_g - 140) / (250 - 140), 0, 10)
+    
+    t_w_min = SCORING_CONSTANTS.get('Thermal_Weight_g_Min', 140)
+    t_w_max = SCORING_CONSTANTS.get('Thermal_Weight_g_Max', 250)
+    weight_score = clamp(10 * (weight_g - t_w_min) / (t_w_max - t_w_min), 0, 10)
     
     h_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "height_mm"], 160)
     w_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "width_mm"], 75)
     if not isinstance(h_mm, (int, float)): h_mm = 160
     if not isinstance(w_mm, (int, float)): w_mm = 75
     surface_area = h_mm * w_mm
-    surface_score = clamp(10 * (surface_area - 6000) / (9000 - 6000), 0, 10)
+    
+    t_sa_min = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Min', 6000)
+    t_sa_max = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Max', 9000)
+    surface_score = clamp(10 * (surface_area - t_sa_min) / (t_sa_max - t_sa_min), 0, 10)
     
     thick_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "thickness_mm"], 8.0)
     if not isinstance(thick_mm, (int, float)): thick_mm = 8.0
-    thickness_score = clamp(10 * (thick_mm - 6) / (10 - 6), 0, 10)
+    
+    t_th_min = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Min', 6.0)
+    t_th_max = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Max', 10.0)
+    thickness_score = clamp(10 * (thick_mm - t_th_min) / (t_th_max - t_th_min), 0, 10)
     
     part_a_total = (0.40 * frame_score) + (0.25 * weight_score) + (0.20 * surface_score) + (0.15 * thickness_score)
     

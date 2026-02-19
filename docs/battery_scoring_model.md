@@ -63,13 +63,14 @@ ELSE:
     
     Wh = (mAh × V) / 1000
 
-Energy_Score = 10 * (Wh − 8) / (25 − 8)
+Energy_Score = 10 * (Wh − Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max − Battery_Energy_Wh_Min)
 Energy_Score = clamp(Energy_Score, 0, 10)
 ```
+*Constants: See [scoring_constants.md](scoring_constants.md) Section 5.1*
 
 **Scoring Range:**
-- **Max Score (10) at:** ≥ 25 Wh (e.g., ~6500mAh @ 3.85V OR ~3250mAh @ 7.7V)
-- **Min Score (0) at:** ≤ 8 Wh (e.g., ~2000mAh @ 3.85V OR ~1040mAh @ 7.7V)
+- **Max Score (10) at:** ≥ Battery_Energy_Wh_Max 
+- **Min Score (0) at:** ≤ Battery_Energy_Wh_Min
 
 > [!NOTE]
 > **Why Linear?** Battery energy storage scales linearly with capacity. A 20 Wh battery stores exactly twice as much energy as a 10 Wh battery, providing proportionally longer runtime. There are no diminishing returns in energy storage - more Watt-hours directly translates to more battery life.
@@ -154,16 +155,17 @@ The scoring table is defined in Section 2.1 and is used identically here for bat
 
 **Difference from B.2.1:** This is where LTPO panels shine. Their ability to drop to 1Hz is rewarded here via the `effective_refresh` calculation.
 
-**Scoring Range:**
-- **Max Score (10) at:** Effective Refresh ≤ 30Hz (e.g., LTPO idling)
-- **Min Score (0) at:** Effective Refresh ≥ 165Hz
-
 **Formula:**
 ```
 effective_refresh = adaptive ? (min_hz + max_hz) / 2 : max_hz
-Refresh_Score = 10 - 10 * (effective_refresh − 30) / (165 − 30)
+Refresh_Score = 10 - 10 * (effective_refresh − Battery_Refresh_Effective_Hz_Min) / (Battery_Refresh_Effective_Hz_Max − Battery_Refresh_Effective_Hz_Min)
 Refresh_Score = clamp(Refresh_Score, 0, 10)
 ```
+*Constants: See [scoring_constants.md](scoring_constants.md) Section 5.1*
+
+**Scoring Range:**
+- **Max Score (10) at:** Effective Refresh ≤ Battery_Refresh_Effective_Hz_Min (e.g., LTPO idling)
+- **Min Score (0) at:** Effective Refresh ≥ Battery_Refresh_Effective_Hz_Max
 
 > [!NOTE]
 > **Why Linear?** Display power consumption scales linearly with refresh rate. A 120Hz display uses approximately 2x the power of 60Hz because it updates the screen twice as often. Unlike visual quality (where higher refresh rates have diminishing perceptual returns), power draw is strictly proportional to refresh frequency.
@@ -174,18 +176,19 @@ Refresh_Score = clamp(Refresh_Score, 0, 10)
 
 **Data Structure Mapping:** `2_display.megapixels_mp`
 
-**Scoring Range:**
-- **Max Score (10) at:** ≤ 1.0 MP (HD+)
-- **Min Score (0) at:** ≥ 8.3 MP (4K)
-
 **Formula:**
 ```
-Resolution_Score = 10 - 10 * (megapixels_mp − 1.0) / (8.3 − 1.0)
+Resolution_Score = 10 - 10 * (megapixels_mp − Battery_Resolution_MP_Min) / (Battery_Resolution_MP_Max − Battery_Resolution_MP_Min)
 Resolution_Score = clamp(Resolution_Score, 0, 10)
 ```
+*Constants: See [scoring_constants.md](scoring_constants.md) Section 5.1*
+
+**Scoring Range:**
+- **Max Score (10) at:** ≤ Battery_Resolution_MP_Min
+- **Min Score (0) at:** ≥ Battery_Resolution_MP_Max
 
 > [!NOTE]
-> **Why Linear?** Power consumption scales roughly linearly with pixel count in the practical phone display range (1MP to 8.3MP). While GPU and display power don't increase perfectly proportionally with megapixels due to modern optimizations (efficient controllers, adaptive backlight scaling), the relationship is close enough to linear that a simple linear formula provides an accurate approximation for battery efficiency scoring.
+> **Why Linear?** Power consumption scales roughly linearly with pixel count in the practical phone display range. While GPU and display power don't increase perfectly proportionally with megapixels due to modern optimizations (efficient controllers, adaptive backlight scaling), the relationship is close enough to linear that a simple linear formula provides an accurate approximation for battery efficiency scoring.
 
 **Formula:** `Display_Efficiency = 0.35 × Panel + 0.35 × Refresh + 0.30 × Resolution`
 
@@ -310,14 +313,16 @@ Predicted_Score = 0.45 × Energy_Score + 0.35 × HEI + 0.20 × SOI
 **Metric:** Active Use Score (Hours:Minutes)
 
 **Normalization:**
-**Scoring Range:**
-- **Max Score (10) at:** ≥ 23:07 hours (23.12h)
-- **Min Score (0) at:** ≤ 7:48 hours (7.8h)
 - **Formula:**
 ```
-GSM_Score = 10 * (Hours - 7.8) / (23.12 - 7.8)
+GSM_Score = 10 * (Hours - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)
 GSM_Score = clamp(GSM_Score, 0, 10)
 ```
+*Constants: See [scoring_constants.md](scoring_constants.md) Section 5.1*
+
+**Scoring Range:**
+- **Max Score (10) at:** ≥ Battery_GSMArena_Hours_Max
+- **Min Score (0) at:** ≤ Battery_GSMArena_Hours_Min
 
 ### 2. PhoneArena Battery Life Estimate
 **Source:** [PhoneArena Benchmarks](https://www.phonearena.com/phones/benchmarks/battery)
@@ -325,14 +330,16 @@ GSM_Score = clamp(GSM_Score, 0, 10)
 **Metric:** "Battery Life Estimate" (Composite score)
 
 **Normalization:**
-**Scoring Range:**
-- **Max Score (10) at:** ≥ 11:25 hours (11.42h)
-- **Min Score (0) at:** ≤ 3:36 hours (3.6h)
 - **Formula:**
 ```
-PA_Score = 10 * (Hours - 3.6) / (11.42 - 3.6)
+PA_Score = 10 * (Hours - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min)
 PA_Score = clamp(PA_Score, 0, 10)
 ```
+*Constants: See [scoring_constants.md](scoring_constants.md) Section 5.1*
+
+**Scoring Range:**
+- **Max Score (10) at:** ≥ Battery_PhoneArena_Hours_Max
+- **Min Score (0) at:** ≤ Battery_PhoneArena_Hours_Min
 
 ## 🧮 PART 3: SCORING LOGIC (The 3 Cases)
 
