@@ -339,7 +339,8 @@ If the specific device has no benchmark, but we have data for other devices:
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** display sub-features.
 *   **Search Space:** All phones with known DXOMARK Display scores (Method A).
 *   **Distance Metric:** Euclidean Distance in the 10-dimensional feature space (Sections 2.1–2.10).
-    *   `Distance = Sqrt( Sum( (SubScore_Target_i - SubScore_Neighbor_i)^2 ) )`
+    *   `Distance = Sqrt( Sum( (Diff_SubScore_i)^2 ) )`
+    *   *Where Diff_SubScore_i = SubScore_Target_i - SubScore_Neighbor_i*
     *   *Where i = 2.1 to 2.10 (each sub-section's individual Predicted Score)*
     *   **Sub-Section Predicted Scores:** These are the individual scores calculated from technical specs for each display attribute:
         *   `SubScore_2.1` = Panel Architecture Score (OLED/LCD/etc.)
@@ -349,18 +350,21 @@ Instead of just matching the overall predicted score, we find the 3 devices that
     *   **Important:** Calculation uses **Predicted Scores** (Specs only), not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity, unaffected by whether a review exists for them.
 *   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
 
-> [!TIP]
+> [!NOTE]
+> **Why Euclidean Distance?**
+> Unlike Processor scores which are often dominated by a single factor or have variable dimensions, the Display model has 10 fixed sub-scores (2.1 to 2.10) available for every device. This creates a standardized 10-dimensional space where Euclidean distance is the most robust way to find neighbors that match the specific *profile* of the screen rather than just a similar total score.
+>
 > **Why this is robust:** This method ensures we compare apples to apples. A phone with a "High Res / Low Refresh" screen will match with other "High Res / Low Refresh" phones, rather than "Low Res / High Refresh" phones, even if they have the same overall predicted score.
 
 **2. Calculate Correction Ratio:**
 *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
     *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
-*   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+*   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
     *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 
 **3. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+*   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
@@ -424,13 +428,21 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 
 #### Method B: Nearest Neighbor Interpolation (Secondary)
 If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device:
+    *   `Distance = abs(Diff_Predicted)`
+    *   *Where Diff_Predicted = Predicted_Target - Predicted_Neighbor*
+    *   *Note:* Based on **Predicted Score** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
-    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+    *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+
+> [!NOTE]
+> **Why Simple Proximity vs Euclidean Distance?**
+> Euclidean distance calculation would be particularly tricky here as it requires to have the same amount of dimensions, which is very often not the case as the core count varies significantly per architecture (e.g., Apple 6-core vs Android 8-core configurations).
+> Since Geekbench Multi-Core is a total throughput metric and the Predicted Score itself models total throughput (Sum of all clusters), the scalar difference between Predicted Scores correctly identifies performance neighbors without the complexity of mapping mismatched cluster topologies.
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
@@ -438,7 +450,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 **Step 1: Frequency-Adjusted Core Score (FACS)**
 Instead of calculating a raw score and then scaling it globally, we calculate the throughput for **each cluster** individually.
 
-*   **FSF Formula:** `1 + (Actual_Freq - Ref_Freq) / Ref_Freq`
+*   **FSF Formula:** `Actual_Freq / Ref_Freq`
     *   *Significance:* Scales the base architecture score based on whether the specific cluster is overclocked or underclocked.
     *   **Reference:** See **Section 3.1.0** for Reference Frequencies.
 *   **FACS Formula:** `Core_Architecture_Score * Core_Count * FSF`
@@ -454,13 +466,13 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 > *   **Actual Specs:** 1x X4 @ 3.3GHz, 5x A720 @ 3.2GHz, 2x A520 @ 2.3GHz
 >
 > 1.  **Prime Cluster (X4):**
->     *   FSF: `1 + (3.3 - 3.3)/3.3` = 1.0
+>     *   FSF: `3.3 / 3.3` = 1.0
 >     *   FACS: `10 (Score) * 1 (Count) * 1.0 (FSF)` = **10.0**
 > 2.  **Performance Cluster (A720):**
->     *   FSF: `1 + (3.2 - 2.8)/2.8` = 1.14
+>     *   FSF: `3.2 / 2.8` = 1.14
 >     *   FACS: `7 (Score) * 5 (Count) * 1.14 (FSF)` = **39.9**
 > 3.  **Efficiency Cluster (A520):**
->     *   FSF: `1 + (2.3 - 2.0)/2.0` = 1.15
+>     *   FSF: `2.3 / 2.0` = 1.15
 >     *   FACS: `2 (Score) * 2 (Count) * 1.15 (FSF)` = **4.6**
 >
 > *   **Raw (PTS):** `10.0 + 39.9 + 4.6` = **54.5**
@@ -490,13 +502,20 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 
 #### Method B: Nearest Neighbor Interpolation (Secondary)
 If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the closest **Predicted Score** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device:
+    *   `Distance = abs(Diff_Predicted)`
+    *   *Where Diff_Predicted = Predicted_Target - Predicted_Neighbor*
+    *   *Note:* Based on **Predicted Score** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
-    *   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+    *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+
+> [!NOTE]
+> **Why Simple Proximity vs Euclidean Distance?**
+> Single-core performance is inherently 1-dimensional, dominated by the Prime Core's architecture and frequency. There are no sub-dimensions to trade off (unlike Display or Battery). Therefore, the scalar difference in Predicted Score is the mathematically correct proxy for neighbor selection.
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback or as the **Predictor** for Method B.
@@ -507,7 +526,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 2: Frequency Scaling Factor (FSF)**
 *   *What is it?* A multiplier for clock speed variations.
-*   **Formula:** `1 + (Actual_Frequency_GHz - Reference_Frequency_GHz) / Reference_Frequency_GHz`
+*   **Formula:** `Actual_Frequency_GHz / Reference_Frequency_GHz`
     *   *Range:* Typically 0.8 - 1.3 (underclocked vs overclocked).
     *   **Why FSF?** Single-core performance scales almost linearly with frequency for the same architecture. FSF normalizes this relative to the reference design.
     *   **Reference:** See **Section 3.0** for Reference Frequencies.
@@ -520,7 +539,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > **Example: Snapdragon 8 Gen 3 for Galaxy (Overclocked)**
 > *   **Specs:** Prime Core is Cortex-X4 at **3.4GHz**. Reference Frequency for X4 is **3.30GHz**.
 > *   **CAS:** Cortex-X4 = **10**
-> *   **FSF:** `1 + (3.4 - 3.3) / 3.3` ≈ **1.03**
+> *   **FSF:** `3.4 / 3.3` ≈ **1.03**
 > *   **Raw (FACS):** `10 * 1.03` = **10.3**
 > *   **Predicted Score:** `10 * (log(10.3) - log(STRS_Worst_Phone)) / (log(STRS_Best_Phone) - log(STRS_Worst_Phone))`
 > *   `10 * (log(10.3) - log(5)) / (log(12) - log(5))` = `10 * (2.33 - 1.61) / (2.48 - 1.61)` = `10 * 0.72 / 0.87` ≈ **8.3/10**
@@ -638,13 +657,16 @@ This is the preferred method when real-world benchmark data is available.
 **Method B: Nearest Neighbor Interpolation (Secondary)**
 If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for other devices:
 
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the closest **Predicted SGS** (calculated via Method C) to the target device.
+1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the smallest **Distance** to the target device:
+    *   `Distance = abs(Diff_Predicted_SGS)`
+    *   *Where Diff_Predicted_SGS = Predicted_SGS_Target - Predicted_SGS_Neighbor*
+    *   *Note:* Based on **Predicted SGS** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_SGS_Neighbors = (Predicted_SGS_Neighbor1 + Predicted_SGS_Neighbor2 + Predicted_SGS_Neighbor3) / 3`
-    *   `Ratio = Predicted_SGS_Target / Avg_Predicted_SGS_Neighbors`
+    *   `Correction_Ratio = Predicted_SGS_Target / Avg_Predicted_SGS_Neighbors`
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `SGS = Ratio * Avg_Benchmark_Neighbors`
+    *   `SGS = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 > [!NOTE]
 > **Why Simple Proximity vs Euclidean Distance?**
@@ -660,11 +682,11 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 2: Frequency Scaling Factor (FSF)**
 *   **What is it?** A multiplier for clock speed variations.
-*   **Formula:** `1 + (Actual_Frequency_MHz - Reference_Frequency_MHz) / Reference_Frequency_MHz`
+*   **Formula:** `Actual_Frequency_MHz / Reference_Frequency_MHz`
     *   *Significance:* Scales the base architecture score (GAS) based on whether the GPU is overclocked or underclocked relative to the reference design.
     *   **Reference:** See **Section 3.3.0** for Reference Frequencies.
-    *   *Example:* Adreno 750 @ 903 MHz (reference) → `1 + (903 - 903)/903 = 1.0`
-    *   *Example:* Adreno 750 @ 1000 MHz (overclocked) → `1 + (1000 - 903)/903 = 1.11`
+    *   *Example:* Adreno 750 @ 903 MHz (reference) → `903 / 903 = 1.0`
+    *   *Example:* Adreno 750 @ 1000 MHz (overclocked) → `1000 / 903 = 1.11`
 
 **Step 3: API & Feature Support Modifier (AFM - SGS Component)**
 *   **What is it?** A modifier focusing **exclusively on API Efficiency for Rasterization**.

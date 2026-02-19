@@ -376,7 +376,7 @@ def calc_layer_b(data):
                 # Calculate FSF
                 fsf = 1.0
                 if c_freq > 0 and ref_freq > 0:
-                    fsf = 1 + (c_freq - ref_freq) / ref_freq
+                    fsf = c_freq / ref_freq
                 
                 # Clamp FSF for safety (0.5x to 1.5x)
                 if fsf < 0.5: fsf = 0.5

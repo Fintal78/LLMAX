@@ -357,7 +357,7 @@ def calc_layer_b(specs):
                 # Calc FSF
                 fsf = 1.0
                 if freq > 0 and ref > 0:
-                    fsf = 1 + (freq - ref) / ref
+                    fsf = freq / ref
                 
                 fsf = clamp(fsf, 0.5, 1.5)
                 
@@ -451,7 +451,7 @@ def calc_layer_b(specs):
         # Step 2: FSF (Frequency Scaling Factor)
         gpu_freq = specs.get("GPU_Freq", 0)
         if gpu_freq and gpu_freq > 0:
-            fsf = 1 + (gpu_freq - ref_freq) / ref_freq
+            fsf = gpu_freq / ref_freq
         else:
             fsf = 1.0  # Use reference if unknown
         fsf = clamp(fsf, 0.5, 2.0)

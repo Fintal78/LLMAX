@@ -375,40 +375,47 @@ Final_Score = Available_Benchmark_Score
 ### 🔮 CASE 3: Interpolation (No Benchmarks Available)
 **Condition:** Target Phone has **NO** benchmark data (e.g., unreleased or niche phone).
 
-**Method:** "Nearest Neighbor" Interpolation
-1.  Calculate `Predicted_Target` using the technical model (Part 1).
-2.  Find **3 Reference Phones (Neighbor1, Neighbor2, Neighbor3)** that:
-    *   Have **BOTH** GSMArena and PhoneArena scores (Case 1 phones).
-    *   Have the closest `Predicted_Score` to the Target Phone.
-3.  Calculate the **Correction Ratio** between Target's prediction and the neighbors' average prediction.
-4.  Apply this ratio to the neighbors' average **Benchmark Score**.
+**Method:** "Nearest Neighbor" Interpolation via Weighted Euclidean Distance
 
-**Step-by-Step Formula:**
+**1. Calculate Sub-Layer Scores (Part 1)**
+Calculate the 3 sub-layer scores for the Target Phone:
+*   `Layer A` (Energy)
+*   `Layer B` (Hardware Efficiency)
+*   `Layer C` (Software Optimization)
 
-1.  **Find Neighbors:** Select Neighbor1, Neighbor2, Neighbor3 having:
-    *   a) Scores from **BOTH** GSMArena and PhoneArena benchmarks.
-    *   b) Minimizing `|Predicted_Target - Predicted_Neighbor_X|`.
-2.  **Calculate Average Prediction of Neighbors:**
-    `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
-3.  **Calculate Correction Ratio:**
-    `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
-4.  **Calculate Average Benchmark of Neighbors:**
-    `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-5.  **Calculate Final Score:**
-    `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+**2. Find Neighbors**
+Find **3 Reference Phones (Neighbor1, Neighbor2, Neighbor3)** that:
+*   a) Have **BOTH** GSMArena and PhoneArena scores (Case 1 phones).
+*   b) Have the smallest **Weighted Euclidean Distance** to the Target Phone:
+    *   `Distance = Sqrt( 0.45*(Diff_LayerA)^2 + 0.35*(Diff_LayerB)^2 + 0.20*(Diff_LayerC)^2 )`
+    *   *Where Diff_LayerX = LayerX_Target - LayerX_Neighbor*
+
+> [!NOTE]
+> **Why Weighted Euclidean Distance?**
+> Battery life is a complex trade-off between Capacity (Layer A), Efficiency (Layer B), and Optimization (Layer C). A "Huge Battery / Inefficient" phone (A=10, B=2) can have the same Predicted Score (~6) as a "Small Battery / Efficient" phone (A=2, B=10). Converting to Weighted Euclidean Distance ensures we compare "apples to apples" by finding neighbors with similar *profiles* (e.g., matching capacity and efficiency separately), which is scientifically superior for predicting nonlinear behavior (like thermal throttling or standby drain).
+
+**3. Calculate Average Prediction of Neighbors**
+`Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+
+**4. Calculate Correction Ratio**
+`Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+
+**5. Calculate Final Score**
+*   **Average Benchmark of Neighbors:** `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+*   **Final Score:** `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+
 
 **Example:**
 - **Target Phone:** "FuturePhone 5" (No benchmarks)
-    - `Predicted_Target = 8.5` (High specs, large battery)
-- **Neighbors Found (Similar Specs, with Benchmarks):**
-    - **Neighbor1:** `Predicted = 8.0`, `Benchmark = 7.2`
-    - **Neighbor2:** `Predicted = 8.2`, `Benchmark = 7.4`
-    - **Neighbor3:** `Predicted = 7.8`, `Benchmark = 7.0`
+    - `Predicted_Target = 8.5` (High specs, high efficiency)
+    - *Profile (Layers A/B/C):* 8.5 / 8.5 / 8.5
+- **Neighbors Found (Via Weighted Euclidean Similarity):**
+    - **Neighbor1:** `Profile = 8.4/8.6/8.5`, `Benchmark = 7.2`
+    - **Neighbor2:** `Profile = 8.6/8.4/8.5`, `Benchmark = 7.4`
+    - **Neighbor3:** `Profile = 8.5/8.5/8.6`, `Benchmark = 7.0`
 - **Calculations:**
-    - `Avg_Predicted_Neighbors = (8.0 + 8.2 + 7.8) / 3 = 8.0`
+    - `Avg_Predicted_Neighbors = (8.5 + 8.5 + 8.53) / 3 = 8.51`
     - `Avg_Benchmark_Neighbors = (7.2 + 7.4 + 7.0) / 3 = 7.2`
-    - `Ratio = 8.5 / 8.0 = 1.0625` (Target Phone is predicted to be ~6.25% better than neighbors)
-    - `Final_Score = 1.0625 * 7.2 = 7.65`
+    - `Correction_Ratio = 8.5 / 8.51 = 0.9988` (Target profile is essentially identical to neighbors)
+    - `Final_Score = 0.9988 * 7.2 = 7.19`
 
-**Why this works:**
-The neighbors generally perform worse in the real world than their raw specs suggest (Avg Bench 7.2 vs Avg Pred 8.0). Even though the Target Phone has a high predicted score of 8.5, we adjust it down to 7.65 to reflect the reality of similar devices, while still rewarding it for having better specs than the neighbors.
