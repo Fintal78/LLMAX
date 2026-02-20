@@ -288,7 +288,6 @@ This score is determined **strictly by the OS Generation**, not the brand.
 | **4.0**  | **Android 8-9**         | **iOS 11-12**       | Aging                 |
 | **0.0**  | **Android < 8**         | **iOS < 11**        | Obsolete              |
 
-
 #### C.2 Bloatware Overhead (40%)
 
 **Why this matters:** Bloatware and adware often run hidden background processes that prevent the phone from entering deep sleep, causing "phantom" battery drain even when the phone is not in use.

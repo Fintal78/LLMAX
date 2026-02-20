@@ -894,6 +894,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Measurement:** JEDEC standard specification.
 *   **Unit:** Memory Generation
 *   **Significance:** Affects data transfer speeds and power consumption.
+
 | Score    | Technology    | Example Models                 |
 | :------- | :------------ | :----------------------------- |
 | **10.0** | **LPDDR5X**   | S24 Ultra, OnePlus 12          |
@@ -921,6 +922,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Measurement:** Sequential Read/Write speed capacity.
 *   **Unit:** Storage Generation, internal storage only.
 *   **Significance:** Affects boot time, app load time, and file transfer speed.
+
 | Score    | Technology   | Example Models             |
 | :------- | :----------- | :------------------------- |
 | **10.0** | **UFS 4.0**  | S24 Ultra, Xiaomi 14       |
@@ -949,6 +951,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 *   **Measurement:** Physical expansion slot.
 *   **Unit:** Slot Type
 *   **Significance:** Cost-effective storage expansion option.
+
 | Score    | Feature                     | Example Models                |
 | :------- | :-------------------------- | :---------------------------- |
 | **10.0** | **Dedicated MicroSD Slot**  | Galaxy A15, Poco M6 Pro       |
@@ -1143,6 +1146,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 **4.6.1 Ultrawide Presence (Binary Gate)**
 *   *Why it matters:* No ultrawide means no wide-perspective photography.
+
 | Score    | Configuration         | Notes               |
 | :------- | :-------------------- | :------------------ |
 | **10.0** | **Ultrawide present** | Any ultrawide lens. |
@@ -1178,6 +1182,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 **4.7.1 Autofocus on Ultrawide**
 *   *Why it matters:* Autofocus (AF) allows for close focus and subject tracking, enabling "real" macro mode.
+
 | Score  | Focus Type                     |
 | :----- | :----------------------------- |
 | **10** | **Ultrawide Autofocus**        |
@@ -1214,6 +1219,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Maximum supported rear video resolution.
 *   **Unit:** Resolution Tier
 *   **Significance:** Higher resolution allows greater detail, cropping flexibility, and higher-quality downscaling.
+
 | Score  | Max Rear Video Resolution |
 | :----- | :------------------------ |
 | **10** | **≥ 4K**                  |
@@ -1408,6 +1414,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Presence of semantic segmentation features.
 *   **Unit:** AI Capability Tier
 *   **Significance:** Enables better portraits, sky processing, skin tones, and subject isolation.
+
 | Score    | Semantic AI                                          |
 | :------- | :--------------------------------------------------- |
 | **10.0** | **Full semantic segmentation (faces, sky, objects)** |
@@ -1419,6 +1426,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Measurement:** Presence of generative AI tools.
 *   **Unit:** Feature Tier
 *   **Significance:** Extends usability and creative flexibility beyond capture time.
+
 | Score    | AI Editing Tools                        |
 | :------- | :-------------------------------------- |
 | **10.0** | **Generative erase / expand / relight** |
@@ -1616,6 +1624,7 @@ SCC = Platform_Cleanliness_Score (direct lookup from skin field)
 *   **Measurement:** Modem specification analysis.
 *   **Unit:** Bands / Technology
 *   **Significance:** Connectivity speed and global roaming capability.
+
 | Score    | Technology                                   | 
 | :------- | :------------------------------------------- | 
 | **10.0** | **5G mmWave + Sub-6 (Global band coverage)** | 
