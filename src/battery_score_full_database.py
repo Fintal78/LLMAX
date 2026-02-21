@@ -650,8 +650,8 @@ def calc_layer_b(specs):
     # Logic: High Architecture Score (10) = High Load -> Bonus lower.
     #        Low Architecture Score (0) = Low Load -> Bonus higher.
     soc_perf_proxy = cpu_score
-    mitigation_factor = (10 - soc_perf_proxy) + process_score
-    part_c_bonus = clamp(mitigation_factor / 5, 0, 4)
+    thermal_mitigation = (10 - soc_perf_proxy) + process_score
+    part_c_bonus = clamp(thermal_mitigation / 5, 0, 4)
     
     # Final TDSI = Thermal Efficiency for battery scoring
     base_physical = (0.5 * part_a_total) + (0.5 * cooling_score)

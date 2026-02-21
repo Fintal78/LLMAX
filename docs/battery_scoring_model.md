@@ -127,8 +127,15 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 > **Why Linear?** Battery energy storage scales linearly with capacity. A 20 Wh battery stores exactly twice as much energy as a 10 Wh battery, providing proportionally longer runtime. There are no diminishing returns in energy storage - more Watt-hours directly translates to more battery life.
 > **Why 7.7V for dual-cell?** High-power charging generates significant heat. By using two cells in series, current is halved for the same power, reducing resistive heating and enabling safer fast charging without overheating.
 
-**Step 2: Calculate Layer B (Hardware Efficiency Index - 35%)**
-*Description:* This layer evaluates how efficiently the phone's hardware converts stored energy into actual usage.
+**Step 2: Calculate Layer B (Baseline Energy Demand - 35%)**
+*Description:* This layer evaluates how efficiently the phone's hardware converts stored energy into baseline usage (Baseline Energy Demand).
+
+> [!NOTE]
+> **The Peak vs. Baseline Demand Paradox:** 
+> Why does a flagship CPU (like Snapdragon 8 Gen 3) receive a low Cooling Bonus in the **Thermal Dissipation Model (Section 3.4)**, but a high Efficiency Bonus here in the **Battery Model**? 
+> *   **Thermals (Peak Demand):** Section 3.4 measures *Peak Thermal Demand*. Under maximum load in a benchmark, a flagship CPU draws massive wattage (~15W) and generates intense heat, demanding heavy cooling compensation. 
+> *   **Battery (Baseline Demand):** Battery life is dominated by *Baseline Energy Demand* (mixed use, standby, video playback). The same flagship CPU's advanced architecture (high IPC) completes these light tasks instantly and "races-to-sleep," drawing significantly less power than an older, inefficient CPU. 
+> Therefore, high-end architecture is a *penalty* for peak thermals, but a *massive bonus* for baseline battery efficiency.
 
 *   **B.1 SoC Efficiency (40% of Layer B)**
     *   **B.1.1 Process Node (50% of SoC)**

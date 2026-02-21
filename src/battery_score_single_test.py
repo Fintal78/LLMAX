@@ -530,8 +530,8 @@ def calc_layer_b(data):
     if isinstance(gb6_score, dict): gb6_score = gb6_score.get("value", 3000) # Safety
     
     soc_perf_score = calc_soc_performance_score(gb6_score)
-    mitigation_factor = (10 - soc_perf_score) + process_score
-    part_c_bonus = clamp(mitigation_factor / 5, 0, 4)
+    thermal_mitigation = (10 - soc_perf_score) + process_score
+    part_c_bonus = clamp(thermal_mitigation / 5, 0, 4)
 
     base_physical = (0.5 * part_a_total) + (0.5 * cooling_score)
     thermal_total = clamp((0.8 * base_physical) + part_c_bonus, 0, 10)
