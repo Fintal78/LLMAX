@@ -9,10 +9,14 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 ## 🟣 1. Design & Build Quality
 
 ### 🔹 1.1 Materials (Frame/Back)
-*Description:* The physical materials used for the device chassis and rear panel. Affects how premium the phone feels, how well it resists drops, and how cool it stays during use.
+*Description:* The physical materials used for the device chassis and rear panel. Affects how premium the phone feels and how well it resists drops.
+
+> [!IMPORTANT]
+> **Thermal Properties Not Scored Here:** While materials technically dictate thermal conductivity, a device's thermal capacity and heat dissipation are explicitly scored in **Section 3.5 (TDSI)** and factored into **Section 5.1 (Battery)**. To avoid double-scoring, this section strictly evaluates structural integrity, durability, and premium tactile quality.
+
 *   **Measurement:** Manufacturer specifications and teardown confirmation.
 *   **Unit:** Composite Score (0-10)
-*   **Significance:** Determines structural integrity, thermal dissipation, and tactile quality.
+*   **Significance:** Determines structural integrity, premium tactile quality, and physical durability.
 
 **Predicted Score Formula:**
 `Materials Score = (0.6 × Frame Material Score) + (0.4 × Back Material Score)`
@@ -23,7 +27,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 #### 1.1.A Frame Material (Structural Class)
 *   **Measurement:** Manufacturer specifications and teardown confirmation.
 *   **Unit:** Material Class
-*   **Significance:** Determines chassis rigidity, bending resistance, and heat transfer from internal components to the outer shell.
+*   **Significance:** Determines chassis rigidity and bending resistance.
 
 | Score    | Frame Material Class       |
 | :------- | :------------------------- | 
@@ -42,7 +46,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 #### 1.1.B Back Panel Material (Surface Class)
 *   **Measurement:** Manufacturer specifications and teardown confirmation.
 *   **Unit:** Material Class
-*   **Significance:** Affects scratch resistance, shatter risk, radio signal transparency, and surface heat dissipation.
+*   **Significance:** Affects scratch resistance, shatter risk, and radio signal transparency.
 
 | Score    | Back Material Class        |                                                |
 | :------- | :------------------------- | 
@@ -434,7 +438,9 @@ If the specific device has no benchmark, but we have data for other devices:
     *   *Note:* Based on **Predicted Score** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+        *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
     *   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+        *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
     *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
@@ -508,7 +514,9 @@ If the specific device has no benchmark, but we have data for other devices:
     *   *Note:* Based on **Predicted Score** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+        *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
     *   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+        *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
     *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
@@ -631,7 +639,7 @@ This table provides the authoritative GPU architecture scores used throughout th
 *Focus:* Traditional rasterization performance (Geometry, Textures, Shaders) and API efficiency.
 *   **Primary Source:** 3DMark Steel Nomad Light.
 
-**Method A: Benchmark (Primary)**
+#### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
 This is the preferred method when real-world benchmark data is available.
 
@@ -654,7 +662,7 @@ This is the preferred method when real-world benchmark data is available.
 *   **Data Available:** `SGS = SGS_Bench`
 *   **No Data Available:** Proceed to Method B.
 
-**Method B: Nearest Neighbor Interpolation (Secondary)**
+#### Method B: Nearest Neighbor Interpolation (Secondary)
 If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for other devices:
 
 1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the smallest **Distance** to the target device:
@@ -663,7 +671,9 @@ If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for
     *   *Note:* Based on **Predicted SGS** calculated via Method C.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_SGS_Neighbors = (Predicted_SGS_Neighbor1 + Predicted_SGS_Neighbor2 + Predicted_SGS_Neighbor3) / 3`
+        *   *Note:* `Predicted_SGS_Neighbor1/2/3` refers to the **Predicted SGS** (Method C) of each neighbor device.
     *   `Correction_Ratio = Predicted_SGS_Target / Avg_Predicted_SGS_Neighbors`
+        *   *Note:* `Predicted_SGS_Target` is the **Predicted SGS** (Method C) of the target device.
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
     *   `SGS = Correction_Ratio * Avg_Benchmark_Neighbors`
@@ -672,7 +682,7 @@ If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for
 > **Why Simple Proximity vs Euclidean Distance?**
 > Unlike Display or Battery where multiple independent factors (Brightness, Color, Refresh Rate) contribute equally to the score, GPU performance is dominated by a single factor: **Base Architecture Score (GAS)** (75% weight). Devices with similar Predicted SGS scores almost certainly share the same or immediate-neighbor GPU architecture. Therefore, selecting neighbors based on **Closest Predicted Score** is computationally efficient and effectively groups devices by hardware generation without needing complex multi-dimensional distance calculations.
 
-**Method C: Predicted Standard Graphics (Tertiary)**
+#### Method C: Predicted Standard Graphics (Tertiary)
 Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Get Base Scores (GAS)**
@@ -767,38 +777,15 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 >     *   `Final = (3.3 * 0.9) + (0.0 * 0.1) = 2.97`
 
 
-### 🔹 3.4 Efficiency (Process Node)
-*Description:* Chip manufacturing technology. Smaller numbers (e.g., 3nm) mean the chip is more advanced, using less battery and generating less heat.
-*   **Measurement:** Semiconductor process node size + Foundry.
-*   **Unit:** Nanometers (nm)
-*   **Significance:** Major factor in power efficiency and thermal performance.
-*Formula:*
-1.  **Node Score:** `10 * (log(SoC_Process_Node_nm_Max) - log(Node)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
-2.  **Foundry Score:** See Foundry Efficiency table below.
-3.  **Predicted Score:** `(0.9 × Node_Score) + (0.1 × Foundry_Score)` (Clamped 0-10)
-
-*   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
-*   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
-
-**Foundry Efficiency Score:**
-| Foundry           | Foundry Score | Why?                                                                        |
-| :---------------- | :-----------: | :-------------------------------------------------------------------------- |
-| **TSMC**          | **10**        | 20-30% better power efficiency at same node label (empirically proven).     |
-| **Samsung**       | **5**         | Standard efficiency baseline.                                               |
-| **SMIC / Others** | **0**         | Generally lower yield/efficiency than leaders.                              |
-
-> [!NOTE]
-> **Why Logarithmic?** Transistor density and power efficiency scale non-linearly. A shrink from a mid-range node to a cutting-edge node is a massive leap, while equivalent absolute reductions at larger nodes yield diminishing returns. The scale is capped at `SoC_Process_Node_nm_Max` because almost all relevant modern devices fall within this range, ensuring score resolution is focused where it matters most.
-
-> [!NOTE]
-> **Unified Formula for Battery Scoring:** This exact formula is also used in the Battery Endurance Score model (Section 5.1, see [battery_scoring_model.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/battery_scoring_model.md) B.1.1) because process node efficiency directly impacts battery life. Foundry differences (TSMC vs Samsung) affect power consumption by 20-30%, so the foundry score must be included in battery life predictions.
-
-### 🔹 3.5 Thermal Dissipation & Stability Index (TDSI)
-*Description:* A composite index measuring the device's ability to sustain performance and shed heat. It combines the physical thermal capacity of the chassis with the sophistication of the internal cooling solution.
-*   **Measurement:** Frame Material + Weight + Dimensions + Cooling System Type.
+### 🔹 3.4 Thermal Dissipation & Stability Index (TDSI)
+*Description:* A composite index measuring the device's ability to sustain performance and shed heat. It combines the physical thermal capacity of the chassis, the internal cooling solution, and the thermal efficiency of the processor node.
+*   **Measurement:** Frame Material + Weight + Dimensions + Cooling System Type + Process Node.
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Prevents throttling, ensures sustained gaming performance, and maintains device longevity.
+
+> [!IMPORTANT]
+> **Why is TDSI not double-scoring physical materials or process nodes?**
+> Standard benchmarks (like Geekbench 3.1) measure instantaneous, burst performance. They do not penalize a device that melts your hand or heavily throttles after 5 minutes of intensive load. The TDSI uniquely scores the hardware's physical capacity to sustain that peak load over time. A phone can score 10/10 in burst speed, but if it has a plastic frame and no cooling, it will throttle to 5/10. TDSI corrects this blind spot in standard benchmarking.
 
 **Part A: Chassis Thermal Capacity (50%)**
 *   *What is it?* How much heat the phone body can absorb and spread passively.
@@ -868,28 +855,53 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 | **3.0**  | **Single Heat Spreader**            |
 | **0.0**  | **No Thermal System Disclosed**     |
 
-**Part C: Thermal Demand Compensation (Additive Bonus)**
-*   *What is it?* A fairness adjustment that rewards devices with lower power consumption (lower thermal load).
-*   **Measurement:** Based on **Section 3.1 SoC Performance Score**.
-*   **Significance:** A low-power chip generates less heat, so it remains stable even with simple cooling. A high-power chip generates massive heat, requiring advanced cooling to prevent throttling.
-*   **Formula:** `Bonus = (10 - SoC_Performance_Score) * 0.5`
-    *   **Max Bonus (+5.0):** Low-end SoC (Score ~0) -> Needs minimal cooling.
-    *   **Min Bonus (+0.0):** Flagship SoC (Score 10) -> Needs maximum cooling.
+**Part C: Process Node Efficiency Reference**
+*   *What is it?* Chip manufacturing technology. Smaller numbers (e.g., 3nm) mean the chip is more advanced, wasting less energy as heat.
+*   **Measurement:** Semiconductor process node size + Foundry.
+*   **Unit:** Nanometers (nm)
+*   **Significance:** Determines the baseline thermal inefficiency of the chip that the cooling system must overcome.
+
+**Formula:**
+1.  **Node Score:** `10 * (log(SoC_Process_Node_nm_Max) - log(Node)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
+2.  **Foundry Score:** See Foundry Efficiency table below.
+3.  **Process Node Score:** `(0.9 × Node_Score) + (0.1 × Foundry_Score)` (Clamped 0-10)
+
+*   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
+*   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 3*
+
+> **Why Logarithmic?** Transistor density and power efficiency scale non-linearly. A shrink from a mid-range node to a cutting-edge node is a massive leap, while equivalent absolute reductions at larger nodes yield diminishing returns.
+
+**Foundry Efficiency Score:**
+| Foundry           | Foundry Score | Why?                                                                        |
+| :---------------- | :-----------: | :-------------------------------------------------------------------------- |
+| **TSMC**          | **10**        | 20-30% better power efficiency at same node label (empirically proven).     |
+| **Samsung**       | **5**         | Standard efficiency baseline.                                               |
+| **SMIC / Others** | **0**         | Generally lower yield/efficiency than leaders.                              |
 
 > [!NOTE]
-> **Why this formula?** We use an **Additive Bonus** approach. The physical hardware (Parts A & B) sets the baseline stability capability. Then, we add points if the "engine" is small and easy to cool.
-> *   **Budget Phone:** Passive cooling (Score 3) + Low Load Bonus (4) = **7.0 (Stable)**.
-> *   **Gaming Phone:** Active Fan (Score 10) + High Load Bonus (0) = **10.0 (Stable)**.
-> *   **Hot Flagship:** Passive cooling (Score 3) + High Load Bonus (0) = **3.0 (Unstable)**.
-> This correctly predicts that a passively cooled flagship will throttle, while a passively cooled budget phone will not.
+>
+> **Global Reference:** This calculated Process Node Score is the authoritative value used by both the **Battery Endurance Model (Section 5.1)** and the **AI Hardware Performance Model (Section 3.10)**.
 
-**Final Formula:**
-1.  **Calculate Physical Capability:** `Physical_Score = (0.5 × Part_A) + (0.5 × Part_B)`
-2.  **Calculate Load Compensation:** `Load_Bonus = (10 - Section_3_1_Score) * 0.5`
-3.  **TDSI:** `TDSI = Physical_Score + Load_Bonus` (Clamped 0-10)
+**Final Formula: Thermal Load Compensation**
+*   *What is it?* A fairness adjustment that measures how much heat the processing engine actually generates, rewarding devices that are inherently easier to cool.
+*   **Significance:** Peak performance roughly equals peak heat. A flagship chip doing maximum work (Section 3.1 Score = 10) draws significantly more watts than a budget chip (Score = 2), generating far more heat. However, a flagship chip built on an efficient 3nm node generates *less* waste heat than one built on an inefficient 5nm node.
+*   **Calculate Thermal Mitigation Factor:**
+    *   We combine two sources of thermal relief: having a less powerful chip (which draws less raw power) and having a highly efficient manufacturing node (which wastes less power as heat).
+    *   `Mitigation_Factor = (10 - Section_3_1_Score) + Process_Node_Score`
+*   **Calculate Load Compensation Bonus:**
+    *   `Load_Bonus = Mitigation_Factor / 5`
+    *   **Max Bonus (+4.0):** Low-power, highly efficient chip -> Needs minimal cooling to remain stable.
+    *   **Min Bonus (+0.0):** High-power, highly inefficient chip -> Requires massive cooling to survive.
 
+1.  **Calculate Baseline Physical Capability:** `Physical_Score = (0.5 × Part_A) + (0.5 × Part_B)`
+2.  **Calculate TDSI Score:** `TDSI = (0.8 × Physical_Score) + Load_Bonus` (Clamped 0-10)
 
-### 🔹 3.6 RAM Technology - Memory Technology Efficiency Index (MTEI)
+> [!NOTE]
+> **Why these weights?** By multiplying the `Physical_Score` by 0.8 (max 8.0 points) and adding a `Load_Bonus` (max 4.0 points, but typically 2.0 for flagships), an ultra-gaming flagship with perfect physical cooling (8.0) and top-tier chip efficiency (2.0) will score a perfect 10.0 without exceeding the clamp limit. This ensures that no premium thermal hardware is "wasted" mathematically when combined with efficient chips.
+> **Why this formula?** We use an **Additive Bonus** approach. The physical hardware (Parts A & B) sets the baseline cooling capability. Then, we add bonus points if the "engine" is small or highly efficient. This correctly predicts that a passively cooled flagship will throttle, while a passively cooled budget phone will remain perfectly stable.
+
+### 🔹 3.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
 *Description:* The type of memory used. Newer technology (LPDDR5X) allows for faster app switching and saves battery compared to older types.
 *   **Measurement:** JEDEC standard specification.
 *   **Unit:** Memory Generation
@@ -905,7 +917,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 | **1.0**  | **LPDDR2**    | Obsolete                       |
 | **0.0**  | **DDR2/DDR3** | Ancient                        |
 
-### 🔹 3.7 RAM Capacity - Memory Capacity Index (MCI)
+### 🔹 3.6 RAM Capacity - Memory Capacity Index (MCI)
 *Description:* Measures the amount of physical memory available for applications and background processes. More RAM improves multitasking, reduces app reloads, and increases system stability under load.
 *   **Measurement:** Total physical RAM.
 *   **Unit:** Gigabytes (GB)
@@ -917,7 +929,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 > [!NOTE]
 > **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB dramatically improves multitasking and system stability. However, going from 16GB to 24GB offers minimal tangible benefit for current mobile applications.
 
-### 🔹 3.8 Storage Technology
+### 🔹 3.7 Storage Technology
 *Description:* The speed of the internal drive. Faster storage means the phone boots up instantly, apps install quickly, and files copy fast.
 *   **Measurement:** Sequential Read/Write speed capacity.
 *   **Unit:** Storage Generation, internal storage only.
@@ -934,7 +946,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 | **1.0**  | **eMMC 4.5** | Very old                   |
 | **0.0**  | **eMMC≤4.0** | Obsolete                   |
 
-### 🔹 3.9 Storage Capacity
+### 🔹 3.8 Storage Capacity
 *Description:* Internal space for your data. More storage means you can save more photos, videos, and games without deleting old ones.
 *   **Measurement:** Total internal non-volatile memory.
 *   **Unit:** Gigabytes (GB)
@@ -946,7 +958,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 > [!NOTE]
 > **Why Logarithmic?** Similar to RAM, storage utility is non-linear. 64GB to 128GB is a critical upgrade that prevents "storage full" anxiety. 512GB to 1TB is a luxury for power users, with less impact on daily basic functionality.
 
-### 🔹 3.10 Storage Expandability
+### 🔹 3.9 Storage Expandability
 *Description:* Ability to add a memory card. A dedicated slot lets you cheaply add massive storage for photos and media.
 *   **Measurement:** Physical expansion slot.
 *   **Unit:** Slot Type
@@ -960,7 +972,7 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 | **0.0**  | **No Expansion Slot**       | S24 Ultra, iPhone 15, Pixel 8 |
 
 
-### 🔹 3.11 AI Hardware Performance (Neural Processor)
+### 🔹 3.10 AI Hardware Performance (Neural Processor)
 *Description:* Measures the raw hardware acceleration for AI/ML tasks. The Neural Processing Unit (NPU) or AI Processing Unit (APU) is a dedicated chip that handles AI workloads. This score reflects the device's ability to run on-device generative AI, real-time translation, and advanced image processing *quickly*.
 *   **Measurement:** Geekbench AI (Quantized INT8 Score).
 *   **Unit:** Points
@@ -1012,7 +1024,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 *   **Distance Metric:** Weighted Euclidean Distance.
     *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
-        *   `AI` (table above 3.11), `RAM_Tech` (Sec 3.6), `GPU` (Sec 3.3), `RAM_Cap` (Sec 3.7), `Process` (Sec 3.4).
+        *   `AI` (table above 3.10), `RAM_Tech` (Sec 3.5), `GPU` (Sec 3.3), `RAM_Cap` (Sec 3.6), `Process` (Sec 3.4 Part C).
     *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
     *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
 *   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
@@ -1023,11 +1035,12 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 **2. Calculate Correction Ratio:**
 *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
     *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
-*   `Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+*   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 
 **3. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Final_Score = Ratio * Avg_Benchmark_Neighbors`
+*   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
@@ -1036,11 +1049,11 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
 
 1.  **SoC AI Score (40%) – The Engine**
-    *   **Source:** Retrieve `AI Score` from **the table 3.11 above**.
+    *   **Source:** Retrieve `AI Score` from **the table 3.10 above**.
     *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
 
 2.  **RAM Technology Score (25%) – The Highway**
-    *   **Source:** Retrieve Score from **Section 3.6**.
+    *   **Source:** Retrieve Score from **Section 3.5**.
     *   **Rationale:** An engine is useless without fuel. AI models require massive amounts of data to be fed to the NPU instantly. If the "highway" (Memory Bandwidth) is too narrow, the NPU sits idle waiting for data. Faster RAM (e.g., LPDDR5X) directly translates to faster AI response times.
 
 3.  **GPU Performance Score (15%) – The Backup Engine**
@@ -1048,11 +1061,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
     *   **Rationale:** While the NPU handles most tasks, some complex AI instructions (floating point math) are too specific for it. In these cases, the system falls back to the Graphics Unit (GPU). A strong GPU ensures the phone doesn't choke on these complex tasks.
 
 4.  **RAM Capacity Score (10%) – The Warehouse**
-    *   **Source:** Retrieve Score from **Section 3.7**.
+    *   **Source:** Retrieve Score from **Section 3.6**.
     *   **Rationale:** This measures *how big* of a model you can run. 8GB is the bare minimum for modern "On-Device AI". If the warehouse is too small, the phone has to constantly swap data in and out, drastically slowing down performance. *Note: having excess RAM (e.g., 24GB) doesn't make a small task faster, which is why this weight is limited to 10%.*
 
 5.  **Process Node Score (10%) – Efficiency**
-    *   **Source:** Retrieve Score from **Section 3.4**.
+    *   **Source:** Retrieve Score from **Section 3.4 Part C**.
     *   **Rationale:** AI calculations generate significant heat. A more efficient chip (e.g., 3nm vs 5nm) determines whether the device can run at top speed for sustained periods or if it will slow down (throttle) to cool off.
 
 **Step 2: Calculate Predicted Score**

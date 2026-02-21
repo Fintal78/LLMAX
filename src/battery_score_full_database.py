@@ -313,7 +313,7 @@ def calc_layer_b(specs):
         elif "SMIC" in chipset:
             foundry = "SMIC"
     
-    # Unified weighted formula (see Section 3.4 of scoring_rules.md)
+    # Unified weighted formula (see Section 3.4 Part C of scoring_rules.md)
     import math
     p_min = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Min', 3)
     p_max = SCORING_CONSTANTS.get('SoC_Process_Node_nm_Max', 20)
@@ -588,7 +588,7 @@ def calc_layer_b(specs):
     conn_total = 0.7 * cell_score + 0.3 * wifi_score
     
     # B.4 Thermal Efficiency = TDSI (Thermal Dissipation & Stability Index)
-    # Reference: Section 3.5 of scoring_rules.md
+    # Reference: Section 3.4 of scoring_rules.md
     
     # Part A: Chassis Thermal Capacity (50% of TDSI)
     # A1: Frame Material (40% of Part A)
@@ -647,17 +647,15 @@ def calc_layer_b(specs):
     # Part C: Thermal Demand Compensation (20% of TDSI - Additive)
     # In full database mode, we may not have Geekbench scores for all phones.
     # We use the CPU Architecture Score (cpu_score) as a proxy for Performance/Thermal Load.
-    # Logic: High Architecture Score (10) = High Load -> Bonus 0.
-    #        Low Architecture Score (0) = Low Load -> Bonus 5.
+    # Logic: High Architecture Score (10) = High Load -> Bonus lower.
+    #        Low Architecture Score (0) = Low Load -> Bonus higher.
     soc_perf_proxy = cpu_score
-    part_c_bonus = (10 - soc_perf_proxy) * 0.5
-    part_c_bonus = clamp(part_c_bonus, 0, 5)
+    mitigation_factor = (10 - soc_perf_proxy) + process_score
+    part_c_bonus = clamp(mitigation_factor / 5, 0, 4)
     
     # Final TDSI = Thermal Efficiency for battery scoring
-    # Prior Formula: (0.5 * A) + (0.5 * B)
-    # New Formula: A/B Average + Bonus
     base_physical = (0.5 * part_a_total) + (0.5 * cooling_score)
-    thermal_total = base_physical + part_c_bonus
+    thermal_total = (0.8 * base_physical) + part_c_bonus
     thermal_total = clamp(thermal_total, 0, 10)
     
     # Total HEI

@@ -443,7 +443,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "confidence": "High"
     },
-    "3_4_efficiency_node": {
+    "3_4_thermal_dissipation_stability": {
       "process_nm": {
         "value": 4,
         "source": "TBD",
@@ -454,10 +454,6 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_5_thermal_dissipation_stability": {
       "frame_material": {
         "value": "Titanium Alloy Frame",
         "source": "TBD",
@@ -491,7 +487,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 8.16
     },
-    "3_6_ram_technology": {
+    "3_5_ram_technology": {
       "technology": {
         "value": "LPDDR5X",
         "source": "TBD",
@@ -500,7 +496,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_7_ram_capacity": {
+    "3_6_ram_capacity": {
       "max_gb": {
         "value": 12,
         "source": "TBD",
@@ -509,7 +505,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_8_storage_technology": {
+    "3_7_storage_technology": {
       "technology": {
         "value": "UFS 4.0",
         "source": "TBD",
@@ -518,7 +514,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_9_storage_capacity": {
+    "3_8_storage_capacity": {
       "capacity_gb": {
         "value": 1024,
         "source": "TBD",
@@ -527,7 +523,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_10_storage_expandability": {
+    "3_9_storage_expandability": {
       "slot_type": {
         "value": "No Expansion Slot",
         "source": "TBD",
@@ -536,7 +532,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_11_npu_hardware_performance": {
+    "3_10_npu_hardware_performance": {
       "geekbench_ai_score_quantized": {
         "value": 4500,
         "source": "https://browser.geekbench.com/ai-benchmarks",
@@ -944,11 +940,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "3_processing_power_and_performance.3_3_0_gpu_architecture_reference"
           ],
           "breakdown": {
-            "process_node_score": 8.48,
-            "cpu_architecture_score_aes": 7.5,
-            "gpu_efficiency_score": "$ref:3_3_0_gpu_architecture_reference.efficiency_score"
+            "process_node_score": 8.64,
+            "gpu_efficiency_score": 9,
+            "gpu_performance_score": 9,
+            "cpu_architecture_score_aes": 7.5
           },
-          "score": 7.49
+          "score": 8.37
         },
         "b_2_display_efficiency": {
           "dependencies": [
@@ -975,9 +972,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "b_4_thermal_efficiency": {
           "dependencies": ["3_processing_power_and_performance.3_5_thermal_dissipation_stability"],
-          "score": 8.16
+          "score": 8.2
         },
-        "total_hei_score": 6.78
+        "total_hei_score": 7.14
       },
       "layer_c_software_optimization": {
         "dependencies": ["6_software.os_version", "6_software.6_3_system_cleanliness_control"],
@@ -987,7 +984,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "total_soi_score": 8.4
       },
-      "predicted_score": 7.03,
+      "predicted_score": 7.16,
       "benchmarks": {
         "gsmarena_active_use": {
           "hours": 16.75,
@@ -1000,7 +997,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "final_score": 7.33,
       "score_adjustment": {
-        "booster": 1.042,
+        "booster": 1.024,
         "source": "GSMArena Active Use + PhoneArena Battery Life"
       }
     },

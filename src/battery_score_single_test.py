@@ -42,6 +42,8 @@ SEE ALSO:
 
 import sys
 import os
+import json
+import re
 
 # Ensure src is in path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -315,9 +317,9 @@ def calc_layer_a(data):
 
 def calc_layer_b(data):
     # B.1 SoC
-    # Path: 3_processing_power_and_performance... -> 3_4_efficiency_node -> process_nm -> value
-    process_nm = get_val(data, ["3_processing_power_and_performance", "3_4_efficiency_node", "process_nm"], 4)
-    foundry = get_val(data, ["3_processing_power_and_performance", "3_4_efficiency_node", "foundry"], "Samsung")
+    # Path: 3_processing_power_and_performance... -> 3_4_thermal_dissipation_stability -> process_nm -> value
+    process_nm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "process_nm"], 4)
+    foundry = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "foundry"], "Samsung")
     
     # Unified weighted formula (see Section 3.4 of scoring_rules.md)
     import math
@@ -491,18 +493,18 @@ def calc_layer_b(data):
     conn_total = 0.7 * cell_score + 0.3 * wifi_score
 
     # B.4 Thermal
-    frame_material = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "frame_material"], "")
+    frame_material = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "frame_material"], "")
     frame_score = get_best_match(frame_material, FRAME_MATERIAL_SCORES, default=4)
     
-    weight_g = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "weight_g"], 200)
+    weight_g = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "weight_g"], 200)
     if not isinstance(weight_g, (int, float)): weight_g = 200
     
     t_w_min = SCORING_CONSTANTS.get('Thermal_Weight_g_Min', 140)
     t_w_max = SCORING_CONSTANTS.get('Thermal_Weight_g_Max', 250)
     weight_score = clamp(10 * (weight_g - t_w_min) / (t_w_max - t_w_min), 0, 10)
     
-    h_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "height_mm"], 160)
-    w_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "width_mm"], 75)
+    h_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "height_mm"], 160)
+    w_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "width_mm"], 75)
     if not isinstance(h_mm, (int, float)): h_mm = 160
     if not isinstance(w_mm, (int, float)): w_mm = 75
     surface_area = h_mm * w_mm
@@ -511,7 +513,7 @@ def calc_layer_b(data):
     t_sa_max = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Max', 9000)
     surface_score = clamp(10 * (surface_area - t_sa_min) / (t_sa_max - t_sa_min), 0, 10)
     
-    thick_mm = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "thickness_mm"], 8.0)
+    thick_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "thickness_mm"], 8.0)
     if not isinstance(thick_mm, (int, float)): thick_mm = 8.0
     
     t_th_min = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Min', 6.0)
@@ -520,7 +522,7 @@ def calc_layer_b(data):
     
     part_a_total = (0.40 * frame_score) + (0.25 * weight_score) + (0.20 * surface_score) + (0.15 * thickness_score)
     
-    cooling_system = get_val(data, ["3_processing_power_and_performance", "3_5_thermal_dissipation_stability", "cooling_system"], "")
+    cooling_system = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "cooling_system"], "")
     cooling_score = get_best_match(cooling_system, COOLING_SCORES, default=4)
     
     gb6_score = data.get("3_processing_power_and_performance", {}).get("3_1_cpu_multi_core_performance", {}).get("geekbench_6_multi_score", 3000)
@@ -528,10 +530,11 @@ def calc_layer_b(data):
     if isinstance(gb6_score, dict): gb6_score = gb6_score.get("value", 3000) # Safety
     
     soc_perf_score = calc_soc_performance_score(gb6_score)
-    part_c_bonus = clamp((10 - soc_perf_score) * 0.5, 0, 5)
+    mitigation_factor = (10 - soc_perf_score) + process_score
+    part_c_bonus = clamp(mitigation_factor / 5, 0, 4)
 
     base_physical = (0.5 * part_a_total) + (0.5 * cooling_score)
-    thermal_total = clamp(base_physical + part_c_bonus, 0, 10)
+    thermal_total = clamp((0.8 * base_physical) + part_c_bonus, 0, 10)
 
     hei_total = (0.40 * soc_total + 0.40 * display_total + 
                  0.10 * conn_total + 0.10 * thermal_total)
@@ -749,7 +752,7 @@ def main():
     # B.4 Thermal
     if "b_4_thermal_efficiency" not in b_struct: b_struct["b_4_thermal_efficiency"] = {}
     b_struct["b_4_thermal_efficiency"]["score"] = layer_b["thermal_efficiency"]["tdsi_score"]
-    # No breakdown for B.4 as per user request (redundant with 3.5)
+    # No breakdown for B.4 as per user request (redundant with 3.4)
     
     b_struct["total_hei_score"] = layer_b["total_hei_score"]
     

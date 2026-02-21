@@ -63,21 +63,19 @@
 *   `GPU_SteelNomad_Score_Min` = 500 (Score 0), `GPU_SteelNomad_Score_Max` = 1800 (Score 10)
 *   `GPU_RC_Score_Min` = 0.5 (Score 0), `GPU_RC_Score_Max` = 12.5 (Score 10)
 
-### 3.4 Efficiency (Process Node)
+### 3.4 Thermal Dissipation & Stability Index (TDSI)
 *   `SoC_Process_Node_nm_Min` = 3 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 20 (Score 0 for Node component)
-
-### 3.5 Thermal Dissipation (TDSI)
 *   `Thermal_Weight_g_Min` = 140 (Score 0), `Thermal_Weight_g_Max` = 250 (Score 10) (*Heavier is better for thermal mass*)
 *   `Thermal_Surface_Area_mm2_Min` = 6000 (Score 0), `Thermal_Surface_Area_mm2_Max` = 9000 (Score 10)
 *   `Thermal_Thickness_mm_Min` = 6.0 (Score 0), `Thermal_Thickness_mm_Max` = 10.0 (Score 10) (*Thicker is better for thermal mass*)
 
-### 3.7 RAM Capacity
+### 3.6 RAM Capacity
 *   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)
 
-### 3.9 Storage Capacity
+### 3.8 Storage Capacity
 *   `Storage_GB_Min` = 16 (Score 0), `Storage_GB_Max` = 1024 (Score 10)
 
-### 3.11 AI Hardware
+### 3.10 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 4500 (Score 10)
 
 **4. Camera Systems**
