@@ -2,7 +2,7 @@
 
 ## Purpose
 This document establishes **strict, methodic rules** for the JSON structure in `proposed_data_structure.md`.  
-**Goal:** Zero duplication, full traceability, and complete alignment with `scoring_rules.md` and `battery_scoring_model.md`.
+**Goal:** Zero duplication, full traceability, and complete alignment with `scoring_rules.md`.
 
 ---
 
@@ -141,10 +141,10 @@ All scoring parameters must be broken down into components (`component_1` ... `c
 The calculated result of the subsection's formula.
 The following rules define how the `scores` object is calculated.
 
-- **predicted**: The result of the formula defined in `scoring_rules.md` or `battery_scoring_model.md`.
+- **predicted**: The result of the formula defined in `scoring_rules.md`.
 - **final**: The definitive score used for ranking. It is derived via one of four paths:
     1.  **Direct Benchmark:** Value from a trusted source (e.g., DXOMARK).
-    2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` or `battery_scoring_model.md`).
+    2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 5.1).
     3.  **Predictor + Booster:** The `predicted` score adjusted by one or more Section 11 Boosters.
     4.  **Predictor (Default):** The `predicted` score used as-is when no benchmark, neighbor, or booster applies.
 
@@ -174,7 +174,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
   ...
   "component_n": { ... },
   "scores": {
-      "predicted": 8.5,              // Score from formula in scoring_rules.md or battery_scoring_model.md
+      "predicted": 8.5,              // Score from formula in scoring_rules.md
     "final": {
       "value": 8.925,              // Definitive score for ranking
       "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation

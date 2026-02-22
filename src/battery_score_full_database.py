@@ -4,7 +4,7 @@ Battery Score Calculator - Full Database Mode
 DESCRIPTION:
 This script processes the ENTIRE phone database and calculates battery scores
 for all phones using the complete 3-case scoring methodology defined in
-docs/battery_scoring_model.md.
+docs/scoring_rules.md Section 5.1.
 
 SCORING METHODOLOGY:
 - Case 1: Phones with both benchmarks → Use benchmark average
@@ -39,6 +39,8 @@ SEE ALSO:
 
 import sys
 import os
+import json
+import re
 
 # Ensure src is in path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -626,9 +628,9 @@ def calc_layer_b(specs):
     surface_score = clamp(surface_score, 0, 10)
     
     # A4: Device Thickness (15% of Part A)
-    thickness_score = 10 * (thickness - 6) / (10 - 6)
+    thickness = 8.0
     if dim_str:
-        thick_match = re.search(r'x\s*([\d.]+)\s*mm.*?\(\d+\.\d+\s*in\)$', dim_str)
+        thick_match = re.search(r'x\s*([\d.]+)\s*mm', dim_str)
         if thick_match:
             thickness = float(thick_match.group(1))
     

@@ -88,20 +88,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 21.56,
-          "score": 8.18
+          "score": 7.98
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 7.01,
-            "total_display_score": 8.39
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 6.68,
+            "total_display_score": 7.86
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -109,23 +111,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 10,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 10,
+            "part_a_chassis_score": 10.0,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 8.0
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 7.13
+          "total_hei_score": 7.61
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.5,
+        "predicted_score": 7.45,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -136,7 +138,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.5,
+        "final_score": 7.45,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -217,20 +219,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 3.17,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.49,
+            "cpu_architecture_score_aes": 3.17
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -238,23 +242,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.73,
+            "surface_area_score": 10,
+            "thickness_score": 3.75,
+            "part_a_chassis_score": 5.34,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.78,
+            "tdsi_score": 6.52
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.96
+          "total_hei_score": 6.29
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.89,
+        "predicted_score": 6.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -265,7 +269,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.89,
+        "final_score": 6.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -346,20 +350,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.09
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 5.58
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -367,23 +373,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.0,
+            "surface_area_score": 10,
+            "thickness_score": 4.0,
+            "part_a_chassis_score": 5.2,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.34
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.31
+          "total_hei_score": 5.46
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.66,
+        "predicted_score": 6.09,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -394,7 +400,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.66,
+        "final_score": 6.09,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -475,20 +481,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.09
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 5.58
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -496,23 +504,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.0,
+            "surface_area_score": 10,
+            "thickness_score": 4.0,
+            "part_a_chassis_score": 5.2,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.34
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.31
+          "total_hei_score": 5.46
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.66,
+        "predicted_score": 6.09,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -523,7 +531,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.66,
+        "final_score": 6.09,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -612,20 +620,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -633,23 +643,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.55,
+            "surface_area_score": 10,
+            "thickness_score": 3.75,
+            "part_a_chassis_score": 5.3,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.38
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.86
+          "total_hei_score": 6.22
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.85,
+        "predicted_score": 6.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -660,7 +670,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.85,
+        "final_score": 6.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -755,16 +765,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
+            "process_node_score": 8.14,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 10,
-            "total_soc_score": 8.24
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 6.02,
+            "total_soc_score": 6.57,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 10,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 4.23,
-            "total_display_score": 6.17
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 3.59,
+            "total_display_score": 5.74
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -772,23 +784,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.63,
+            "tdsi_score": 7.31
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.66
+          "total_hei_score": 6.12
         },
         "layer_c_soi": {
-          "os_skin_score": 6,
-          "bloatware_score": 6,
-          "total_soi_score": 6.0
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 8.03,
+        "predicted_score": 7.6,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -799,7 +811,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.03,
+        "final_score": 7.6,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -894,16 +906,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
+            "process_node_score": 8.14,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 10,
-            "total_soc_score": 8.24
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 6.02,
+            "total_soc_score": 6.57,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 10,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 6.26,
-            "total_display_score": 6.78
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 5.84,
+            "total_display_score": 6.42
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -911,23 +925,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.63,
+            "tdsi_score": 7.31
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.87
+          "total_hei_score": 6.39
         },
         "layer_c_soi": {
-          "os_skin_score": 6,
-          "bloatware_score": 6,
-          "total_soi_score": 6.0
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 8.1,
+        "predicted_score": 7.7,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -938,7 +952,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.1,
+        "final_score": 7.7,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1039,20 +1053,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 18.57,
-          "score": 6.6
+          "score": 6.22
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 10,
-            "total_soc_score": 8.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 6.02,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 6.57,
-            "total_display_score": 8.26
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 6.18,
+            "total_display_score": 7.71
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1060,23 +1076,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 8.45,
+            "surface_area_score": 10,
+            "thickness_score": 7.0,
+            "part_a_chassis_score": 8.36,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
-          },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 7.35
           },
           "total_hei_score": 7.48
         },
         "layer_c_soi": {
           "os_skin_score": 10,
-          "bloatware_score": 10,
-          "total_soi_score": 10.0
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.59,
+        "predicted_score": 6.62,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1087,7 +1103,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.59,
+        "final_score": 6.62,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1188,20 +1204,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 15.39,
-          "score": 4.91
+          "score": 4.35
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 10,
-            "total_soc_score": 8.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 6.02,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 7.33,
-            "total_display_score": 8.49
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.04,
+            "total_display_score": 7.97
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1209,23 +1227,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 6.0,
+            "surface_area_score": 10,
+            "thickness_score": 7.0,
+            "part_a_chassis_score": 7.75,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
-          },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 7.1
           },
           "total_hei_score": 7.56
         },
         "layer_c_soi": {
           "os_skin_score": 10,
-          "bloatware_score": 10,
-          "total_soi_score": 10.0
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.86,
+        "predicted_score": 5.8,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1236,7 +1254,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.86,
+        "final_score": 5.8,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1336,20 +1354,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 12.12,
-          "score": 3.18
+          "score": 2.43
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 10,
-            "total_soc_score": 8.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 6.02,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 6.98,
-            "total_display_score": 8.38
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 6.65,
+            "total_display_score": 7.85
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1357,23 +1377,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 10,
+            "weight_score": 2.27,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 6.57,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 6.63
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.68,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.77
-          },
-          "total_hei_score": 7.55
+          "total_hei_score": 7.46
         },
         "layer_c_soi": {
           "os_skin_score": 10,
-          "bloatware_score": 10,
-          "total_soi_score": 10.0
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.07,
+        "predicted_score": 4.9,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1384,7 +1404,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.07,
+        "final_score": 4.9,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1477,16 +1497,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.24,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.34,
+            "cpu_architecture_score_aes": 4.24
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.39,
-            "total_display_score": 5.67
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 8.21,
+            "total_display_score": 5.11
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1494,23 +1516,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 2.25,
+            "part_a_chassis_score": 6.44,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.78,
+            "tdsi_score": 6.95
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.34
+          "total_hei_score": 5.73
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.04,
+        "predicted_score": 7.71,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1521,7 +1543,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.04,
+        "final_score": 7.71,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1608,20 +1630,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.64,
-          "score": 7.16
+          "score": 6.84
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.91,
-            "total_display_score": 6.12
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.9,
+            "total_display_score": 5.61
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -1629,23 +1653,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 6.85,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 7.0
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.68,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.77
-          },
-          "total_hei_score": 6.34
+          "total_hei_score": 5.54
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.76,
+        "predicted_score": 6.22,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1656,7 +1680,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.76,
+        "final_score": 6.22,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1741,20 +1765,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 3.17,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.49,
+            "cpu_architecture_score_aes": 3.17
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1762,23 +1788,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.73,
+            "surface_area_score": 10,
+            "thickness_score": 3.75,
+            "part_a_chassis_score": 5.34,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.78,
+            "tdsi_score": 6.52
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.96
+          "total_hei_score": 6.29
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.89,
+        "predicted_score": 6.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1789,7 +1815,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.89,
+        "final_score": 6.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1887,20 +1913,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 18.86,
-          "score": 6.75
+          "score": 6.39
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 8.74
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 5.15,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.61,
+            "cpu_architecture_score_aes": 5.15
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 8.72
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 8.23
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -1908,23 +1936,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 4.55,
+            "surface_area_score": 10,
+            "thickness_score": 3.5,
+            "part_a_chassis_score": 6.86,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.6,
+            "tdsi_score": 6.94
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 7.68
+          "total_hei_score": 7.09
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.05,
+        "predicted_score": 6.56,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1935,7 +1963,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.05,
+        "final_score": 6.56,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2036,16 +2064,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 9.0
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 8.01,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.15,
+            "cpu_architecture_score_aes": 8.01
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 4.49,
-            "total_display_score": 5.9
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 3.88,
+            "total_display_score": 5.48
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2053,23 +2083,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.3,
+            "tdsi_score": 6.98
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.79
+          "total_hei_score": 6.61
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.2,
+        "predicted_score": 8.01,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2080,7 +2110,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.2,
+        "final_score": 8.01,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2178,16 +2208,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 9.0
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 8.01,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.15,
+            "cpu_architecture_score_aes": 8.01
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 6.18,
-            "total_display_score": 6.4
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 5.76,
+            "total_display_score": 6.04
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2195,23 +2227,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.3,
+            "tdsi_score": 6.98
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.96
+          "total_hei_score": 6.84
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.26,
+        "predicted_score": 8.09,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2222,7 +2254,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.26,
+        "final_score": 8.09,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2315,16 +2347,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 4.11,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.77,
+            "cpu_architecture_score_aes": 4.11
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 7.8,
-            "total_display_score": 5.49
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.55,
+            "total_display_score": 4.91
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2332,23 +2366,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 1.5,
+            "part_a_chassis_score": 7.92,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.59,
+            "tdsi_score": 7.36
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.19
+          "total_hei_score": 5.47
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.99,
+        "predicted_score": 7.61,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2359,7 +2393,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.99,
+        "final_score": 7.61,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2449,20 +2483,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.09
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 5.58
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -2470,23 +2506,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.0,
+            "surface_area_score": 10,
+            "thickness_score": 4.0,
+            "part_a_chassis_score": 5.2,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.34
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.31
+          "total_hei_score": 5.46
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.66,
+        "predicted_score": 6.09,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2497,7 +2533,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.66,
+        "final_score": 6.09,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2594,20 +2630,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 3.17,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.49,
+            "cpu_architecture_score_aes": 3.17
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2615,23 +2653,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.73,
+            "surface_area_score": 10,
+            "thickness_score": 3.75,
+            "part_a_chassis_score": 5.34,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.78,
+            "tdsi_score": 6.52
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.96
+          "total_hei_score": 6.29
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.89,
+        "predicted_score": 6.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2642,7 +2680,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.89,
+        "final_score": 6.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2729,20 +2767,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 4.11,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.77,
+            "cpu_architecture_score_aes": 4.11
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2750,23 +2790,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.18,
+            "surface_area_score": 10,
+            "thickness_score": 4.25,
+            "part_a_chassis_score": 5.53,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.59,
+            "tdsi_score": 6.41
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.71
+          "total_hei_score": 6.08
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.8,
+        "predicted_score": 6.31,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2777,7 +2817,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.8,
+        "final_score": 6.31,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2880,20 +2920,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 16.94,
-          "score": 5.73
+          "score": 5.26
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 5.93,
-            "total_display_score": 8.07
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.48,
+            "total_display_score": 7.5
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -2901,23 +2943,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 6.82,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 6.9,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 6.76
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.07
+          "total_hei_score": 7.34
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.37,
+        "predicted_score": 6.14,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2928,7 +2970,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.37,
+        "final_score": 6.14,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3031,20 +3073,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 16.55,
-          "score": 5.53
+          "score": 5.03
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 1.11,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.08,
+            "cpu_architecture_score_aes": 1.11
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 7.88,
-            "total_display_score": 8.65
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.64,
+            "total_display_score": 8.15
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3052,23 +3096,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 4.36,
+            "surface_area_score": 10,
+            "thickness_score": 1.25,
+            "part_a_chassis_score": 6.48,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 3.68,
+            "tdsi_score": 7.87
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.27
+          "total_hei_score": 6.94
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.35,
+        "predicted_score": 5.89,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3079,7 +3123,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.35,
+        "final_score": 5.89,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3179,20 +3223,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 15.4,
-          "score": 4.92
+          "score": 4.35
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 8.74
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 5.15,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.61,
+            "cpu_architecture_score_aes": 5.15
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 7.72,
-            "total_display_score": 8.6
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.46,
+            "total_display_score": 8.1
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3200,23 +3246,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 4.27,
+            "surface_area_score": 10,
+            "thickness_score": 2.25,
+            "part_a_chassis_score": 6.61,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.6,
+            "tdsi_score": 6.84
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.68
+          "total_hei_score": 7.03
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.22,
+        "predicted_score": 5.62,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3227,7 +3273,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.22,
+        "final_score": 5.62,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3305,20 +3351,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 1.71,
-          "score": 1
+          "score": 0
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
+            "process_node_score": 9.5,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.25,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 8.0,
+            "refresh_efficiency_score": 7.78,
             "resolution_efficiency_score": 10,
-            "total_display_score": 8.95
+            "total_display_score": 8.87
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -3326,23 +3374,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 10,
+            "weight_score": 0,
+            "surface_area_score": 0,
+            "thickness_score": 10,
+            "part_a_chassis_score": 5.5,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.9,
+            "tdsi_score": 6.7
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 10,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 10.0
-          },
-          "total_hei_score": 7.62
+          "total_hei_score": 7.72
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 4.44,
+        "predicted_score": 3.66,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3353,7 +3401,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.44,
+        "final_score": 3.66,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3430,20 +3478,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 1.67,
-          "score": 1
+          "score": 0
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
+            "process_node_score": 9.5,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.25,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 8.0,
+            "refresh_efficiency_score": 7.78,
             "resolution_efficiency_score": 10,
-            "total_display_score": 8.95
+            "total_display_score": 8.87
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -3451,23 +3501,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 0,
+            "surface_area_score": 0,
+            "thickness_score": 6.5,
+            "part_a_chassis_score": 4.17,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.9,
+            "tdsi_score": 6.17
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 10,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 10.0
-          },
-          "total_hei_score": 7.62
+          "total_hei_score": 7.67
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 4.44,
+        "predicted_score": 3.64,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3478,7 +3528,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.44,
+        "final_score": 3.64,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3566,20 +3616,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 4.11,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.77,
+            "cpu_architecture_score_aes": 4.11
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3587,23 +3639,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.18,
+            "surface_area_score": 10,
+            "thickness_score": 4.25,
+            "part_a_chassis_score": 5.53,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.59,
+            "tdsi_score": 6.41
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.71
+          "total_hei_score": 6.08
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.8,
+        "predicted_score": 6.31,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3614,7 +3666,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.8,
+        "final_score": 6.31,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3713,20 +3765,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 15.02,
-          "score": 4.71
+          "score": 4.13
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 5.69,
-            "total_display_score": 8.0
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.22,
+            "total_display_score": 7.42
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3734,23 +3788,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 10,
+            "weight_score": 2.09,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 6.52,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 6.61
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.04
+          "total_hei_score": 7.29
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 5.9,
+        "predicted_score": 5.61,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3761,7 +3815,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.9,
+        "final_score": 5.61,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3846,20 +3900,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.55,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.43,
+            "cpu_architecture_score_aes": 4.55
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3867,23 +3923,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 3.64,
+            "surface_area_score": 10,
+            "thickness_score": 3.0,
+            "part_a_chassis_score": 4.96,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.72,
+            "tdsi_score": 6.3
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.76
+          "total_hei_score": 6.34
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.82,
+        "predicted_score": 6.4,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3894,7 +3950,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.82,
+        "final_score": 6.4,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3978,20 +4034,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.55,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.43,
+            "cpu_architecture_score_aes": 4.55
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -3999,23 +4057,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 3.64,
+            "surface_area_score": 10,
+            "thickness_score": 3.0,
+            "part_a_chassis_score": 4.96,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.72,
+            "tdsi_score": 6.3
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.76
+          "total_hei_score": 6.34
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.82,
+        "predicted_score": 6.4,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4026,7 +4084,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.82,
+        "final_score": 6.4,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4116,20 +4174,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 16.75,
-          "score": 5.63
+          "score": 5.15
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 3.93,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.25,
+            "cpu_architecture_score_aes": 3.93
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.03,
-            "total_display_score": 4.86
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.81,
+            "total_display_score": 4.21
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4137,23 +4197,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 9.09,
+            "surface_area_score": 10,
+            "thickness_score": 10,
+            "part_a_chassis_score": 7.37,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.84,
+            "tdsi_score": 7.39
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.68,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.77
-          },
-          "total_hei_score": 6.08
+          "total_hei_score": 5.38
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 5.98,
+        "predicted_score": 5.4,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4164,7 +4224,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.98,
+        "final_score": 5.4,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4257,16 +4317,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 3.93,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.25,
+            "cpu_architecture_score_aes": 3.93
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.39,
-            "total_display_score": 4.97
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 8.21,
+            "total_display_score": 4.33
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4274,23 +4336,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 10,
+            "part_a_chassis_score": 7.6,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.84,
+            "tdsi_score": 7.48
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.1
+          "total_hei_score": 5.44
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.96,
+        "predicted_score": 7.6,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4301,7 +4363,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.96,
+        "final_score": 7.6,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4396,16 +4458,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.29,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.36,
+            "cpu_architecture_score_aes": 4.29
           },
           "display_efficiency": {
             "panel_technology_score": 6,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 4.84,
-            "total_display_score": 5.65
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 4.27,
+            "total_display_score": 5.32
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4413,23 +4477,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0.0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.77,
+            "tdsi_score": 7.45
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.29
+          "total_hei_score": 5.88
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.02,
+        "predicted_score": 7.76,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4440,7 +4504,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.02,
+        "final_score": 7.76,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4535,16 +4599,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.29,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.36,
+            "cpu_architecture_score_aes": 4.29
           },
           "display_efficiency": {
             "panel_technology_score": 6,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 7.14,
-            "total_display_score": 6.34
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 6.82,
+            "total_display_score": 6.09
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4552,23 +4618,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0.0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.77,
+            "tdsi_score": 7.45
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.53
+          "total_hei_score": 6.18
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.11,
+        "predicted_score": 7.86,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4579,7 +4645,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.11,
+        "final_score": 7.86,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4663,20 +4729,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 3.03,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.01,
+            "cpu_architecture_score_aes": 3.03
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4684,23 +4752,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.64,
+            "surface_area_score": 10,
+            "thickness_score": 4.75,
+            "part_a_chassis_score": 5.47,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.64,
+            "tdsi_score": 6.42
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.65
+          "total_hei_score": 6.1
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.78,
+        "predicted_score": 6.31,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4711,7 +4779,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.78,
+        "final_score": 6.31,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4810,20 +4878,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.29,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.36,
+            "cpu_architecture_score_aes": 4.29
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4831,23 +4901,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 5.27,
+            "surface_area_score": 10,
+            "thickness_score": 3.5,
+            "part_a_chassis_score": 7.04,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.77,
+            "tdsi_score": 7.19
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.76
+          "total_hei_score": 6.4
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.82,
+        "predicted_score": 6.42,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4858,7 +4928,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.82,
+        "final_score": 6.42,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4957,20 +5027,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 4.0,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.27,
+            "cpu_architecture_score_aes": 4.0
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -4978,23 +5050,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.0,
+            "surface_area_score": 10,
+            "thickness_score": 3.5,
+            "part_a_chassis_score": 5.38,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.83,
+            "tdsi_score": 6.58
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.76
+          "total_hei_score": 6.3
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.82,
+        "predicted_score": 6.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5005,7 +5077,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.82,
+        "final_score": 6.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5103,20 +5175,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 4.1,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.77,
+            "cpu_architecture_score_aes": 4.1
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5124,23 +5198,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.45,
+            "surface_area_score": 10,
+            "thickness_score": 4.25,
+            "part_a_chassis_score": 5.6,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.6,
+            "tdsi_score": 6.44
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.71
+          "total_hei_score": 6.09
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.8,
+        "predicted_score": 6.31,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5151,7 +5225,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.8,
+        "final_score": 6.31,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5235,20 +5309,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 3.03,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.01,
+            "cpu_architecture_score_aes": 3.03
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5256,23 +5332,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.64,
+            "surface_area_score": 10,
+            "thickness_score": 4.75,
+            "part_a_chassis_score": 5.47,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.64,
+            "tdsi_score": 6.42
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.65
+          "total_hei_score": 6.1
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.78,
+        "predicted_score": 6.31,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5283,7 +5359,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.78,
+        "final_score": 6.31,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5366,20 +5442,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 3.03,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.01,
+            "cpu_architecture_score_aes": 3.03
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.09
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 5.58
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5387,23 +5465,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.64,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 5.51,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.64,
+            "tdsi_score": 6.44
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.1
+          "total_hei_score": 5.34
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.59,
+        "predicted_score": 6.05,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5414,7 +5492,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.59,
+        "final_score": 6.05,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5498,20 +5576,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 3.03,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.01,
+            "cpu_architecture_score_aes": 3.03
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.09
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 5.58
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5519,23 +5599,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.64,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 5.51,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.64,
+            "tdsi_score": 6.44
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.1
+          "total_hei_score": 5.34
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.59,
+        "predicted_score": 6.05,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5546,7 +5626,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.59,
+        "final_score": 6.05,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5629,20 +5709,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 3.03,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.01,
+            "cpu_architecture_score_aes": 3.03
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 8.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.79
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 7.78,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 6.36
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5650,23 +5732,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.64,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 5.51,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.64,
+            "tdsi_score": 6.44
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.34
+          "total_hei_score": 5.65
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.67,
+        "predicted_score": 6.16,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5677,7 +5759,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.67,
+        "final_score": 6.16,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5780,20 +5862,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 5.69,
-            "total_display_score": 8.0
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.22,
+            "total_display_score": 7.42
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5801,23 +5885,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
-            "cooling_system_score": 4,
+            "frame_material_score": 10,
+            "weight_score": 7.09,
+            "surface_area_score": 10,
             "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "part_a_chassis_score": 8.6,
+            "cooling_system_score": 4,
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 7.44
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 7.0
+          "total_hei_score": 7.37
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.9,
+        "predicted_score": 6.76,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5828,7 +5912,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.9,
+        "final_score": 6.76,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5930,20 +6014,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 18.86,
-          "score": 6.75
+          "score": 6.39
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 5.69,
-            "total_display_score": 8.0
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.22,
+            "total_display_score": 7.42
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -5951,23 +6037,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 4.55,
+            "surface_area_score": 10,
+            "thickness_score": 3.25,
+            "part_a_chassis_score": 6.82,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 6.73
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 7.0
+          "total_hei_score": 7.3
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.81,
+        "predicted_score": 6.63,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5978,7 +6064,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.81,
+        "final_score": 6.63,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6080,20 +6166,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 15.4,
-          "score": 4.92
+          "score": 4.35
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "process_node_score": 9.5,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 8.0,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 8.72
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 8.23
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6101,23 +6189,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 2.0,
+            "surface_area_score": 10,
+            "thickness_score": 3.0,
+            "part_a_chassis_score": 6.15,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.4,
+            "tdsi_score": 6.46
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.29
+          "total_hei_score": 7.6
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.09,
+        "predicted_score": 5.82,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6128,7 +6216,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.09,
+        "final_score": 5.82,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6216,20 +6304,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 16.94,
-          "score": 5.73
+          "score": 5.26
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 9,
-            "total_soc_score": 9.54
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 6.55,
+            "gpu_efficiency_score": 9,
+            "gpu_performance_score": 5.56,
+            "total_soc_score": 7.83,
+            "cpu_architecture_score_aes": 6.55
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 5.93,
-            "total_display_score": 8.07
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.48,
+            "total_display_score": 7.5
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6237,23 +6327,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 8.73,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.38,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.32,
+            "tdsi_score": 6.87
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.78
+          "total_hei_score": 7.28
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.62,
+        "predicted_score": 6.12,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6264,7 +6354,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.62,
+        "final_score": 6.12,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6360,20 +6450,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 2.92,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 4.98,
+            "cpu_architecture_score_aes": 2.92
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -6381,23 +6473,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.45,
+            "surface_area_score": 10,
+            "thickness_score": 4.75,
+            "part_a_chassis_score": 5.68,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.53
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.86
+          "total_hei_score": 6.23
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.85,
+        "predicted_score": 6.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6408,7 +6500,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.85,
+        "final_score": 6.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6506,20 +6598,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 3.76,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.67,
+            "cpu_architecture_score_aes": 3.76
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 7.69
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 7.47
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6527,23 +6621,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.45,
+            "surface_area_score": 10,
+            "thickness_score": 4.75,
+            "part_a_chassis_score": 5.68,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.66,
+            "tdsi_score": 6.53
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.96
+          "total_hei_score": 6.37
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.89,
+        "predicted_score": 6.41,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6554,7 +6648,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.89,
+        "final_score": 6.41,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6652,20 +6746,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 18.09,
-          "score": 6.34
+          "score": 5.94
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.24
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 7.5,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.32,
+            "cpu_architecture_score_aes": 7.5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6673,23 +6769,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 6.64,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 7.61,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.13,
+            "tdsi_score": 6.77
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.59
+          "total_hei_score": 6.74
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.48,
+        "predicted_score": 6.23,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6700,7 +6796,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.48,
+        "final_score": 6.23,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6797,16 +6893,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 8.74
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 6.97,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.16,
+            "cpu_architecture_score_aes": 6.97
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 4.49,
-            "total_display_score": 5.9
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 3.88,
+            "total_display_score": 5.48
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6814,23 +6912,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.23,
+            "tdsi_score": 6.91
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.69
+          "total_hei_score": 6.21
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.16,
+        "predicted_score": 7.87,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6841,7 +6939,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.16,
+        "final_score": 7.87,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6939,16 +7037,18 @@
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 8.74
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 6.97,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.16,
+            "cpu_architecture_score_aes": 6.97
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 5.18,
-            "total_display_score": 6.11
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 4.65,
+            "total_display_score": 5.71
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -6956,23 +7056,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 10,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.7,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.23,
+            "tdsi_score": 6.91
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.77
+          "total_hei_score": 6.3
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 8.19,
+        "predicted_score": 7.91,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6983,7 +7083,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.19,
+        "final_score": 7.91,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7064,20 +7164,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.84
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 3.74,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.19,
+            "cpu_architecture_score_aes": 3.74
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.04,
-            "total_display_score": 6.96
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.82,
+            "total_display_score": 6.66
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -7085,23 +7187,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 3.64,
+            "surface_area_score": 10,
+            "thickness_score": 4.5,
+            "part_a_chassis_score": 5.18,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.88,
+            "tdsi_score": 6.55
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 7.75,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 8.43
-          },
-          "total_hei_score": 6.75
+          "total_hei_score": 6.26
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.81,
+        "predicted_score": 6.37,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7112,7 +7214,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.81,
+        "final_score": 6.37,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7194,20 +7296,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 5.24,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 5.12
+            "process_node_score": 2.92,
+            "cpu_architecture_score": 2.64,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 3.25,
+            "cpu_architecture_score_aes": 2.64
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 8.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.79
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 7.78,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 6.36
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -7215,23 +7319,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.0,
+            "surface_area_score": 10,
+            "thickness_score": 7.0,
+            "part_a_chassis_score": 5.9,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.06,
+            "tdsi_score": 6.02
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.0
+          "total_hei_score": 5.05
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.55,
+        "predicted_score": 5.95,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7242,7 +7346,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.55,
+        "final_score": 5.95,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7324,20 +7428,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 5.24,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 5.12
+            "process_node_score": 2.92,
+            "cpu_architecture_score": 2.64,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 3.25,
+            "cpu_architecture_score_aes": 2.64
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 8.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.79
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 7.78,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 6.36
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -7345,23 +7451,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 5.0,
+            "surface_area_score": 10,
+            "thickness_score": 7.0,
+            "part_a_chassis_score": 5.9,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.06,
+            "tdsi_score": 6.02
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.0
+          "total_hei_score": 5.05
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.55,
+        "predicted_score": 5.95,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7372,7 +7478,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.55,
+        "final_score": 5.95,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7460,20 +7566,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 5.24,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 5.12
+            "process_node_score": 2.92,
+            "cpu_architecture_score": 2.64,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 3.25,
+            "cpu_architecture_score_aes": 2.64
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 8.0,
-            "resolution_efficiency_score": 9.81,
-            "total_display_score": 6.79
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 7.78,
+            "resolution_efficiency_score": 9.79,
+            "total_display_score": 6.36
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -7481,23 +7589,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.45,
+            "surface_area_score": 10,
+            "thickness_score": 5.0,
+            "part_a_chassis_score": 5.46,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.06,
+            "tdsi_score": 5.84
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.0
+          "total_hei_score": 5.03
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.55,
+        "predicted_score": 5.94,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7508,7 +7616,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.55,
+        "final_score": 5.94,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7589,20 +7697,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 19.25,
-          "score": 6.96
+          "score": 6.62
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.41,
-            "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.71
+            "process_node_score": 6.21,
+            "cpu_architecture_score": 5.38,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.72,
+            "cpu_architecture_score_aes": 5.38
           },
           "display_efficiency": {
-            "panel_technology_score": 3,
-            "refresh_efficiency_score": 6.0,
-            "resolution_efficiency_score": 8.04,
-            "total_display_score": 5.56
+            "panel_technology_score": 2,
+            "refresh_efficiency_score": 5.56,
+            "resolution_efficiency_score": 7.82,
+            "total_display_score": 4.99
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -7610,23 +7720,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 4.91,
+            "surface_area_score": 10,
+            "thickness_score": 7.0,
+            "part_a_chassis_score": 5.88,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.17,
+            "tdsi_score": 6.12
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.12
+          "total_hei_score": 5.5
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.59,
+        "predicted_score": 6.1,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7637,7 +7747,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.59,
+        "final_score": 6.1,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7732,20 +7842,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 16.94,
-          "score": 5.73
+          "score": 5.26
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 9,
-            "total_soc_score": 9.54
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 6.55,
+            "gpu_efficiency_score": 9,
+            "gpu_performance_score": 5.56,
+            "total_soc_score": 7.83,
+            "cpu_architecture_score_aes": 6.55
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 6.29,
-            "total_display_score": 8.18
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 5.88,
+            "total_display_score": 7.62
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -7753,23 +7865,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 9.0,
+            "surface_area_score": 10,
+            "thickness_score": 0,
+            "part_a_chassis_score": 7.45,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.32,
+            "tdsi_score": 6.9
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.82
+          "total_hei_score": 7.33
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.64,
+        "predicted_score": 6.13,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7780,7 +7892,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.64,
+        "final_score": 6.13,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7874,20 +7986,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 15.4,
-          "score": 4.92
+          "score": 4.35
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 9.47,
-            "cpu_architecture_score": 10,
-            "gpu_architecture_score": 9,
-            "total_soc_score": 9.54
+            "process_node_score": 8.14,
+            "cpu_architecture_score": 6.55,
+            "gpu_efficiency_score": 9,
+            "gpu_performance_score": 5.56,
+            "total_soc_score": 7.83,
+            "cpu_architecture_score_aes": 6.55
           },
           "display_efficiency": {
-            "panel_technology_score": 10,
-            "refresh_efficiency_score": 7.97,
-            "resolution_efficiency_score": 7.72,
-            "total_display_score": 8.6
+            "panel_technology_score": 9,
+            "refresh_efficiency_score": 7.74,
+            "resolution_efficiency_score": 7.46,
+            "total_display_score": 8.1
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -7895,23 +8009,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 4.27,
+            "surface_area_score": 10,
+            "thickness_score": 2.25,
+            "part_a_chassis_score": 6.61,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.32,
+            "tdsi_score": 6.56
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.96
+          "total_hei_score": 7.49
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 6.32,
+        "predicted_score": 5.78,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7922,7 +8036,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.32,
+        "final_score": 5.78,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7999,20 +8113,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 2.27,
-          "score": 1
+          "score": 0
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
+            "process_node_score": 9.5,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.25,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 8.0,
+            "refresh_efficiency_score": 7.78,
             "resolution_efficiency_score": 10,
-            "total_display_score": 8.95
+            "total_display_score": 8.87
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -8020,23 +8136,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 10,
+            "weight_score": 0,
+            "surface_area_score": 0,
+            "thickness_score": 10,
+            "part_a_chassis_score": 5.5,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.9,
+            "tdsi_score": 6.7
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 10,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 10.0
-          },
-          "total_hei_score": 7.62
+          "total_hei_score": 7.72
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 4.44,
+        "predicted_score": 3.66,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8047,7 +8163,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.44,
+        "final_score": 3.66,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -8124,20 +8240,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 1.64,
-          "score": 1
+          "score": 0
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 10,
+            "process_node_score": 9.5,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.5
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 7.25,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 8.0,
+            "refresh_efficiency_score": 7.78,
             "resolution_efficiency_score": 10,
-            "total_display_score": 8.95
+            "total_display_score": 8.87
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -8145,23 +8263,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 0,
+            "surface_area_score": 0,
+            "thickness_score": 9.25,
+            "part_a_chassis_score": 4.59,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.9,
+            "tdsi_score": 6.34
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 10,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 10.0
-          },
-          "total_hei_score": 7.62
+          "total_hei_score": 7.68
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 4.44,
+        "predicted_score": 3.65,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8172,7 +8290,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.44,
+        "final_score": 3.65,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -8249,20 +8367,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 0.95,
-          "score": 1
+          "score": 0
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
+            "process_node_score": 7.08,
             "cpu_architecture_score": 5,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 6.97
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 6.04,
+            "cpu_architecture_score_aes": 5
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 8.0,
+            "refresh_efficiency_score": 7.78,
             "resolution_efficiency_score": 10,
-            "total_display_score": 8.95
+            "total_display_score": 8.87
           },
           "connectivity_efficiency": {
             "cellular_score": 6,
@@ -8270,23 +8390,23 @@
             "total_connectivity_score": 6.0
           },
           "thermal_efficiency": {
+            "frame_material_score": 8,
+            "weight_score": 0,
+            "surface_area_score": 0,
+            "thickness_score": 9.5,
+            "part_a_chassis_score": 4.62,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.42,
+            "tdsi_score": 5.87
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 7.4
+          "total_hei_score": 7.15
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 8,
+          "scc_score": 0.0,
+          "total_soi_score": 4.8
         },
-        "predicted_score": 4.36,
+        "predicted_score": 3.46,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8297,7 +8417,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.36,
+        "final_score": 3.46,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -8382,20 +8502,22 @@
       "battery_scores": {
         "layer_a_energy": {
           "wh": 23.1,
-          "score": 8.99
+          "score": 8.88
         },
         "layer_b_hei": {
           "soc_efficiency": {
-            "process_node_score": 8.94,
-            "cpu_architecture_score": 7,
-            "gpu_architecture_score": 5,
-            "total_soc_score": 7.57
+            "process_node_score": 7.08,
+            "cpu_architecture_score": 4.11,
+            "gpu_efficiency_score": 5,
+            "gpu_performance_score": 3.01,
+            "total_soc_score": 5.77,
+            "cpu_architecture_score_aes": 4.11
           },
           "display_efficiency": {
             "panel_technology_score": 9,
-            "refresh_efficiency_score": 4.0,
-            "resolution_efficiency_score": 8.12,
-            "total_display_score": 6.99
+            "refresh_efficiency_score": 3.33,
+            "resolution_efficiency_score": 7.91,
+            "total_display_score": 6.69
           },
           "connectivity_efficiency": {
             "cellular_score": 4,
@@ -8403,23 +8525,23 @@
             "total_connectivity_score": 4.6
           },
           "thermal_efficiency": {
+            "frame_material_score": 4,
+            "weight_score": 7.45,
+            "surface_area_score": 10,
+            "thickness_score": 7.75,
+            "part_a_chassis_score": 6.63,
             "cooling_system_score": 4,
-            "thickness_score": 5.5,
-            "total_thermal_score": 4.6
+            "thermal_demand_bonus": 2.59,
+            "tdsi_score": 6.84
           },
-          "charging_stress_efficiency": {
-            "wired_charging_score": 9.04,
-            "wireless_charging_score": 10,
-            "total_charging_stress_score": 9.32
-          },
-          "total_hei_score": 6.71
+          "total_hei_score": 6.13
         },
         "layer_c_soi": {
-          "os_skin_score": 7,
-          "bloatware_score": 6,
-          "total_soi_score": 6.6
+          "os_skin_score": 10,
+          "scc_score": 0.0,
+          "total_soi_score": 6.0
         },
-        "predicted_score": 7.71,
+        "predicted_score": 7.34,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8430,7 +8552,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.71,
+        "final_score": 7.34,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
