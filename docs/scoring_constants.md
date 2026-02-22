@@ -18,15 +18,16 @@
 *   `Weight_g_Min` = 140 (Score 10), `Weight_g_Max` = 250 (Score 0)
 
 ### 1.6 Ergonomics (Width)
-*   `Width_mm_Min` = 70.0 (Score 10), `Width_mm_Max` = 80.0 (Score 0)
+*   `Width_mm_Min` = 67.3 (Score 10 — iPhone SE 4th gen, narrowest mainstream phone), `Width_mm_Max` = 79.0 (Score 0 — Galaxy S24 Ultra, widest mainstream phone)
 
 **2. Display**
 
 ### 2.2 Resolution Density
 *   `Display_PPI_Min` = 200 (Score 0), `Display_PPI_Max` = 600 (Score 10)
 
-### 2.3 Brightness (Peak)
+### 2.3 Brightness (Peak & HBM)
 *   `Display_Brightness_Nits_Min` = 400 (Score 0), `Display_Brightness_Nits_Max` = 4500 (Score 10)
+*   `Display_HBM_Nits_Min` = 400 (Score 0), `Display_HBM_Nits_Max` = 2500 (Score 10)
 
 ### 2.4 Color Gamut
 *   `Display_P3_Coverage_Percent_Min` = 65 (Score 0), `Display_P3_Coverage_Percent_Max` = 100 (Score 10)

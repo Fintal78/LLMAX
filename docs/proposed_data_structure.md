@@ -202,6 +202,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
+      "hbm_nits": {
+        "value": 1500,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
       "predicted_score": 0.0,
       "final_score": 0.0
     },

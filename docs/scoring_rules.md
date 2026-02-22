@@ -141,7 +141,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Min Score (0.0):** ≥ Thickness_mm_Max
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
-> This is a continuous linear scoring metric. Thinner is better.
+> **Why Linear?** The discomfort of carrying a thick phone (in a pocket or in the hand) increases by the same amount with each extra millimeter. Think of it like a book: a 9mm hardcover is noticeably thicker than an 8mm one, and a 12mm brick is noticeably thicker than an 11mm one — the penalty is constant. There are no diminishing returns in the practical 6–12mm smartphone range, so a straight linear scale is the most honest model.
 
 ### 🔹 1.5 Weight
 *Description:* Total device weight. Lighter phones are more comfortable to hold for long periods (e.g., reading, watching videos) without wrist strain.
@@ -153,18 +153,38 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Min Score (0.0):** ≥ Weight_g_Max
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
-> This is a continuous linear scoring metric. Lighter is better.
+> **Why Linear?** Wrist and arm fatigue from holding a phone scales approximately proportionally with weight — the same way a 200g book feels twice as heavy as a 100g booklet after an extended reading session. Within the practical 130–250g range that covers all modern smartphones, each additional gram adds a constant ergonomic cost. No diminishing returns apply here.
 
 ### 🔹 1.6 Ergonomics (Width & Handling)
-*Description:* Quantifies how easy the phone is to hold and operate with one hand. Width is the primary factor determining grip comfort and reachability.
+*Description:* Quantifies the ergonomic handling cost of phone width for one-handed use. Wider phones are harder to grip and operate single-handedly, with the discomfort accelerating beyond a critical threshold tied to human hand anatomy. Note: the positive benefit of a wider phone (bigger screen) is already captured in Section 2.9 (Screen Size) and 2.10 (Screen-to-Body Ratio).
 *   **Measurement:** Device Width
 *   **Unit:** Millimeters (mm)
-*   **Significance:** Narrower phones are significantly easier to grip and use one-handed.
-*Formula:* `Score = 10 - 10 * ((Width - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))` (Clamped 0-10)
+*   **Significance:** Beyond a critical threshold (~75–77mm), one-handed operation becomes difficult for a large share of users.
+*Formula:* `Score = 10 * (1 - ((Width_mm - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))^2)` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Width_mm_Min
 *   **Min Score (0.0):** ≥ Width_mm_Max
+*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
 > [!NOTE]
-> This is a continuous linear scoring metric. Narrower is better for ergonomics. While curvature affects feel, width is the absolute limit for hand size.
+> **Why Quadratic (not Linear)?** Research into hand anthropometry shows that phone width comfort is **not a constant penalty per millimeter** — it has a real physical threshold.
+>
+> **The data:** Average female hand width is 79–83mm; average male is 88–97mm. Modern phones range from 67.3mm (iPhone SE 4th gen) to 79.0mm (Galaxy S24 Ultra). This means:
+> *   A phone under ~71mm is comfortable for almost every user — a linear scale would unfairly apply the same per-mm penalty here as in the uncomfortable range.
+> *   A phone crossing 75–77mm starts causing grip adjustments for roughly 30% of users (most women and smaller-handed men).
+> *   Beyond 78mm, the majority of users rely on two hands for basic navigation — a steep penalty applies.
+>
+> **The math:** A quadratic formula `(1 - x²)` stays near 10 in the comfortable narrow range and drops steeply as width approaches the maximum, mirroring this threshold-based reality. A linear scale would naively assign the same cost to going from 68mm to 69mm as to going from 77mm to 78mm, which is factually wrong.
+>
+> **Real-phone reference scores** (Min = 67.3mm, Max = 79.0mm):
+>
+> | Phone              | Width  | Score    |
+> | :----------------- | :----- | -------: |
+> | iPhone SE 4th gen  | 67.3mm | **10.0** |
+> | Galaxy S24         | 70.6mm |  **9.2** |
+> | iPhone 16          | 71.5mm |  **8.7** |
+> | Galaxy S24+        | 75.9mm |  **5.3** |
+> | Galaxy S24 Ultra   | 79.0mm |  **0.0** |
+>
+> *Note: The S24 Ultra scoring 0.0 on this specific metric is correct. Its large screen is already fully rewarded by Sections 2.9 and 2.10. This metric scores solely the ergonomic handling cost.*
 
 
 ## 🟣 2. Display
@@ -209,16 +229,30 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > [!NOTE]
 > **Why Logarithmic?** Human visual acuity has diminishing returns. The difference in sharpness between 200 and 300 PPI is immediately obvious, while the difference between 500 and 600 PPI is barely perceptible to the naked eye.
 
-### 🔹 2.3 Brightness (Peak)
-*Description:* Maximum brightness in sunlight. Higher nits mean the screen is easily readable even under direct, bright sun.
-*   **Measurement:** Peak brightness on a 1% window (APL) or High Brightness Mode (HBM).
+### 🔹 2.3 Brightness (Peak & HBM)
+*Description:* Maximum brightness. Higher nits mean the screen is easily readable outside and HDR movies look stunning.
+*   **Measurement:** High Brightness Mode (HBM) and Peak brightness.
 *   **Unit:** Nits (cd/m²)
-*   **Significance:** Critical for outdoor visibility and HDR content impact.
-*Formula:* `Score = 10 * (log(Nits) - log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) - log(Display_Brightness_Nits_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Display_Brightness_Nits_Max
-*   **Min Score (0.0):** ≤ Display_Brightness_Nits_Min
+*   **Significance:** Critical for outdoor visibility (HBM) and watching HDR media (Peak).
+
+**Understanding the Terminology:**
+*   **Peak Brightness (For Movies):** This is the absolute maximum brightness the screen can achieve, but usually only on a tiny spot on the screen (e.g., 1% of the screen area, known as **APL** or *Average Picture Level*). This massive marketing number (like 4500 nits) is strictly used for watching **HDR (High Dynamic Range)** movies, where the screen needs to make a tiny explosion or a star look blindingly bright. It does *not* help you read your phone in the sun.
+*   **HBM - High Brightness Mode (For the Sun):** This is the maximum brightness when the *entire* screen is lit up (100% APL). When you step outside into the blaring sun, your phone enters HBM to combat the glare so you can read a webpage, look at the camera viewfinder, or view a map. **HBM is the only true measure of outdoor readability.**
+
+**Why Both? (Data Availability & Scoring Logic)**
+HBM is increasingly published for all modern mid-range to flagship phones. We heavily weight HBM (70%) because it reflects true daily outdoor usability, while Peak (30%) specifically rewards a screen's media capability. 
+*   **Fallback Rule:** For older or budget phones where manufacturers only publish the "Peak" marketing number, our formula safely estimates it: `HBM_Nits = Peak_Nits / 1.5` (a standard thermal limit correlation). This ensures no phone is penalized or biased just because its spec sheet is missing the HBM line item.
+
+*Formulas:* 
+*   `HBM_Score = 10 * (log(HBM_Nits) - log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) - log(Display_HBM_Nits_Min))` (Clamped 0-10)
+*   `Peak_Score = 10 * (log(Peak_Nits) - log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) - log(Display_Brightness_Nits_Min))` (Clamped 0-10)
+*   `Final_Score = (0.7 * HBM_Score) + (0.3 * Peak_Score)`
+*   **Max Score (10.0):** ≥ Max Nits limits.
+*   **Min Score (0.0):** ≤ Min Nits limits.
+*   **Data Structure Mapping:** `2_display.2_3_brightness.hbm_nits` and `peak_nits`. 
+
 > [!NOTE]
-> **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a significant doubling in brightness, whereas a jump from 3000 to 3500 nits is perceived as a much smaller increase.
+> **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a massive doubling in brightness by the human eye. However, because our eyes are already overwhelmed by the light, a 500-nit jump from 3000 to 3500 nits is barely noticed.
 
 ### 🔹 2.4 Color Gamut Coverage (CGC)
 *Description:* Measures how much of standard color spaces the display can reproduce. This defines what the screen can physically display in terms of color richness and saturation.
@@ -231,7 +265,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Min Score (0.0):** ≤ Display_P3_Coverage_Percent_Min
 
 > [!NOTE]
-> **Why this works:** DCI-P3 is the industry HDR content standard. The scale is continuous, fully quantitative, and automation-friendly. The 65% floor captures budget LCD devices while maintaining meaningful differentiation across the 35-point range.
+> **Why Linear?** DCI-P3 is the professional color standard used by cinema and streaming content. Each additional percentage point represents a physically equal slice of extra color the screen can show. Think of it like paint: a painter who can mix 90% of all possible shades has exactly 10% more capability than one at 80%. There are no diminishing returns within the 65–100% range that covers real phones, making a straight linear scale the correct and honest choice.
 >
 > **sRGB Fallback Conversion:**
 > If only sRGB data is available: `DCI-P3_estimate = min(sRGB_percent × 0.75, 100)` as 100% sRGB ≈ 75% DCI-P3
@@ -300,11 +334,11 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Measurement:** Diagonal length of the active display area.
 *   **Unit:** Inches (")
 *   **Significance:** Determines immersion level and device footprint.
-*Formula:* `Score = 10 * ((Size - Display_Size_Inch_Min) / (Display_Size_Inch_Max - Display_Size_Inch_Min))` (Clamped 0-10)
+*Formula:* `Score = 10 * ((Size^2 - Display_Size_Inch_Min^2) / (Display_Size_Inch_Max^2 - Display_Size_Inch_Min^2))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Display_Size_Inch_Max
 *   **Min Score (0.0):** ≤ Display_Size_Inch_Min
 > [!NOTE]
-> This is a continuous linear scoring metric. Larger screens provide more immersion.
+> **Why Quadratic?** The usable screen real estate scales as the *Area* of the display, which is proportional to the square of the diagonal ($Area \propto Diagonal^2$). While a linear penalty treats a 0.5" increase at the bottom of the scale exactly the same as at the top, a true geometric (Quadratic) curve exponentially rewards the massive manufacturing difficulty and user-experience gain of producing massive 6.8"+ "Ultra" screens.
 
 ### 🔹 2.10 Screen-to-Body Ratio (Bezels)
 *Description:* How much of the front is screen vs. border. Higher percentage means thinner bezels and a more immersive, modern look.
@@ -315,7 +349,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Max Score (10.0):** ≥ Display_SBR_Percent_Max
 *   **Min Score (0.0):** ≤ Display_SBR_Percent_Min
 > [!NOTE]
-This is a continuous linear scoring metric. Higher ratio means thinner bezels.
+> **Why Linear?** Each percentage point of Screen-to-Body Ratio directly represents a proportional increase in visible display area, reducing the plastic border around the screen. A gain from 85% to 86% is the same engineering achievement as a gain from 91% to 92% — no single threshold changes the nature of the benefit. The practical range for modern phones (roughly 80–93%) has no diminishing returns, making linear the correct model.
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
 *Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
@@ -752,6 +786,9 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 
 **Formula:** `Final_Score = (SGS * 0.9) + (RTS * 0.1)`
 
+> [!NOTE]
+> **Why 10% for Ray Tracing?** Ray Tracing (RT) is a technique where the phone's graphics chip simulates how light bounces off real surfaces — creating realistic reflections in mirrors and water, and accurate shadows. While only ~5–10% of current mobile games use it, this **10% weight is intentionally forward-looking**: manufacturers are investing heavily in RT hardware, just as they invested in 5G before streaming services caught up. Phones built today will use RT heavily within 2–3 years. The 90% on classic rendering keeps scores grounded in today's reality.
+
 > [!TIP]
 > **Example 1: Top-Tier Flagship (Snapdragon 8 Gen 3 / Adreno 750)**
 > *   **Step 1: Determine Standard Graphics Score (SGS)**
@@ -1095,18 +1132,20 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Max Score (10.0):** ≥ Camera_Main_Sensor_Inch_Max
 *   **Min Score (0.0):** ≤ Camera_Main_Sensor_Inch_Min
 > [!NOTE]
-> **Why Logarithmic?** Sensor area grows quadratically with diagonal size, but photographic benefits (dynamic range, noise) follow a diminishing return curve in mobile form factors. A 1-inch sensor is a massive leap over 1/2-inch, but further increases face optical constraints.
+> **Why Logarithmic?** Sensor light-gathering capability depends on its **Area** ($Area \propto Diagonal^2$), which suggests a Quadratic formula. However, because of the power rule of logarithms, $log(x^2) = 2 \times log(x)$. When we put this into our normalization formula: $\frac{log(Size^2) - log(Min^2)}{log(Max^2) - log(Min^2)}$, this expands to $\frac{2 \times log(Size) - 2 \times log(Min)}{2 \times log(Max) - 2 \times log(Min)}$. The factor of $2$ factors out of both the numerator and denominator and completely cancels out.
+> 
+> Therefore, scoring the 1-dimensional diagonal using logarithms is mathematically identical to scoring the 2-dimensional area logarithmically. This perfectly rewards the physical area expansion while modeling the natural optical diminishing returns of mobile smartphone lenses.
 
 ### 🔹 4.2 Main Camera Aperture
 *Description:* The size of the lens opening. Wider apertures (lower f-number) let in more light for brighter night shots and create natural bokeh.
 *   **Measurement:** Focal length / Entrance pupil diameter.
 *   **Unit:** f-stop (f/number)
 *   **Significance:** Determines light gathering and depth of field.
-*Formula:* `Score = 10 - 10 * ((f_stop - Camera_Main_Aperture_f_Min) / (Camera_Main_Aperture_f_Max - Camera_Main_Aperture_f_Min))` (Clamped 0-10)
+*Formula:* `Score = 10 * (log(Camera_Main_Aperture_f_Max) - log(f_stop)) / (log(Camera_Main_Aperture_f_Max) - log(Camera_Main_Aperture_f_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Camera_Main_Aperture_f_Min
 *   **Min Score (0.0):** ≥ Camera_Main_Aperture_f_Max
 > [!NOTE]
-> This is a continuous linear scoring metric. Lower f-number is better (wider aperture).
+> **Why Logarithmic?** Light gathering power is inversely proportional to the square of the focal ratio ($1/f^2$). Standard photography uses "stops" where each stop halves or doubles the light. Scoring Aperture logarithmically maps flawlessly to these optical physical limits, recognizing that the light-transmission difference between f/1.4 and f/1.6 is significantly greater than between f/2.4 and f/2.6.
 
 ### 🔹 4.3 Main Camera Resolution
 *Description:* The maximum pixel count of the primary sensor. Higher resolution allows for more detailed cropping and sharper images in good light.
@@ -1187,7 +1226,10 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 **Final Formula:**
 *   If Presence = 1: `UCC = 0`
-*   If Presence = 10: `UCC = (0.6 * FOV_Score) + (0.4 * Sensor_Score)`
+*   If Presence = 10: `UCC = (0.55 * FOV_Score) + (0.45 * Sensor_Score)`
+
+> [!NOTE]
+> **Why 55/45 (FOV/Sensor)?** The whole point of an ultrawide lens is to capture a wider scene — so Field of View (FOV) is still the dominant factor (55%). However, modern photography relies heavily on ultrawide cameras in low-light conditions (indoor parties, night landscapes), where the sensor size matters enormously: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
 
 ### 🔹 4.7 Macro Capability & Close-Focus Performance (MCFP)
 *Description:* The ability to focus on very close subjects. Prioritizes Autofocus-enabled ultrawides over cheap dedicated lenses.
@@ -1207,11 +1249,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 **4.7.2 Minimum Focus Distance**
 *   *Why it matters:* The physical limit of how close you can get.
 *   **Measurement:** Minimum focus distance (cm).
-*   *Formula:* `Score = 10 - 10 * ((Distance - Camera_Macro_Dist_cm_Min) / (Camera_Macro_Dist_cm_Max - Camera_Macro_Dist_cm_Min))` (Clamped 0-10)
+*   *Formula:* `Score = 10 * (log(Camera_Macro_Dist_cm_Max) - log(Distance)) / (log(Camera_Macro_Dist_cm_Max) - log(Camera_Macro_Dist_cm_Min))` (Clamped 0-10)
     *   **10.0:** ≤ Camera_Macro_Dist_cm_Min
     *   **0.0:** ≥ Camera_Macro_Dist_cm_Max
 > [!NOTE]
-> **Why Linear?** In the macro range (1.5cm - 10cm), every centimeter closer allows for significantly more magnification. While magnification itself is non-linear, a linear scoring penalty for every centimeter lost is a fair and intuitive way to grade the "closeness" capability.
+> **Why Logarithmic?** Magnification scales inversely with distance ($M \approx f/d$). Moving from 4cm to 2cm doubles the magnification capability (a massive gain in macro photography). Moving from 10cm to 8cm only increases magnification by ~25%. A logarithmic score flawlessly maps to this non-linear optical reality, heavily rewarding true microscopic lenses beneath 4cm.
 
 **4.7.3 Dedicated Macro Lens (Penalty-aware)**
 *   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Autofocus Ultrawide (Score 10).
@@ -1237,9 +1279,10 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 | Score  | Max Rear Video Resolution |
 | :----- | :------------------------ |
-| **10** | **≥ 4K**                  |
-| **6**  | **1080p**                 |
-| **3**  | **720p**                  |
+| **10** | **≥ 4K (Ultra HD)**       |
+| **8**  | **1440p / QHD (2.5K)**   |
+| **6**  | **1080p (Full HD)**       |
+| **3**  | **720p (HD)**             |
 | **0**  | **≤ 480p**                |
 
 ### 🔹 4.9 Rear Video Frame Rate
@@ -1711,24 +1754,24 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *   **Measurement:** Peak power input via wired connection.
 *   **Unit:** Watts (W)
 *   **Significance:** Reduces downtime when battery is low.
-*Formula:* `Score = 10 * (log(Watts) - log(Battery_Wired_Charging_W_Min)) / (log(Battery_Wired_Charging_W_Max) - log(Battery_Wired_Charging_W_Min))` (Clamped 0-10)
+*Formula:* `Score = 10 * ((1/Battery_Wired_Charging_W_Min) - (1/Watts)) / ((1/Battery_Wired_Charging_W_Min) - (1/Battery_Wired_Charging_W_Max))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Battery_Wired_Charging_W_Max
 *   **Min Score (0.0):** ≤ Battery_Wired_Charging_W_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
-> **Why Logarithmic?** Time-to-charge follows a diminishing return curve. Upgrading from 10W to 60W saves massive amounts of time (hours). Upgrading from 120W to 240W saves only minutes, as the battery chemistry limits sustained peak speeds.
+> **Why Inverse Proportional?** The actual charging time ($T$) rests precisely on an inverse hyperbola with wattage ($W$): $T \propto C / W$. Upgrading from 15W to 30W cuts charge time in half (saving ~45 minutes). Upgrading from 100W to 120W saves less than 2 minutes. Scoring the wattage via an exact Inverse formula perfectly plots the true user benefit: raw **Time Saved** waiting at the wall outlet.
 
 ### 🔹 5.3 Wireless Charging Speed
 *Description:* Charging speed without cables. Convenient for topping up battery by simply placing the phone on a pad.
 *   **Measurement:** Peak power input via wireless coil.
 *   **Unit:** Watts (W)
 *   **Significance:** Convenience and ease of topping up.
-*Formula:* `Score = 10 * (log(Watts) - log(Battery_Wireless_Charging_W_Min)) / (log(Battery_Wireless_Charging_W_Max) - log(Battery_Wireless_Charging_W_Min))` (Clamped 0-10)
+*Formula:* `Score = 10 * ((1/Battery_Wireless_Charging_W_Min) - (1/Watts)) / ((1/Battery_Wireless_Charging_W_Min) - (1/Battery_Wireless_Charging_W_Max))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Battery_Wireless_Charging_W_Max
 *   **Min Score (0.0):** ≤ Battery_Wireless_Charging_W_Min
 *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 5*
 > [!NOTE]
-> **Why Logarithmic?** Similar to wired charging, the convenience gain from 5W to 15W is significant (usable charging vs trickle). Beyond 50W, thermal limits often throttle speeds, reducing the real-world time savings.
+> **Why Inverse Proportional?** Just like wired charging, the time it takes to charge wirelessly follows an inverse hyperbolic curve ($T \propto 1/W$). Scoring the wattage inversely perfectly models the raw minutes of charging time saved, recognizing that jumping from 5W to 15W is a transformative time-saver, while jumping from 50W to 60W is nearly negligible.
 
 ### 🔹 5.4 Wireless Reverse Charging
 *Description:* Ability to charge other devices (like earbuds or watches) wirelessly by placing them on the back of the phone.
@@ -1932,11 +1975,18 @@ SCC = Platform_Cleanliness_Score (direct lookup from skin field)
 | Score    | Standard     | 
 | :------- | :----------- | 
 | **10.0** | **Wi-Fi 7**  | 
-| **9.0**  | **Wi-Fi 6E** | 
-| **8.0**  | **Wi-Fi 6**  | 
-| **6.0**  | **Wi-Fi 5**  | 
+| **8.0**  | **Wi-Fi 6E** | 
+| **7.0**  | **Wi-Fi 6**  | 
+| **5.0**  | **Wi-Fi 5**  | 
 | **3.0**  | **Wi-Fi 4**  | 
-| **0.0**  | **Wi-Fi≤3**  |
+| **0.0**  | **Wi-Fi ≤3** |
+
+> [!NOTE]
+> **Understanding the score gaps:** Not all Wi-Fi upgrades are equal leaps, and the scoring reflects this:
+>
+> *   **Wi-Fi 4 → 5 (+2) and Wi-Fi 5 → 6 (+2):** Both brought significant new architectures. Wi-Fi 6 in particular introduced OFDMA — like switching from a single checkout lane to a supermarket with many lanes open at once — massively improving performance in crowded homes or offices.
+> *   **Wi-Fi 6 → 6E (+1):** This is **not a new protocol**. Wi-Fi 6E runs the exact same technology as Wi-Fi 6 (both are 802.11ax), simply extended to an additional frequency band (6GHz) for less congestion. Meaningful, but incremental — hence only a 1-point gap.
+> *   **Wi-Fi 6E → 7 (+2):** Wi-Fi 7 is a **brand new protocol** (802.11be) with three fundamental advances: **Multi-Link Operation** (the phone uses 2.4GHz, 5GHz, and 6GHz simultaneously — like having three roads instead of one), **doubled channel width** (320MHz vs 160MHz for faster data bursts), and a new signal encoding that packs ~20% more data per transmission. Real-world speeds roughly double vs. Wi-Fi 6E. This earns its full 2-point gap.
 
 ### 🔹 7.4 Bluetooth & Audio Codecs
 *Description:* Bluetooth quality. Newer versions offer stability and efficiency, while superior codecs ensure high-fidelity audio.
