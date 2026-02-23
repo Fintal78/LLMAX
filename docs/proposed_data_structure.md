@@ -32,6 +32,23 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
+    "hardware_configuration": {
+      "storage_gb": {
+        "value": 512,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "ram_gb": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "chipset": {
+        "value": "Snapdragon 8 Gen 3",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      }
+    },
     "release_date": {
       "value": "2024-01-24",
       "source": "TBD",
@@ -661,51 +678,23 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "4_13_video_encoding": {
-      "pcs": {
-        "professional_codec_support": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "codec_name": {
-          "value": "ProRes",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 10.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
+      "professional_codec_support": {
+        "value": "ProRes 4K60",
+        "source": "https://www.apple.com/iphone-15-pro/specs/",
+        "exact_extract": "Video Recording [...] ProRes video recording up to 4K at 60 fps",
+        "subscore": 10.0
       },
-      "lcps": {
-        "log_profile_available": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "profile_name": {
-          "value": "Log",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 10.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
+      "log_color_profile_support": {
+        "value": "Apple Log",
+        "source": "https://www.apple.com/iphone-15-pro/specs/",
+        "exact_extract": "Video Recording [...] Log video recording",
+        "subscore": 10.0
       },
-      "cbd": {
-        "bit_depth": {
-          "value": 10,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 10.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
+      "color_bit_depth": {
+        "value": 10,
+        "source": "https://www.gsmarena.com/apple_iphone_15_pro-12557.php",
+        "exact_extract": "Display [...] 10-bit HDR",
+        "subscore": 10.0
       },
       "predicted_score": 10.0,
       "final_score": 10.0

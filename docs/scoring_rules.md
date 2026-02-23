@@ -1822,27 +1822,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 | **BT 4.2**   | **1.0** | Legacy Low Energy.                                                                              |
 | **< BT 4.0** | **0.0** | Obsolete.                                                                                       |
 
-**Part 2: Codec Capability Score (Normalized)**
-*Score based on the highest tier codec supported. Uses constants for normalization.*
+**Part 2: Codec Capability Score (Tiered)**
+*Scored explicitly by the highest tier codec protocol supported. This eliminates mathematical bias against phones lacking numerical bitrate disclosures, as protocols inherently define their bitrate ceilings.*
 
-**Why these metrics matter:**
-*   **Bitrate (kbps):** The amount of data transmitted per second. Higher bitrate = less compression = more detail. Standard codecs (~320kbps) discard data to save bandwidth, while High-Res (>900kbps) keeps nearly original quality.
-*   **Bit Depth (bits):** The dynamic range of the audio. **16-bit** is CD standard (96dB range), while **24-bit** (High-Res) offers 144dB range, revealing subtle details in quiet and loud passages.
-
-**Formula:**
-```
-Codec_Score = clamp(Bitrate_Component + Bit_Depth_Component, 0, 5.0)
-
-Where:
-  Bitrate_Component = (Bitrate_kbps / Audio_Bitrate_kbps_Max) * 3.5
-  Bit_Depth_Component = 1.5 if (bit_depth ≥ 24) else 0.0
-
-Constants:
-  Audio_Bitrate_kbps_Max = See scoring_constants.md Section 7
-```
-
-**Fallback Lookup Table:**
-*Use these values if precise bitrate/depth data is unavailable.*
+**Tiered Scoring Table:**
+*Identify the highest supported codec and award the corresponding Tier score (Max 5.0).*
 
 | Tier         | Score   | Qualifying Codecs                 |
 | :----------- | :------ | :-------------------------------- |
