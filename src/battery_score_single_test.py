@@ -261,19 +261,19 @@ def calc_soc_performance_score(geekbench_multi):
 
 def calc_layer_a(data):
     # Extract inputs from 5_1_battery_endurance.layer_a_energy
-    battery_data = data.get("5_battery_and_charging", {}).get("5_1_battery_endurance", {})
+    battery_data = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance", {})
     layer_a_data = battery_data.get("layer_a_energy", {})
     
     wh_raw = layer_a_data.get("wh", {}).get("value", 0)
     
     # mah, voltage, type moved to root of 5_battery_and_charging
-    battery_root = data.get("5_battery_and_charging", {})
+    battery_root = data.get("8_battery_and_charging", {})
     mah = battery_root.get("mah", {}).get("value", 0)
     voltage_raw = battery_root.get("battery_voltage_v", {}).get("value", "Not available")
     # battery_type renamed to battery_cell_configuration
     battery_cell_configuration = battery_root.get("battery_cell_configuration", {}).get("value", "")
     
-    wired_watts = data.get("5_battery_and_charging", {}).get("5_2_wired_charging_speed", {}).get("watts", {}).get("value", 0)
+    wired_watts = data.get("8_battery_and_charging", {}).get("8_2_wired_charging_speed", {}).get("watts", {}).get("value", 0)
     
     wh = 0
     voltage = 3.85  # Default single-cell
@@ -318,8 +318,8 @@ def calc_layer_a(data):
 def calc_layer_b(data):
     # B.1 SoC
     # Path: 3_processing_power_and_performance... -> 3_4_thermal_dissipation_stability -> process_nm -> value
-    process_nm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "process_nm"], 4)
-    foundry = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "foundry"], "Samsung")
+    process_nm = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "process_nm"], 4)
+    foundry = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "foundry"], "Samsung")
     
     # Unified weighted formula (see Section 3.4 of scoring_rules.md)
     import math
@@ -344,7 +344,7 @@ def calc_layer_b(data):
     # CPU: Architecture Efficiency Score (AES)
     # Try to fetch pre-calculated AES from 3.1
     # Try to fetch pre-calculated AES from 5.1
-    batt_endurance = data.get("5_battery_and_charging", {}).get("5_1_battery_endurance", {})
+    batt_endurance = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance", {})
     layer_b = batt_endurance.get("layer_b_hardware_efficiency", {})
     b_1_soc = layer_b.get("b_1_soc_efficiency", {})
     breakdown = b_1_soc.get("breakdown", {})
@@ -354,7 +354,7 @@ def calc_layer_b(data):
         cpu_score = aes_stored
     else:
         # Fallback: Calculate if not present (Test Script Logic)
-        clusters = data.get("3_processing_power_and_performance", {}).get("3_0_cpu_architecture_reference", {}).get("clusters", [])
+        clusters = data.get("6_processing_power_and_performance", {}).get("3_0_cpu_architecture_reference", {}).get("clusters", [])
         total_score = 0
         total_cores = 0
         
@@ -416,7 +416,7 @@ def calc_layer_b(data):
         cpu_score = (total_score / total_cores) if total_cores > 0 else 5
 
         # Update 3.1 Scoring Components with FACS
-        scoring_components = data.get("3_processing_power_and_performance", {}).get("3_1_cpu_multi_core_performance", {}).get("scoring_components", {})
+        scoring_components = data.get("6_processing_power_and_performance", {}).get("6_1_cpu_multi_core_performance", {}).get("scoring_components", {})
         
         # Remove old fields if present
         if "cps" in scoring_components: del scoring_components["cps"]
@@ -426,14 +426,14 @@ def calc_layer_b(data):
         scoring_components["facs"] = facs_list
         
         # Ensure the structure exists in data
-        if "3_processing_power_and_performance" not in data: data["3_processing_power_and_performance"] = {}
-        if "3_1_cpu_multi_core_performance" not in data["3_processing_power_and_performance"]: data["3_processing_power_and_performance"]["3_1_cpu_multi_core_performance"] = {}
-        if "scoring_components" not in data["3_processing_power_and_performance"]["3_1_cpu_multi_core_performance"]:
-             data["3_processing_power_and_performance"]["3_1_cpu_multi_core_performance"]["scoring_components"] = scoring_components # Should point to same obj
+        if "6_processing_power_and_performance" not in data: data["6_processing_power_and_performance"] = {}
+        if "6_1_cpu_multi_core_performance" not in data["6_processing_power_and_performance"]: data["6_processing_power_and_performance"]["6_1_cpu_multi_core_performance"] = {}
+        if "scoring_components" not in data["6_processing_power_and_performance"]["6_1_cpu_multi_core_performance"]:
+             data["6_processing_power_and_performance"]["6_1_cpu_multi_core_performance"]["scoring_components"] = scoring_components # Should point to same obj
 
 
     # GPU
-    gpu_model = get_val(data, ["3_processing_power_and_performance", "3_3_0_gpu_architecture_reference", "gpu_model"], "")
+    gpu_model = get_val(data, ["6_processing_power_and_performance", "6_3_0_gpu_architecture_reference", "gpu_model"], "")
     # Use GPU_SCORES for Performance/Reference if needed, but for Battery we use Efficiency
     gpu_score = get_best_match(gpu_model, GPU_SCORES, default=5) # Tuple (Score, Freq)
     if isinstance(gpu_score, tuple): gpu_perf_score = gpu_score[0]
@@ -493,18 +493,18 @@ def calc_layer_b(data):
     conn_total = 0.7 * cell_score + 0.3 * wifi_score
 
     # B.4 Thermal
-    frame_material = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "frame_material"], "")
+    frame_material = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "frame_material"], "")
     frame_score = get_best_match(frame_material, FRAME_MATERIAL_SCORES, default=4)
     
-    weight_g = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "weight_g"], 200)
+    weight_g = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "weight_g"], 200)
     if not isinstance(weight_g, (int, float)): weight_g = 200
     
     t_w_min = SCORING_CONSTANTS.get('Thermal_Weight_g_Min', 140)
     t_w_max = SCORING_CONSTANTS.get('Thermal_Weight_g_Max', 250)
     weight_score = clamp(10 * (weight_g - t_w_min) / (t_w_max - t_w_min), 0, 10)
     
-    h_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "height_mm"], 160)
-    w_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "width_mm"], 75)
+    h_mm = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "height_mm"], 160)
+    w_mm = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "width_mm"], 75)
     if not isinstance(h_mm, (int, float)): h_mm = 160
     if not isinstance(w_mm, (int, float)): w_mm = 75
     surface_area = h_mm * w_mm
@@ -513,7 +513,7 @@ def calc_layer_b(data):
     t_sa_max = SCORING_CONSTANTS.get('Thermal_Surface_Area_mm2_Max', 9000)
     surface_score = clamp(10 * (surface_area - t_sa_min) / (t_sa_max - t_sa_min), 0, 10)
     
-    thick_mm = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "thickness_mm"], 8.0)
+    thick_mm = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "thickness_mm"], 8.0)
     if not isinstance(thick_mm, (int, float)): thick_mm = 8.0
     
     t_th_min = SCORING_CONSTANTS.get('Thermal_Thickness_mm_Min', 6.0)
@@ -522,10 +522,10 @@ def calc_layer_b(data):
     
     part_a_total = (0.40 * frame_score) + (0.25 * weight_score) + (0.20 * surface_score) + (0.15 * thickness_score)
     
-    cooling_system = get_val(data, ["3_processing_power_and_performance", "3_4_thermal_dissipation_stability", "cooling_system"], "")
+    cooling_system = get_val(data, ["6_processing_power_and_performance", "6_10_thermal_dissipation_stability", "cooling_system"], "")
     cooling_score = get_best_match(cooling_system, COOLING_SCORES, default=4)
     
-    gb6_score = data.get("3_processing_power_and_performance", {}).get("3_1_cpu_multi_core_performance", {}).get("geekbench_6_multi_score", 3000)
+    gb6_score = data.get("6_processing_power_and_performance", {}).get("6_1_cpu_multi_core_performance", {}).get("geekbench_6_multi_score", 3000)
     # GB6 score is currently direct float in schema B (line 394 in file view)
     if isinstance(gb6_score, dict): gb6_score = gb6_score.get("value", 3000) # Safety
     
@@ -572,7 +572,7 @@ def calc_layer_b(data):
     }
 
 def calc_layer_c(data):
-    os_ver_str = get_val(data, ["6_software_and_longevity", "os_version"], "")
+    os_ver_str = get_val(data, ["5_software_and_longevity", "os_version"], "")
     
     # Default to modern standard (8)
     skin_score = 8
@@ -602,11 +602,11 @@ def calc_layer_c(data):
 
     # C.2 System Cleanliness & Control (SCC)
     # Prioritize pre-calculated score if valid
-    scc_final = data.get("6_software_and_longevity", {}).get("6_3_system_cleanliness_control", {}).get("final_score")
+    scc_final = data.get("5_software_and_longevity", {}).get("5_2_system_cleanliness_control", {}).get("final_score")
     
     if scc_final is None:
         # Calculate from components if available
-        scc_data = data.get("6_software_and_longevity", {}).get("6_3_system_cleanliness_control", {})
+        scc_data = data.get("5_software_and_longevity", {}).get("5_2_system_cleanliness_control", {})
         pal_count = get_val(scc_data, ["pal", "third_party_apps_count"], 10)
         rdc_removable = get_val(scc_data, ["rdc", "removable_count"], 0)
         rdc_disableable = get_val(scc_data, ["rdc", "disableable_count"], 0)
@@ -628,7 +628,7 @@ def calc_benchmarks(data):
     # or we just hardcode the hours for this specific phone (S24 Ultra) as per example.
     # Since the file already has the hours, we should read them.
     
-    benchmarks = data.get("5_battery_and_charging", {}).get("5_1_battery_endurance", {}).get("benchmarks", {})
+    benchmarks = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance", {}).get("benchmarks", {})
     
     gsm_data = benchmarks.get("gsmarena_active_use", {})
     gsm_hours = gsm_data.get("hours", 0)
@@ -712,7 +712,7 @@ def main():
     
     # --- Update Data Structure ---
     
-    battery_section = data["5_battery_and_charging"]["5_1_battery_endurance"]
+    battery_section = data["8_battery_and_charging"]["8_1_battery_endurance"]
     
     # Update computed scores in their respective layers
     if "layer_a_energy" not in battery_section: battery_section["layer_a_energy"] = {}

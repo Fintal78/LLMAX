@@ -1,0 +1,90 @@
+## 🟣 1. Design & Build Quality
+## 🟣 2. Display
+### A. Display Architecture (What it is)
+### 🔹 2.1 Display Panel Architecture (DPA)
+### 🔹 2.2 Brightness (Peak & HBM)
+### 🔹 2.3 Color Gamut Coverage (CGC)
+### 🔹 2.4 HDR Format Support (HFS)
+### B. Visual Output Quality (What it looks like)
+### 🔹 2.5 Resolution Density
+### C. Interaction & Motion (How it behaves)
+### 🔹 2.6 Motion Smoothness (Max Refresh Rate)
+### 🔹 2.7 Touch Responsiveness
+### 🔹 2.8 Screen-to-Body Ratio (Bezels)
+### D. Physical Immersion (How big it feels)
+### 🔹 2.9 Screen Size
+### 🔹 2.10 Eye Comfort (PWM Dimming)
+### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
+## 🟣 3. Audio
+### 🔹 3.1 Speaker System Capability (SSC)
+### 🔹 3.2 Playback Audio Processing & Immersion (PAPI)
+### 🔹 3.3 Wired Audio Capability
+### 🔹 3.4 Microphone & Audio Recording (MAR)
+## 🟣 4. Camera Systems
+### A. Rear Camera — Photography
+### 🔹 4.1 Main Sensor Size
+### 🔹 4.2 Main Camera Aperture
+### 🔹 4.3 Main Camera Resolution
+### 🔹 4.4 Image Stabilization
+### 🔹 4.5 Ultrawide Camera Capability (UCC)
+### 🔹 4.6 Zoom Capability
+### 🔹 4.7 Macro Capability & Close-Focus Performance (MCFP)
+### C. Front Camera System (Selfie)
+### 🔹 4.8 Front Camera Sensor Resolution
+### 🔹 4.9 Front Camera Focus System
+### B. Rear Camera — Video Capture & Production
+### 🔹 4.10 Rear Video Resolution
+### 🔹 4.11 Rear Video Frame Rate
+### 🔹 4.12 Video Color & Dynamic Range
+### 🔹 4.13 Video Encoding & Professional Recording
+### 🔹 4.14 High Frame Rate (Slow Motion)
+### 🔹 4.15 Front Camera Video Performance
+### D. Computational Photography & AI
+### 🔹 4.16 Multi-Frame Computational Photography (MFCP)
+### 🔹 4.17 Semantic / Scene AI Processing
+### 🔹 4.18 Generative & Post-Capture AI Tools
+## 🟣 5. Software & Longevity
+### 🔹 5.1 Support Longevity
+### 🔹 5.2 System Cleanliness & Control (SCC)
+### 🔹 5.3 AI Feature Suite
+## 🟣 6. Processing Power & Performance
+### 🔹 6.1 CPU Multi-Core Performance (Sustained Outcome)
+### 🔹 6.2 CPU Architecture & Single-Core Efficiency
+### 🔹 6.3 GPU Performance (Graphics & Gaming)
+### 🔹 6.4 AI Hardware Performance (Neural Processor)
+### 🔹 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
+### 🔹 6.6 RAM Capacity - Memory Capacity Index (MCI)
+### 🔹 6.7 Storage Technology
+### 🔹 6.8 Storage Capacity
+### 🔹 6.9 Storage Expandability
+### 🔹 6.10 Thermal Dissipation & Stability Index (TDSI)
+## 🟣 7. Connectivity & Sensors
+### 🔹 7.1 Cellular Capabilities
+### 🔹 7.2 SIM Capabilities
+### 🔹 7.3 Wi-Fi Standard
+### 🔹 7.4 Bluetooth & Audio Codecs
+### 🔹 7.5 Biometrics
+### 🔹 7.6 Sensors
+### 🔹 7.7 NFC & Ultra-Wideband (UWB)
+### 🔹 7.8 Connectivity & Cross-Device Continuity (CDC) Index
+### 🔹 7.9 USB Port Speed
+## 🟣 8. Battery & Charging
+### 🔹 8.1 Battery Endurance Score (Model v3.2)
+### 🔹 8.2 Wired Charging Speed
+### 🔹 8.3 Wireless Charging Speed
+### 🔹 8.4 Wired Reverse Charging
+### 🔹 8.5 Wireless Reverse Charging
+### 🔹 8.6 Charger Adequacy (In-Box Performance Match)
+## 🟣 9. Financial & Economic Value
+### 🔹 9.1 Price
+### 🔹 9.2 Manufacturer Warranty Commitment
+### 🔹 9.3 Repairability
+## 🟣 10. Miscellaneous
+### 🔹 10.1 Stylus Hardware & System Support (SHSS)
+### 11.A Core Principles
+### 11.B Justification Logic
+### 11.C Evidence Requirements 
+### 11.D Mandatory Pre-Commit Protocol
+### 🔹 11.1 DXOMARK 24MP Texture Rendering
+### 🔹 11.2 Tom's Guide Display Factory Calibration
+### 🔹 11.3 DXOMARK Portrait Skin Tone Rendering

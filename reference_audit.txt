@@ -1,0 +1,109 @@
+
+====================================
+FILE: scoring_rules.md
+====================================
+L84: > *   **Gamut (Section 2.3) = Quantity:** Measures the *range* of colors a screen is physically capable of showing. Like a painter's palette having more colors available.
+L87: > **Why no Delta-E Score?** Factory calibration data (Delta-E) is rarely public in specs. Therefore, excellent color accuracy (e.g., Delta-E < 2.0) is rewarded strictly via **Section 11 (Boosters)** when validated by expert reviews.
+L189: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 2*
+L754: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+L817: *Description:* Evaluates the *software features* and practical AI tools available to the user. This measures "what you can do" (features), distinct from **Section 6.4** which measures "how fast it runs" (hardware power).
+L827: > **Generative image editing** (object removal, fill, etc.) is scored in **Section 4.18** and is excluded here to avoid double-scoring.
+L853: - Section 6.1 Method C: Multi-Thread Performance (CPS calculation)
+L854: - Section 6.2 Method C: Single-Thread Performance (CAS calculation)
+L855: - Section 8.1 for Battery Endurance Scoring (Battery efficiency - SoC component)
+L921: *   **Reference:** See **Section 6.1.0** for Reference Frequencies.
+L931: > *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 6.1.0)
+L955: > **Why do we need this separate from Section 3.1?**
+L956: > *   **Section 6.1 (Multi-Core) measures CAPACITY (The Truck):** Determines if the phone *can* run heavy tasks (rendering, gaming) without bottling up.
+L957: > *   **Section 6.2 (Single-Core) measures RESPONSIVENESS (The Sports Car):** Determines how *fast* a single task (like opening an app or scrolling a webpage) happens.
+L993: *   **Scores:** See **Section 6.1.0 CPU Core Architecture Reference** for authoritative core scores.
+L1000: *   **Reference:** See **Section 6.1.0** for Reference Frequencies.
+L1020: - Section 6.3 GPU Performance (Base Architecture Score)
+L1021: - Section 8.1 for Battery Endurance Scoring (Battery efficiency - SoC component)
+L1031: > *   **Used in:** Section 6.3 (GPU Performance scoring)
+L1037: > *   **Used in:** Section 6.3 (GPU Performance scoring)
+L1046: > *   **Used in:** Section 8.1 (Battery Endurance calculations)
+L1049: > *   **Process node benefits** (3nm vs 5nm) are scored separately in Section 6.10. This Efficiency score focuses on architectural design and thermal management.
+L1116: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1150: *   **Lookup:** Find the exact GPU Model in **Section 6.3.0 table** above. Use the **Standard Graphics** value.
+L1157: *   **Reference:** See **Section 6.3.0** for Reference Frequencies.
+L1202: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1207: *   **Logic:** Retrieve **Ray Tracing** (0-10) score directly from **Section 6.3.0 Table** above.
+L1210: #### Final Section 6.3 Score Calculation
+L1250: > **Hardware vs. Software:** This section measures **Hardware Capability** (The Engine). It is distinct from **Section 5.3 (AI Feature Suite)** which measures the *features* the software actually provides (The Destination). A powerful Neural Processing Unit (NPU) (high 6.4 score) is required to run advanced features smoothly, but doesn't guarantee they are installed.
+L1281: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1324: *   **Source:** Retrieve Score from **Section 6.5**.
+L1328: *   **Source:** Retrieve Score from **Section 6.3**.
+L1332: *   **Source:** Retrieve Score from **Section 6.6**.
+L1336: *   **Source:** Retrieve Score from **Section 6.10 Part C**.
+L1375: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1404: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1513: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+L1526: > **Global Reference:** This calculated Process Node Score is the authoritative value used by both the **Battery Endurance Model (Section 8.1)** and the **AI Hardware Performance Model (Section 3.10)**.
+L1530: *   **Significance (The Peak vs. Baseline Demand Paradox):** Peak performance draws extreme wattage, generating massive heat. A flagship chip doing maximum computing (Section 6.1 Peak Score = 10) draws 15+ watts, requiring heavy cooling. A budget chip (Peak Score = 2) might only physically draw 4 watts. However, a flagship chip built on an efficient 3nm node generates *less* waste heat per watt than an inefficient 5nm node.
+L1599: > **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Dimensions)** and **Section 8.1 (Battery Endurance)**.
+L1601: > **Approximation Note:** This is currently an approximation. While **Section 8.1** rewards overall battery life, the theoretical model does not yet strictly quantify the specific µW savings of iSIM vs eSIM, nor do general benchmarks (like GSMArena) typically isolate this specific variable. However, treating them as functionally equivalent in this section prevents double-counting the engineering benefits that don't directly alter the user's *connectivity* options.
+L1662: Audio_Bitrate_kbps_Max = See scoring_constants.md Section 7
+L1886: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+L1894: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+L1979: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+L1990: > Why does a flagship CPU (like Snapdragon 8 Gen 3) receive a low Cooling Bonus in the **Thermal Dissipation Model (Section 6.10)**, but a high Efficiency Bonus here in the **Battery Model**?
+L1991: > *   **Thermals (Peak Demand):** Section 6.10 measures *Peak Thermal Demand*. Under maximum load in a benchmark, a flagship CPU draws massive wattage (~15W) and generates intense heat, demanding heavy cooling compensation.
+L1999: *   *Formula:* Score calculated via **Section 6.10** (Unified formula).
+L2005: *   *Reference:* Standard Core Scores from **Section 6.1.0**.
+L2014: *   *Reference:* **Efficiency Score** column from **Section 6.3.0**.
+L2015: *   *Note:* The scoring table is defined in Section 6.3.0. For battery calculations, we use the specific **Efficiency Score** which decouples raw performance from power draw (e.g., penalizing hot chips like Snapdragon 888). This score measures performance-per-watt rather than peak capability.
+L2018: > **Avoid Double Counting:** Process node benefits (e.g., 5nm vs 3nm) are handled in the **SoC Efficiency Score (Section 6.10)**, which is used in **Section B.1.1**. This GPU Efficiency Score focuses on the **architectural efficiency** and thermal stability of the GPU implementation itself, regardless of the node. Ideally, an efficient architecture on an efficient node gets high scores in both. A "hot" architecture on an efficient node would get a lower GPU score despite the good node score.
+L2024: *   *Reference:* Panel Technology score from **Section 2.1**.
+L2061: > **Why Inverted Scoring?** Newer cellular generations (5G) require more complex modems with higher power consumption than older standards (4G, 3G). While 5G provides faster speeds, it comes at a battery efficiency cost. This inverted scoring reflects the bare power penalty. See **Section 7.1** for feature-based scoring (where newer = better).
+L2077: > **Why Inverted Scoring?** Newer WiFi standards (WiFi 6E, 7) use wider channels (160MHz, 320MHz) and higher frequency bands (6GHz) which require more power to maintain. While they provide better performance, they reduce battery efficiency. See **Section 7.3** for feature-based scoring.
+L2083: *   *Formula:* `Thermal_Efficiency = TDSI_Score` (From **Section 6.5**)
+L2112: *   *Reference:* Use the System Cleanliness & Control (SCC) score from **Section 5.2**.
+L2128: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+L2140: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+L2152: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+L2164: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+L2190: *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 9*
+L2274: *   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection or any other subsection.
+L2299: *   **Booster A (1.10):** Targets Subsection 4.6 (Zoom Capability) for superior optics.
+L2300: *   **Booster B (0.90):** Targets Subsection 4.4 (Image Stabilization) for poor software compensation.
+L2333: *   **Unaccounted Reason:** Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to output 24MP images by default rather than standard 12MP binned images, which the review explicitly credits for improved texture preservation.
+L2342: *   **Unaccounted Reason:** Section 2.3 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.
+L2351: *   **Unaccounted Reason:** Section 4.17 scores the binary presence of semantic segmentation features (face detection, scene recognition). It does not score the specific quality of the tuning, such as the effectiveness of the Smart HDR algorithm in delivering strictly accurate and natural skin tones across diverse demographics, which requires qualitative validation beyond a checklist feature.
+
+====================================
+FILE: scoring_constants.md
+====================================
+
+====================================
+FILE: proposed_data_structure.md
+====================================
+L936: "description": "Section 6.3.0 Standard Graphics Score"
+L940: "description": "Section 6.3.0 Ray Tracing Score"
+L944: "description": "Section 6.3.0 Efficiency Score (for battery calculations)"
+L957: "description": "GPU Architecture Score (Standard Graphics) from Section 6.3.0"
+L969: "description": "Reference frequency from Section 6.3.0 for FSF calculation"
+L995: "description": "Ray Tracing Score from Section 6.3.0 (0-10)"
+L1410: "unaccounted_reason": "Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to output 24MP images by default rather than standard 12MP binned images, which the review explicitly credits for improved texture preservation.",
+L1420: "unaccounted_reason": "Section 2.3 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.",
+L1430: "unaccounted_reason": "Section 4.17 scores the binary presence of semantic segmentation features (face detection, scene recognition). It does not score the specific quality of the tuning, such as the effectiveness of the Smart HDR algorithm in delivering strictly accurate and natural skin tones across diverse demographics, which requires qualitative validation beyond a checklist feature.",
+
+====================================
+FILE: data_sources.md
+====================================
+L7: ## Section 2 — Display
+L16: ## Section 3 — Audio (No specific external sources currently defined)
+L20: ## Section 6 — Processing Power & Performance
+L54: ## Section 8 — Battery & Charging
+L68: ## Section 9 — Financial & Economic Value
+
+====================================
+FILE: data_structure_guidelines.md
+====================================
+L83: 2.  **Part B:** The Adjustment Layer (Section 11 - Boosters)
+L147: 2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 8.1).
+L148: 3.  **Predictor + Booster:** The `predicted` score adjusted by one or more Section 11 Boosters.
+L157: Defines which Section 11 adjustment(s) are applied to the `predicted` score.
+L190: ### Part B: The Adjustment Layer (Section 11)
+L191: **Section 11 (Boosters)** captures **real-world performance anomalies** not reflected in specs — validated by an expert review. This layer sits *on top* of Part A to adjust the "Predictor" scores.
+L215: The following sections (2 and 3) detail how to structure the components within each section or subsection. They define **WHERE** to place data (Section 2) and **WHAT** strict format that data must follow (Section 3) to ensure the scoring mechanism described above functions correctly.

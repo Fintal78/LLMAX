@@ -25,7 +25,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "exact_extract": "Proof pending"
     },
     "model_aliases": {
-      "value": ["SM-S928B", "SM-S928U"],
+      "value": [
+        "SM-S928B",
+        "SM-S928U"
+      ],
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
@@ -41,6 +44,42 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
+    "height_mm": {
+      "value": 162.3,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "width_mm": {
+      "value": 79.0,
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "colors": [
+      {
+        "name": {
+          "value": "Titanium Black",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "hex": {
+          "value": "#1C1C1C",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
+      },
+      {
+        "name": {
+          "value": "Titanium Blue",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "hex": {
+          "value": "#4B5D7E",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
+      }
+    ],
     "1_1_materials": {
       "frame_material": {
         "value": "Titanium Alloy Frame",
@@ -92,16 +131,6 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "height_mm": {
-      "value": 162.3,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "width_mm": {
-      "value": 79.0,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
     "1_5_weight": {
       "weight_g": {
         "value": 232,
@@ -119,33 +148,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "predicted_score": 0.0,
       "final_score": 0.0
-    },
-    "colors": [
-      {
-        "name": {
-          "value": "Titanium Black",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "hex": {
-          "value": "#1C1C1C",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      {
-        "name": {
-          "value": "Titanium Blue",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "hex": {
-          "value": "#4B5D7E",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      }
-    ]
+    }
   },
   "2_display": {
     "aspect_ratio": {
@@ -187,16 +190,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "2_2_resolution_density": {
-      "ppi": {
-        "value": 505,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "2_3_brightness": {
+    "2_2_brightness": {
       "peak_nits": {
         "value": 2600,
         "source": "TBD",
@@ -210,7 +204,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "2_4_color_gamut_coverage": {
+    "2_3_color_gamut_coverage": {
       "dci_p3_percent": {
         "value": 100,
         "source": "TBD",
@@ -230,9 +224,22 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "final_score": 0.0
     },
-    "2_5_hdr_format_support": {
+    "2_4_hdr_format_support": {
       "formats": {
-        "value": ["HDR10+", "HDR10", "HLG"],
+        "value": [
+          "HDR10+",
+          "HDR10",
+          "HLG"
+        ],
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "2_5_resolution_density": {
+      "ppi": {
+        "value": 505,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -253,9 +260,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "2_8_eye_comfort": {
-      "pwm_dimming_hz": {
-        "value": 492,
+    "2_8_screen_to_body_ratio": {
+      "percent": {
+        "value": 88.5,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -271,9 +278,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "2_10_screen_to_body_ratio": {
-      "percent": {
-        "value": 88.5,
+    "2_10_eye_comfort": {
+      "pwm_dimming_hz": {
+        "value": 492,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -291,261 +298,125 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "description": "predicted_score = Average of SubScores 2.1-2.10 (Method C). final_score = DXOMARK benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
     }
   },
-  "3_processing_power_and_performance": {
-    "soc_name": {
-      "value": "Snapdragon 8 Gen 3",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "3_1_0_soc_reference": {
-      "cortex_x4": {
-        "count": 1,
+  "3_audio": {
+    "3_1_speaker_quality": {
+      "value": {
+        "value": "Balanced Stereo (Hybrid)",
         "source": "TBD",
         "exact_extract": "Proof pending"
-      },
-      "cortex_a720": {
-        "count": 5,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "cortex_a520": {
-        "count": 2,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      }
-    },
-    "3_1_cpu_multi_core_performance": {
-      "geekbench_6_multi_score": {
-        "value": 7200,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "scoring_components": {
-        "facs": [
-          {
-            "name": "Cortex-X4",
-            "value": 10.0,
-            "description": "Frequency-Adjusted Core Score"
-          },
-          {
-            "name": "Cortex-A720",
-            "value": 39.9,
-            "description": "Frequency-Adjusted Core Score"
-          },
-          {
-            "name": "Cortex-A520",
-            "value": 4.6,
-            "description": "Frequency-Adjusted Core Score"
-          }
-        ]
       },
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "3_2_cpu_architecture_single_core": {
-      "geekbench_6_single_score": {
-        "value": 2200,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "scoring_components": {
-        "cas": {
-          "value": 10,
-          "description": "Core Architecture Score - strongest core"
+    "3_2_playback_audio_processing_immersion": {
+      "audio_format_decode": {
+        "dolby_atmos": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         },
-        "fsf": {
-          "value": 1.03,
-          "description": "Frequency Scaling Factor",
-          "actual_frequency_ghz": {
-            "value": 3.4,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
+        "dts_x": {
+          "value": false,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "multichannel_surround": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "score": {
+          "value": 8.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_3_0_gpu_architecture_reference": {
-      "gpu_model": {
-        "value": "Adreno 750",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "standard_graphics_score": {
-        "value": 10,
-        "description": "Section 3.3.0 Standard Graphics Score"
-      },
-      "ray_tracing_score": {
-        "value": 10,
-        "description": "Section 3.3.0 Ray Tracing Score"
-      },
-      "efficiency_score": {
-        "value": 9,
-        "description": "Section 3.3.0 Efficiency Score (for battery calculations)"
-      }
-    },
-    "3_3_gpu_performance": {
-      "benchmark_steel_nomad_light": {
-        "value": 1800,
-        "source": "UL Benchmarks Leaderboard",
-        "exact_extract": "Proof pending",
-        "description": "3DMark Steel Nomad Light Score (Vulkan 1.1 Rasterization)"
-      },
-      "scoring_components": {
-        "gas": {
-          "value": "3_3_0_gpu_architecture_reference.standard_graphics_score",
-          "description": "GPU Architecture Score (Standard Graphics) from Section 3.3.0"
+      "spatial_audio_rendering": {
+        "head_tracking": {
+          "value": false,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         },
-        "fsf": {
-          "value": 1.0,
-          "description": "Frequency Scaling Factor",
-          "actual_frequency_mhz": {
-            "value": 903,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "reference_frequency_mhz": {
-            "value": "3_3_0_gpu_architecture_reference.reference_frequency_mhz",
-            "description": "Reference frequency from Section 3.3.0 for FSF calculation"
-          }
+        "static_spatial": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         },
-        "api_modifier": {
-          "value": 1.0,
-          "description": "API Efficiency Modifier (0.75-1.0)",
-          "formula": "0.75 + (0.25 * API_Score / 10)",
-          "components": {
-            "vulkan_version": {
-              "value": "1.3",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "opengl_es_version": {
-              "value": "3.2",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "api_score": {
-              "value": 10.0,
-              "description": "Highest API score (Vulkan 1.3 = 10.0)"
-            }
-          }
-        },
-        "rts": {
-          "reference": "3_3_0_gpu_architecture_reference.ray_tracing_score",
-          "description": "Ray Tracing Score from Section 3.3.0 (0-10)"
+        "score": {
+          "value": 7.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         }
       },
-      "sgs": {
-        "value": 10.0,
-        "description": "Standard Graphics Score (from Method A/B/C)",
-        "method_used": "A"
-      },
-      "final_score": {
-        "value": 10.0,
-        "formula": "(SGS * 0.9) + (RTS * 0.1)",
-        "description": "Final GPU Performance Score"
-      },
-      "confidence": "High"
+      "predicted_score": 7.5,
+      "final_score": 7.5
     },
-    "3_4_thermal_dissipation_stability": {
-      "process_nm": {
-        "value": 4,
+    "3_3_wired_audio_capability": {
+      "value": {
+        "value": "USB-C digital audio only (dongle required)",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "foundry": {
-        "value": "TSMC",
+      "headphone_jack_3_5mm": {
+        "value": false,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "frame_material": {
-        "value": "Titanium Alloy Frame",
+      "usb_c_analog_audio": {
+        "value": false,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "weight_g": {
-        "value": 232,
+      "usb_c_digital_only": {
+        "value": true,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "height_mm": {
-        "value": 162.3,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "width_mm": {
-        "value": 79.0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "thickness_mm": {
-        "value": 8.6,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "cooling_system": {
-        "value": "Vapor Chamber (Standard)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 8.16
+      "predicted_score": 3.0,
+      "final_score": 3.0
     },
-    "3_5_ram_technology": {
-      "technology": {
-        "value": "LPDDR5X",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+    "3_4_microphone_audio_recording": {
+      "mhc": {
+        "microphone_count": {
+          "value": 3,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "score": {
+          "value": 8.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_6_ram_capacity": {
-      "max_gb": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "rcm": {
+        "recording_channels": {
+          "value": "Stereo",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "score": {
+          "value": 8.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_7_storage_technology": {
-      "technology": {
-        "value": "UFS 4.0",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "acf": {
+        "features": {
+          "value": [
+            "Directional/Audio Zoom",
+            "Wind noise reduction"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "score": {
+          "value": 5.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_8_storage_capacity": {
-      "capacity_gb": {
-        "value": 1024,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_9_storage_expandability": {
-      "slot_type": {
-        "value": "No Expansion Slot",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "3_10_npu_hardware_performance": {
-      "geekbench_ai_score_quantized": {
-        "value": 4500,
-        "source": "https://browser.geekbench.com/ai-benchmarks",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 9.75,
-      "final_score": 9.75,
-      "description": "predicted_score = Weighted formula: (0.40*SoC_AI) + (0.25*RAM_Tech) + (0.15*GPU) + (0.10*RAM_Cap) + (0.10*Process) (Method C). final_score = Geekbench AI benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
+      "predicted_score": 7.0,
+      "final_score": 7.0
     }
   },
   "4_camera_systems": {
@@ -697,16 +568,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_5_zoom_capability": {
-      "optical_zoom_x": {
-        "value": 5,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "4_6_ultrawide_capability": {
+    "4_5_ultrawide_capability": {
       "presence": {
         "value": true,
         "source": "TBD",
@@ -719,6 +581,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "ultrawide_sensor_size": {
         "value": "1/2.0",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "4_6_zoom_capability": {
+      "optical_zoom_x": {
+        "value": 5,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -744,7 +615,25 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_8_rear_video_resolution": {
+    "4_8_front_camera_resolution": {
+      "mp": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "4_9_front_camera_focus": {
+      "type": {
+        "value": "Autofocus",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "4_10_rear_video_resolution": {
       "max_resolution": {
         "value": "8K",
         "source": "TBD",
@@ -753,7 +642,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_9_rear_video_fps": {
+    "4_11_rear_video_fps": {
       "max_fps_1080p_plus": {
         "value": 120,
         "source": "TBD",
@@ -762,7 +651,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_10_video_hdr": {
+    "4_12_video_hdr": {
       "capability": {
         "value": "Dolby Vision",
         "source": "TBD",
@@ -771,7 +660,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_11_video_encoding": {
+    "4_13_video_encoding": {
       "pcs": {
         "professional_codec_support": {
           "value": true,
@@ -821,7 +710,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 10.0,
       "final_score": 10.0
     },
-    "4_12_slow_motion": {
+    "4_14_slow_motion": {
       "max_fps": {
         "value": 120,
         "source": "TBD",
@@ -829,24 +718,6 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "resolution_mp": {
         "value": 8.3,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "4_13_front_camera_resolution": {
-      "mp": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "4_14_front_camera_focus": {
-      "type": {
-        "value": "Autofocus",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -874,7 +745,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "4_16_multiframe_photo": {
       "features": {
-        "value": ["Advanced HDR", "Night Mode"],
+        "value": [
+          "Advanced HDR",
+          "Night Mode"
+        ],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -889,7 +763,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "4_17_semantic_ai": {
       "features": {
-        "value": ["Semantic Segmentation"],
+        "value": [
+          "Semantic Segmentation"
+        ],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -904,7 +780,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "4_18_generative_ai_tools": {
       "features": {
-        "value": ["Magic Eraser"],
+        "value": [
+          "Magic Eraser"
+        ],
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
@@ -912,7 +790,419 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     }
   },
-  "5_battery_and_charging": {
+  "5_software_and_longevity": {
+    "os_version": {
+      "value": "Android 14",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "skin": {
+      "value": "One UI 6.1",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "5_1_support_longevity": {
+      "years_os": {
+        "value": 7,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "years_security": {
+        "value": 7,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "5_2_system_cleanliness_control": {
+      "platform_score": 6.0,
+      "predicted_score": 6.0,
+      "final_score": 6.0
+    },
+    "5_3_ai_feature_suite": {
+      "visual_screen_search": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "live_speech_translation": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "content_summarization": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "writing_tools": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "on_device_processing": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 10.0,
+      "final_score": 0.0
+    }
+  },
+  "6_processing_power_and_performance": {
+    "soc_name": {
+      "value": "Snapdragon 8 Gen 3",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "6_1_0_soc_reference": {
+      "cortex_x4": {
+        "count": 1,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "cortex_a720": {
+        "count": 5,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "cortex_a520": {
+        "count": 2,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      }
+    },
+    "6_1_cpu_multi_core_performance": {
+      "geekbench_6_multi_score": {
+        "value": 7200,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "scoring_components": {
+        "facs": [
+          {
+            "name": "Cortex-X4",
+            "value": 10.0,
+            "description": "Frequency-Adjusted Core Score"
+          },
+          {
+            "name": "Cortex-A720",
+            "value": 39.9,
+            "description": "Frequency-Adjusted Core Score"
+          },
+          {
+            "name": "Cortex-A520",
+            "value": 4.6,
+            "description": "Frequency-Adjusted Core Score"
+          }
+        ]
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_2_cpu_architecture_single_core": {
+      "geekbench_6_single_score": {
+        "value": 2200,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "scoring_components": {
+        "cas": {
+          "value": 10,
+          "description": "Core Architecture Score - strongest core"
+        },
+        "fsf": {
+          "value": 1.03,
+          "description": "Frequency Scaling Factor",
+          "actual_frequency_ghz": {
+            "value": 3.4,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        }
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_3_0_gpu_architecture_reference": {
+      "gpu_model": {
+        "value": "Adreno 750",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "standard_graphics_score": {
+        "value": 10,
+        "description": "Section 6.3.0 Standard Graphics Score"
+      },
+      "ray_tracing_score": {
+        "value": 10,
+        "description": "Section 6.3.0 Ray Tracing Score"
+      },
+      "efficiency_score": {
+        "value": 9,
+        "description": "Section 6.3.0 Efficiency Score (for battery calculations)"
+      }
+    },
+    "6_3_gpu_performance": {
+      "benchmark_steel_nomad_light": {
+        "value": 1800,
+        "source": "UL Benchmarks Leaderboard",
+        "exact_extract": "Proof pending",
+        "description": "3DMark Steel Nomad Light Score (Vulkan 1.1 Rasterization)"
+      },
+      "scoring_components": {
+        "gas": {
+          "value": "3_3_0_gpu_architecture_reference.standard_graphics_score",
+          "description": "GPU Architecture Score (Standard Graphics) from Section 6.3.0"
+        },
+        "fsf": {
+          "value": 1.0,
+          "description": "Frequency Scaling Factor",
+          "actual_frequency_mhz": {
+            "value": 903,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "reference_frequency_mhz": {
+            "value": "3_3_0_gpu_architecture_reference.reference_frequency_mhz",
+            "description": "Reference frequency from Section 6.3.0 for FSF calculation"
+          }
+        },
+        "api_modifier": {
+          "value": 1.0,
+          "description": "API Efficiency Modifier (0.75-1.0)",
+          "formula": "0.75 + (0.25 * API_Score / 10)",
+          "components": {
+            "vulkan_version": {
+              "value": "1.3",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "opengl_es_version": {
+              "value": "3.2",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "api_score": {
+              "value": 10.0,
+              "description": "Highest API score (Vulkan 1.3 = 10.0)"
+            }
+          }
+        },
+        "rts": {
+          "reference": "3_3_0_gpu_architecture_reference.ray_tracing_score",
+          "description": "Ray Tracing Score from Section 6.3.0 (0-10)"
+        }
+      },
+      "sgs": {
+        "value": 10.0,
+        "description": "Standard Graphics Score (from Method A/B/C)",
+        "method_used": "A"
+      },
+      "final_score": {
+        "value": 10.0,
+        "formula": "(SGS * 0.9) + (RTS * 0.1)",
+        "description": "Final GPU Performance Score"
+      },
+      "confidence": "High"
+    },
+    "6_4_npu_hardware_performance": {
+      "geekbench_ai_score_quantized": {
+        "value": 4500,
+        "source": "https://browser.geekbench.com/ai-benchmarks",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 9.75,
+      "final_score": 9.75,
+      "description": "predicted_score = Weighted formula: (0.40*SoC_AI) + (0.25*RAM_Tech) + (0.15*GPU) + (0.10*RAM_Cap) + (0.10*Process) (Method C). final_score = Geekbench AI benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
+    },
+    "6_5_ram_technology": {
+      "technology": {
+        "value": "LPDDR5X",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_6_ram_capacity": {
+      "max_gb": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_7_storage_technology": {
+      "technology": {
+        "value": "UFS 4.0",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_8_storage_capacity": {
+      "capacity_gb": {
+        "value": 1024,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_9_storage_expandability": {
+      "slot_type": {
+        "value": "No Expansion Slot",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "6_10_thermal_dissipation_stability": {
+      "process_nm": {
+        "value": 4,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "foundry": {
+        "value": "TSMC",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "frame_material": {
+        "value": "Titanium Alloy Frame",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "weight_g": {
+        "value": 232,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "height_mm": {
+        "value": 162.3,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "width_mm": {
+        "value": 79.0,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "thickness_mm": {
+        "value": 8.6,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "cooling_system": {
+        "value": "Vapor Chamber (Standard)",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 8.16
+    }
+  },
+  "7_connectivity_and_sensors": {
+    "7_1_cellular_capabilities": {
+      "features": {
+        "value": [
+          "5G mmWave",
+          "5G Sub-6"
+        ],
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_2_sim_capabilities": {
+      "value": {
+        "value": "Dual SIM (Nano + eSIM)",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_3_wifi_standard": {
+      "value": {
+        "value": "Wi-Fi 7",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_4_bluetooth_codecs": {
+      "value": {
+        "value": "BT 5.3 + LDAC/aptX HD",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_5_biometrics": {
+      "value": {
+        "value": "Ultrasonic Fingerprint",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_6_sensors": {
+      "value": {
+        "value": "Full (Gyro, Compass, Baro)",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_7_nfc_uwb": {
+      "value": {
+        "value": "NFC + UWB (Precision)",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_8_ecosystem_continuity": {
+      "value": {
+        "value": [
+          "AirDrop",
+          "Handoff",
+          "Universal Clipboard"
+        ],
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "7_9_usb_port_speed": {
+      "version": {
+        "value": "USB 3.2 Gen 2 (10Gbps)",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "video_out": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    }
+  },
+  "8_battery_and_charging": {
     "mah": {
       "value": 5000,
       "source": "TBD",
@@ -928,7 +1218,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "5_1_battery_endurance": {
+    "8_1_battery_endurance": {
       "layer_a_energy": {
         "wh": {
           "value": 19.25,
@@ -968,7 +1258,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "score": 7.42
         },
         "b_3_connectivity_efficiency": {
-          "dependencies": ["7_connectivity.7_1_cellular_capabilities", "7_connectivity.7_3_wifi_standard"],
+          "dependencies": [
+            "7_connectivity.7_1_cellular_capabilities",
+            "7_connectivity.7_3_wifi_standard"
+          ],
           "breakdown": {
             "cellular_score": 0,
             "wifi_score": 0
@@ -976,13 +1269,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "score": 0.0
         },
         "b_4_thermal_efficiency": {
-          "dependencies": ["3_processing_power_and_performance.3_5_thermal_dissipation_stability"],
+          "dependencies": [
+            "3_processing_power_and_performance.3_5_thermal_dissipation_stability"
+          ],
           "score": 8.2
         },
         "total_hei_score": 7.14
       },
       "layer_c_software_optimization": {
-        "dependencies": ["6_software.os_version", "6_software.6_3_system_cleanliness_control"],
+        "dependencies": [
+          "6_software.os_version",
+          "6_software.6_3_system_cleanliness_control"
+        ],
         "breakdown": {
           "c_1_os_generation": 10,
           "c_2_bloatware": 6.0
@@ -1006,7 +1304,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "GSMArena Active Use + PhoneArena Battery Life"
       }
     },
-    "5_2_wired_charging_speed": {
+    "8_2_wired_charging_speed": {
       "watts": {
         "value": 45,
         "source": "TBD",
@@ -1015,7 +1313,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "5_3_wireless_charging_speed": {
+    "8_3_wireless_charging_speed": {
       "watts": {
         "value": 15,
         "source": "TBD",
@@ -1024,7 +1322,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "5_4_reverse_wireless": {
+    "8_4_reverse_wired": {
+      "watts": {
+        "value": 0,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "8_5_reverse_wireless": {
       "watts": {
         "value": 4.5,
         "source": "TBD",
@@ -1033,16 +1340,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "5_5_reverse_wired": {
-      "watts": {
-        "value": 0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "5_6_charger_in_box": {
+    "8_6_charger_in_box": {
       "included_watts": {
         "value": 0,
         "source": "TBD",
@@ -1050,272 +1348,6 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "predicted_score": 0.0,
       "final_score": 0.0
-    }
-  },
-  "6_software_and_longevity": {
-    "os_version": {
-      "value": "Android 14",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "skin": {
-      "value": "One UI 6.1",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "6_1_support_longevity": {
-      "years_os": {
-        "value": 7,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "years_security": {
-        "value": 7,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "6_2_ai_feature_suite": {
-      "visual_screen_search": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "live_speech_translation": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "content_summarization": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "writing_tools": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "on_device_processing": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 10.0,
-      "final_score": 0.0
-    },
-    "6_3_system_cleanliness_control": {
-      "platform_score": 6.0,
-      "predicted_score": 6.0,
-      "final_score": 6.0
-    }
-  },
-  "7_connectivity_and_sensors": {
-    "7_1_cellular_capabilities": {
-      "features": {
-        "value": ["5G mmWave", "5G Sub-6"],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_2_sim_capabilities": {
-      "value": {
-        "value": "Dual SIM (Nano + eSIM)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_3_wifi_standard": {
-      "value": {
-        "value": "Wi-Fi 7",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_4_bluetooth_codecs": {
-      "value": {
-        "value": "BT 5.3 + LDAC/aptX HD",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_5_nfc_uwb": {
-      "value": {
-        "value": "NFC + UWB (Precision)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_6_biometrics": {
-      "value": {
-        "value": "Ultrasonic Fingerprint",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_7_sensors": {
-      "value": {
-        "value": "Full (Gyro, Compass, Baro)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_8_usb_port_speed": {
-      "version": {
-        "value": "USB 3.2 Gen 2 (10Gbps)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "video_out": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "7_9_ecosystem_continuity": {
-      "value": {
-        "value": ["AirDrop", "Handoff", "Universal Clipboard"],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    }
-  },
-  "8_audio": {
-    "8_1_speaker_quality": {
-      "value": {
-        "value": "Balanced Stereo (Hybrid)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "8_2_playback_audio_processing_immersion": {
-      "audio_format_decode": {
-        "dolby_atmos": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "dts_x": {
-          "value": false,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "multichannel_surround": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      "spatial_audio_rendering": {
-        "head_tracking": {
-          "value": false,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "static_spatial": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 7.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      "predicted_score": 7.5,
-      "final_score": 7.5
-    },
-    "8_3_wired_audio_capability": {
-      "value": {
-        "value": "USB-C digital audio only (dongle required)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "headphone_jack_3_5mm": {
-        "value": false,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "usb_c_analog_audio": {
-        "value": false,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "usb_c_digital_only": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 3.0,
-      "final_score": 3.0
-    },
-    "8_4_microphone_audio_recording": {
-      "mhc": {
-        "microphone_count": {
-          "value": 3,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      "rcm": {
-        "recording_channels": {
-          "value": "Stereo",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      "acf": {
-        "features": {
-          "value": ["Directional/Audio Zoom", "Wind noise reduction"],
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 5.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        }
-      },
-      "predicted_score": 7.0,
-      "final_score": 7.0
     }
   },
   "9_financial_and_economic_value": {
@@ -1328,7 +1360,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.8,
       "final_score": 0.8
     },
-    "9_2_repairability": {
+    "9_2_manufacturer_warranty_commitment": {
+      "months": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "value": {
+        "value": "1 Year Standard",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 3.0,
+      "final_score": 3.0
+    },
+    "9_3_repairability": {
       "ifixit_score": 8,
       "eu_repairability_index": {
         "value": 4.0,
@@ -1343,20 +1389,6 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending"
       },
       "final_score": 8.0
-    },
-    "9_3_manufacturer_warranty_commitment": {
-      "months": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "value": {
-        "value": "1 Year Standard",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 3.0,
-      "final_score": 3.0
     }
   },
   "10_miscellaneous": {
@@ -1385,7 +1417,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "booster": 1.05,
       "justification": {
         "unaccounted_feature": "it earned a Delta-E score of 0.14 (where zero is perfect)",
-        "unaccounted_reason": "Section 2.4 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.",
+        "unaccounted_reason": "Section 2.3 scores DCI-P3 coverage percentage, which measures what colors the display *can* show. It does not measure factory calibration accuracy (Delta-E), which determines how *correctly* those colors are rendered. A display with 100% DCI-P3 coverage but poor calibration will show inaccurate colors.",
         "observed_justification": "The iPhone 15 Pro Max's display offers more accurate colors, as it earned a Delta-E score of 0.14 (where zero is perfect)"
       }
     },

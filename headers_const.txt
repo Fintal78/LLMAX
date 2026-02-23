@@ -1,0 +1,45 @@
+**1. Design & Ergonomics**
+### 1.4 Dimensions (Thickness)
+### 1.5 Weight
+### 1.6 Ergonomics (Width)
+**2. Display**
+### 2.2 Resolution Density
+### 2.3 Brightness (Peak & HBM)
+### 2.4 Color Gamut
+### 2.6 Motion Smoothness
+### 2.7 Touch Responsiveness
+### 2.8 Eye Comfort
+### 2.9 Screen Size
+### 2.10 Screen-to-Body Ratio
+### 2.11 Display Benchmark
+**3. Performance (SoC & Memory)**
+### 3.1 CPU Multi-Core
+### 3.2 CPU Single-Core
+### 3.3 GPU Performance
+### 3.4 Thermal Dissipation & Stability Index (TDSI)
+### 3.6 RAM Capacity
+### 3.8 Storage Capacity
+### 3.10 AI Hardware
+**4. Camera Systems**
+### 4.1 Main Sensor Size
+### 4.2 Main Aperture
+### 4.3 Main Resolution
+### 4.5 Zoom Capability
+### 4.6 Ultrawide Camera
+### 4.7 Macro Capability
+### 4.9 Rear Video Frame Rate
+### 4.12 Slow Motion
+### 4.13 Front Resolution
+### 4.15 Front Video
+**5. Battery & Charging**
+### 5.1 Battery Endurance (Model)
+### 5.2 Wired Charging
+### 5.3 Wireless Charging
+### 5.4 Reverse Wireless
+### 5.5 Reverse Wired
+**6. Software & Support**
+### 6.1 Support Longevity
+**7. Connectivity & Audio**
+### 7.4 Bluetooth & Codecs
+**9. Financial**
+### 9.1 Price

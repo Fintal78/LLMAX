@@ -1,0 +1,86 @@
+{
+  "id": "samsung_galaxy_s24_ultra",
+  "brand": "Samsung",
+  "model_name": "Galaxy S24 Ultra",
+  "release_date": "Released 2024, January 24",
+  "specs": {
+    "network": {
+      "technology": "GSM / CDMA / HSPA / EVDO / LTE / 5G",
+      "bands_2g": "GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2 (Dual SIM model only)",
+      "bands_3g": null,
+      "bands_4g": null,
+      "bands_5g": "1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 66, 75, 77, 78 SA/NSA/Sub6 - International",
+      "speed": "HSPA, LTE-A (up to 7CA), 5G"
+    },
+    "launch": {
+      "announced": "2024, January 17",
+      "status": "Available. Released 2024, January 24"
+    },
+    "body": {
+      "dimensions": "162.3 x 79 x 8.6 mm (6.39 x 3.11 x 0.34 in)",
+      "weight": "232 g or 233 g (8.18 oz)",
+      "build": "Glass front (Corning Gorilla Armor), glass back (Corning Gorilla Armor), titanium frame",
+      "sim": "Nano-SIM and eSIM or Dual SIM (2 Nano-SIMs and eSIM, dual stand-by)"
+    },
+    "display": {
+      "type": "Dynamic LTPO AMOLED 2X, 120Hz, HDR10+, 2600 nits (peak)",
+      "size_inches": 6.8,
+      "resolution_pixels": "1440 x 3120 pixels, 19.5:9 ratio (~505 ppi density)",
+      "protection": "Corning Gorilla Armor",
+      "refresh_rate_hz": 120
+    },
+    "platform": {
+      "os": "Android 14, One UI 6.1",
+      "chipset": "Qualcomm SM8650-AC Snapdragon 8 Gen 3 (4 nm)",
+      "cpu": "Octa-core (1x3.39GHz Cortex-X4 & 3x3.1GHz Cortex-A720 & 2x2.9GHz Cortex-A720 & 2x2.2GHz Cortex-A520)",
+      "gpu": "Adreno 750 (1 GHz)"
+    },
+    "memory": {
+      "card_slot": "No",
+      "internal_storage": "256GB 12GB RAM, 512GB 12GB RAM, 1TB 12GB RAM",
+      "ram": "256GB 12GB RAM, 512GB 12GB RAM, 1TB 12GB RAM"
+    },
+    "main_camera": {
+      "modules": [
+        "200 MP, f/1.7, 24mm (wide)",
+        "50 MP, f/3.4, 111mm (periscope telephoto)",
+        "10 MP, f/2.4, 67mm (telephoto)",
+        "12 MP, f/2.2, 13mm, 120\u02da (ultrawide)"
+      ],
+      "features": "LED flash, auto-HDR, panorama",
+      "video": "8K@24/30fps, 4K@30/60/120fps, 1080p@30/60/240fps, 1080p@960fps, HDR10+, stereo sound rec., gyro-EIS"
+    },
+    "selfie_camera": {
+      "modules": [
+        "12 MP, f/2.2, 26mm (wide)"
+      ],
+      "features": "Dual video call, Auto-HDR, HDR10+",
+      "video": "4K@30/60fps, 1080p@30fps"
+    },
+    "sound": {
+      "loudspeaker": "Yes, with stereo speakers",
+      "jack_3_5mm": "No"
+    },
+    "comms": {
+      "wlan": "Wi-Fi 802.11 a/b/g/n/ac/6e/7, tri-band, Wi-Fi Direct",
+      "bluetooth": "5.3, A2DP, LE",
+      "positioning": "GPS, GLONASS, BDS, GALILEO, QZSS",
+      "nfc": "Yes",
+      "radio": "No",
+      "usb": "USB Type-C 3.2, DisplayPort 1.2, OTG"
+    },
+    "features": {
+      "sensors": "Fingerprint (under display, ultrasonic), accelerometer, gyro, proximity, compass, barometer"
+    },
+    "battery": {
+      "type": "Li-Ion 5000 mAh, non-removable",
+      "charging": "45W wired, PD3.0, 65% in 30 min (advertised)"
+    },
+    "misc": {
+      "colors": "Titanium Black, Titanium Gray, Titanium Violet, Titanium Yellow, Titanium Blue, Titanium Green, Titanium Orange",
+      "models": "SM-S928B, SM-S928B/DS, SM-S928U, SM-S928U1, SM-S928W, SM-S928N, SM-S9280, SM-S928E, SM-S928E/DS",
+      "sar": null
+    }
+  },
+  "price_approx_usd": 1299.0
+}

@@ -13,16 +13,16 @@ This document lists all the authoritative sources, databases, and standards used
 
 ---
 
-## Section 3 — Processing Power & Performance
+## Section 6 — Processing Power & Performance
 
-### 3.1 · CPU Multi-Core Performance & 3.2 · CPU Single-Core Performance
+### 6.1 · CPU Multi-Core Performance & 6.2 · CPU Single-Core Performance
 - **Source:** Geekbench Browser
 - **Metric:** Geekbench 6 Multi-Core & Single-Core Scores
 - **Link:** [browser.geekbench.com](https://browser.geekbench.com)
 
 ---
 
-### 3.1.0 · SoC Reference Table (CPU Architecture) & 3.3.0 · GPU Architecture Reference Table
+### 6.1.0 · SoC Reference Table (CPU Architecture) & 6.3.0 · GPU Architecture Reference Table
 - **Source:** Arm / Apple / Qualcomm Official Specifications
 - **Metric:** Base/Boost Clocks, Core Counts, IPC Claims
 - **Links:**
@@ -33,23 +33,23 @@ This document lists all the authoritative sources, databases, and standards used
 
 ---
 
-### 3.3 · GPU Raster Performance
+### 6.3 · GPU Raster Performance
 - **Source:** 3DMark Steel Nomad Light (UL Benchmarks)
 - **Metric:** Steel Nomad Light Score (Points)
 - **Link:** [benchmarks.ul.com/compare/best-smartphones](https://benchmarks.ul.com/compare/best-smartphones)
 
 ---
 
-### 3.11 · AI Hardware Performance
+### 6.4 · AI Hardware Performance
 - **Source:** Geekbench AI
 - **Metric:** Geekbench AI Quantized (INT8) Score
 - **Link:** [browser.geekbench.com/ai-benchmarks](https://browser.geekbench.com/ai-benchmarks)
 
 ---
 
-## Section 5 — Battery & Charging
+## Section 8 — Battery & Charging
 
-### 5.1 · Battery Endurance Score
+### 8.1 · Battery Endurance Score
 Benchmark sources are averaged when available. Priority order:
 
 1. **GSMArena** — Active Use Score (v2.0)

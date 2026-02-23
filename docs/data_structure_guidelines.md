@@ -86,12 +86,12 @@ This database is built on a two-layer architecture:
 This hierarchy defines how the device is scored on its technical merits before any expert review adjustments.
 
 #### 1. Sections (Root Level)
-**Sections 1 to 10** → Represent major functional categories (e.g., `2_display`, `5_battery_and_charging`).
+**Sections 1 to 10** → Represent major functional categories (e.g., `2_display`, `8_battery_and_charging`).
 - Align with `scoring_rules.md` chapters.
 - Contain either **non-scoring raw data** (placed at section root per Rule 1) or **Subsections** (scoring units).
 
 #### 2. Reference Tables (X.Y.0)
-**Definition:** Tables used solely to identify hardware components (e.g., `3_1_0_soc_reference`) so they can be referenced by multiple scoring subsections.
+**Definition:** Tables used solely to identify hardware components (e.g., `6_1_0_soc_reference`) so they can be referenced by multiple scoring subsections.
 **Naming Convention:** Must be numbered as `X_Y_0` (where `X_Y` is the subsection that uses it) and placed immediately before `X_Y` in the structure.
 **Core Rule:** These tables must contain **ONLY identifiers** (the "What"). All technical data (frequencies, scores) must reside in the relevant scoring subsection (the "How").
 
@@ -103,7 +103,7 @@ This hierarchy defines how the device is scored on its technical merits before a
 
 **Schema:**
 ```json
-"3_1_0_soc_reference": {
+"6_1_0_soc_reference": {
   "snapdragon_8_gen_3": {
     "count": 1,              // Number of instances
     "source": "URL",         // Proof of existence
@@ -144,7 +144,7 @@ The following rules define how the `scores` object is calculated.
 - **predicted**: The result of the formula defined in `scoring_rules.md`.
 - **final**: The definitive score used for ranking. It is derived via one of four paths:
     1.  **Direct Benchmark:** Value from a trusted source (e.g., DXOMARK).
-    2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 5.1).
+    2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 8.1).
     3.  **Predictor + Booster:** The `predicted` score adjusted by one or more Section 11 Boosters.
     4.  **Predictor (Default):** The `predicted` score used as-is when no benchmark, neighbor, or booster applies.
 
@@ -294,7 +294,7 @@ Every field must fall into one of these strict categories. **Formulas are forbid
 ```json
 "gas": {
   "value": 10,
-  "reference": "3_3_0_gpu_architecture_reference.gpu_model",
+  "reference": "6_3_0_gpu_architecture_reference.gpu_model",
   "description": "Standard Graphics Score (SGS) column for Adreno 750"
 }
 ```

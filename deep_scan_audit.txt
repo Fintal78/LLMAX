@@ -1,0 +1,45 @@
+
+====================================
+FILE: scoring_rules.md
+====================================
+L459: - **8.2.1 Audio Format Decode Support** — 50% weight
+L460: - **8.2.2 Spatial Audio Rendering** — 50% weight
+L464: #### 8.2.1 Audio Format Decode Support
+L475: #### 8.2.2 Spatial Audio Rendering (Playback)
+L509: - **3.4.1 Microphone Hardware Count (MHC)** — 30% weight
+L510: - **3.4.2 Recording Channels & Modes (RCM)** — 30% weight
+L511: - **3.4.3 Advanced Capture Features (ACF)** — 40% weight
+L515: #### 3.4.1 Microphone Hardware Count (MHC)
+L527: #### 3.4.2 Recording Channels & Modes (RCM)
+L538: #### 3.4.3 Advanced Capture Features (ACF)
+L618: **4.6.1 Ultrawide Presence (Binary Gate)**
+L626: **4.6.2 Ultrawide Field of View**
+L635: **4.6.3 Ultrawide Sensor Size**
+L668: **4.7.1 Autofocus on Ultrawide**
+L677: **4.7.2 Minimum Focus Distance**
+L686: **4.7.3 Dedicated Macro Lens (Penalty-aware)**
+L788: #### 4.11.1 Professional Codec Support (PCS) — 40%
+L798: #### 4.11.2 Log Color Profile Support (LCPS) — 35%
+L808: #### 4.11.3 Color Bit Depth (CBD) — 25%
+L840: **4.15.1 Video Resolution Score**
+L852: **4.15.2 Video Frame Rate Score**
+L864: **4.15.3 Dynamic Range & Codec Score (DRScore)**
+L1869: #### 7.6.1 Technical Definitions & Hierarchy
+L1909: #### 7.7.1 Core Sensor Suite (Base Score: Max 5.0)
+L1932: #### 7.7.2 Advanced Sensor Capabilities (Bonus Score: Max 5.0)
+
+====================================
+FILE: scoring_constants.md
+====================================
+
+====================================
+FILE: proposed_data_structure.md
+====================================
+
+====================================
+FILE: data_sources.md
+====================================
+
+====================================
+FILE: data_structure_guidelines.md
+====================================
