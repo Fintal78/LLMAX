@@ -1828,11 +1828,11 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 **Tiered Scoring Table:**
 *Identify the highest supported codec and award the corresponding Tier score (Max 5.0).*
 
-| Tier         | Score   | Qualifying Codecs                 |
-| :----------- | :------ | :-------------------------------- |
-| **Lossless** | **5.0** | aptX Lossless, LHDC Lossless      |
-| **High-Res** | **4.0** | LDAC, LHDC, aptX HD/Adaptive, SSC |
-| **Standard** | **1.5** | AAC, SBC, aptX Classic            |
+| Tier         | Score   | Qualifying Codecs                                     |
+| :----------- | :------ | :---------------------------------------------------- |
+| **Lossless** | **5.0** | aptX Lossless, LHDC Lossless                          |
+| **High-Res** | **4.0** | LDAC, LHDC, aptX HD/Adaptive, SSC, UHQ-BT             |
+| **Standard** | **1.5** | AAC, SBC, LC3, aptX Classic, aptX LL (Low Latency)    |
 
 **Common Configuration Reference (overall BT + Codec Score):**
 
