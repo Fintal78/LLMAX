@@ -680,14 +680,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "4_13_video_encoding": {
       "professional_codec_support": {
         "value": "ProRes 4K60",
-        "source": "https://www.apple.com/iphone-15-pro/specs/",
-        "exact_extract": "Video Recording [...] ProRes video recording up to 4K at 60 fps",
+        "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
+        "exact_extract": "export ProRes footage via USB-C at up to 4K and 60 frames per second",
         "subscore": 10.0
       },
       "log_color_profile_support": {
         "value": "Apple Log",
-        "source": "https://www.apple.com/iphone-15-pro/specs/",
-        "exact_extract": "Video Recording [...] Log video recording",
+        "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
+        "exact_extract": "export ProRes footage",
         "subscore": 10.0
       },
       "color_bit_depth": {
@@ -1396,7 +1396,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "booster": 1.05,
       "justification": {
         "unaccounted_feature": "Other important updates compared to the previous generation iPhones include the jump from 12MP to 24MP images by default in most light conditions. In our tests, this made for significantly improved texture quality, especially in close-up portraits.",
-        "unaccounted_reason": "Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to output 24MP images by default rather than standard 12MP binned images, which the review explicitly credits for improved texture preservation.",
+        "unaccounted_reason": "Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to bypass the industry standard and output 24MP images by default, which the review explicitly credits for improved texture preservation. Context: Modern smartphones group 4 small pixels together into 1 large pixel to capture more light (pixel binning), meaning even a 48MP camera normally outputs a 12MP image. Apple created unique software to simultaneously capture both a 12MP and 48MP image and merge them into a 24MP final image, yielding significantly higher detail without hardware changes (Source: https://www.apple.com/newsroom/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/).",
         "observed_justification": "The camera in Apple's new flagship device comes with an entirely new texture rendering management, and in our tests the results were outstanding. With most lighting conditions resulting in 24MP images, finest details were preserved much better than on most competitors. [...] The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
       }
     },

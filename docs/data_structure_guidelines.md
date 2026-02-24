@@ -12,7 +12,7 @@ This document establishes **strict, methodic rules** for the JSON structure in `
 
 **Justification:**
 - **Traceability:** The `meta` object tracks when the data was last updated and which schema version it follows, enabling change tracking and data integrity verification.
-- **Uniqueness:** The `identity` object provides unambiguous device identification, preventing confusion between similar models (e.g., regional variants, carrier-specific versions). Importantly, the `hardware_configuration` object explicitly defines which RAM, Storage, and Chipset combination is being scored. This isolates the specific variant under review, preventing data cross-contamination (e.g., mistakenly pairing a Snapdragon chip's benchmarks with an Exynos variant's battery life).
+- **Uniqueness:** The `identity` object provides unambiguous device identification. Importantly, the `hardware_configuration` object explicitly defines which RAM, Storage, and Chipset combination is being scored. This isolates the specific hardware variant under review, preventing data cross-contamination (e.g., mistakenly pairing a Snapdragon chip's benchmarks with an Exynos variant's battery life, or confusing a base model's RAM with its Pro counterpart).
 - **Temporal Context:** The `release_date` disambiguates devices that share the same commercial name across generations (e.g., Galaxy S21 2021 vs. a potential future reuse) and provides context for interpreting specs relative to the technology available at launch.
 
 ### Meta Object (`meta`)
@@ -173,11 +173,11 @@ All scoring parameters must be broken down into specific identifier components (
 
 **B. Scores (Output)**
 The calculated result of the subsection's formula.
-The following rules define how the `scores` object is calculated.
+The following rules define how the `scores` object is calculated, **bridging the technical inputs to the final ranking.**
 
-- **predicted**: The result of the formula defined in `scoring_rules.md`.
+- **predicted**: The mathematical result of the specific formula defined in `scoring_rules.md` for this subsection. This is typically the sum, weighted average, or lookup value derived from the individual `subscore` properties of the components defined below.
 - **final**: The definitive score used for ranking. It is derived via one of four paths:
-    1.  **Direct Benchmark:** Value from a trusted source (e.g., DXOMARK).
+    1.  **Direct Benchmark:** Value from a trusted third-party test (e.g., DXOMARK). **Note:** If a direct benchmark is available, it completely overrides the `predicted` score's formula, as it represents real-world measured performance rather than theoretical specs.
     2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 8.1).
     3.  **Predictor + Booster:** The `predicted` score adjusted by one or more Section 11 Boosters.
     4.  **Predictor (Default):** The `predicted` score used as-is when no benchmark, neighbor, or booster applies.
@@ -242,14 +242,26 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
       "source": "https://www.phonearena.com/phones/Samsung-Galaxy-S24-Ultra_id12115",
       "exact_extract": "Sensors [...] Barometer",
       "subscore": 1.5
+    },
+    "lidar_tof_3d_depth_sensor": {
+      "value": false,
+      "source": "N/A",
+      "exact_extract": "N/A",
+      "subscore": 0.0
+    },
+    "color_spectrum_flicker_sensor": {
+      "value": false,
+      "source": "N/A",
+      "exact_extract": "N/A",
+      "subscore": 0.0
     }
   },
   "scores": {
     "predicted": 6.5,
     "final": {
-      "value": 6.83,               // Definitive score (6.5 x 1.05 booster)
+      "value": 6.83,               // Definitive score (Predicted x Booster multiplier of 1.05)
       "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
-      "booster": "11.5",           // Section reference or "No"
+      "booster": "11.5",           // Section reference to the booster, or "No"
       "confidence": "N/A"          // Confidence level, N/A for Predictor; High/Medium/Low for 2 Benchmarks
     }
   }
@@ -267,22 +279,22 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
 
 Each booster is a standalone entry in the `11_reviews_and_performance_boosters` section. It provides the full evidence trail for the multiplier referenced in the subsection's `scores.final.booster` field.
 
-**Schema:**
+**Schema Example:**
+
 ```json
-"11_X_booster_name": {
-  "source_link": "URL",              // Full URL to the expert review
-  "impacted_subsection": "X.Y",      // Subsection whose predicted_score is multiplied
-  "booster": 1.05,                   // Multiplier applied to predicted_score (see Consistency Rule below)
+"11_1_dxomark_24mp_texture_rendering": {
+  "source_link": "https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/",
+  "impacted_subsection": "4.16",
+  "booster": 1.05,
   "justification": {
-    "unaccounted_feature": "...",    // Verbatim quote: the real-world quality the spec misses
-    "unaccounted_reason": "...",     // Why the scoring formula cannot capture it
-    "observed_justification": "..."  // Verbatim quote: real-world evidence from the review
+    "unaccounted_feature": "Other important updates compared to the previous generation iPhones include the jump from 12MP to 24MP images by default in most light conditions. In our tests, this made for significantly improved texture quality, especially in close-up portraits.",
+    "unaccounted_reason": "Section 4.3 scores sensor resolution (48MP hardware), and Section 4.16 scores multi-frame processing presence (Always-on HDR + Night stacking). However, neither captures the quality impact of Apple's decision to bypass the industry standard and output 24MP images by default, which the review explicitly credits for improved texture preservation. Context: Modern smartphones group 4 small pixels together into 1 large pixel to capture more light (pixel binning), meaning even a 48MP camera normally outputs a 12MP image. Apple created unique software to simultaneously capture both a 12MP and 48MP image and merge them into a 24MP final image, yielding significantly higher detail without hardware changes (Source: https://www.apple.com/newsroom/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/).",
+    "observed_justification": "The camera in Apple's new flagship device comes with an entirely new texture rendering management, and in our tests the results were outstanding. With most lighting conditions resulting in 24MP images, finest details were preserved much better than on most competitors. [...] The Apple iPhone 15 Pro Max provided very natural skin rendering with subtle local contrast and pleasant rendering of the finest details like hair, lips, wrinkles, etc."
   }
 }
-
 ```
 
-### 1.3 Component Structure Guidelines (Transition)
+### 1.4 Component Input Directives (Transition)
 The following sections (2 and 3) detail how to structure the components within each section or subsection. They define **WHERE** to place data (Section 2) and **WHAT** strict format that data must follow (Section 3) to ensure the scoring mechanism described above functions correctly.
 
 ---
@@ -297,6 +309,7 @@ The following sections (2 and 3) detail how to structure the components within e
 ### Rule 2: Single-Use Scoring Data → Subsection Components
 *   **Condition:** Raw data used for scoring in **only one** subsection.
 *   **Action:** Place inside the subsection as a component.
+*   **Justification:** Keeps the data contiguous with the formula that uses it for maximum readability.
 *   **Example:** `2_2_resolution_density.ppi`
 
 ### Rule 3: Multi-Use Scoring Data → Primary Component + References
@@ -304,7 +317,8 @@ The following sections (2 and 3) detail how to structure the components within e
 *   **Action:**
     1.  **Primary:** Store raw data in the subsection where it is most directly measured.
     2.  **Secondary:** Reference it in other subsections using **Type B**.
-*   **Example:** `screen_size` in `2_1`, referenced in `2_2`.
+*   **Justification:** Enforces the "Single Source of Truth" (Core Rule 1). Prevents data discrepancies where a shared spec could be accidentally updated in one subsection but forgotten in another, leading to conflicting calculations.
+*   **Example:** Semiconductor node size is primarily extracted in `6_10_thermal_dissipation`, and referenced via Type B dependencies inside `8_1_battery_endurance` (and AI calculations) to calculate hardware efficiency.
 
 ### Rule 4: Architectural Identifiers → X.X.0 Tables (Exception)
 *   **Condition:** Hardware identifiers shared by multiple devices (e.g., SoC Model, GPU Model).
@@ -328,17 +342,6 @@ Every field must fall into one of these strict categories. **Formulas are forbid
 | `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page. *(See Extended Rules below)* |
 | `subscore`      | The evaluated 0-10 score. Use `"N/A"` if not applicable.                                       |
 
-#### Extended Rules for `exact_extract`
-*   **Full Context Path (Crucial):** You must provide both the value AND the full hierarchical context/path (e.g., `"Memory [...] Internal [...] 8GB RAM"`, not just `"Internal 8GB"`) to completely distinguish its origin and placement.
-*   **Single Value Targeting:** The extract should point ONLY towards the specific value it is referencing and nothing else. If there are other values in the same sentence or property (like a storage size next to a RAM size), they must be skipped or omitted using `[...]`.
-*   **Disjointed Extracts:** Extracts may combine non-contiguous text from the same source to connect the key and the value. Use `[...]` to indicate the separation. 
-*   **Colocation Rule:** The elements joined by `[...]` must be logically coherent, clearly associated, and colocated within the same contextual block (e.g., the same spec row, sentence, or category). You cannot join entirely separate specs. 
-*   **Fluidity Rule:** For optimal fluidity, parts that are separated by *less than 3 sentences* should NOT be separated and should instead be extracted as one continuous block.
-*   **Complete Extraction Checklist:** When mapping a hardware component that contains multiple listed capabilities (like a comma-separated list of sensors or supported codecs), the extraction must be exhaustive across all items explicitly mentioned in the source that correspond to the scoring rules, regardless of the resulting size of the JSON object. Do not selectively omit items for brevity.
-*   **Mandatory Cross-Referencing Protocol (The "Omni-Scan" Rule):** You cannot assume a primary source (like GSMArena) is perfectly exhaustive. Some sources silently drop universally standard components (like Ambient Light Sensors or basic connectivity bands). To prevent penalizing phones due to a single database's omissions:
-    *   Instead of only searching *when* you suspect an omission, you MUST proactively scan at least **three distinct sources** (e.g., GSMArena, Official Manufacturer Specs, PhoneArena, Android Authority) to cross-reference the `scoring_rules.md` checklist.
-    *   If a feature is missing from the primary source but found on *any* verified secondary source, you MUST extract it and document it using that secondary source's URL and exact extract.
-
 **Example:**
 ```json
 "ram_capacity_gb": {
@@ -348,33 +351,45 @@ Every field must fall into one of these strict categories. **Formulas are forbid
   "subscore": "N/A"
 }
 ```
+#### Data Extraction & Fallback Directives
 
-### 3.1 Handling Missing Features (The Explicit Default Rule)
-To prevent human or parser omission (e.g., forgetting to check for a specific sensor), the JSON schema acts as a strict checklist. 
+**1. Syntax & Colocation Rules:**
+*   **Full Context Path:** You must provide both the value AND the full hierarchical context/path (e.g., `"Memory [...] Internal [...] 8GB RAM"`, not just `"Internal 8GB"`) to completely distinguish its origin and placement.
+*   **Single Value Targeting:** The extract should point ONLY towards the specific value it is referencing and nothing else. If there are other values in the same sentence or property (like a storage size next to a RAM size), they must be skipped or omitted using `[...]`.
+*   **Disjointed Extracts:** Extracts may combine non-contiguous text from the same source to connect the key and the value using `[...]`.
+*   **Colocation:** The elements joined by `[...]` must be logically coherent, clearly associated, and colocated within the same contextual block.
+*   **Fluidity:** For optimal fluidity, parts separated by *less than 3 sentences* should NOT be separated by `[...]`.
+*   **Complete Extraction Checklist:** When mapping a hardware component that contains multiple listed capabilities (like a comma-separated list of sensors or supported codecs), the extraction must be exhaustive across all items explicitly mentioned in the source that correspond to the scoring rules, regardless of the resulting size of the JSON object. Do not selectively omit items for brevity.
 
-**Rule:** Every discrete scorable feature evaluated in `scoring_rules.md` for a given subsection MUST be present as a key in the JSON, even if the device does not possess it. This guarantees the feature was actively investigated.
+**2. The Omni-Scan Rule (Handling External Database Omissions):**
+You cannot assume a primary source (like GSMArena) is perfectly exhaustive. Some sources silently drop universally standard components (like Ambient Light Sensors). To prevent penalizing phones due to a single database's omissions:
+*   You MUST proactively scan at least **three distinct sources** (e.g., GSMArena, Official Specs, Wikipedia) to cross-reference the `scoring_rules.md` checklist.
+*   If a feature is missing from the primary source but found on *any* verified secondary source, you MUST extract it and document it using that secondary source's URL and exact extract.
 
-**For Additive Components (e.g., Sensors, Additional Lenses):** 
-If the device lacks the component, you must explicitly declare it missing using the following format:
-```json
-"proximity_sensor": {
-  "value": false,
-  "source": "N/A",
-  "exact_extract": "N/A",
-  "subscore": 0.0
-}
-```
 
-**For Hierarchical Categories (e.g., Wi-Fi, Audio Codecs, OS Version):**
-You do NOT list all the lower tiers as `false`. As per `scoring_rules.md`, these categories only score the *highest* supported tier. You extract and evaluate only that single maximum tier:
-```json
-"bluetooth_version": {
-  "value": 5.3,
-  "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
-  "exact_extract": "Comms [...] Bluetooth 5.3, A2DP, LE",
-  "subscore": 4.5
-}
-```
+**3. The Explicit Default Rule (Schema Checklist):**
+To prevent human or parser omission, every discrete scorable feature evaluated in `scoring_rules.md` for a given subsection MUST be present as a key in the JSON, even if the device does not possess it. 
+
+*   **For Additive Components (e.g., Sensors, Additional Lenses):** 
+    If the device lacks the component, you must explicitly declare it missing using `"value": false` and `"subscore": 0.0` to mathematically guarantee it was investigated:
+    ```json
+    "lidar_tof_3d_depth_sensor": {
+      "value": false,
+      "source": "N/A",
+      "exact_extract": "N/A",
+      "subscore": 0.0
+    }
+    ```
+*   **For Hierarchical Categories (e.g., Wi-Fi, Audio Codecs, OS Version):**
+    You do NOT list all the lower tiers as `false`. As per `scoring_rules.md`, these categories only score the *highest* supported tier. You extract and evaluate ONLY that single maximum tier:
+    ```json
+    "bluetooth_version": {
+      "value": 5.3,
+      "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+      "exact_extract": "Comms [...] Bluetooth 5.3, A2DP, LE",
+      "subscore": 4.5
+    }
+    ```
 
 ### Type B: Internal Reference
 **Definition:** A pointer to a value stored elsewhere (Rule 3).
@@ -413,15 +428,3 @@ You do NOT list all the lower tiers as `false`. As per `scoring_rules.md`, these
   "subscore": 10.0
 }
 ```
-
----
-
-## 4. Validation Checklist
-
-1.  [ ] **Structure Check:** Does every subsection operate on the strict `scores` nested object?
-2.  [ ] **Decomposition Check:** Are all parameters broken down to **Type A** or **Type B** leaves?
-3.  [ ] **Booster Check:** Are boosters applied **ONLY** to usage of the "Predictor" method?
-4.  [ ] **Confidence Check:** Is "High/Medium/Low" used **ONLY** when 2 benchmark sources exist?
-5.  [ ] **Raw Data Check:** Is every external data point **Type A** (Source + Extract)?
-
-
