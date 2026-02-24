@@ -422,7 +422,7 @@ To prevent human or parser omission, every discrete scorable feature evaluated i
 
 **Example:**
 ```json
-"gas": {
+"graphics_architecture_score": {
   "identifier": "Adreno 750",
   "reference": "6_3_0_gpu_architecture_reference.gpu_model",
   "description": "Standard Graphics Score (SGS)",

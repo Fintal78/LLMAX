@@ -869,7 +869,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending"
       },
       "scoring_components": {
-        "facs": [
+        "frequency_adjusted_core_score": [
           {
             "name": "Cortex-X4",
             "value": 10.0,
@@ -897,11 +897,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending"
       },
       "scoring_components": {
-        "cas": {
+        "core_architecture_score": {
           "value": 10,
           "description": "Core Architecture Score - strongest core"
         },
-        "fsf": {
+        "frequency_scaling_factor": {
           "value": 1.03,
           "description": "Frequency Scaling Factor",
           "actual_frequency_ghz": {
@@ -941,11 +941,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "description": "3DMark Steel Nomad Light Score (Vulkan 1.1 Rasterization)"
       },
       "scoring_components": {
-        "gas": {
+        "graphics_architecture_score": {
           "value": "3_3_0_gpu_architecture_reference.standard_graphics_score",
           "description": "GPU Architecture Score (Standard Graphics) from Section 6.3.0"
         },
-        "fsf": {
+        "frequency_scaling_factor": {
           "value": 1.0,
           "description": "Frequency Scaling Factor",
           "actual_frequency_mhz": {
@@ -979,12 +979,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             }
           }
         },
-        "rts": {
+        "ray_tracing_score": {
           "reference": "3_3_0_gpu_architecture_reference.ray_tracing_score",
           "description": "Ray Tracing Score from Section 6.3.0 (0-10)"
         }
       },
-      "sgs": {
+      "standard_graphics_score": {
         "value": 10.0,
         "description": "Standard Graphics Score (from Method A/B/C)",
         "method_used": "A"
