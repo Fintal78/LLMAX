@@ -121,7 +121,7 @@ This hierarchy defines how the device is scored on its technical merits before a
 #### 1. Sections (Root Level)
 **Sections 1 to 10** → Represent major functional categories (e.g., `2_display`, `8_battery_and_charging`).
 - Align with `scoring_rules.md` chapters.
-- Contain either **non-scoring raw data** (placed at section root per Rule 1) or **Subsections** (scoring units).
+- Contain either **non-scoring raw data** (placed at section root per Rule 1) or **Subsections** (scoring units, more details below).
 
 #### 2. Reference Tables (X.Y.0)
 **Definition:** Tables used solely to identify hardware components (e.g., `6_1_0_soc_reference`) so they can be referenced by multiple scoring subsections.
