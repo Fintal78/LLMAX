@@ -166,7 +166,7 @@ The atomic units of evaluation (e.g., `2_1_panel_architecture`).
 **Structure Rule:** Every scoring subsection **MUST** follow this exact schema:
 
 **A. Components (Recursive Input Data)**
-All scoring parameters must be broken down into specific identifier components (e.g., `professional_codec_support`, `bit_depth`) which can be broken down further into sub-components until a **Type A** (Raw External) or **Type B** (Internal Reference) leaf node is reached. 
+All scoring parameters must be broken down into specific identifier components (e.g., `core_sensor_suite`) which can be broken down further into sub-components until a **Type A** (Raw External) or **Type B** (Internal Reference) leaf node is reached (e.g., `accelerometer`, `gyroscope`, ...). 
 -   **No Generic Names:** Never use abstract names like `component_1`. Always use the concrete, descriptive identifier of the spec.
 -   **No Abbreviations:** All parameters to be stored must be explicit, never use abbreviations. For example do not use `pcs` but `professional_codec_support`.
 -   **Visibility:** **NEVER** use opaque aggregate objects; every input to the formula must be visible.
@@ -321,10 +321,10 @@ The following sections (2 and 3) detail how to structure the components within e
 *   **Justification:** Enforces the "Single Source of Truth" (Core Rule 1). Prevents data discrepancies where a shared spec could be accidentally updated in one subsection but forgotten in another, leading to conflicting calculations.
 *   **Example:** Semiconductor node size is primarily extracted in `6_10_thermal_dissipation`, and referenced via Type B dependencies inside `8_1_battery_endurance` (and AI calculations) to calculate hardware efficiency.
 
-### Rule 4: Architectural Identifiers → X.X.0 Tables (Exception)
+### Rule 4: Architectural Identifiers → X.Y.0 Tables (Exception)
 *   **Condition:** Hardware identifiers shared by multiple devices (e.g., SoC Model, GPU Model).
 *   **Action:**
-    1.  **X.X.0 Table:** Store **only** the identifier.
+    1.  **X.Y.0 Table:** Store **only** the identifier.
     2.  **Scoring Subsection:** Store derived scores using **Type C** (Architectural Mapping).
 
 ---
@@ -336,12 +336,12 @@ Every field must fall into one of these strict categories. **Formulas are forbid
 ### Type A: Raw External Data
 **Definition:** Hard facts scraped or extracted from an external source, paired with their evaluated mathematical constraint. The `value` field MUST be one of 5 strict data shapes: Continuous Numeric, Discrete Integer, Categorical String, String Array, or Pure Boolean. Artificial "logic" keys (e.g., `is_supported`) are strictly forbidden; the component key must be the name of the specification itself.
 
-| Field           | Description                                                                                    |
-| :-------------- | :--------------------------------------------------------------------------------------------- |
-| `value`         | The raw hardware specification (must match one of the 5 allowed Data Shapes).                  |
-| `source`        | **MUST be a valid, accessible URL** to the exact page containing the data.                     |
-| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page. *(See Extended Rules below)* |
-| `subscore`      | The evaluated 0-10 score. Use `"N/A"` if not applicable.                                       |
+| Field           | Description                                                                        |
+| :-------------- | :----------------------------------------------------------------------------------|
+| `value`         | The raw hardware specification (must match one of the 5 allowed Data Shapes).      |
+| `source`        | **MUST be a valid, accessible URL** to the exact page containing the data.         |
+| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                  |
+| `subscore`      | The evaluated 0-10 score. Use `"N/A"` if not applicable.                           |
 
 **Example:**
 ```json
@@ -349,7 +349,7 @@ Every field must fall into one of these strict categories. **Formulas are forbid
   "value": 8,
   "source": "https://www.gsmarena.com/samsung_galaxy_s24-12773.php",
   "exact_extract": "Memory [...] Internal [...] 8GB RAM",
-  "subscore": "N/A"
+  "subscore": 5.0
 }
 ```
 #### Data Extraction & Fallback Directives
