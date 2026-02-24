@@ -1024,7 +1024,7 @@ Where each feature = 1 if present, 0 if absent. Max score = 10.0.
 
 ## 🟣 6. Processing Power & Performance
 
-#### 3.1.0 CPU Core Architecture Reference
+### 🔹 6.0 CPU Core Architecture Reference
 
 **Master Scoring Table** (used across all CPU performance calculations)
 
@@ -1169,7 +1169,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Core Architecture Score (CAS)**
 *   *What is it?* The score of the *single strongest core* in the system.
-*   **Scores:** See **Section 6.1.0 CPU Core Architecture Reference** for authoritative core scores.
+*   **Scores:** See **Section 6.0 CPU Core Architecture Reference** for authoritative core scores.
 
 **Step 2: Frequency Scaling Factor (FSF)**
 *   *What is it?* A multiplier for clock speed variations.

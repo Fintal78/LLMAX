@@ -100,10 +100,11 @@ To enforce Rule 6 and eliminate URL hallucinations or broken validation chains d
 > ### 🚨 MANDATORY SCRIPT VERIFICATION (THE PYTHON BARRIER) 🚨
 > AI models cannot self-police URL validity; they predict strings. 
 > **You MUST physically run `python src/verify_urls.py <target_file>` over your Markdown or JSON file before committing it or declaring a task complete.** 
-> If the script detects a non-200 OK or placeholder URL, the data is instantly rejected. There are **ZERO EXCEPTIONS** to this rule. Do not skip this step under any circumstances.
+> The script acts as a strict compliance crawler. For primary source pairs, it downloads the HTML and guarantees the exact extract substring physically exists on the page. For inline context URLs, it verifies the link is not a 404 dead link or a silent redirect. 
+> If the script triggers a `[X] REJECTED` failure on any URL or extract, the data is instantly invalid. Do not skip this step under any circumstances.
 
-1.  **De-Obfuscation:** If a search API returns an obfuscated or redirected link (e.g., a Google API routing link), you MUST resolve it to its final physical destination URL before use.
-2.  **Scrapability Check:** If a target server blocks automated scraping (e.g., returns `403 Forbidden` for standard/script User-Agents), that URL **CANNOT** be used as the primary schema example or primary data source, because it will immediately break automated validation pipelines.
+1.  **De-Obfuscation:** If a search API returns an obfuscated or redirected link, you MUST resolve it to its final physical destination URL before use. The verification script will strictly reject "soft 404" silent redirects.
+2.  **Scrapability Check:** If a target server aggressively blocks automated scraping, that URL **CANNOT** be used as a primary "exact extract" data source. However, inline context links that return an anti-bot `403 Forbidden` or `429 Too Many Requests` are permitted as long as they do not return a dead `404 Not Found`.
 3.  **Temporary Link Storage & Final Review:** During data gathering, all prospective links must be compiled into a temporary list. Before final task completion, this entire list must be batch-rechecked to ensure no hallucinated or dead URLs slipped into the final JSON output.
 
 ---
