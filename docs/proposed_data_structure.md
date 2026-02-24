@@ -942,7 +942,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "scoring_components": {
         "graphics_architecture_score": {
-          "value": "3_3_0_gpu_architecture_reference.standard_graphics_score",
+          "value": "6_3_0_gpu_architecture_reference.standard_graphics_score",
           "description": "GPU Architecture Score (Standard Graphics) from Section 6.3.0"
         },
         "frequency_scaling_factor": {
@@ -954,7 +954,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "exact_extract": "Proof pending"
           },
           "reference_frequency_mhz": {
-            "value": "3_3_0_gpu_architecture_reference.reference_frequency_mhz",
+            "value": "6_3_0_gpu_architecture_reference.reference_frequency_mhz",
             "description": "Reference frequency from Section 6.3.0 for FSF calculation"
           }
         },
@@ -980,7 +980,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           }
         },
         "ray_tracing_score": {
-          "reference": "3_3_0_gpu_architecture_reference.ray_tracing_score",
+          "reference": "6_3_0_gpu_architecture_reference.ray_tracing_score",
           "description": "Ray Tracing Score from Section 6.3.0 (0-10)"
         }
       },
@@ -1219,9 +1219,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "layer_b_hardware_efficiency": {
         "b_1_soc_efficiency": {
           "dependencies": [
-            "3_processing_power_and_performance.3_4_efficiency_node",
-            "3_processing_power_and_performance.3_0_cpu_architecture_reference",
-            "3_processing_power_and_performance.3_3_0_gpu_architecture_reference"
+            "6_processing_power_and_performance.6_9_efficiency_node",
+            "6_processing_power_and_performance.6_1_0_soc_reference",
+            "6_processing_power_and_performance.6_3_0_gpu_architecture_reference"
           ],
           "breakdown": {
             "process_node_score": 8.64,
@@ -1259,7 +1259,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "b_4_thermal_efficiency": {
           "dependencies": [
-            "3_processing_power_and_performance.3_5_thermal_dissipation_stability"
+            "6_processing_power_and_performance.6_10_thermal_dissipation_stability"
           ],
           "score": 8.2
         },

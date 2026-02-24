@@ -1191,7 +1191,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > *   **Predicted Score:** `10 * (log(10.3) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))`
 > *   `10 * (log(10.3) - log(5)) / (log(12) - log(5))` = `10 * (2.33 - 1.61) / (2.48 - 1.61)` = `10 * 0.72 / 0.87` ≈ **8.3/10**
 
-#### 3.3.0 GPU Architecture Reference
+#### 6.3.0 GPU Architecture Reference
 
 **Master Scoring Table** (used across all GPU-related calculations)
 

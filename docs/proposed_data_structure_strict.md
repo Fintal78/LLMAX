@@ -429,13 +429,13 @@
     }
   }
 ,
-"3_processing_power_and_performance": {
+"6_processing_power_and_performance": {
     "soc_name": {
         "value": "Snapdragon 8 Gen 3",
         "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
         "exact_extract": "Snapdragon 8 Gen 3"
     },
-    "3_1_0_soc_reference": {
+    "6_1_0_soc_reference": {
         "cortex_x4": {
             "count": 1,
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
@@ -452,7 +452,7 @@
             "exact_extract": "2 Efficiency Cores"
         }
     },
-    "3_1_cpu_multi_core_performance": {
+    "6_1_cpu_multi_core_performance": {
         "components": {
             "geekbench_6_multi_score": {
                 "value": 7249,
@@ -470,7 +470,7 @@
             }
         }
     },
-    "3_2_cpu_architecture_single_core": {
+    "6_2_cpu_architecture_single_core": {
         "components": {
             "geekbench_6_single_score": {
                 "value": 2289,
@@ -488,14 +488,14 @@
             }
         }
     },
-    "3_3_0_gpu_architecture_reference": {
+    "6_3_0_gpu_architecture_reference": {
         "adreno_750": {
             "count": 1,
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
             "exact_extract": "Adreno GPU"
         }
     },
-    "3_3_gpu_performance": {
+    "6_3_gpu_performance": {
         "components": {
             "benchmark_steel_nomad_light": {
                 "value": 1800,
@@ -518,7 +518,7 @@
             }
         }
     },
-    "3_4_efficiency_node": {
+    "6_9_efficiency_node": {
         "components": {
             "process_nm": {
                 "value": 4,
@@ -536,7 +536,7 @@
             }
         }
     },
-    "3_5_thermal_dissipation_stability": {
+    "6_10_thermal_dissipation_stability": {
         "components": {
             "cooling_system": {
                 "value": "Vapor Chamber",
@@ -557,7 +557,7 @@
             }
         }
     },
-    "3_6_ram_technology": {
+    "6_5_ram_technology": {
         "components": {
             "technology": {
                 "value": "LPDDR5X",
@@ -575,7 +575,7 @@
             }
         }
     },
-    "3_7_ram_capacity": {
+    "6_6_ram_capacity": {
         "components": {
             "max_gb": {
                 "value": 12,
@@ -593,7 +593,7 @@
             }
         }
     },
-    "3_8_storage_technology": {
+    "6_7_storage_technology": {
         "components": {
             "technology": {
                 "value": "UFS 4.0",
@@ -611,7 +611,7 @@
             }
         }
     },
-    "3_9_storage_capacity": {
+    "6_8_storage_capacity": {
         "components": {
             "capacity_gb": {
                 "value": 1024,
@@ -629,7 +629,7 @@
             }
         }
     },
-    "3_10_storage_expandability": {
+    "6_11_storage_expandability": {
         "components": {
             "slot_type": {
                 "value": "No",
@@ -647,7 +647,7 @@
             }
         }
     },
-    "3_11_npu_hardware_performance": {
+    "6_4_npu_hardware_performance": {
         "components": {
             "geekbench_ai_score": {
                 "value": 4500,
