@@ -352,6 +352,9 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Max Score (10.0):** ≥ Display_PWM_Hz_Max
 *   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
 > [!NOTE]
+> **What about LCD Screens?**
+> Traditional LCD/IPS displays generally lower brightness by reducing the direct voltage (DC Dimming) to the backlight, creating zero flicker. Unless testing reveals a cheap PWM backlight, an LCD screen automatically scores a perfect **10.0 (Flicker-Free)** in this category.
+>
 > **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +500Hz jump from 200Hz to 700Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +500Hz increase from 3000Hz to 3500Hz provides almost zero perceptible biological benefit.
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
