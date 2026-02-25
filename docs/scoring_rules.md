@@ -344,7 +344,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > **Why Quadratic?** The usable screen real estate scales as the *Area* of the display, which is proportional to the square of the diagonal ($Area \propto Diagonal^2$). While a linear penalty treats a 0.5" increase at the bottom of the scale exactly the same as at the top, a true geometric (Quadratic) curve exponentially rewards the massive manufacturing difficulty and user-experience gain of producing massive 6.8"+ "Ultra" screens.
 
 ### 🔹 2.10 Eye Comfort (PWM Dimming)
-*Description:* How the screen dims. Higher frequencies prevent eye strain, headaches, and fatigue for people sensitive to screen flicker.
+*Description:* How the screen dims at low brightness levels. OLED screens cannot simply lower the voltage to their pixels; instead, they rapidly turn the pixels completely off and on (Pulse-Width Modulation). Higher frequencies prevent eye strain, headaches, and fatigue for people sensitive to screen flicker.
 *   **Measurement:** Oscilloscope or flicker meter at low brightness levels.
 *   **Unit:** Hertz (Hz)
 *   **Significance:** Reduces eye strain and headaches for sensitive users.
@@ -352,7 +352,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Max Score (10.0):** ≥ Display_PWM_Hz_Max
 *   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
 > [!NOTE]
-> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The jump from 240Hz to 480Hz significantly reduces visible flicker for sensitive eyes, whereas the difference between 2000Hz and 3000Hz is marginal.
+> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +240Hz jump from 240Hz to 480Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +240Hz increase from 2880Hz to 3120Hz provides almost zero perceptible biological benefit.
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
 *Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
