@@ -308,7 +308,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Max Score (10.0):** ≥ Display_Refresh_Rate_Hz_Max
 *   **Min Score (0.0):** ≤ Display_Refresh_Rate_Hz_Min
 > [!NOTE]
-> **Why Logarithmic?** Motion smoothness perception follows Weber's Law. The upgrade from 60Hz to 120Hz is a massive leap in fluidity. The step from 120Hz to 144Hz or 165Hz is much harder to perceive for the average user.
+> **Why Logarithmic?** Motion smoothness perception follows Weber's Law. The +60Hz upgrade from 60Hz to 120Hz is a massive leap in fluidity. An identical +60Hz increase from 120Hz to 180Hz is much harder to perceive for the average user.
 
 ### 🔹 2.7 Touch Responsiveness
 *Description:* How fast the screen reacts to your touch. Higher rates mean instant response in games and a "glued to your finger" feel.
@@ -319,7 +319,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Max Score (10.0):** ≥ Display_Touch_Sampling_Hz_Max
 *   **Min Score (0.0):** ≤ Display_Touch_Sampling_Hz_Min
 > [!NOTE]
-> **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz provides a noticeably "stickier" feel. Beyond 480Hz, the improvements in reaction time are smaller than the average human reaction variance.
+> **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz (+180Hz) provides a noticeably "stickier" feel. However, an identical +180Hz increase from 240Hz to 420Hz provides improvements in reaction time that are smaller than the average human reaction variance.
 
 ### 🔹 2.8 Screen-to-Body Ratio (Bezels)
 *Description:* How much of the front is screen vs. border. Higher percentage means thinner bezels and a more immersive, modern look.
@@ -586,7 +586,7 @@ MAR is a weighted composite of three subsections:
 *   **Max Score (10.0):** ≥ Camera_Main_Resolution_MP_Max
 *   **Min Score (0.0):** ≤ Camera_Main_Resolution_MP_Min
 > [!NOTE]
-> **Why Logarithmic?** Moving from 12MP to 50MP provides a significant jump in detail for cropping. However, moving from 100MP to 200MP offers diminishing returns due to lens diffraction limits and file size management.
+> **Why Logarithmic?** Sensor detail exhibits diminishing returns. Moving from 12MP to 50MP (+38MP) provides a significant jump in real-world resolving power. However, an identical +38MP increase from 162MP to 200MP offers almost zero perceptible improvement due to lens diffraction constraints.
 
 ### 🔹 4.4 Image Stabilization
 *Description:* Hardware and software systems used to compensate for hand movement during image capture and video recording. Essential for sharp low-light photos and smooth video recording.
@@ -752,7 +752,7 @@ MAR is a weighted composite of three subsections:
 *   **Max Score (10.0):** ≥ Camera_Video_FPS_Max
 *   **Min Score (0.0):** ≤ Camera_Video_FPS_Min
 > [!NOTE]
-> **Why Logarithmic?** The perception of smoothness is non-linear. The jump from 30fps to 60fps is dramatic (doubling smoothness), while 60fps to 120fps is noticeable but less transformative for standard video consumption.
+> **Why Logarithmic?** The perception of smoothness is non-linear. The +30fps jump from 30fps to 60fps is a dramatic, transformative upgrade. However, an identical +30fps increase from 90fps to 120fps is barely noticeable for standard video consumption.
 
 ### 🔹 4.12 Video Color & Dynamic Range
 *Description:* Ability to capture wide dynamic range and rich color information in video.
@@ -849,7 +849,7 @@ MAR is a weighted composite of three subsections:
     *   **Max Score (10.0):** ≥ Camera_Front_Video_Res_Width_Max
     *   **Min Score (0.0):** ≤ Camera_Front_Video_Res_Width_Min
 > [!NOTE]
-> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The jump from 720p to 1080p is dramatic for clarity, but 1080p to 4K is less noticeable on small screens, though valuable for cropping and editing.
+> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The +1MP upgrade from 720p (~1MP) to 1080p (~2MP) is dramatic for clarity. However, An identical +1MP increase from 4K (~8MP) to roughly 9MP is imperceptible on a small screen.
 
 **4.15.2 Video Frame Rate Score**
 *What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
@@ -861,7 +861,7 @@ MAR is a weighted composite of three subsections:
     *   **Max Score (10.0):** ≥ Camera_Front_Video_FPS_Max
     *   **Min Score (0.0):** ≤ Camera_Front_Video_FPS_Min
 > [!NOTE]
-> **Why Logarithmic?** Frame rate perception is non-linear. The difference between 24fps and 30fps is barely noticeable, but 30fps to 60fps is a significant smoothness upgrade for motion-heavy content.
+> **Why Logarithmic?** Frame rate perception is non-linear. The +30fps jump from 30fps to 60fps is a significant smoothness upgrade for motion-heavy content. However, an identical +30fps increase from 60fps to 90fps is much harder to casually perceive on selfie video.
 
 **4.15.3 Dynamic Range & Codec Score (DRScore)**
 
@@ -1548,7 +1548,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Max Score (10.0):** ≥ RAM_GB_Max
 *   **Min Score (0.0):** ≤ RAM_GB_Min
 > [!NOTE]
-> **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB dramatically improves multitasking and system stability. However, going from 16GB to 24GB offers minimal tangible benefit for current mobile applications.
+> **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB (+4GB) dramatically improves multitasking and system stability. However, an identical +4GB upgrade from 20GB to 24GB offers almost zero tangible benefit for current mobile applications.
 
 ### 🔹 6.7 Storage Technology
 *Description:* The speed of the internal drive. Faster storage means the phone boots up instantly, apps install quickly, and files copy fast.
@@ -1576,7 +1576,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Max Score (10.0):** ≥ Storage_GB_Max
 *   **Min Score (0.0):** ≤ Storage_GB_Min
 > [!NOTE]
-> **Why Logarithmic?** Similar to RAM, storage utility is non-linear. 64GB to 128GB is a critical upgrade that prevents "storage full" anxiety. 512GB to 1TB is a luxury for power users, with less impact on daily basic functionality.
+> **Why Logarithmic?** Similar to RAM, storage utility is non-linear. The +64GB upgrade from 64GB to 128GB is a critical jump that prevents "storage full" anxiety. However, an identical +64GB addition from 512GB to 576GB provides almost zero perceptible change to a user's daily experience.
 
 ### 🔹 6.9 Storage Expandability
 *Description:* Ability to add a memory card. A dedicated slot lets you cheaply add massive storage for photos and media.
