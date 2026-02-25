@@ -396,7 +396,6 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 > [!NOTE]
 > **Why Weight the Euclidean Distance?**
 > DXOMARK's display protocol does not treat every metric equally. It tests six core pillars: Readability, Color, Video, Motion, Touch, and Artifacts. To accurately find a neighbor that fundamentally behaves like the target device, our Euclidean search relies on a weighted algorithm designed to mirror these pillars:
-> 
 > *   **Primary Pillars (15-20% each):** 2.2 Brightness (DXO Readability) at **20%**, 2.1 Panel Tech (DXO Contrast/Blacks) at **15%**, and 2.6 Refresh Rate (DXO Motion) at **15%**.
 > *   **Secondary Pillars (10% each):** 2.3 Color Gamut (DXO Color), 2.4 HDR (DXO Video), 2.7 Touch Hz (DXO Touch), 2.5 PPI (DXO Aliasing Artifacts), and 2.10 PWM (DXO Flicker Artifacts).
 > *   **Excluded (0%):** 2.8 Bezels and 2.9 Screen Size are purely physical aesthetic elements. Including them corrupts the search, as DXOMARK evaluates the panel's *output*, not its dimensions.
@@ -420,9 +419,8 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 
 > [!IMPORTANT]
 > **Terminology Clarification:**
-> - **Sub-Section Predicted Score** (e.g., `SubScore_2.3`): Individual score for a single display attribute (Brightness, PPI, etc.) calculated from technical specs in Sections 2.1–2.10. Used in **Method B Step 1** for calculating the Euclidean Distance to find neighbors.
-> - **Overall Predicted Score** (`Predicted_Score` from Method C): The aggregate display score, calculated as the average of all the sub-section Predicted Scores. Used in **Method B Step 2** for calculating the correction ratio.
-
+> - **Sub-Section Predicted Score** (e.g., `SubScore_2.3`): Individual score for a single display attribute (Brightness, PPI, etc.) calculated from technical specs in Sections 2.1–2.10. Applicable sub-scores (excluding 2.8 and 2.9) are used in **Method B Step 1** for calculating the weighted Euclidean Distance to find neighbors.
+> - **Overall Predicted Score** (`Predicted_Score` from Method C): The aggregate display score, calculated as the weighted sum of the perceptual sub-section Predicted Scores. Used in **Method B Step 2** for calculating the correction ratio.
 
 ## 🟣 3. Audio
 
