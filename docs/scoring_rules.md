@@ -264,15 +264,31 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
 *   **Measurement:** Manufacturer specifications and Digital Rights Management (DRM) certification lists (e.g., Widevine L1 for HD/4K streaming from Netflix, Disney+).
 *   **Unit:** Supported Standards (Binary Features)
-*   **Significance:** Ensures compatibility with premium content from streaming services (Netflix, Disney+, etc.).
+*   **Significance:** Unlocks access to premium, studio-mastered content and ensures the display can render the full visual contrast and colour volume that the content creator intended.
 
 | Score    | Supported Formats                 |
 | :------- | :-------------------------------- |
 | **10.0** | **Dolby Vision + HDR10+ + HDR10** |
 | **8.0**  | **HDR10+ + HDR10**                |
 | **6.0**  | **HDR10 only**                    |
-| **0.0**  | **No HDR formats**                | 
+| **0.0**  | **No HDR formats**                |
 
+> [!NOTE]
+> **Understanding HDR Formats and Why They Are Not Equal**
+>
+> HDR (High Dynamic Range) is not a single standard — it is a family of competing specifications, each offering a different level of visual capability:
+>
+> *   **HDR10 (Score 6.0):** The baseline open standard adopted by Blu-ray and most streaming platforms. It uses a single set of brightness/color instructions for the *entire film* (static metadata). Every HDR-capable TV, monitor, and phone supports it. It is the floor, not the ceiling.
+>
+> *   **HDR10+ (Score 8.0):** Samsung's royalty-free enhancement of HDR10. It adds *dynamic metadata* — the brightness and color instructions are recalculated **scene by scene** (or even frame by frame), so a dark cave scene is optimized differently from a sunny beach scene. This results in noticeably better shadow detail and highlight control. Supported natively on Samsung Galaxy phones, Disney+, and Amazon Prime Video.
+>
+> *   **Dolby Vision (Score 10.0):** The highest-tier licensed format. It also uses dynamic metadata and supports a wider internal color depth (12-bit vs 10-bit for HDR10). Critically, Dolby licenses the *entire pipeline* from studio mastering to final display, meaning the rendering is guaranteeably calibrated. Apple, Netflix, and Disney+ rely heavily on Dolby Vision for flagship titles. A phone with Dolby Vision can stream Netflix movies exactly as the director graded them.
+>
+> **Why Score as a Tiered Lookup (Not Continuous)?**
+> These are discrete binary certifications, not measurable quantities. A phone either has Dolby Vision hardware decoding or it does not — there is no partial Dolby Vision support. The scoring table reflects the real-world content ecosystem: the more formats supported, the wider the library of premium content that looks correct on the device, and the more future-proof the phone is as streaming platforms adopt newer standards.
+>
+> **Why Does Format Matter if the Screen is Good?**
+> A premium OLED screen *without* Dolby Vision will display HDR10 content using static tone-mapping, which frequently clips bright highlights or crushes dark shadows. The same content viewed on an identical OLED screen *with* Dolby Vision will render each shot with its scene-specific brightness curve — the visual difference is clearly visible on high-contrast content like night scenes, fireworks, or sunsets.
 
 ### 🔹 2.5 Resolution Density
 *Description:* Pixel density (sharpness). Higher PPI means text and images look crisp, with no visible pixels.
