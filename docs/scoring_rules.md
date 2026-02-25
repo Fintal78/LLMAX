@@ -343,18 +343,23 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > [!NOTE]
 > **Why Quadratic?** The usable screen real estate scales as the *Area* of the display, which is proportional to the square of the diagonal ($Area \propto Diagonal^2$). While a linear penalty treats a 0.5" increase at the bottom of the scale exactly the same as at the top, a true geometric (Quadratic) curve exponentially rewards the massive manufacturing difficulty and user-experience gain of producing massive 6.8"+ "Ultra" screens.
 
-### 🔹 2.10 Eye Comfort (PWM Dimming)
-*Description:* How the screen dims at low brightness levels. OLED screens cannot simply lower the voltage to their pixels; instead, they rapidly turn the pixels completely off and on (Pulse-Width Modulation). Higher frequencies prevent eye strain, headaches, and fatigue for people sensitive to screen flicker.
-*   **Measurement:** Oscilloscope or flicker meter at low brightness levels.
-*   **Unit:** Hertz (Hz)
-*   **Significance:** Reduces eye strain and headaches for sensitive users.
-*Formula:* `Score = 10 * (log(Hz) - log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) - log(Display_PWM_Hz_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Display_PWM_Hz_Max
-*   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
+### 🔹 2.10 Eye Comfort (Dimming Technology & PWM)
+*Description:* How the screen dims at low brightness levels to prevent eye strain, headaches, and fatigue. Different screen technologies require different dimming solutions, which directly impact the user's biological comfort.
+
+**Scoring by Display Technology:**
+
+**1. LCD / IPS Screens (DC Dimming)**
+*   **Rule:** Traditional LCD/IPS displays lower brightness by directly reducing the voltage to the backlight (DC Dimming). This creates a continuous, unbroken stream of light.
+*   **Score:** **10.0** (Perfect, Flicker-Free) by default.
+*   *Exception:* If testing reveals the manufacturer used a cheap PWM backlight controller (flickering the LCD), score it using the OLED PWM Formula below.
+
+**2. OLED / AMOLED Screens (PWM Dimming)**
+*   **Rule:** OLED screens cannot simply lower the voltage to their pixels without destroying color accuracy. Instead, they rapidly turn the pixels completely off and on (Pulse-Width Modulation).
+*   **Formula:** `Score = 10 * (log(Hz) - log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) - log(Display_PWM_Hz_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Display_PWM_Hz_Max (e.g., Ultra-high 3840Hz+ panels or OLEDs with dedicated "DC-like" software modes).
+*   **Min Score (0.0):** ≤ Display_PWM_Hz_Min (e.g., Aggressive low-frequency 240Hz panels).
+
 > [!NOTE]
-> **What about LCD Screens?**
-> Traditional LCD/IPS displays generally lower brightness by reducing the direct voltage (DC Dimming) to the backlight, creating zero flicker. Unless testing reveals a cheap PWM backlight, an LCD screen automatically scores a perfect **10.0 (Flicker-Free)** in this category.
->
 > **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +500Hz jump from 200Hz to 700Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +500Hz increase from 3000Hz to 3500Hz provides almost zero perceptible biological benefit.
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
