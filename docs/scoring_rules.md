@@ -323,7 +323,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 
 ### 🔹 2.8 Screen-to-Body Ratio (Bezels)
 *Description:* How much of the front is screen vs. border. Higher percentage means thinner bezels and a more immersive, modern look.
-*   **Measurement:** (Active Display Area / Total Frontal Area) * 100.
+*   **Measurement:** Pre-calculated ratio published by tech databases (e.g., GSMArena). If missing, calculated via: `(Active Display Area / Total Frontal Area) * 100`.
 *   **Unit:** Percentage (%)
 *   **Significance:** Aesthetic modernity and immersion.
 *Formula:* `Score = 10 * ((Ratio - Display_SBR_Percent_Min) / (Display_SBR_Percent_Max - Display_SBR_Percent_Min))` (Clamped 0-10)
