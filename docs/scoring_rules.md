@@ -384,25 +384,22 @@ This is the preferred method when a direct DXOMARK Display score is available. I
 If the specific device has no benchmark, but we have data for other devices:
 
 **1. Identify Neighbors via Feature Distance (Minimum Variance)**
-Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** display sub-features.
+Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the display sub-features that dictate perceptual quality.
 *   **Search Space:** All phones with known DXOMARK Display scores (Method A).
-*   **Distance Metric:** Euclidean Distance in the 10-dimensional feature space (Sections 2.1–2.10).
-    *   `Distance = Sqrt( Sum( (Diff_SubScore_i)^2 ) )`
+*   **Distance Metric:** Weighted Euclidean Distance in the 8-dimensional perceptual feature space (Sections 2.1–2.10, explicitly **excluding** 2.8 Screen-to-Body Ratio and 2.9 Screen Size).
+    *   `Distance = Sqrt( Sum( Weight_i * (Diff_SubScore_i)^2 ) )`
     *   *Where Diff_SubScore_i = SubScore_Target_i - SubScore_Neighbor_i*
-    *   *Where i = 2.1 to 2.10 (each sub-section's individual Predicted Score)*
-    *   **Sub-Section Predicted Scores:** These are the individual scores calculated from technical specs for each display attribute:
-        *   `SubScore_2.1` = Panel Architecture Score (OLED/LCD/etc.)
-        *   `SubScore_2.2` = PPI Score
-        *   `SubScore_2.3` = Peak Brightness Score
-        *   ... (through SubScore_2.10)
+    *   *Where Weight_i represents the DXOMARK alignment weight (see justification below).*
     *   **Important:** Calculation uses **Predicted Scores** (Specs only), not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity, unaffected by whether a review exists for them.
 *   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
 
 > [!NOTE]
-> **Why Euclidean Distance?**
-> Unlike Processor scores which are often dominated by a single factor or have variable dimensions, the Display model has 10 fixed sub-scores (2.1 to 2.10) available for every device. This creates a standardized 10-dimensional space where Euclidean distance is the most robust way to find neighbors that match the specific *profile* of the screen rather than just a similar total score.
->
-> **Why this is robust:** This method ensures we compare apples to apples. A phone with a "High Res / Low Refresh" screen will match with other "High Res / Low Refresh" phones, rather than "Low Res / High Refresh" phones, even if they have the same overall predicted score.
+> **Why Weight the Euclidean Distance?**
+> DXOMARK's display protocol does not treat every metric equally. It tests six core pillars: Readability, Color, Video, Motion, Touch, and Artifacts. To accurately find a neighbor that fundamentally behaves like the target device, our Euclidean search relies on a weighted algorithm designed to mirror these pillars:
+> 
+> *   **Primary Pillars (15-20% each):** 2.2 Brightness (DXO Readability) at **20%**, 2.1 Panel Tech (DXO Contrast/Blacks) at **15%**, and 2.6 Refresh Rate (DXO Motion) at **15%**.
+> *   **Secondary Pillars (10% each):** 2.3 Color Gamut (DXO Color), 2.4 HDR (DXO Video), 2.7 Touch Hz (DXO Touch), 2.5 PPI (DXO Aliasing Artifacts), and 2.10 PWM (DXO Flicker Artifacts).
+> *   **Excluded (0%):** 2.8 Bezels and 2.9 Screen Size are purely physical aesthetic elements. Including them corrupts the search, as DXOMARK evaluates the panel's *output*, not its dimensions.
 
 **2. Calculate Correction Ratio:**
 *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
@@ -417,9 +414,9 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
-**Formula:** `Predicted_Score = Average(SubScore_2.1, SubScore_2.2, ..., SubScore_2.10)`
-*   *This is the **overall Predicted Score** for the entire display, calculated as the average of all the sub-section Predicted Scores.*
-*   **Important:** Use the **Predicted Score** (before boosters) for all sub-sections. This ensures neutrality and prevents selection bias (reviewed vs. unreviewed phones) from skewing the technical baseline.
+**Formula:** `Predicted_Score = (0.15 * SubScore_2.1) + (0.20 * SubScore_2.2) + (0.10 * SubScore_2.3) + (0.10 * SubScore_2.4) + (0.10 * SubScore_2.5) + (0.15 * SubScore_2.6) + (0.10 * SubScore_2.7) + (0.10 * SubScore_2.10)`
+*   *This is the **overall Predicted Score** for the entire display, calculated as the weighted sum of perceptual sub-section Predicted Scores.*
+*   **Important:** Sections 2.8 and 2.9 are excluded from this benchmark prediction as they do not impact perceptual display quality. Use the **Predicted Score** (before boosters) for all included sub-sections. This ensures neutrality and prevents selection bias (reviewed vs. unreviewed phones) from skewing the technical baseline.
 
 > [!IMPORTANT]
 > **Terminology Clarification:**
