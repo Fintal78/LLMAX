@@ -343,8 +343,8 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > [!NOTE]
 > **Why Quadratic?** The usable screen real estate scales as the *Area* of the display, which is proportional to the square of the diagonal ($Area \propto Diagonal^2$). While a linear penalty treats a 0.5" increase at the bottom of the scale exactly the same as at the top, a true geometric (Quadratic) curve exponentially rewards the massive manufacturing difficulty and user-experience gain of producing massive 6.8"+ "Ultra" screens.
 
-### 🔹 2.10 Eye Comfort (Dimming Technology & PWM)
-*Description:* How the screen dims at low brightness levels to prevent eye strain, headaches, and fatigue. Different screen technologies require different dimming solutions, which directly impact the user's biological comfort.
+### 🔹 2.10 Eye Comfort (Dimming Technology & Pulse-Width Modulation)
+*Description:* How the screen dims at low brightness levels to prevent eye strain, headaches, and fatigue. Different screen technologies require different dimming solutions, which directly impact the user's biological comfort. This section evaluates both DC (Direct Current) Dimming and PWM (Pulse-Width Modulation).
 
 **Scoring by Display Technology:**
 
