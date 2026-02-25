@@ -266,12 +266,13 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Unit:** Supported Standards (Binary Features)
 *   **Significance:** Unlocks access to premium, studio-mastered content and ensures the display can render the full visual contrast and colour volume that the content creator intended.
 
-| Score    | Supported Formats                 |
-| :------- | :-------------------------------- |
-| **10.0** | **Dolby Vision + HDR10+ + HDR10** |
-| **8.0**  | **HDR10+ + HDR10**                |
-| **6.0**  | **HDR10 only**                    |
-| **0.0**  | **No HDR formats**                |
+| Score    | Supported Formats                                             |
+| :------- | :------------------------------------------------------------ |
+| **10.0** | **Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)**     |
+| **9.0**  | **Primary Dynamic HDR (Dolby Vision + HDR10 only)**           |
+| **8.0**  | **Alternative Dynamic HDR (HDR10+ + HDR10 only)**             |
+| **6.0**  | **Basic Static HDR (HDR10 only)**                             |
+| **0.0**  | **No HDR formats**                                            |
 
 > [!NOTE]
 > **Understanding HDR Formats and Why They Are Not Equal**
