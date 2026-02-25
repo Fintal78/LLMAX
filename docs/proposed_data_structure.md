@@ -632,25 +632,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_8_front_camera_resolution": {
-      "mp": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "4_9_front_camera_focus": {
-      "type": {
-        "value": "Autofocus",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
-    },
-    "4_10_rear_video_resolution": {
+    "4_8_rear_video_resolution": {
       "max_resolution": {
         "value": "8K",
         "source": "TBD",
@@ -659,7 +641,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_11_rear_video_fps": {
+    "4_9_rear_video_fps": {
       "max_fps_1080p_plus": {
         "value": 120,
         "source": "TBD",
@@ -668,7 +650,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_12_video_hdr": {
+    "4_10_video_hdr": {
       "capability": {
         "value": "Dolby Vision",
         "source": "TBD",
@@ -677,7 +659,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.0,
       "final_score": 0.0
     },
-    "4_13_video_encoding": {
+    "4_11_video_encoding": {
       "professional_codec_support": {
         "value": "ProRes 4K60",
         "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
@@ -699,7 +681,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 10.0,
       "final_score": 10.0
     },
-    "4_14_slow_motion": {
+    "4_12_slow_motion": {
       "max_fps": {
         "value": 120,
         "source": "TBD",
@@ -707,6 +689,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "resolution_mp": {
         "value": 8.3,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "4_13_front_camera_resolution": {
+      "mp": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "predicted_score": 0.0,
+      "final_score": 0.0
+    },
+    "4_14_front_camera_focus": {
+      "type": {
+        "value": "Autofocus",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },

@@ -76,16 +76,16 @@
 ### 4.7 Macro Capability
 *   `Camera_Macro_Dist_cm_Min` = 1.5 (Score 10), `Camera_Macro_Dist_cm_Max` = 10 (Score 0)
 
-### 4.8 Front Camera Sensor Resolution
-*   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)
-
-### 4.12 Rear Video Frame Rate
+### 4.9 Rear Video Frame Rate
 *   `Camera_Video_FPS_Min` = 5 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)
 
-### 4.15 High Frame Rate (Slow Motion)
+### 4.12 High Frame Rate (Slow Motion)
 *   `Camera_SlowMo_MPs_Min` = 32 (Score 0), `Camera_SlowMo_MPs_Max` = 1000 (Score 10)
 
-### 4.10 Front Camera Video Performance
+### 4.13 Front Camera Sensor Resolution
+*   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)
+
+### 4.15 Front Camera Video Performance
 *   `Camera_Front_Video_Res_Width_Min` = 1280 (Score 0), `Camera_Front_Video_Res_Width_Max` = 3840 (Score 10)
 *   `Camera_Front_Video_FPS_Min` = 24 (Score 0), `Camera_Front_Video_FPS_Max` = 60 (Score 10)
 

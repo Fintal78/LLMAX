@@ -724,89 +724,10 @@ MAR is a weighted composite of three subsections:
 *   `MCFP Score = Max(Ultrawide_Path, Dedicated_Path)`
 
 
-### B. Front Camera System (Selfie)
-*Groups all front-facing hardware and capabilities (both photo and video) into one cohesive chapter.*
-
-### 🔹 4.8 Front Camera Sensor Resolution
-*Description:* Spatial resolution of the front-facing camera.
-*   **Measurement:** Front camera megapixel count.
-*   **Unit:** Megapixels (MP)
-*   **Significance:** Determines selfie detail and cropping flexibility.
-*Formula:* `Score = 10 * (log(MP) - log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) - log(Camera_Front_Resolution_MP_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Camera_Front_Resolution_MP_Max
-*   **Min Score (0.0):** ≤ Camera_Front_Resolution_MP_Min
-> [!NOTE]
-> **Why Logarithmic?** Selfie detail benefits diminish rapidly after a certain point. 32MP is sufficient for high-quality prints; beyond that, sensor size matters more than pixel count.
-
-### 🔹 4.9 Front Camera Focus System
-*Description:* Ability of the front-facing camera to maintain sharp focus across different subject distances.
-*   **Measurement:** Focus mechanism and optical configuration.
-*   **Unit:** Focus System Tier
-*   **Significance:** Autofocus ensures sharp selfies and vlogs regardless of arm length or group distance.
-
-| Score    | Focus System Tier                         | Objective Criteria                                   |
-| :------- | :---------------------------------------- | :--------------------------------------------------- |
-| **10.0** | **Autofocus (PDAF / Dual Pixel / Laser)** | Any active AF mechanism                              |
-| **6.0**  | **Fixed Focus (Modern Wide-DOF)**         | Fixed focus AND (Aperture ≥ f/2.0 OR Sensor ≤ 1/3")  |
-| **3.0**  | **Fixed Focus (Legacy Narrow-DOF)**       | Fixed focus AND (Aperture < f/2.0 AND Sensor > 1/3") |
-| **0.0**  | **No Front Camera**                       | Feature phone                                        |
-
-> [!NOTE]
-> **Why this distinction?** Fixed-focus cameras rely on depth of field (DOF). Older or poorly designed selfie cameras with large sensors and fast apertures (low f-numbers) produce shallow DOF, causing frequent misfocus. Modern designs either add AF or intentionally limit DOF to maintain usability.
-
-### 🔹 4.10 Front Camera Video Performance
-*Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, and dynamic range.
-*   **Measurement:** Max resolution, FPS, and HDR capability.
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Critical for vlogging, video calls, and content creation.
-*Formula:* `Score = (0.4 * ResScore) + (0.35 * FPSScore) + (0.25 * DRScore)`
-
-**4.10.1 Video Resolution Score**
-*What it measures:* The maximum spatial resolution (pixel count) the front camera can record.
-*   **Measurement:** Maximum supported front video resolution (long edge in pixels).
-*   **Why it matters:** Higher resolution provides more detail for cropping, digital stabilization, and future-proofing. 4K allows for 1080p crops without quality loss, while 720p limits editing flexibility.
-*   *Formula:* `ResScore = 10 * (log(px) - log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) - log(Camera_Front_Video_Res_Width_Min))` (Clamped 0-10)
-    *   **Variables:**
-        *   `px` = Long edge resolution in pixels (e.g., 3840 for 4K, 1920 for 1080p, 1280 for 720p)
-    *   **Max Score (10.0):** ≥ Camera_Front_Video_Res_Width_Max
-    *   **Min Score (0.0):** ≤ Camera_Front_Video_Res_Width_Min
-> [!NOTE]
-> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The +1MP upgrade from 720p (~1MP) to 1080p (~2MP) is dramatic for clarity. However, An identical +1MP increase from 4K (~8MP) to roughly 9MP is imperceptible on a small screen.
-
-**4.10.2 Video Frame Rate Score**
-*What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
-*   **Measurement:** Maximum FPS at the highest supported resolution.
-*   **Why it matters:** Higher frame rates (60fps) create smoother motion for vlogs and video calls, reducing motion blur and improving the perception of fluidity. 24fps is cinematic but can appear choppy for fast movement.
-*   *Formula:* `FPSScore = 10 * (log(FPS) - log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) - log(Camera_Front_Video_FPS_Min))` (Clamped 0-10)
-    *   **Variables:**
-        *   `FPS` = Maximum sustained frame rate (e.g., 60, 30, 24)
-    *   **Max Score (10.0):** ≥ Camera_Front_Video_FPS_Max
-    *   **Min Score (0.0):** ≤ Camera_Front_Video_FPS_Min
-> [!NOTE]
-> **Why Logarithmic?** Frame rate perception is non-linear. The +30fps jump from 30fps to 60fps is a significant smoothness upgrade for motion-heavy content. However, an identical +30fps increase from 60fps to 90fps is much harder to casually perceive on selfie video.
-
-**4.10.3 Dynamic Range & Codec Score (DRScore)**
-
-*Description:* Measures the front camera’s support for high dynamic range and professional video recording profiles. Focuses on officially supported video standards, not subjective video quality.
-
-**Measurement:** Manufacturer camera specs and system camera settings
-**Unit:** Video Profile Tier (0–10)
-**Significance:** Determines highlight retention, color grading potential, and post-processing flexibility for selfie video.
-
-| Score    | Video Capability                                                                                  |
-| :------- | :-------------------------------------------------------------------------------------------------|
-| **10.0** | **Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)** |
-| **9.0**  | **Dolby Vision HDR recording**                                                                    |
-| **7.0**  | **HDR10 or HDR10+ recording**                                                                     |
-| **4.0**  | **HLG HDR or manufacturer-labeled “HDR video”**                                                   |
-| **1.0**  | **SDR only (8-bit, Rec.709)**                                                                     |
-| **0.0**  | **No front camera**                                                                               |
-
-
-### C. Rear Camera — Video Capture & Production
+### B. Rear Camera — Video Capture & Production
 *Groups the hardware video recording capabilities of the rear module.*
 
-### 🔹 4.11 Rear Video Resolution
+### 🔹 4.8 Rear Video Resolution
 *Description:* Maximum spatial resolution supported for rear-camera video recording.
 *   **Measurement:** Maximum supported rear video resolution.
 *   **Unit:** Resolution Tier
@@ -820,7 +741,7 @@ MAR is a weighted composite of three subsections:
 | **3**  | **720p (HD)**             |
 | **0**  | **≤ 480p**                |
 
-### 🔹 4.12 Rear Video Frame Rate
+### 🔹 4.9 Rear Video Frame Rate
 *Description:* Maximum frame rate supported at the highest commonly used resolution (≥1080p).
 *   **Measurement:** Maximum FPS.
 *   **Unit:** Frames per second (FPS)
@@ -831,7 +752,7 @@ MAR is a weighted composite of three subsections:
 > [!NOTE]
 > **Why Logarithmic?** The perception of smoothness is non-linear. The +30fps jump from 30fps to 60fps is a dramatic, transformative upgrade. However, an identical +30fps increase from 90fps to 120fps is barely noticeable for standard video consumption.
 
-### 🔹 4.13 Video Color & Dynamic Range
+### 🔹 4.10 Video Color & Dynamic Range
 *Description:* Ability to capture wide dynamic range and rich color information in video.
 *   **Measurement:** Supported HDR standards and bit depth.
 *   **Unit:** HDR Capability Tier
@@ -856,7 +777,7 @@ MAR is a weighted composite of three subsections:
 > **Why is Dynamic Metadata (Score 10) better?**
 > Dynamic formats (Dolby Vision, HDR10+) tell the display exactly how to render *each specific scene*. Static formats (HDR10) force the display to pick one average setting for the whole movie, which often makes dark scenes look too dark or bright scenes look washed out.
 
-### 🔹 4.14 Video Encoding & Professional Recording
+### 🔹 4.11 Video Encoding & Professional Recording
 *Description:* Support for professional codecs and recording profiles enabling advanced post-production. This is a composite score evaluating codec quality, color profile support, and bit depth independently.
 *   **Measurement:** Supported codecs, color profiles, and bit depth.
 *   **Unit:** Composite Index (0-10)
@@ -864,7 +785,7 @@ MAR is a weighted composite of three subsections:
 
 **Structure:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
 
-#### 4.14.1 Professional Codec Support (PCS) — 40%
+#### 4.11.1 Professional Codec Support (PCS) — 40%
 *What it measures:* Whether the phone can record in a mezzanine or RAW-class format designed for post-production, not delivery.
 *   **Measurement:** Manufacturer specs, camera API codec list.
 *   **Why it matters:** Mezzanine codecs (ProRes, CinemaDNG) preserve maximum image quality with minimal compression, enabling professional color grading and VFX work.
@@ -874,7 +795,7 @@ MAR is a weighted composite of three subsections:
 | **Supports ProRes / CinemaDNG / ProRes RAW / equivalent mezzanine or RAW**    | **10.0** |
 | **Does not**                                                                  | **0.0**  |
 
-#### 4.14.2 Log Color Profile Support (LCPS) — 35%
+#### 4.11.2 Log Color Profile Support (LCPS) — 35%
 *What it measures:* Whether the phone supports a logarithmic gamma curve, preserving dynamic range for color grading.
 *   **Measurement:** Camera feature list, video mode specs.
 *   **Why it matters:** Log profiles (e.g., S-Log, V-Log, HLG) flatten the image's contrast curve, capturing more highlight and shadow detail. This gives editors significantly more flexibility to adjust exposure and color in post-production without clipping or banding.
@@ -884,7 +805,7 @@ MAR is a weighted composite of three subsections:
 | **Log profile available**         | **10.0** |
 | **No log profile**                | **0.0**  |
 
-#### 4.14.3 Color Bit Depth (CBD) — 25%
+#### 4.11.3 Color Bit Depth (CBD) — 25%
 *What it measures:* How much color information is stored per channel in video recording.
 *   **Measurement:** Codec specs, camera API output formats.
 *   **Why it matters:** 10-bit color provides 1024 shades per channel (vs 256 in 8-bit), dramatically reducing banding in gradients (like skies) and enabling smoother color grading transitions.
@@ -896,7 +817,7 @@ MAR is a weighted composite of three subsections:
 
 **Final Formula:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
 
-### 🔹 4.15 High Frame Rate (Slow Motion)
+### 🔹 4.12 High Frame Rate (Slow Motion)
 *Description:* Ability to capture video at very high frame rates for slow-motion playback.
 *   **Measurement:** Maximum slow-motion FPS and resolution.
 *   **Unit:** FPS @ Resolution (MP/s)
@@ -907,6 +828,87 @@ MAR is a weighted composite of three subsections:
 *   **Min Score (0.0):** ≤ Camera_SlowMo_MPs_Min
 > [!NOTE]
 > **Why Logarithmic?** Slow motion quality depends on both resolution and speed. A logarithmic scale on total pixels-per-second (MP/s) fairly balances high-res/low-fps against low-res/high-fps modes, rewarding the total data throughput capability.
+
+
+
+
+### C. Front Camera System (Selfie)
+*Groups all front-facing hardware and capabilities (both photo and video) into one cohesive chapter.*
+
+### 🔹 4.13 Front Camera Sensor Resolution
+*Description:* Spatial resolution of the front-facing camera.
+*   **Measurement:** Front camera megapixel count.
+*   **Unit:** Megapixels (MP)
+*   **Significance:** Determines selfie detail and cropping flexibility.
+*Formula:* `Score = 10 * (log(MP) - log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) - log(Camera_Front_Resolution_MP_Min))` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Camera_Front_Resolution_MP_Max
+*   **Min Score (0.0):** ≤ Camera_Front_Resolution_MP_Min
+> [!NOTE]
+> **Why Logarithmic?** Selfie detail benefits diminish rapidly after a certain point. 32MP is sufficient for high-quality prints; beyond that, sensor size matters more than pixel count.
+
+### 🔹 4.14 Front Camera Focus System
+*Description:* Ability of the front-facing camera to maintain sharp focus across different subject distances.
+*   **Measurement:** Focus mechanism and optical configuration.
+*   **Unit:** Focus System Tier
+*   **Significance:** Autofocus ensures sharp selfies and vlogs regardless of arm length or group distance.
+
+| Score    | Focus System Tier                         | Objective Criteria                                   |
+| :------- | :---------------------------------------- | :--------------------------------------------------- |
+| **10.0** | **Autofocus (PDAF / Dual Pixel / Laser)** | Any active AF mechanism                              |
+| **6.0**  | **Fixed Focus (Modern Wide-DOF)**         | Fixed focus AND (Aperture ≥ f/2.0 OR Sensor ≤ 1/3")  |
+| **3.0**  | **Fixed Focus (Legacy Narrow-DOF)**       | Fixed focus AND (Aperture < f/2.0 AND Sensor > 1/3") |
+| **0.0**  | **No Front Camera**                       | Feature phone                                        |
+
+> [!NOTE]
+> **Why this distinction?** Fixed-focus cameras rely on depth of field (DOF). Older or poorly designed selfie cameras with large sensors and fast apertures (low f-numbers) produce shallow DOF, causing frequent misfocus. Modern designs either add AF or intentionally limit DOF to maintain usability.
+
+### 🔹 4.15 Front Camera Video Performance
+*Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, and dynamic range.
+*   **Measurement:** Max resolution, FPS, and HDR capability.
+*   **Unit:** Composite Score (0-10)
+*   **Significance:** Critical for vlogging, video calls, and content creation.
+*Formula:* `Score = (0.4 * ResScore) + (0.35 * FPSScore) + (0.25 * DRScore)`
+
+**4.15.1 Video Resolution Score**
+*What it measures:* The maximum spatial resolution (pixel count) the front camera can record.
+*   **Measurement:** Maximum supported front video resolution (long edge in pixels).
+*   **Why it matters:** Higher resolution provides more detail for cropping, digital stabilization, and future-proofing. 4K allows for 1080p crops without quality loss, while 720p limits editing flexibility.
+*   *Formula:* `ResScore = 10 * (log(px) - log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) - log(Camera_Front_Video_Res_Width_Min))` (Clamped 0-10)
+    *   **Variables:**
+        *   `px` = Long edge resolution in pixels (e.g., 3840 for 4K, 1920 for 1080p, 1280 for 720p)
+    *   **Max Score (10.0):** ≥ Camera_Front_Video_Res_Width_Max
+    *   **Min Score (0.0):** ≤ Camera_Front_Video_Res_Width_Min
+> [!NOTE]
+> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The +1MP upgrade from 720p (~1MP) to 1080p (~2MP) is dramatic for clarity. However, An identical +1MP increase from 4K (~8MP) to roughly 9MP is imperceptible on a small screen.
+
+**4.15.2 Video Frame Rate Score**
+*What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
+*   **Measurement:** Maximum FPS at the highest supported resolution.
+*   **Why it matters:** Higher frame rates (60fps) create smoother motion for vlogs and video calls, reducing motion blur and improving the perception of fluidity. 24fps is cinematic but can appear choppy for fast movement.
+*   *Formula:* `FPSScore = 10 * (log(FPS) - log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) - log(Camera_Front_Video_FPS_Min))` (Clamped 0-10)
+    *   **Variables:**
+        *   `FPS` = Maximum sustained frame rate (e.g., 60, 30, 24)
+    *   **Max Score (10.0):** ≥ Camera_Front_Video_FPS_Max
+    *   **Min Score (0.0):** ≤ Camera_Front_Video_FPS_Min
+> [!NOTE]
+> **Why Logarithmic?** Frame rate perception is non-linear. The +30fps jump from 30fps to 60fps is a significant smoothness upgrade for motion-heavy content. However, an identical +30fps increase from 60fps to 90fps is much harder to casually perceive on selfie video.
+
+**4.15.3 Dynamic Range & Codec Score (DRScore)**
+
+*Description:* Measures the front camera’s support for high dynamic range and professional video recording profiles. Focuses on officially supported video standards, not subjective video quality.
+
+**Measurement:** Manufacturer camera specs and system camera settings
+**Unit:** Video Profile Tier (0–10)
+**Significance:** Determines highlight retention, color grading potential, and post-processing flexibility for selfie video.
+
+| Score    | Video Capability                                                                                  |
+| :------- | :-------------------------------------------------------------------------------------------------|
+| **10.0** | **Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)** |
+| **9.0**  | **Dolby Vision HDR recording**                                                                    |
+| **7.0**  | **HDR10 or HDR10+ recording**                                                                     |
+| **4.0**  | **HLG HDR or manufacturer-labeled “HDR video”**                                                   |
+| **1.0**  | **SDR only (8-bit, Rec.709)**                                                                     |
+| **0.0**  | **No front camera**                                                                               |
 
 
 ### D. Computational Photography & AI
