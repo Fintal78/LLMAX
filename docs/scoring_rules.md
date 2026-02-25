@@ -12,7 +12,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *Description:* The physical materials used for the device chassis and rear panel. Affects how premium the phone feels and how well it resists drops.
 
 > [!IMPORTANT]
-> **Thermal Properties Not Scored Here:** While materials technically dictate thermal conductivity, a device's thermal capacity and heat dissipation are explicitly scored in **Section 6.5 (TDSI)** and factored into **Section 8.1 (Battery)**. To avoid double-scoring, this section strictly evaluates structural integrity, durability, and premium tactile quality.
+> **Thermal Properties Not Scored Here:** While materials technically dictate thermal conductivity, a device's thermal capacity and heat dissipation are explicitly scored in **Section 6.10 (TDSI)** and factored into **Section 8.1 (Battery)**. To avoid double-scoring, this section strictly evaluates structural integrity, durability, and premium tactile quality.
 
 *   **Measurement:** Manufacturer specifications and teardown confirmation.
 *   **Unit:** Composite Score (0-10)
@@ -1471,7 +1471,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 *   **Distance Metric:** Weighted Euclidean Distance.
     *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
-        *   `AI` (table above 3.10), `RAM_Tech` (Sec 3.5), `GPU` (Sec 3.3), `RAM_Cap` (Sec 3.6), `Process` (Sec 3.4 Part C).
+        *   `AI` (table above, Sec 6.4.0), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
     *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
     *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
 *   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
@@ -1496,7 +1496,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
 
 1.  **SoC AI Score (40%) – The Engine**
-    *   **Source:** Retrieve `AI Score` from **the table 3.10 above**.
+    *   **Source:** Retrieve `AI Score` from **the Section 6.4.0 table above**.
     *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
 
 2.  **RAM Technology Score (25%) – The Highway**
@@ -2243,7 +2243,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 
 *   **B.4 Thermal Efficiency (10% of Layer B)**
     *   *Why it matters:* Heat increases internal resistance and leakage currents. Good cooling preserves battery efficiency.
-    *   *Formula:* `Thermal_Efficiency = TDSI_Score` (From **Section 6.5**)
+    *   *Formula:* `Thermal_Efficiency = TDSI_Score` (From **Section 6.10**)
 
     > [!NOTE]
     > The **same TDSI score** is used in both contexts because thermal management capability is an objective hardware characteristic. The different impact on performance vs. battery efficiency is handled through **weighting**.
