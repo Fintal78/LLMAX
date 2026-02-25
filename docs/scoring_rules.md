@@ -464,19 +464,29 @@ PAPI is a weighted composite of two subsections:
 - **3.2.1 Audio Format Decode Support** — 50% weight
 - **3.2.2 Spatial Audio Rendering** — 50% weight
 
-*Formula:* `PAPI = (0.5 × Score_8.2.1) + (0.5 × Score_8.2.2)`
+*Formula:* `PAPI = (0.5 × Score_3.2.1) + (0.5 × Score_3.2.2)`
 
 #### 3.2.1 Audio Format Decode Support
-*What it measures:* Range of multichannel or object-based audio formats the device can natively decode.
-*Why it matters:* Determines compatibility with modern streaming and video content.
+*What it measures:* The range of multichannel or object-based audio formats the device can natively decode.
+*Why it matters:* Determines compatibility with modern streaming and video content. A device that cannot decode these formats will downmix the audio to basic flat stereo, losing the spatial positioning intended by the director.
 
 | Score    | Supported Decode Formats             |
 | :------- | :----------------------------------- |
-| **10.0** | **Dolby Atmos and DTS:X**            |
-| **8.0**  | **Dolby Atmos only**                 |
-| **5.0**  | **Multichannel surround (DD / DD+)** |
-| **0.0**  | **Stereo only**                      |
+| **10.0** | **Dolby Atmos AND DTS:X**            |
+| **8.0**  | **Dolby Atmos ONLY**                 |
+| **5.0**  | **Multichannel Surround (DD / DTS)** |
+| **0.0**  | **Stereo ONLY**                      |
 
+> [!NOTE]
+> **Understanding Audio Formats**
+> *   **Object-Based Audio (Atmos / DTS:X):** Unlike traditional surround sound which assigns audio to specific speaker channels (e.g., "Left Rear speaker"), Atmos and DTS:X treat sounds as individual "objects" in 3D space. The phone's decoder dynamically maps these objects to however many speakers or headphones you are using, creating a much more convincing 3D soundscape.
+> *   **Multichannel Surround (DD / DTS):** Traditional 5.1 or 7.1 channel audio (Dolby Digital or standard DTS). It provides basic directional sound, but lacks the vertical height channels and precise object tracking of modern formats.
+> 
+> **Why is Dual Support (Atmos + DTS:X) a 10.0?**
+> While Dolby Atmos dominates major streaming platforms (Netflix, Apple TV+), DTS:X is heavily utilized on Blu-ray rips, high-end digital movie purchases (IMAX Enhanced), and certain local media ecosystems. A smartphone that supports *both* guarantees the user will never have to suffer a flat stereo downmix, regardless of where they source their movies.
+>
+> **Why is Atmos alone an 8.0?**
+> Because Dolby Atmos is the defacto standard for 90% of commercial streaming, an "Atmos Only" phone will provide a premium 3D experience for the vast majority of users. It only loses 2 points for lacking the universal flexibility of a dual-format decoder during local/niche media playback.
 #### 3.2.2 Spatial Audio Rendering (Playback)
 *What it measures:* Ability of the operating system to spatialize audio during playback, creating a 3D soundstage over headphones or speakers.
 *Why it matters:* Determines immersion and realism during media consumption.
