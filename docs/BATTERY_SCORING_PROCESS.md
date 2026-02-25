@@ -23,7 +23,7 @@ The battery endurance scoring system calculates performance scores for smartphon
 2. **Case 2:** Phones with **one** benchmark → Use it
 3. **Case 3:** Phones with **no** benchmarks → Interpolate from 3 nearest neighbors
 
-See [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_rules.md) Section 5.1 for complete technical specifications.
+See [scoring_rules.md] Section 5.1 for complete technical specifications.
 
 ---
 
@@ -345,9 +345,9 @@ This accounts for the gap between predicted and real-world performance.
 
 ## Related Documentation
 
-- [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_rules.md) - Section 5.1 Technical specification
-- [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_rules.md) - Complete scoring rules
-- [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md) - Database schema
+- [scoring_rules.md] - Section 5.1 Technical specification
+- [scoring_rules.md] - Complete scoring rules
+- [proposed_data_structure.md] - Database schema
 
 ---
 

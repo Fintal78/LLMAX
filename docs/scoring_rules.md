@@ -139,7 +139,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *Formula:* `Score = 10 - 10 * ((Thickness - Thickness_mm_Min) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Thickness_mm_Min
 *   **Min Score (0.0):** ≥ Thickness_mm_Max
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
+*   *Constants: See [scoring_constants.md] Section 1*
 > [!NOTE]
 > **Why Linear?** The discomfort of carrying a thick phone (in a pocket or in the hand) increases by the same amount with each extra millimeter. Think of it like a book: a 9mm hardcover is noticeably thicker than an 8mm one, and a 12mm brick is noticeably thicker than an 11mm one — the penalty is constant. There are no diminishing returns in the practical 6–12mm smartphone range, so a straight linear scale is the most honest model.
 
@@ -151,7 +151,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *Formula:* `Score = 10 - 10 * ((Weight - Weight_g_Min) / (Weight_g_Max - Weight_g_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Weight_g_Min
 *   **Min Score (0.0):** ≥ Weight_g_Max
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
+*   *Constants: See [scoring_constants.md] Section 1*
 > [!NOTE]
 > **Why Linear?** Wrist and arm fatigue from holding a phone scales approximately proportionally with weight — the same way a 200g book feels twice as heavy as a 100g booklet after an extended reading session. Within the practical 130–250g range that covers all modern smartphones, each additional gram adds a constant ergonomic cost. No diminishing returns apply here.
 
@@ -163,7 +163,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *Formula:* `Score = 10 * (1 - ((Width_mm - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))^2)` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Width_mm_Min
 *   **Min Score (0.0):** ≥ Width_mm_Max
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*
+*   *Constants: See [scoring_constants.md] Section 1*
 > [!NOTE]
 > **Why Quadratic (not Linear)?** Research into hand anthropometry shows that phone width comfort is **not a constant penalty per millimeter** — it has a real physical threshold.
 >
@@ -365,7 +365,7 @@ This is the preferred method when a direct DXOMARK Display score is available. I
     *   **Formula:** `Score = 10 * (log(DXO_Score) - log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) - log(Display_DXO_Score_Min))` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Display_DXO_Score_Max
     *   **Min Score (0.0):** ≤ Display_DXO_Score_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 2*
+*   *Constants: See [scoring_constants.md] Section 2*
 
 > [!NOTE]
 > **Why Logarithmic?** Visual perception quality follows diminishing returns (Weber-Fechner law). An improvement of **10 points** at the low end (e.g., 60 to 70) represents a fundamental fix to usability flaws (e.g., becoming readable in sunlight). The same **10-point** improvement at the high end (e.g., 140 to 150) represents subtle refinements in peak HDR highlights or calibration that are barely perceptible to the human eye. Logarithmic scaling correctly assigns more value to these early, critical gains.
@@ -930,7 +930,7 @@ MAR is a weighted composite of three subsections:
 *Formula:* `Score = 10 * (log(Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Support_Years_Max
 *   **Min Score (0.0):** ≤ Support_Years_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+*   *Constants: See [scoring_constants.md] Section 8*
 > [!NOTE]
 > **Why Logarithmic?** The value of support diminishes over time as hardware ages. The difference between 1 and 3 years is critical for security. The difference between 5 and 7 years is less impactful as many users upgrade before then.
 
@@ -1292,7 +1292,7 @@ This is the preferred method when real-world benchmark data is available.
     *   **Formula:** `SGS_Bench = 10 * (log(Score) - log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) - log(GPU_SteelNomad_Score_Min))` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ GPU_SteelNomad_Score_Max
     *   **Min Score (0.0):** ≤ GPU_SteelNomad_Score_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+*   *Constants: See [scoring_constants.md] Section 6*
 
 > [!NOTE]
 > **Why Logarithmic?** Graphics performance scales exponentially in user experience. The difference between 500 points (entry-level, struggles with basic games) and 900 points (smooth gameplay in most titles) is transformative. However, the difference between 1400 points (flagship) and 1800 points (top-tier flagship) shows diminishing returns - both deliver excellent performance, and the improvement is barely noticeable in real-world use.
@@ -1378,7 +1378,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 2.  **Predicted SGS:** `10 * (log(RC) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min))`
     *   **Max Score (10.0):** ≥ GPU_RC_Score_Max
     *   **Min Score (0.0):** ≤ GPU_RC_Score_Min
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+    *   *Constants: See [scoring_constants.md] Section 6*
 
 #### Part 2: Ray Tracing Score (RTS)
 *Focus:* Advanced lighting physics (Reflection, Refraction, Shadows).
@@ -1457,7 +1457,7 @@ This is the preferred method when a direct Geekbench AI score is available. It p
     *   **Formula:** `Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min))` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ AI_GB_Quant_Score_Max
     *   **Min Score (0.0):** ≤ AI_GB_Quant_Score_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+*   *Constants: See [scoring_constants.md] Section 6*
 
 > [!NOTE]
 > **Why Logarithmic?** AI performance utility follows diminishing returns. The difference between a sluggish 500-point device (struggles with basic voice commands) and a capable 1500-point device (handles real-time translation) is transformative. The difference between a 3500-point flagship and a 4500-point ultra-flagship is noticeable only in extreme edge cases like running large LLMs locally.
@@ -1551,7 +1551,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *Formula:* `Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ RAM_GB_Max
 *   **Min Score (0.0):** ≤ RAM_GB_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+*   *Constants: See [scoring_constants.md] Section 6*
 > [!NOTE]
 > **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB dramatically improves multitasking and system stability. However, going from 16GB to 24GB offers minimal tangible benefit for current mobile applications.
 
@@ -1580,7 +1580,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *Formula:* `Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Storage_GB_Max
 *   **Min Score (0.0):** ≤ Storage_GB_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+*   *Constants: See [scoring_constants.md] Section 6*
 > [!NOTE]
 > **Why Logarithmic?** Similar to RAM, storage utility is non-linear. 64GB to 128GB is a critical upgrade that prevents "storage full" anxiety. 512GB to 1TB is a luxury for power users, with less impact on daily basic functionality.
 
@@ -1689,7 +1689,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 *   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
 *   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 6*
+*   *Constants: See [scoring_constants.md] Section 6*
 
 > **Why Logarithmic?** Transistor density and power efficiency scale non-linearly. A shrink from a mid-range node to a cutting-edge node is a massive leap, while equivalent absolute reductions at larger nodes yield diminishing returns.
 
@@ -2046,7 +2046,7 @@ Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
     *   **Formula:** `GSM_Score = 10 * (Hours - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_GSMArena_Hours_Max
     *   **Min Score (0.0):** ≤ Battery_GSMArena_Hours_Min
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+    *   *Constants: See [scoring_constants.md] Section 8.1*
 
 *   **PhoneArena Battery Life Estimate**
     *   **Source:** [PhoneArena Benchmarks](https://www.phonearena.com/phones/benchmarks/battery)
@@ -2054,7 +2054,7 @@ Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
     *   **Formula:** `PA_Score = 10 * (Hours - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_PhoneArena_Hours_Max
     *   **Min Score (0.0):** ≤ Battery_PhoneArena_Hours_Min
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+    *   *Constants: See [scoring_constants.md] Section 8.1*
 
 **2. Scoring Logic (Data Availability)**
 
@@ -2139,7 +2139,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *   **Formula:** `Energy_Score = 10 * (Wh - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_Energy_Wh_Max
     *   **Min Score (0.0):** ≤ Battery_Energy_Wh_Min
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8.1*
+    *   *Constants: See [scoring_constants.md] Section 8.1*
 
 > [!NOTE]
 > **Why Linear?** Battery energy storage scales linearly with capacity. A 20 Wh battery stores exactly twice as much energy as a 10 Wh battery, providing proportionally longer runtime. There are no diminishing returns in energy storage - more Watt-hours directly translates to more battery life.
@@ -2288,7 +2288,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *Formula:* `Score = 10 * ((1/Battery_Wired_Charging_W_Min) - (1/Watts)) / ((1/Battery_Wired_Charging_W_Min) - (1/Battery_Wired_Charging_W_Max))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Battery_Wired_Charging_W_Max
 *   **Min Score (0.0):** ≤ Battery_Wired_Charging_W_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+*   *Constants: See [scoring_constants.md] Section 8*
 > [!NOTE]
 > **Why Inverse Proportional?** The actual charging time ($T$) rests precisely on an inverse hyperbola with wattage ($W$): $T \propto C / W$. Upgrading from 15W to 30W cuts charge time in half (saving ~45 minutes). Upgrading from 100W to 120W saves less than 2 minutes. Scoring the wattage via an exact Inverse formula perfectly plots the true user benefit: raw **Time Saved** waiting at the wall outlet.
 
@@ -2300,7 +2300,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *Formula:* `Score = 10 * ((1/Battery_Wireless_Charging_W_Min) - (1/Watts)) / ((1/Battery_Wireless_Charging_W_Min) - (1/Battery_Wireless_Charging_W_Max))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Battery_Wireless_Charging_W_Max
 *   **Min Score (0.0):** ≤ Battery_Wireless_Charging_W_Min
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+*   *Constants: See [scoring_constants.md] Section 8*
 > [!NOTE]
 > **Why Inverse Proportional?** Just like wired charging, the time it takes to charge wirelessly follows an inverse hyperbolic curve ($T \propto 1/W$). Scoring the wattage inversely perfectly models the raw minutes of charging time saved, recognizing that jumping from 5W to 15W is a transformative time-saver, while jumping from 50W to 60W is nearly negligible.
 
@@ -2312,7 +2312,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *Formula:* `Score = 10 * (Watts / Battery_Reverse_Wired_W_Max)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_Reverse_Wired_W_Max
     *   **Min Score (0.0):** 0W (None)
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+    *   *Constants: See [scoring_constants.md] Section 8*
 > [!NOTE]
 > **Why Linear?** Similar to wireless reverse, the output range is small (4.5W to ~10W). Linear scaling provides a fair and intuitive distribution of scores based on raw power output.
 
@@ -2324,7 +2324,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *Formula:* `Score = 10 * (Watts / Battery_Reverse_Wireless_W_Max)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_Reverse_Wireless_W_Max
     *   **Min Score (0.0):** 0W (None)
-    *   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 8*
+    *   *Constants: See [scoring_constants.md] Section 8*
 > [!NOTE]
 > **Why Linear?** The range of reverse wireless charging is narrow (typically 4.5W to 10W). A linear scale accurately reflects that 10W is roughly twice as fast/useful as 4.5W for small accessory batteries.
 
@@ -2350,7 +2350,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *Formula:* `Score = 10 - 10 * (log(Price) - log(Price_USD_Min)) / (log(Price_USD_Max) - log(Price_USD_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≤ Price_USD_Min
 *   **Min Score (0.0):** ≥ Price_USD_Max
-*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 9*
+*   *Constants: See [scoring_constants.md] Section 9*
 > [!NOTE]
 > **Why Logarithmic?** Price sensitivity is relative. A $50 increase on a $150 phone is a massive 33% hike, whereas a $50 increase on a $1000 phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.
 
