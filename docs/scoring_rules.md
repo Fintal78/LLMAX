@@ -352,7 +352,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Max Score (10.0):** ≥ Display_PWM_Hz_Max
 *   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
 > [!NOTE]
-> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +240Hz jump from 240Hz to 480Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +240Hz increase from 2880Hz to 3120Hz provides almost zero perceptible biological benefit.
+> **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +500Hz jump from 200Hz to 700Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +500Hz increase from 3000Hz to 3500Hz provides almost zero perceptible biological benefit.
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
 *Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
