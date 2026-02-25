@@ -277,7 +277,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > [!NOTE]
 > **Understanding HDR Formats and the Tiered Scoring Rationale**
 >
-> Higher scores are awarded to devices that support dynamic metadata formats (which optimize brightness/color frame-by-frame) and have wide compatibility with premium streaming services. Support is scored as a binary "tier" rather than a continuous scale because these are discrete hardware certifications.
+> Higher scores are awarded to devices that support dynamic metadata formats (which optimize brightness/color frame-by-frame) and have wide compatibility with premium streaming services.
 >
 > *   **Universal (10.0):** The device natively supports *both* competing dynamic standards (Dolby Vision and HDR10+). The user is guaranteed the best possible dynamic HDR stream (scene-by-scene optimization) regardless of their chosen streaming platform (Netflix, Apple TV, Amazon Prime).
 > *   **Primary (9.0):** The device supports **Dolby Vision**—the highest-tier licensed format featuring 12-bit color depth and end-to-end studio calibration. This is the dominant standard used by Netflix, Apple, and Disney+. Devices supporting only this (e.g., iPhone) get the best experience on most services, but fall back to basic static HDR10 on platforms like Amazon Prime, denying it a perfect 10.

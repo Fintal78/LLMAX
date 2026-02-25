@@ -32,7 +32,7 @@
 ### 2.3 Color Gamut
 *   `Display_P3_Coverage_Percent_Min` = 65 (Score 0), `Display_P3_Coverage_Percent_Max` = 100 (Score 10)
 
-### 2.4 Resolution Density
+### 2.5 Resolution Density
 *   `Display_PPI_Min` = 200 (Score 0), `Display_PPI_Max` = 600 (Score 10)
 
 ### 2.6 Motion Smoothness
@@ -60,10 +60,10 @@
 ### 4.1 Main Sensor Size
 *   `Camera_Main_Sensor_Inch_Min` = 0.25 (Score 0), `Camera_Main_Sensor_Inch_Max` = 1.0 (Score 10)
 
-### 4.2 Main Aperture
+### 4.2 Main Camera Aperture
 *   `Camera_Main_Aperture_f_Min` = 1.4 (Score 10), `Camera_Main_Aperture_f_Max` = 2.4 (Score 0)
 
-### 4.3 Main Resolution
+### 4.3 Main Camera Resolution
 *   `Camera_Main_Resolution_MP_Min` = 12 (Score 0), `Camera_Main_Resolution_MP_Max` = 200 (Score 10)
 
 ### 4.5 Ultrawide Camera
@@ -76,16 +76,16 @@
 ### 4.7 Macro Capability
 *   `Camera_Macro_Dist_cm_Min` = 1.5 (Score 10), `Camera_Macro_Dist_cm_Max` = 10 (Score 0)
 
-### 4.8 Front Resolution
+### 4.8 Front Camera Sensor Resolution
 *   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)
 
 ### 4.11 Rear Video Frame Rate
 *   `Camera_Video_FPS_Min` = 5 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)
 
-### 4.14 Slow Motion
+### 4.14 High Frame Rate (Slow Motion)
 *   `Camera_SlowMo_MPs_Min` = 32 (Score 0), `Camera_SlowMo_MPs_Max` = 1000 (Score 10)
 
-### 4.15 Front Video
+### 4.15 Front Camera Video Performance
 *   `Camera_Front_Video_Res_Width_Min` = 1280 (Score 0), `Camera_Front_Video_Res_Width_Max` = 3840 (Score 10)
 *   `Camera_Front_Video_FPS_Min` = 24 (Score 0), `Camera_Front_Video_FPS_Max` = 60 (Score 10)
 
@@ -104,7 +104,7 @@
 *   `CPU_GB6_Multi_Score_Min` = 1500 (Score 0), `CPU_GB6_Multi_Score_Max` = 7500 (Score 10)
 *   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 140 (Score 10)
 
-### 6.2 CPU Single-Core
+### 6.2 CPU Architecture & Single-Core Efficiency
 *   `CPU_GB6_Single_Score_Min` = 400 (Score 0), `CPU_GB6_Single_Score_Max` = 3000 (Score 10)
 *   `CPU_STRS_Score_Min` = 5 (Score 0), `CPU_STRS_Score_Max` = 12 (Score 10)
 
@@ -131,7 +131,7 @@
 
 **7. Connectivity & Sensors**
 
-### 7.4 Bluetooth & Codecs
+### 7.4 Bluetooth & Audio Codecs
 *   `Audio_Bitrate_kbps_Max` = 1200 (Score 10)
 
 
@@ -152,11 +152,11 @@
 ### 8.3 Wireless Charging
 *   `Battery_Wireless_Charging_W_Min` = 7.5 (Score 0), `Battery_Wireless_Charging_W_Max` = 50 (Score 10)
 
-### 8.4 Reverse Wired
+### 8.4 Wired Reverse Charging
 *   `Battery_Reverse_Wired_W_Max` = 10 (Score 10)
 
 
-### 8.5 Reverse Wireless
+### 8.5 Wireless Reverse Charging
 *   `Battery_Reverse_Wireless_W_Max` = 10 (Score 10)
 
 
