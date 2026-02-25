@@ -487,15 +487,24 @@ PAPI is a weighted composite of two subsections:
 >
 > **Why is Atmos alone an 8.0?**
 > Because Dolby Atmos is the defacto standard for 90% of commercial streaming, an "Atmos Only" phone will provide a premium 3D experience for the vast majority of users. It only loses 2 points for lacking the universal flexibility of a dual-format decoder during local/niche media playback.
+
 #### 3.2.2 Spatial Audio Rendering (Playback)
-*What it measures:* Ability of the operating system to spatialize audio during playback, creating a 3D soundstage over headphones or speakers.
-*Why it matters:* Determines immersion and realism during media consumption.
+*What it measures:* The ability of the operating system to actively virtualize and "spatialize" audio during playback, creating a 3D soundstage (usually over supported headphones or earbuds).
+*Why it matters:* Determines immersion and realism during media consumption, making the user feel like they are inside the movie scene rather than just listening to a flat audio stream.
 
 | Score    | Spatial Rendering Capability                 |
 | :------- | :------------------------------------------- |
-| **10.0** | **Spatial audio with dynamic head tracking** |
-| **7.0**  | **Spatial audio (static, no head tracking)** |
+| **10.0** | **Spatial audio WITH Dynamic Head Tracking** |
+| **7.0**  | **Spatial audio (Static, no head tracking)** |
 | **0.0**  | **No spatial rendering**                     |
+
+> [!NOTE]
+> **Format Decode (3.2.1) vs. Spatial Rendering (3.2.2)**
+> *   **Format Decode (3.2.1)** measures the phone's ability to merely *read and understand* the raw data file (like a Dolby Atmos movie file).
+> *   **Spatial Rendering (3.2.2)** measures the phone's ability to *virtualize* that data into a 3D headphone experience. A phone might decode Atmos (3.2.1), but if it lacks a Spatial Audio rendering engine (3.2.2), you will just hear flat, high-quality stereo through your headphones instead of a 360-degree soundfield.
+> 
+> **Why is Head Tracking a 10.0?**
+> Standard spatial audio (7.0) places sounds in a 3D sphere around your head, but if you physically turn your head to the left, the entire "room" of sound rotates with you. **Dynamic Head Tracking (10.0)** uses gyroscope data to anchor the audio in physical space. If you turn your head to the left, the dialogue stays anchored to the phone screen in front of you, drastically increasing the illusion of being in a physical cinema.
 
 ### 🔹 3.3 Wired Audio Capability
 *Description:* Evaluates native wired audio output options available without relying on external powered accessories.
