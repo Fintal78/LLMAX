@@ -22,7 +22,6 @@
 *   `Width_mm_Min` = 67.3 (Score 10), `Width_mm_Max` = 79.0 (Score 0)
 
 
-
 **2. Display**
 
 ### 2.2 Brightness (Peak & HBM)
@@ -52,7 +51,6 @@
 
 ### 2.11 Display Benchmark
 *   `Display_DXO_Score_Min` = 60 (Score 0), `Display_DXO_Score_Max` = 160 (Score 10)
-
 
 
 **4. Camera Systems**
@@ -90,12 +88,10 @@
 *   `Camera_Front_Video_FPS_Min` = 24 (Score 0), `Camera_Front_Video_FPS_Max` = 60 (Score 10)
 
 
-
 **5. Software & Longevity**
 
 ### 5.1 Support Longevity
 *   `Support_Years_Min` = 1 (Score 0), `Support_Years_Max` = 7 (Score 10)
-
 
 
 **6. Processing Power**
@@ -114,7 +110,6 @@
 
 ### 6.4 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 4500 (Score 10)
-
 
 ### 6.6 RAM Capacity
 *   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)
@@ -135,7 +130,6 @@
 *   `Audio_Bitrate_kbps_Max` = 1200 (Score 10)
 
 
-
 **8. Battery & Charging**
 
 ### 8.1 Battery Endurance (Model)
@@ -154,7 +148,6 @@
 
 ### 8.4 Wired Reverse Charging
 *   `Battery_Reverse_Wired_W_Max` = 10 (Score 10)
-
 
 ### 8.5 Wireless Reverse Charging
 *   `Battery_Reverse_Wireless_W_Max` = 10 (Score 10)

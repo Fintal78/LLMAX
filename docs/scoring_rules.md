@@ -830,8 +830,6 @@ MAR is a weighted composite of three subsections:
 > **Why Logarithmic?** Slow motion quality depends on both resolution and speed. A logarithmic scale on total pixels-per-second (MP/s) fairly balances high-res/low-fps against low-res/high-fps modes, rewarding the total data throughput capability.
 
 
-
-
 ### C. Front Camera System (Selfie)
 *Groups all front-facing hardware and capabilities (both photo and video) into one cohesive chapter.*
 
