@@ -255,14 +255,14 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 >
 > [!IMPORTANT]
 > **Gamut vs. Accuracy (Delta-E)**
-> *   **Gamut (Section 2.3) = Quantity:** Measures the *range* of colors a screen is physically capable of showing. Like a painter's palette having more colors available.
+> *   **Gamut = Quantity:** Measures the *range* of colors a screen is physically capable of showing. Like a painter's palette having more colors available.
 > *   **Accuracy (Delta-E) = Quality:** Measures how *correctly* those colors are displayed compared to the source standard. Like the painter using those colors to perfectly match a reference image.
 >
 > **Why no Delta-E Score?** Factory calibration data (Delta-E) is rarely public in specs. Therefore, excellent color accuracy (e.g., Delta-E < 2.0) is rewarded strictly via **Section 11 (Boosters)** when validated by expert reviews.
 
 ### 🔹 2.4 HDR Format Support (HFS)
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
-*   **Measurement:** Manufacturer specifications and DRM capability lists.
+*   **Measurement:** Manufacturer specifications and Digital Rights Management (DRM) certification lists (e.g., Widevine L1 for HD/4K streaming from Netflix, Disney+).
 *   **Unit:** Supported Standards (Binary Features)
 *   **Significance:** Ensures compatibility with premium content from streaming services (Netflix, Disney+, etc.).
 
