@@ -156,7 +156,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > **Why Linear?** Wrist and arm fatigue from holding a phone scales approximately proportionally with weight — the same way a 200g book feels twice as heavy as a 100g booklet after an extended reading session. Within the practical 130–250g range that covers all modern smartphones, each additional gram adds a constant ergonomic cost. No diminishing returns apply here.
 
 ### 🔹 1.6 Ergonomics (Width & Handling)
-*Description:* Quantifies the ergonomic handling cost of phone width for one-handed use. Wider phones are harder to grip and operate single-handedly, with the discomfort accelerating beyond a critical threshold tied to human hand anatomy. Note: the positive benefit of a wider phone (bigger screen) is already captured in Section 2.9 (Screen Size) and 2.8 (Screen-to-Body Ratio).
+*Description:* Quantifies the ergonomic handling cost of phone width for one-handed use. Wider phones are harder to grip and operate single-handedly, with the discomfort accelerating beyond a critical threshold tied to human hand anatomy. Note: the positive benefit of a wider phone (bigger screen) is already captured in Section 2.9 (Screen Size) and Section 2.8 (Screen-to-Body Ratio).
 *   **Measurement:** Device Width
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Beyond a critical threshold (~75–77mm), one-handed operation becomes difficult for a large share of users.
@@ -183,7 +183,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > | Galaxy S24+        | 75.9mm |  **5.3** |
 > | Galaxy S24 Ultra   | 79.0mm |  **0.0** |
 >
-> *Note: The S24 Ultra scoring 0.0 on this specific metric is correct. Its large screen is already fully rewarded by Sections 2.9 and 2.8. This metric scores solely the ergonomic handling cost.*
+> *Note: The S24 Ultra scoring 0 on this specific metric is correct. Its large screen is already fully rewarded by Section 2.9 and Section 2.8. This metric scores solely the ergonomic handling cost.*
 
 
 ## 🟣 2. Display
@@ -231,7 +231,6 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   `Final_Score = (0.7 * HBM_Score) + (0.3 * Peak_Score)`
 *   **Max Score (10.0):** ≥ Max Nits limits.
 *   **Min Score (0.0):** ≤ Min Nits limits.
-*   **Data Structure Mapping:** `2_display.2_3_brightness.hbm_nits` and `peak_nits`. 
 
 > [!NOTE]
 > **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a massive doubling in brightness by the human eye. However, because our eyes are already overwhelmed by the light, a 500-nit jump from 3000 to 3500 nits is barely noticed.
@@ -280,7 +279,6 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Measurement:** Pixels Per Inch (PPI)
 *   **Unit:** PPI
 *   **Significance:** Determines visual sharpness and clarity of text.
-*   **Data Structure Mapping:** `2_2_resolution_density.ppi`
 
 *Formula:* `Score = 10 * (log(PPI) - log(Display_PPI_Min)) / (log(Display_PPI_Max) - log(Display_PPI_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Display_PPI_Max
@@ -2096,8 +2094,6 @@ Find **3 Reference Phones** that have **BOTH** GSMArena and PhoneArena scores (C
 
 *Why it matters:* Battery life is fundamentally bounded by the total amount of energy stored. No matter how efficient a phone is, it cannot run without fuel. We calculate the total energy in Watt-hours (Wh) because it accounts for voltage differences, providing a more accurate measure of true capacity than milliamp-hours (mAh) alone.
 
-*   **Data Structure Mapping:** `5_1_battery_endurance.layer_a_energy.wh`, `5_battery_and_charging.mah`, `5_battery_and_charging.battery_voltage_v`, and `5_battery_and_charging.battery_cell_configuration` (for dual-cell detection)
-
 *Voltage Detection Logic:*
 Modern smartphones use either single-cell or dual-cell battery configurations:
 1. **Single-Cell (Standard):** One lithium-ion cell at **3.85V nominal**
@@ -2137,8 +2133,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *   **B.1 SoC Efficiency (40% of Layer B)**
     *   **B.1.1 Process Node (50% of SoC)**
         *   *Why it matters:* Process node (nm) is the biggest determinant of a chip's power efficiency. Smaller transistors require less voltage to switch. Foundry differences are also critical (e.g., TSMC vs Samsung).
-        *   *Data Mapping:* `3_4_efficiency_node.process_nm` and `3_4_efficiency_node.foundry`
-        *   *Formula:* Score calculated via **Section 6.10** (Unified formula).
+        *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively (i.e., `(0.9 × Node_Score) + (0.1 × Foundry_Score)`). Do **not** use the full TDSI score (which additionally includes the physical body Parts A & B and the Load Bonus).
 
     *   **B.1.2 CPU Architecture Class (30% of SoC)**
         *   *Why it matters:* Efficiency cores (e.g., A520) handle 80% of daily tasks. We use the Architecture Efficiency Score (AES) to evaluate the weighted average efficiency of the entire CPU cluster, accurately predicting idle/low-load power.
