@@ -23,7 +23,7 @@ The battery endurance scoring system calculates performance scores for smartphon
 2. **Case 2:** Phones with **one** benchmark → Use it
 3. **Case 3:** Phones with **no** benchmarks → Interpolate from 3 nearest neighbors
 
-See [scoring_rules.md] Section 5.1 for complete technical specifications.
+See [scoring_rules.md] for complete technical specifications.
 
 ---
 
