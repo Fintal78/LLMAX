@@ -73,6 +73,7 @@
 
 ### 4.7 Macro Capability
 *   `Camera_Macro_Dist_cm_Min` = 1.5 (Score 10), `Camera_Macro_Dist_cm_Max` = 10 (Score 0)
+*   `Camera_Telemacro_x_Min` = 2 (Score 0), `Camera_Telemacro_x_Max` = 5 (Score 10)
 
 ### 4.9 Rear Video Frame Rate
 *   `Camera_Video_FPS_Min` = 5 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)

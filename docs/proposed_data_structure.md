@@ -296,13 +296,35 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "2_10_eye_comfort": {
-      "pwm_dimming_hz": {
-        "value": 492,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      // SCORING GOAL: Evaluates how the screen dims at low brightness levels to prevent eye strain and headaches. It scores either the perfect continuous light of Direct Current (DC) Dimming, or scales the Pulse-Width Modulation (PWM) frequency if flickering is present.
+      "dimming_hardware": {
+        "pwm_dimming_active": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": "N/A"
+          // SCORING GUIDELINE: If value = true then PWM Dimming is active, this subscore remains "N/A" as the score will be defined by the frequency 'pwm_dimming_hz'. If value = false then DC Dimming is active, this specific subscore is evaluated as 10.0 without any impact of 'pwm_dimming_hz'.
+        },
+        "pwm_dimming_hz": {
+          "value": 492,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 3.4
+          // SCORING GUIDELINE: If `pwm_dimming_active` = true, evaluate this specific subscore using the Section 2.10.2 logarithmic formula with the provided value of 'pwm_dimming_hz'. If `pwm_dimming_active` = false, this specific subscore MUST be "N/A".
+        }
       },
+      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" from the `dimming_hardware` block above.
       "predicted_score": 0.0,
-      "final_score": 0.0
+      "final_score": {
+        "value": 0.0,
+        // SCORING GUIDELINE: The definitive eye comfort score. It inherits the `predicted_score` unless mathematically modified by a Section 11 expert review Booster. (This section has no Benchmark or Neighbor equivalents).
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 rule applied (e.g., "11.5"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_11_display_benchmark_final_scoring": {
       "dxomark_display_score": {
@@ -614,20 +636,48 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "4_7_macro_capability": {
-      "ultrawide_af": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "4_7_1_ultrawide_path": {
+        "ultrawide_af": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.0
+          // SCORING GUIDELINE: Only processed if `4_5_ultrawide_capability.presence.value` = true. If true, `value`: true (Autofocus) evaluates to 10.0, and `value`: false (Fixed focus) evaluates to 6.0. If `presence` = false, this subscore MUST be marked "N/A" as the score defaults to 0.0.
+        },
+        "min_focus_distance_cm": {
+          "value": 2.5,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.5
+        },
+        "predicted_score": 0.0,
+        "final_score": 0.0
       },
-      "min_focus_distance_cm": {
-        "value": 2.5,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "4_7_2_telemacro_path": {
+        "telemacro_presence": {
+          "value": false,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.0
+        },
+        "telemacro_optical_x": {
+          "value": 0,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": "N/A"
+        },
+        "predicted_score": 0.0,
+        "final_score": 0.0
       },
-      "dedicated_macro_mp": {
-        "value": 0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+      "4_7_3_dedicated_path": {
+        "dedicated_macro_mp": {
+          "value": 0,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.0
+        },
+        "predicted_score": 0.0,
+        "final_score": 0.0
       },
       "predicted_score": 0.0,
       "final_score": 0.0

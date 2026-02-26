@@ -429,3 +429,26 @@ To prevent human or parser omission, every discrete scorable feature evaluated i
   "subscore": 10.0
 }
 ```
+
+---
+
+## 4. Inline JSON Documentation Rules (The Recipe)
+
+To ensure the JSON data structure is entirely self-contained, every scoring subsection within `proposed_data_structure.md` **MUST** include explicit explanatory comments (`//`) directly injected into the JSON. A user or script must be able to fill out the subsection perfectly using only these comments, without ever needing to open `scoring_rules.md`.
+
+Every subsection must contain the following "recipe":
+1.  **Subsection Goal:** An explanation at the very top of the subsection block detailing what the scoring goal is.
+2.  **Subscore Extraction:** For *every* component `subscore`, an explicit explanation of how it is mathematically obtained, no formula but with direct references to formulas from `scoring_rules.md` (or the exact conditions under which it evaluates to `"N/A"`).
+3.  **Final/Predicted Derivation:** For *each* `predicted_score` and `final_score`, a clear explanation of how they are calculated from the subscores above them.
+    *   **Crucial `final_score` Rule:** You must take into account whether the subsection can actually be impacted by a Booster OR a Benchmark/Nearest Neighbor method (they are mutually exclusive). The comment for `final_score` must ONLY mention the override method that specifically applies to that subsection. Generic boilerplate (e.g. "modified by Boosters or Benchmarks") is strictly forbidden if both do not logically apply.
+    *   **Final Score Object Structure:** The `final_score` (or just `final` in the context of `scores` wrapper) must be structured as a detailed object, and every field within it MUST be explicitly documented with inline comments according to this template:
+        ```json
+        "final": {
+          "value": 6.83,               // Definitive score
+          "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
+          "booster": "11.5",           // Section reference to the booster, or "No"
+          "confidence": "N/A"          // Confidence level, N/A for Predictor; High/Medium/Low for 2 Benchmarks
+        }
+        ```
+4.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity.
+5.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.

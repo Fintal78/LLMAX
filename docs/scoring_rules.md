@@ -346,21 +346,28 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 ### 🔹 2.10 Eye Comfort (Dimming Technology & Pulse-Width Modulation)
 *Description:* How the screen dims at low brightness levels to prevent eye strain, headaches, and fatigue. Different screen technologies require different dimming solutions, which directly impact the user's biological comfort. This section evaluates both DC (Direct Current) Dimming and PWM (Pulse-Width Modulation).
 
-**Scoring by Display Technology:**
+**2.10.1 PWM Dimming (Flicker) Presence**
+*   *Why it matters:* OLED screens cannot simply lower the voltage to their pixels without destroying color accuracy. Instead, they rapidly turn the pixels completely off and on (Pulse-Width Modulation). Traditional LCD/IPS displays lower brightness by directly reducing the voltage (Direct Current or DC Dimming), creating a continuous, unbroken stream of light. However, some cheap LCDs still use PWM backlight controllers.
 
-**1. LCD / IPS Screens (DC Dimming)**
-*   **Rule:** Traditional LCD/IPS displays lower brightness by directly reducing the voltage to the backlight (DC Dimming). This creates a continuous, unbroken stream of light.
-*   **Score:** **10.0** (Perfect, Flicker-Free) by default.
-*   *Exception:* If testing reveals the manufacturer used a cheap PWM backlight controller (flickering the LCD), score it using the OLED PWM Formula below.
+| Presence | Dimming Technology Used | Spec Sheet Verification Rule                                                                   |
+| :------- | :---------------------- | :--------------------------------------------------------------------------------------------- |
+| **Yes**  | **PWM Dimming active**  | Any OLED/AMOLED panel (inherent), or an LCD specifically tested to have PWM flicker.           |
+| **No**   | **DC (Direct Current)** | Standard LCD/IPS panel with confirmed DC (Direct Current) dimming (no measurable PWM flicker). |
 
-**2. OLED / AMOLED Screens (PWM Dimming)**
-*   **Rule:** OLED screens cannot simply lower the voltage to their pixels without destroying color accuracy. Instead, they rapidly turn the pixels completely off and on (Pulse-Width Modulation).
-*   **Formula:** `Score = 10 * (log(Hz) - log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) - log(Display_PWM_Hz_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Display_PWM_Hz_Max (e.g., Ultra-high 3840Hz+ panels or OLEDs with dedicated "DC-like" software modes).
-*   **Min Score (0.0):** ≤ Display_PWM_Hz_Min (e.g., Aggressive low-frequency 240Hz panels).
+**2.10.2 PWM Dimming Frequency**
+*   *Why it matters:* If PWM is present, a higher frequency means the flicker is faster and less perceptible to the human eye, reducing strain.
+*   **Measurement:** PWM dimming frequency.
+*   **Unit:** Hertz (Hz)
+*   *Formula:* `Score = 10 * (log(Hz) - log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) - log(Display_PWM_Hz_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Display_PWM_Hz_Max 
+    *   **Min Score (0.0):** ≤ Display_PWM_Hz_Min
 
 > [!NOTE]
 > **Why Logarithmic?** The health benefits of higher PWM frequencies follow a diminishing return curve. The +500Hz jump from 200Hz to 700Hz is transformative, significantly reducing visible flicker and stopping headaches for sensitive eyes. However, an identical +500Hz increase from 3000Hz to 3500Hz provides almost zero perceptible biological benefit.
+
+**Final Formula:**
+*   If 2.10.1 Presence = No: `Score = 10.0` *(Perfect, flicker-free standard)*
+*   If 2.10.1 Presence = Yes: `Score = Score_2.10.2`
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
 *Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
@@ -586,9 +593,9 @@ MAR is a weighted composite of three subsections:
 *   **Max Score (10.0):** ≥ Camera_Main_Sensor_Inch_Max
 *   **Min Score (0.0):** ≤ Camera_Main_Sensor_Inch_Min
 > [!NOTE]
-> **Why Logarithmic?** Sensor light-gathering capability depends on its **Area** ($Area \propto Diagonal^2$), which suggests a Quadratic formula. However, because of the power rule of logarithms, $log(x^2) = 2 \times log(x)$. When we put this into our normalization formula: $\frac{log(Size^2) - log(Min^2)}{log(Max^2) - log(Min^2)}$, this expands to $\frac{2 \times log(Size) - 2 \times log(Min)}{2 \times log(Max) - 2 \times log(Min)}$. The factor of $2$ factors out of both the numerator and denominator and completely cancels out.
+> **Why Logarithmic?** The physical photographic benefits of increased sensor area—specifically dynamic range expansion and photon noise reduction—follow a diminishing return curve. Moving from a tiny entry-level sensor (e.g., 1/2.55") to a large flagship sensor (e.g., 1/1.3") delivers a massive, instantly visible leap in image quality. However, an equivalent increase moving toward an even larger format (e.g., 1.0-inch) yields much smaller relative improvements in daily photography, as the primary bottlenecks shift to lens physics (diffraction, edge softness) and the limits of computational processing. A logarithmic scale perfectly models this non-linear perceptual gain.
 > 
-> Therefore, scoring the 1-dimensional diagonal using logarithms is mathematically identical to scoring the 2-dimensional area logarithmically. This perfectly rewards the physical area expansion while modeling the natural optical diminishing returns of mobile smartphone lenses.
+> **Why calculate using the Diagonal?** Sensor light-gathering capacity is determined by its **Area** ($Area \propto Diagonal^2$). Because of the power rule of logarithms, $log(x^2) = 2 \times log(x)$. When we put the squared diagonal into our normalization formula: $\frac{log(Size^2) - log(Min^2)}{log(Max^2) - log(Min^2)}$, it expands to $\frac{2 \times log(Size) - 2 \times log(Min)}{2 \times log(Max) - 2 \times log(Min)}$. The factor of $2$ perfectly factors out of both the numerator and denominator and completely cancels out. Therefore, scoring the 1-dimensional diagonal logarithmically is mathematically identical to scoring the 2-dimensional area logarithmically, flawlessly simplifying the calculation.
 
 ### 🔹 4.2 Main Camera Aperture
 *Description:* The size of the lens opening. Wider apertures (lower f-number) let in more light for brighter night shots and create natural bokeh.
@@ -599,7 +606,17 @@ MAR is a weighted composite of three subsections:
 *   **Max Score (10.0):** ≤ Camera_Main_Aperture_f_Min
 *   **Min Score (0.0):** ≥ Camera_Main_Aperture_f_Max
 > [!NOTE]
-> **Why Logarithmic?** Light gathering power is inversely proportional to the square of the focal ratio ($1/f^2$). Standard photography uses "stops" where each stop halves or doubles the light. Scoring Aperture logarithmically maps flawlessly to these optical physical limits, recognizing that the light-transmission difference between f/1.4 and f/1.6 is significantly greater than between f/2.4 and f/2.6.
+> **Why Logarithmic?** The quantity of light is proportional to the area of the camera's pupil, which is $\propto 1/f^2$. 
+> 
+> If we wanted to score the raw *volume* of light, we would indeed calculate $1/f^2$ and score it linearly. However, just as we established in **Section 4.1 (Main Sensor Size)**, the real-world photographic benefits of gathering more light (expanding dynamic range, reducing noise) follow a diminishing return curve. To score the *photographic benefit* rather than the raw volume, we must apply a logarithmic curve: $log(1/f^2)$.
+> 
+> Here is the mathematical magic. Because of the algebraic rules of logarithms, $log(1/f^2)$ simplifies perfectly to $-2 \times log(f)$. 
+> 
+> When we place this into our standard normalization formula to calculate the score: 
+> $\frac{-2 \times log(f_{stop}) - (-2 \times log(f_{max}))}{-2 \times log(f_{min}) - (-2 \times log(f_{max}))}$
+> 
+> The factor of $-2$ completely factors out of both the top and bottom. The negative signs elegantly flip the subtraction direction, leaving us with: 
+> $\frac{log(f_{max}) - log(f_{stop})}{log(f_{max}) - log(f_{min})}$
 
 ### 🔹 4.3 Main Camera Resolution
 *Description:* The maximum pixel count of the primary sensor. Higher resolution allows for more detailed cropping and sharper images in good light.
@@ -644,17 +661,17 @@ MAR is a weighted composite of three subsections:
 **4.5.1 Ultrawide Presence (Binary Gate)**
 *   *Why it matters:* No ultrawide means no wide-perspective photography.
 
-| Score    | Configuration         | Notes               |
-| :------- | :-------------------- | :------------------ |
-| **10.0** | **Ultrawide present** | Any ultrawide lens. |
-| **0.0**  | **No ultrawide**      | Main camera only.   |
+| Presence | Configuration         | Spec Sheet Verification Rule |
+| :------- | :-------------------- | :--------------------------- |
+| **Yes**  | **Ultrawide present** | Any ultrawide lens.          |
+| **No**   | **No ultrawide**      | Main camera only.            |
 
 **4.5.2 Ultrawide Field of View**
 *   *Why it matters:* Wider FOV captures more of the scene; this is the primary purpose of an ultrawide lens.
 *   **Measurement:** Manufacturer FOV spec (degrees).
 *   *Formula:* `Score = 10 * (FOV - Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max - Camera_Ultrawide_FOV_Deg_Min)` (Clamped 0-10)
-    *   **10.0:** ≥ Camera_Ultrawide_FOV_Deg_Max
-    *   **0.0:** ≤ Camera_Ultrawide_FOV_Deg_Min
+    *   **Max Score (10.0):** ≥ Camera_Ultrawide_FOV_Deg_Max
+    *   **Min Score (0.0):** ≤ Camera_Ultrawide_FOV_Deg_Min
 > [!NOTE]
 > **Why Linear?** Field of View is a direct geometric measurement where each degree adds roughly equal value to the composition. The difference between 100° and 110° is perceptually similar to the difference between 110° and 120° in terms of "wideness".
 
@@ -662,14 +679,14 @@ MAR is a weighted composite of three subsections:
 *   *Why it matters:* Larger sensors perform better in low light and have better dynamic range.
 *   **Measurement:** Optical format (e.g., 1/2.0").
 *   *Formula:* `Score = 10 * (log(Size) - log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) - log(Camera_Ultrawide_Sensor_Inch_Min))` (Clamped 0-10)
-    *   **10.0:** ≥ Camera_Ultrawide_Sensor_Inch_Max
-    *   **0.0:** ≤ Camera_Ultrawide_Sensor_Inch_Min
+    *   **Max Score (10.0):** ≥ Camera_Ultrawide_Sensor_Inch_Max
+    *   **Min Score (0.0):** ≤ Camera_Ultrawide_Sensor_Inch_Min
 > [!NOTE]
 > **Why Logarithmic?** Sensor area grows quadratically with diagonal size, but photographic benefits (dynamic range, noise) follow a diminishing return curve. Moving from a tiny 1/4" sensor to a 1/2.5" sensor is a massive leap in quality, while moving from 1/2" to 1/1.5" offers smaller relative gains for an ultrawide module.
 
 **Final Formula:**
-*   If Presence = 1: `UCC = 0`
-*   If Presence = 10: `UCC = (0.55 * FOV_Score) + (0.45 * Sensor_Score)`
+*   If Presence = No: `UCC = 0`
+*   If Presence = Yes: `UCC = (0.55 * FOV_Score) + (0.45 * Sensor_Score)`
 
 > [!NOTE]
 > **Why 55/45 (FOV/Sensor)?** The whole point of an ultrawide lens is to capture a wider scene — so Field of View (FOV) is still the dominant factor (55%). However, modern photography relies heavily on ultrawide cameras in low-light conditions (indoor parties, night landscapes), where the sensor size matters enormously: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
@@ -686,31 +703,63 @@ MAR is a weighted composite of three subsections:
 > **Why Logarithmic?** The difference in reach between 1x and 3x is transformative for composition. The difference between 10x and 12x is much less significant in terms of framing capability.
 
 ### 🔹 4.7 Macro Capability & Close-Focus Performance (MCFP)
-*Description:* The ability to focus on very close subjects. Prioritizes Autofocus-enabled ultrawides over cheap dedicated lenses.
-*   **Measurement:** Focus type, Minimum Focus Distance, and Dedicated Lens specs.
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Critical for macro photography (flowers, insects, textures).
+*Description:* The ability to focus on very close subjects. Evaluates the different hardware combinations phones use to achieve macro photography.
 
-**4.7.1 Autofocus on Ultrawide**
-*   *Why it matters:* Autofocus (AF) allows for close focus and subject tracking, enabling "real" macro mode.
+> [!NOTE]
+> **Why rarely the Main Camera?**
+> Modern flagship main cameras have massive sensors. If you push them 3 centimeters away from a flower, the physical depth of field becomes paper-thin—meaning only a single petal is in focus while the rest of the flower blurs out (spherical aberration). To fix this, manufacturers rely on the **Ultrawide**, a **Dedicated** tiny lens, or **Telemacro**.
 
-| Score  | Focus Type                     |
-| :----- | :----------------------------- |
-| **10** | **Ultrawide Autofocus**        |
-| **6**  | **Ultrawide with Fixed focus** |
-| **0**  | **No macro-capable lens**      |
+**4.7.1 Ultrawide Path**
+*Groups the macro hardware performance of the secondary ultrawide lens.*
 
-**4.7.2 Minimum Focus Distance**
+**4.7.1.1 Ultrawide Autofocus (AF)**
+*   *Why it matters:* Standard camera lenses cannot focus on objects inches away. To take a "macro" photo, the lens needs to physically shift its internal glass elements extremely close to the sensor. Adding an Autofocus (AF) motor to the Ultrawide camera allows it to dynamically track subjects centimeters away, turning a standard wide camera into a high-quality macro lens. 
+*   *AF vs Fixed Focus:* Even if a Fixed Focus (FF) lens boasts a short minimum focus distance on its spec sheet, it is permanently locked to one razor-thin focal plane. The user is forced to physically shift the phone back and forth until the subject accidentally perfectly aligns with that plane, resulting in mostly blurry shots. An AF motor can lock onto a subject, compensate for shaking hands/wind, and allows the user to tap-focus exactly where they want (e.g., the stamen of a flower instead of a petal). Therefore, AF is mechanically awarded a higher structural score than FF.
+
+| Score    | Focus Type                     | Spec Sheet Verification Rule                               |
+| :------- | :----------------------------- | :--------------------------------------------------------- |
+| **10.0** | **Ultrawide with Autofocus**   | Specs list "AF", "PDAF", or "Dual Pixel" for the Ultrawide |
+| **6.0**  | **Ultrawide with Fixed focus** | Specs list "FF" or omit AF features for the Ultrawide      |
+
+*Formula:* 
+*   If 4.5.1 Ultrawide Presence = No: `Score = 0.0`
+*   If 4.5.1 Ultrawide Presence = Yes: `Score = 10.0` or `6.0` based on the Focus Type table above
+
+**4.7.1.2 Minimum Focus Distance**
 *   *Why it matters:* The physical limit of how close you can get.
 *   **Measurement:** Minimum focus distance (cm).
 *   *Formula:* `Score = 10 * (log(Camera_Macro_Dist_cm_Max) - log(Distance)) / (log(Camera_Macro_Dist_cm_Max) - log(Camera_Macro_Dist_cm_Min))` (Clamped 0-10)
-    *   **10.0:** ≤ Camera_Macro_Dist_cm_Min
-    *   **0.0:** ≥ Camera_Macro_Dist_cm_Max
+    *   **Max Score (10.0):** ≤ Camera_Macro_Dist_cm_Min
+    *   **Min Score (0.0):** ≥ Camera_Macro_Dist_cm_Max
 > [!NOTE]
 > **Why Logarithmic?** Magnification scales inversely with distance ($M \approx f/d$). Moving from 4cm to 2cm doubles the magnification capability (a massive gain in macro photography). Moving from 10cm to 8cm only increases magnification by ~25%. A logarithmic score flawlessly maps to this non-linear optical reality, heavily rewarding true microscopic lenses beneath 4cm.
 
+*Formula for 4.7.1 Ultrawide Path:*
+*   If 4.5.1 Presence = No: `Score_4.7.1 = 0.0` *(No ultrawide means no ultrawide distance score)*
+*   If 4.5.1 Presence = Yes: `Score_4.7.1 = (0.4 * Score_4.7.1.1) + (0.6 * Score_4.7.1.2)`
+
+**4.7.2 Telemacro (Telephoto Macro)**
+*   *Why it matters:* Telemacro offers a distinct perspective advantage over Ultrawide macro. Using a telephoto lens (e.g., 3x or 5x) allows the user to capture macro shots from 10cm-15cm away, preventing the phone from casting a dark shadow over the subject and providing beautiful natural background blur. 
+*   *Scoring Logic:* Just having the feature doesn't guarantee a perfect 10 or automatic superiority over an ultrawide. A weak ~2x telephoto macro will score mathematically lower than a flagship ultrawide macro capable of focusing just 2cm away. The telemacro score scales based on the specific telephoto lens's optical magnification (evaluated against telemacro-specific limits), ensuring only extreme-magnification macro lenses hit a perfect 10. Because the final formula uses `Max(Ultrawide, Telemacro)`, the system neutrally evaluates both lenses and guarantees the mathematically superior hardware implementation wins.
+*   **Measurement:** Optical Magnification (x) of the specific telephoto lens providing the macro function.
+
+| Presence | Telephoto Focus Capability       | Spec Sheet Verification Rule                                      |
+| :------- | :------------------------------- | :---------------------------------------------------------------- |
+| **Yes**  | **Telemacro present**            | Specs explicitly confirm "Macro telephoto", "floating elements",  |
+|          |                                  | or list a close telephoto focus distance (e.g., 10cm-15cm).       |
+| **No**   | **Standard Telephoto or None**   | Telephoto has standard minimum focus distance (usually > 50cm),   |
+|          |                                  | or no telephoto lens exists on the device.                        |
+
+*Formula:* 
+*   If Presence = No: `Score = 0`
+*   If Presence = Yes: `Score = 7.0 + (3.0 * Telemacro_Zoom_Score / 10)`
+    *   *Where* `Telemacro_Zoom_Score` = `10 * (log(Magnification) - log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) - log(Camera_Telemacro_x_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Camera_Telemacro_x_Max
+    *   **Min Score (0.0):** ≤ Camera_Telemacro_x_Min
+    *   *Note: This guarantees a minimum score of 7.0 for the architectural advantage, scaling up to a perfect 10.0 for extreme-magnification telemacro lenses.*
+
 **4.7.3 Dedicated Macro Lens (Penalty-aware)**
-*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Autofocus Ultrawide (Score 10).
+*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Telemacro or Autofocus Ultrawide (Score 10).
 *   **Measurement:** Sensor Resolution (MP).
 *   *Formula:* `Score = clamp(MP, 0, 6)`
     *   **Max Score (6.0):** ≥ 6 MP
@@ -719,9 +768,8 @@ MAR is a weighted composite of three subsections:
 > **Why Linear?** The useful range for dedicated macro lenses is narrow (typically 2MP to 5MP). A simple linear progression (`MP`) accurately maps the hardware capability: 0MP is useless (0), 2MP is weak (2), and 5MP is decent (5). This avoids overvaluing low-res "gimmick" sensors.
 
 **Final Formula:**
-*   `Ultrawide_Path = (0.4 * Score_4.7.1) + (0.6 * Score_4.7.2)`
-*   `Dedicated_Path = Score_4.7.3`
-*   `MCFP Score = Max(Ultrawide_Path, Dedicated_Path)`
+*   `MCFP Score = Max(Ultrawide_Path, Telemacro_Path, Dedicated_Path)`
+*   `MCFP Score = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3)`
 
 
 ### B. Rear Camera — Video Capture & Production
@@ -736,7 +784,7 @@ MAR is a weighted composite of three subsections:
 | Score  | Max Rear Video Resolution |
 | :----- | :------------------------ |
 | **10** | **≥ 4K (Ultra HD)**       |
-| **8**  | **1440p / QHD (2.5K)**   |
+| **8**  | **1440p / QHD (2.5K)**    |
 | **6**  | **1080p (Full HD)**       |
 | **3**  | **720p (HD)**             |
 | **0**  | **≤ 480p**                |
