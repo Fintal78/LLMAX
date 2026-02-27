@@ -65,6 +65,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     // GUIDELINE: List all official colour variants released for this model. Each entry has two fields: `name` (the manufacturer's official marketing name, e.g. "Titanium Black") and `hex` (the closest solid RGB hex code approximating that colour — derive it from official press images or the manufacturer's product page, not from the colour name alone). Used for display and filtering only — not scored.
     "colors": [
+      // GUIDELINE: Add as many blocks as there are official colors.
       {
         "name": {
           "value": "Titanium Black",
