@@ -452,3 +452,15 @@ Every subsection must contain the following "recipe":
         ```
 4.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity.
 5.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
+6.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
+    ```json
+    "meta": {
+      "schema_version": "5.1",
+      "last_updated": "YYYY-MM-DD"  // Set to the actual current date of the run (not a placeholder).
+    }
+    ```
+    Leaving `last_updated` stale is a data integrity violation — it breaks the file's change-tracking guarantee.
+7.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
+    - **Intermediate calculation values** (e.g. correction ratios, normalisation factors, raw benchmark inputs): **4 decimal places** (e.g. `9.5478`, `1.0312`). This preserves enough precision so downstream calculations do not accumulate rounding errors.
+    - **Scores** (`subscore`, `predicted_score`, `final_score.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
+    - **Integers** (e.g. raw MP counts, Hz values, pixel counts): store as plain integers with no decimal point (e.g. `200`, `120`).

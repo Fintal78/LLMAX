@@ -4,73 +4,66 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
 
 ```json
 {
+  // GUIDELINE: All scoring formulas and lookup tables referenced as "Section X.X" or "§X.X" throughout this document are defined in scoring_rules.md. All numeric constants (e.g. _Min / _Max thresholds) are from scoring_constants.md. There is no need to repeat these file names in individual Source comments below.
+  
+  // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
     "schema_version": "5.1",
-    "last_updated": "2025-12-14"
+    // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
+    "last_updated": "2026-02-27"
+    // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
+  // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
   "identity": {
-    "id": {
-      "value": "samsung_galaxy_s24_ultra",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "brand": {
-      "value": "Samsung",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "model_name": {
-      "value": "Galaxy S24 Ultra",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "model_aliases": {
-      "value": [
-        "SM-S928B",
-        "SM-S928U"
-      ],
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
+    "id": "samsung_galaxy_s24_ultra",
+    // GUIDELINE: Unique machine-readable key for this record. Format: {brand}_{model_name_snakecase}. Must be lowercase, words separated by underscores, no special characters. Example: "samsung_galaxy_s24_ultra".
+    "brand": "Samsung",
+    // GUIDELINE: Manufacturer brand name exactly as marketed (e.g. "Samsung", "Apple", "Google"). Use the brand's own capitalisation.
+    "model_name": "Galaxy S24 Ultra",
+    // GUIDELINE: Full commercial model name as printed on the box, including any series suffix (e.g. "Galaxy S24 Ultra", "iPhone 16 Pro Max"). Do not abbreviate.
+    "website": "TBD",
+    // GUIDELINE: URL of the manufacturer's official product page for this model. Used as the primary source for identity fields. Set to "TBD" until sourced.
+    "model_aliases": [
+      "SM-S928B",
+      "SM-S928U"
+    ],
+    // GUIDELINE: List of official model numbers (SKUs) corresponding to this variant (e.g. regional or carrier codes). Source from the manufacturer's spec sheet or regulatory filings. Include all known variants that share the same hardware configuration scored in this record.
     "hardware_configuration": {
+      // GUIDELINE: Specifies the exact hardware tier being scored. A single device model can ship in multiple RAM/storage configurations — always document the specific variant below.
       "storage_gb": {
         "value": 512,
         "source": "TBD",
         "exact_extract": "Proof pending"
+        // GUIDELINE: Internal storage capacity in gigabytes (GB) of this specific variant. Use the marketed integer value (e.g. 256, 512, 1024).
       },
       "ram_gb": {
         "value": 12,
         "source": "TBD",
         "exact_extract": "Proof pending"
+        // GUIDELINE: RAM (Random Access Memory) capacity in gigabytes (GB). Use the marketed integer value (e.g. 8, 12, 16).
       },
       "chipset": {
         "value": "Snapdragon 8 Gen 3",
         "source": "TBD",
         "exact_extract": "Proof pending"
+        // GUIDELINE: System-on-Chip (SoC) name as marketed (e.g. "Snapdragon 8 Gen 3", "Apple A18 Pro", "Exynos 2400"). Include the brand prefix. Use the variant that matches the region/carrier of this record.
       }
     },
     "release_date": {
       "value": "2024-01-24",
       "source": "TBD",
       "exact_extract": "Proof pending"
+      // GUIDELINE: Global launch date in ISO 8601 format (YYYY-MM-DD). Use the first official commercial availability date worldwide. If regional launch dates differ, use the earliest one.
     }
   },
   "1_design_and_build_quality": {
     "form_factor": {
+      // The physical shape and deployment style of the device. Allowed values: "Bar" (standard slab, the default for modern smartphones), "Flip" (clamshell foldable that folds horizontally), "Fold" (book-style foldable that opens to a tablet-sized screen), "Slider" (keyboard or screen slides out), "Rugged" (reinforced thick body for extreme conditions). Used for filtering and display only — not scored.
       "value": "Bar",
       "source": "TBD",
       "exact_extract": "Proof pending"
     },
-    "height_mm": {
-      "value": 162.3,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "width_mm": {
-      "value": 79.0,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
+    // GUIDELINE: List all official colour variants released for this model. Each entry has two fields: `name` (the manufacturer's official marketing name, e.g. "Titanium Black") and `hex` (the closest solid RGB hex code approximating that colour — derive it from official press images or the manufacturer's product page, not from the colour name alone). Used for display and filtering only — not scored.
     "colors": [
       {
         "name": {
@@ -98,73 +91,157 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     ],
     "1_1_materials": {
+      // SCORING GOAL: Scores the structural frame and back panel materials to evaluate build premium and durability class.
       "frame_material": {
-        "value": "Titanium Alloy Frame",
+        "value": "Titanium Alloy",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively with related scores: Titanium Alloy = 10.0, Stainless Steel = 8.5, Aluminum Alloy = 7.0, Polymer Composite = 4.0, Not Disclosed = 0.0.
       },
       "back_material": {
-        "value": "Strengthened Glass Back",
+        "value": "Strengthened Glass",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.00
+        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively with related scores: Ceramic = 10.0, Strengthened Glass = 8.0, Standard Glass = 6.0, Polymer = 4.0, Not Disclosed = 0.0.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: IP Score from Section 1.2 Durability (Ingress Protection)
+      "predicted_score": 9.20,
+      "final_score": {
+        "value": 9.20,
+        // SCORING GUIDELINE: Definitive materials score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "1_2_durability": {
+      // GUIDELINE: `ip_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ip_rating.value` string.
       "ip_rating": {
         "value": "IP68",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": "N/A" // no score here, it will be calculated below from dust_protection_digit and water_protection_digit
       },
+      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ip_rating.value` for reference.
       "dust_protection_digit": {
         "value": 6,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+        "source": "1_2_durability.ip_rating.value",
+        "exact_extract": "6",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Digit 6 = 10.0, 5 = 8.0, 4 = 6.0, 3 = 4.0, 2 = 2.0, 0–1 = 0.0.
       },
       "water_protection_digit": {
         "value": 8,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+        "source": "1_2_durability.ip_rating.value",
+        "exact_extract": "8",
+        "subscore": 9.00
+        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Digit 9 = 10.0, 8 = 9.0, 7 = 8.0, 6 = 6.0, 5 = 4.0, 4 = 2.0, 0–3 = 0.0.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
+      "predicted_score": 9.50,
+      "final_score": {
+        "value": 9.50,
+        // SCORING GUIDELINE: Definitive durability score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "1_3_glass_protection": {
-      "value": {
+      // SCORING GOAL: Scores the protective glass type on the display, known as Display Glass Protection (DGP), based on the manufacturer-declared glass generation's certified drop and scratch resistance class.
+      "glass_generation": {
         "value": "Gorilla Glass Armor",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 10.0
+        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively with related scores: Gorilla Glass Armor = 10.0, Ceramic Shield (current gen) = 9.5, Gorilla Glass Victus 2 = 9.0, Gorilla Glass Victus/Victus+ = 8.0, Gorilla Glass 5/6 = 7.0, Gorilla Glass 3/Panda Glass = 5.0, Tempered Glass = 3.0, Glass (Unspecified) = 2.0, Plastic/No Glass = 0.0.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore. Source: §1.3 lookup table.
+      "predicted_score": 10.00,
+      "final_score": {
+        "value": 10.00,
+        // SCORING GUIDELINE: Definitive glass protection score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "1_4_dimensions": {
+      // SCORING GOAL: Scores device thickness (excluding camera bump) as a measure of pocketability and hand comfort. Thinner is always better.
       "thickness_mm": {
         "value": 8.6,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 3.50
+        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10. Minimum thickness threshold scores 10.0; maximum threshold scores 0.0. Constants Thickness_mm_Min and Thickness_mm_Max are defined in scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore. Source: §1.4 linear formula; Thickness_mm_Min = 6.0, Thickness_mm_Max = 10.0.
+      "predicted_score": 3.50,
+      "final_score": {
+        "value": 3.50,
+        // SCORING GUIDELINE: Definitive dimensions score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "1_5_weight": {
+      // SCORING GOAL: Scores total device weight as a measure of long-term holding comfort. Lighter phones cause less wrist and arm fatigue during extended use.
       "weight_g": {
         "value": 232,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 1.36
+        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10. Minimum weight threshold scores 10.0; maximum threshold scores 0.0. Constants Weight_g_Min and Weight_g_Max are defined in scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore. Source: §1.5 linear formula; Weight_g_Min = 140, Weight_g_Max = 250.
+      "predicted_score": 1.36,
+      "final_score": {
+        "value": 1.36,
+        // SCORING GUIDELINE: Definitive weight score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "1_6_ergonomics": {
+      // SCORING GOAL: Scores device width as a measure of one-handed ergonomics. Beyond a critical threshold, phones become difficult to grip and operate single-handedly. Note: the positive benefit of a wider screen is already captured in Sections 2.8 (Screen-to-Body Ratio) and 2.9 (Screen Size).
       "width_mm": {
         "value": 79.0,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10. A quadratic curve is used because ergonomic discomfort accelerates non-linearly past the anatomical threshold (~75–77 mm). Constants Width_mm_Min and Width_mm_Max are defined in scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore. Source: §1.6 quadratic formula; Width_mm_Min = 67.3, Width_mm_Max = 79.0.
+      "predicted_score": 0.00,
+      "final_score": {
+        "value": 0.00,
+        // SCORING GUIDELINE: Definitive ergonomics score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     }
   },
   "2_display": {
@@ -199,49 +276,87 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "exact_extract": "Proof pending"
     },
     "2_1_panel_architecture": {
-      "value": {
+      // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour.
+      "panel_type": {
         "value": "LTPO OLED",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 9.0
+        // SCORING GUIDELINE: Look up the panel type in the Section 2.1 table. Use the following terms exclusively with related scores: Tandem OLED = 10.0, OLED (LTPO/AMOLED) = 9.0, IPS LCD = 6.0, TFT/PLS LCD = 2.0, TN LCD/Legacy = 0.0. LTPO OLED falls under the OLED (LTPO/AMOLED) tier.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore. Source: §2.1 lookup table.
+      "predicted_score": 9.00,
+      "final_score": {
+        "value": 9.00,
+        // SCORING GUIDELINE: Definitive panel architecture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_2_brightness": {
+      // SCORING GOAL: Scores peak and High Brightness Mode (HBM) brightness together, as HBM governs outdoor readability while peak brightness governs HDR (High Dynamic Range) media quality.
       "peak_nits": {
         "value": 2600,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 7.73
+        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: Peak_Score = 10 × (log(peak_nits) − log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) − log(Display_Brightness_Nits_Min)), clamped 0–10. Constants from scoring_constants.md.
       },
       "hbm_nits": {
         "value": 1500,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 7.21
+        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, estimate hbm_nits = peak_nits / 1.5. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore). HBM is weighted at 70% because it reflects true daily outdoor usability; Peak at 30% for HDR media capability. Source: §2.2 logarithmic formula; Display_Brightness_Nits_Min = 400, Display_Brightness_Nits_Max = 4500, Display_HBM_Nits_Min = 400, Display_HBM_Nits_Max = 2500.
+      "predicted_score": 7.37,
+      "final_score": {
+        "value": 7.37,
+        // SCORING GUIDELINE: Definitive brightness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_3_color_gamut_coverage": {
+      // SCORING GOAL: Scores how much of the DCI-P3 (Digital Cinema Initiatives P3) professional color space the display can reproduce. A wider gamut means richer, more saturated colors in photos, videos, and HDR content.
       "dci_p3_percent": {
         "value": 100,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. Constants from scoring_constants.md.
       },
       "srgb_percent": {
         "value": 100,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": "N/A"
+        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. Its subscore is always "N/A". Use it to estimate DCI-P3 ONLY when dci_p3_percent is not available from any source: DCI-P3_estimate = min(srgb_percent × 0.75, 100). Once converted, score the estimate via the dci_p3_percent formula above.
       },
-      "predicted_score": 0.0,
-      "score_adjustment": {
-        "booster_1": {
-          "value": 1.05,
-          "booster_title": "11_2_toms_guide_display_factory_calibration"
-        }
-      },
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore. Source: §2.3 linear formula; Display_P3_Coverage_Percent_Min = 65, Display_P3_Coverage_Percent_Max = 100.
+      "predicted_score": 10.00,
+      "final_score": {
+        "value": 10.00,
+        // SCORING GUIDELINE: Definitive color gamut score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster (e.g., when an expert review validates exceptional factory calibration accuracy).
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.2"), or "No" if unadjusted. Example: booster "11_2_toms_guide_display_factory_calibration" would be referenced here.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_4_hdr_format_support": {
+      // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the display officially supports. Dynamic HDR formats optimize brightness and colour frame-by-frame, unlocking the full quality of premium streaming content.
       "formats": {
         "value": [
           "HDR10+",
@@ -249,51 +364,132 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "HLG"
         ],
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.0
+        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively with related scores: Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10) = 10.0, Primary Dynamic HDR (Dolby Vision + HDR10 only) = 9.0, Alternative Dynamic HDR (HDR10+ + HDR10 only) = 8.0, Basic Static HDR (HDR10 only) = 6.0, No HDR = 0.0. HLG is supplementary and does not change the tier.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits formats.subscore. Source: §2.4 lookup table.
+      "predicted_score": 8.00,
+      "final_score": {
+        "value": 8.00,
+        // SCORING GUIDELINE: Definitive HDR format score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_5_resolution_density": {
+      // SCORING GOAL: Scores pixel density (Pixels Per Inch, PPI) as a measure of display sharpness. Higher PPI means text and images look crisp with no visible pixels.
       "ppi": {
         "value": 505,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.43
+        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(ppi) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Logarithmic because human visual acuity has diminishing returns at high PPI. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore. Source: §2.5 logarithmic formula; Display_PPI_Min = 200, Display_PPI_Max = 600.
+      "predicted_score": 8.43,
+      "final_score": {
+        "value": 8.43,
+        // SCORING GUIDELINE: Definitive resolution density score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_6_refresh_rate_max_hz": {
-      "value": 120,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
+      // SCORING GOAL: Scores Motion Smoothness via maximum refresh rate. Higher Hertz (Hz) means scrolling and animations look smoother. 120 Hz and above are perceptibly superior to standard 60 Hz.
+      "max_hz": {
+        "value": 120,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 7.55
+        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(max_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10. Logarithmic because the perceptual smoothness gain of each additional Hz diminishes at high frequencies. Constants from scoring_constants.md.
+      },
+      // SCORING GUIDELINE: predicted_score directly inherits max_hz.subscore. Source: §2.6 logarithmic formula; Display_Refresh_Rate_Hz_Min = 45, Display_Refresh_Rate_Hz_Max = 165.
+      "predicted_score": 7.55,
+      "final_score": {
+        "value": 7.55,
+        // SCORING GUIDELINE: Definitive motion smoothness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_7_touch_responsiveness": {
+      // SCORING GOAL: Scores touch sampling rate as a measure of how instantly the screen responds to finger input. Higher rates produce a "glued to your finger" feel, critical for gaming and UI fluidity.
       "sampling_rate_hz": {
         "value": 240,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 5.00
+        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10. Logarithmic because the perceptual benefit of a faster sampling rate diminishes at high frequencies. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore. Source: §2.7 logarithmic formula; Display_Touch_Sampling_Hz_Min = 60, Display_Touch_Sampling_Hz_Max = 960.
+      "predicted_score": 5.00,
+      "final_score": {
+        "value": 5.00,
+        // SCORING GUIDELINE: Definitive touch responsiveness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_8_screen_to_body_ratio": {
+      // SCORING GOAL: Scores the Screen-to-Body Ratio (SBR) — how much of the front face is active display versus border (bezel). Higher percentage means a more immersive, modern design.
       "percent": {
         "value": 88.5,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.64
+        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10. Linear because each percentage point represents a proportional increase in visible display area. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits percent.subscore. Source: §2.8 linear formula; Display_SBR_Percent_Min = 60, Display_SBR_Percent_Max = 93.
+      "predicted_score": 8.64,
+      "final_score": {
+        "value": 8.64,
+        // SCORING GUIDELINE: Definitive screen-to-body ratio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_9_screen_size": {
+      // SCORING GOAL: Scores the physical display diagonal as a measure of immersion and media consumption experience. Larger screens offer more real estate for video, gaming, and productivity.
       "diagonal_inches": {
         "value": 6.8,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 6.93
+        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10. Quadratic because usable screen real estate scales as area (proportional to the square of the diagonal), heavily rewarding larger screens. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore. Source: §2.9 quadratic formula; Display_Size_Inch_Min = 4.5, Display_Size_Inch_Max = 7.6.
+      "predicted_score": 6.93,
+      "final_score": {
+        "value": 6.93,
+        // SCORING GUIDELINE: Definitive screen size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "2_10_eye_comfort": {
       // SCORING GOAL: Evaluates how the screen dims at low brightness levels to prevent eye strain and headaches. It scores either the perfect continuous light of Direct Current (DC) Dimming, or scales the Pulse-Width Modulation (PWM) frequency if flickering is present.
@@ -309,14 +505,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "value": 492,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 3.4
+          "subscore": 4.07
           // SCORING GUIDELINE: If `pwm_dimming_active` = true, evaluate this specific subscore using the Section 2.10.2 logarithmic formula with the provided value of 'pwm_dimming_hz'. If `pwm_dimming_active` = false, this specific subscore MUST be "N/A".
         }
       },
-      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" from the `dimming_hardware` block above.
-      "predicted_score": 0.0,
+      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" from the `dimming_hardware` block above. Source: §2.10 final formula; Display_PWM_Hz_Min = 120, Display_PWM_Hz_Max = 3840.
+      "predicted_score": 4.07,
       "final_score": {
-        "value": 0.0,
+        "value": 4.07,
         // SCORING GUIDELINE: The definitive eye comfort score. It inherits the `predicted_score` unless mathematically modified by a Section 11 expert review Booster. (This section has no Benchmark or Neighbor equivalents).
         "method_used": "Predictor",
         // SCORING GUIDELINE: Must be "Predictor" natively.
@@ -327,135 +523,155 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "2_11_display_benchmark_final_scoring": {
+      // SCORING GOAL: Produces the overall Display Final Score using a three-method hierarchy (A→B→C). Method A uses the DXOMARK Display benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback when no benchmarks exist for any similar device.
       "dxomark_display_score": {
         "value": 150,
         "source": "https://www.dxomark.com/smartphones/#display",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 9.34
+        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_score) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to null and subscore to "N/A".
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0,
-      "description": "predicted_score = Average of SubScores 2.1-2.10 (Method C). final_score = DXOMARK benchmark (Method A) if available, else Neighbor Interpolation (Method B), else predicted_score (fallback)."
+      // SCORING GUIDELINE: predicted_score = weighted sum of sub-section predicted scores per Method C formula (Section 2.11): (0.15 × 2.1) + (0.20 × 2.2) + (0.10 × 2.3) + (0.10 × 2.4) + (0.10 × 2.5) + (0.15 × 2.6) + (0.10 × 2.7) + (0.10 × 2.10). Sections 2.8 and 2.9 are excluded because DXOMARK does not evaluate physical dimensions. Source: §2.11 Methods A and C; Display_DXO_Score_Min = 60, Display_DXO_Score_Max = 160.
+      "predicted_score": 7.51,
+      "final_score": {
+        "value": 9.34,
+        // SCORING GUIDELINE: Use Method A if dxomark_display_score is available (dxomark_display_score.subscore becomes the final value). Otherwise use Method B (Nearest Neighbor Interpolation per Section 2.11 Euclidean distance search). Otherwise fall back to Method C (predicted_score). No Booster applies to Benchmark or Neighbor Interpolation results.
+        "method_used": "Benchmark (DXOMARK)",
+        // SCORING GUIDELINE: Set to "Benchmark (DXOMARK)" for Method A, "Neighbor Interpolation" for Method B, or "Predictor" for Method C.
+        "booster": "No",
+        // SCORING GUIDELINE: Must always be "No" for Benchmark and Neighbor Interpolation methods. Boosters are only allowed on Predictor results.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor. "High", "Medium", or "Low" only when 2 independent benchmarks are cross-referenced.
+      }
     }
   },
   "3_audio": {
     "3_1_speaker_quality": {
-      "value": {
+      // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
+      "speaker_configuration": {
         "value": "Balanced Stereo (Hybrid)",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 7.0
+        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table. Use the following terms exclusively with related scores: Balanced/Symmetrical Stereo (two identical drivers) = 10.0, Standard Hybrid Stereo (earpiece + bottom driver) = 7.0, Mono Speaker = 3.0, No Usable Speaker = 0.0. Verify via spec sheet or review that explicitly states symmetry for 10.0.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore. Source: §3.1 lookup table.
+      "predicted_score": 7.00,
+      "final_score": {
+        "value": 7.00,
+        // SCORING GUIDELINE: Definitive speaker quality score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "3_2_playback_audio_processing_immersion": {
+      // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
       "audio_format_decode": {
-        "dolby_atmos": {
-          "value": true,
+        // SCORING GUIDELINE: 3.2.1 Audio Format Decode Support. Per the hierarchical category rule, only the highest-tier supported format is stored. Identify the best combination from the Section 3.2.1 table.
+        "best_supported_format": {
+          "value": "Dolby Atmos ONLY",
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "dts_x": {
-          "value": false,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "multichannel_surround": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.0
+          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table. Use the following terms exclusively with related scores: Dolby Atmos AND DTS:X = 10.0, Dolby Atmos ONLY = 8.0, Multichannel Surround (Dolby Digital/DTS) only = 5.0, Stereo only = 0.0.
         }
       },
       "spatial_audio_rendering": {
-        "head_tracking": {
-          "value": false,
+        // SCORING GUIDELINE: 3.2.2 Spatial Audio Rendering. Per the hierarchical category rule, only the highest-tier capability is stored.
+        "best_spatial_capability": {
+          "value": "Spatial audio (Static, no head tracking)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "static_spatial": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 7.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 7.0
+          // SCORING GUIDELINE: Look up in the Section 3.2.2 table. Use the following terms exclusively with related scores: Spatial audio WITH Dynamic Head Tracking (gyroscope-anchored soundstage) = 10.0, Static spatial audio (no head tracking) = 7.0, No spatial rendering = 0.0.
         }
       },
+      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2. Source: §3.2 PAPI formula.
       "predicted_score": 7.5,
-      "final_score": 7.5
+      "final_score": {
+        "value": 7.5,
+        // SCORING GUIDELINE: Definitive PAPI score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "3_3_wired_audio_capability": {
-      "value": {
+      // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored.
+      "wired_audio_tier": {
         "value": "USB-C digital audio only (dongle required)",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 3.0
+        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table. Use the following terms exclusively with related scores: 3.5mm headphone jack (native analog) = 10.0, USB-C with documented analog audio output = 6.0, USB-C digital audio only (dongle required) = 3.0, No wired audio support = 0.0.
       },
-      "headphone_jack_3_5mm": {
-        "value": false,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "usb_c_analog_audio": {
-        "value": false,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "usb_c_digital_only": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
+      // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore. Source: §3.3 lookup table.
       "predicted_score": 3.0,
-      "final_score": 3.0
+      "final_score": {
+        "value": 3.0,
+        // SCORING GUIDELINE: Definitive wired audio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "3_4_microphone_audio_recording": {
+      // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%).
       "mhc": {
+        // SCORING GUIDELINE: 3.4.1 Microphone Hardware Count (MHC). The subscore is placed on the data field itself, not in a separate score object.
         "microphone_count": {
           "value": 3,
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.0
+          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table. Use the following terms exclusively with related scores: ≥4 microphones = 10.0, 3 = 8.0, 2 = 5.0, 1 = 2.0, unknown = 0.0.
         }
       },
       "rcm": {
+        // SCORING GUIDELINE: 3.4.2 Recording Channels & Modes (RCM). Per the hierarchical category rule, store only the highest-tier recording capability.
         "recording_channels": {
           "value": "Stereo",
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 8.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.0
+          // SCORING GUIDELINE: Look up in the Section 3.4.2 table. Use the following terms exclusively with related scores: Multi-channel/Spatial audio = 10.0, Stereo = 8.0, Mono = 5.0, Voice-only/Unclear = 0.0.
         }
       },
       "acf": {
+        // SCORING GUIDELINE: 3.4.3 Advanced Capture Features (ACF). The list is additive: each documented feature from the Section 3.4.3 checklist (Directional Zoom, Wind Noise Reduction, Voice Focus, Pro Mic Support) adds +2.5 points, capped at 10.0.
         "features": {
           "value": [
             "Directional/Audio Zoom",
             "Wind noise reduction"
           ],
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "score": {
-          "value": 5.0,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 5.0
+          // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.5 × count (clamped 0–10). Example: 2 features × 2.5 = 5.0. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
         }
       },
-      "predicted_score": 7.0,
-      "final_score": 7.0
+      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.microphone_count.subscore) + (0.30 × rcm.recording_channels.subscore) + (0.40 × acf.features.subscore). Weights from the MAR formula in Section 3.4. Source: §3.4 MAR formula.
+      "predicted_score": 6.80,
+      "final_score": {
+        "value": 6.80,
+        // SCORING GUIDELINE: Definitive MAR score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     }
   },
   "4_camera_systems": {
@@ -572,115 +788,245 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       ]
     },
     "4_1_main_sensor_size": {
-      "value": {
+      // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality. Larger sensors capture more light, yielding better low-light performance, more dynamic range, and natural background blur (bokeh).
+      "optical_format": {
         "value": "1/1.3 inches",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.11
+        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769). Logarithmic because the real-world photographic benefit of a larger sensor follows a diminishing return curve. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore. Source: §4.1; Camera_Main_Sensor_Inch_Min = 0.25, Camera_Main_Sensor_Inch_Max = 1.0.
+      "predicted_score": 8.11,
+      "final_score": {
+        "value": 8.11,
+        // SCORING GUIDELINE: Definitive sensor size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_2_main_camera_aperture": {
-      "value": {
+      // SCORING GOAL: Scores the main camera lens aperture (f-number). Wider apertures (lower f-number) admit more light into the sensor, improving low-light performance and enabling natural background blur.
+      "aperture_f_stop": {
         "value": "f/1.7",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 6.40
+        // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore. Source: §4.2; Camera_Main_Aperture_f_Min = 1.4, Camera_Main_Aperture_f_Max = 2.4.
+      "predicted_score": 6.40,
+      "final_score": {
+        "value": 6.40,
+        // SCORING GUIDELINE: Definitive aperture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_3_main_camera_resolution": {
+      // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP). Higher resolution allows finer detail capture and more flexible cropping, especially in good lighting conditions.
       "mp": {
         "value": 200,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(mp) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10. Logarithmic because beyond ~50 MP, real-world detail gains hit a diffraction ceiling. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits mp.subscore. Source: §4.3; Camera_Main_Resolution_MP_Min = 12, Camera_Main_Resolution_MP_Max = 200.
+      "predicted_score": 10.00,
+      "final_score": {
+        "value": 10.00,
+        // SCORING GUIDELINE: Definitive resolution score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_4_image_stabilization": {
-      "value": {
-        "value": "Standard OIS",
+      // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake. Better stabilization produces sharper low-light photos and smoother video.
+      "stabilization_type": {
+        "value": "Lens-Based OIS",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.0
+        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively with related scores: Multi-Axis Gimbal/Multi-Sensor Shift = 10.0, Sensor-Shift OIS = 9.0, Lens-Based OIS = 8.0, EIS (Electronic Image Stabilization) only = 5.0, None = 0.0. "Standard OIS" maps to Lens-Based OIS = 8.0.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore. Source: §4.4 lookup table.
+      "predicted_score": 8.00,
+      "final_score": {
+        "value": 8.00,
+        // SCORING GUIDELINE: Definitive stabilization score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_5_ultrawide_capability": {
+      // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens. A wider FOV and larger sensor both directly improve the quality of wide-perspective photography.
       "presence": {
         "value": true,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": "N/A"
+        // SCORING GUIDELINE: Binary gate — this field has no numeric subscore. If value = false, the entire UCC score is 0.0 and all other subscores in this subsection MUST be "N/A". If value = true, proceed to score fov_degrees and sensor_size_format.
       },
       "fov_degrees": {
         "value": 120,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 6.67
+        // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (fov_degrees − Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Ultrawide_FOV_Deg_Min), clamped 0–10. Only evaluated if presence = true. Constants from scoring_constants.md.
       },
-      "ultrawide_sensor_size": {
+      "sensor_size_format": {
         "value": "1/2.0",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0. FOV is weighted 55% because it is the primary purpose of an ultrawide lens, while sensor size (45%) governs low-light quality. Source: §4.5; Camera_Ultrawide_FOV_Deg_Min = 100, Camera_Ultrawide_FOV_Deg_Max = 130, Camera_Ultrawide_Sensor_Inch_Min = 0.25, Camera_Ultrawide_Sensor_Inch_Max = 0.5.
+      "predicted_score": 8.17,
+      "final_score": {
+        "value": 8.17,
+        // SCORING GUIDELINE: Definitive UCC score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_6_zoom_capability": {
+      // SCORING GOAL: Scores optical zoom power. Optical zoom allows sharp photos of distant subjects (e.g., concert, wildlife) without digital quality loss. Only true optical magnification is counted; digital/crop zoom is excluded.
       "optical_zoom_x": {
         "value": 5,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 6.99
+        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10. Logarithmic because the reach improvement from 1x to 3x is transformational, while the difference between 10x and 12x is marginal. Constants from scoring_constants.md.
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore. Source: §4.6; Camera_Zoom_Optical_x_Min = 1, Camera_Zoom_Optical_x_Max = 10.
+      "predicted_score": 6.99,
+      "final_score": {
+        "value": 6.99,
+        // SCORING GUIDELINE: Definitive zoom score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_7_macro_capability": {
+      // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths, ensuring the best hardware implementation wins regardless of type.
       "4_7_1_ultrawide_path": {
+        // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
         "ultrawide_af": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.0
-          // SCORING GUIDELINE: Only processed if `4_5_ultrawide_capability.presence.value` = true. If true, `value`: true (Autofocus) evaluates to 10.0, and `value`: false (Fixed focus) evaluates to 6.0. If `presence` = false, this subscore MUST be marked "N/A" as the score defaults to 0.0.
+          // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. If true: value = true (Autofocus) → subscore = 10.0; value = false (Fixed focus) → subscore = 6.0. If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.0.
         },
         "min_focus_distance_cm": {
           "value": 2.5,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 8.5
+          "subscore": 7.31
+          // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. Lower focus distance = higher score. Constants from scoring_constants.md.
         },
-        "predicted_score": 0.0,
-        "final_score": 0.0
+        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.4 × ultrawide_af.subscore) + (0.6 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.0. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject. Source: §4.7.1; Camera_Macro_Dist_cm_Min = 1.5, Camera_Macro_Dist_cm_Max = 10.
+        "predicted_score": 8.39,
+        "final_score": {
+          "value": 8.39,
+          // SCORING GUIDELINE: Intermediate path score feeding into the parent 4_7 final formula. Inherits predicted_score. (No Booster applies at this child level.)
+          "method_used": "Predictor",
+          // SCORING GUIDELINE: Must be "Predictor" natively.
+          "booster": "No",
+          // SCORING GUIDELINE: Always "No" at child path level. Boosters are only applied at the parent 4_7 level.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+        }
       },
       "4_7_2_telemacro_path": {
+        // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 cm away), preventing the phone from casting a shadow and delivering natural background blur.
         "telemacro_presence": {
           "value": false,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 0.0
+          "subscore": "N/A"
+          // SCORING GUIDELINE: Binary gate. If value = false, Score_4.7.2 = 0.0 and telemacro_optical_x.subscore MUST be "N/A". If value = true, proceed to score telemacro_optical_x using the Section 4.7.2 formula.
         },
         "telemacro_optical_x": {
           "value": 0,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": "N/A"
+          // SCORING GUIDELINE: Only evaluated if telemacro_presence = true. Apply the Section 4.7.2 formula: Score_4.7.2 = 7.0 + (3.0 × Zoom_Score / 10), where Zoom_Score = 10 × (log(magnification) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10. This guarantees a minimum of 7.0 for the architectural advantage of telemacro. Constants from scoring_constants.md.
         },
-        "predicted_score": 0.0,
-        "final_score": 0.0
+        // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above. Source: §4.7.2; Camera_Telemacro_x_Min = 2, Camera_Telemacro_x_Max = 5.
+        "predicted_score": 0.00,
+        "final_score": {
+          "value": 0.00,
+          // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
+          "method_used": "Predictor",
+          // SCORING GUIDELINE: Must be "Predictor" natively.
+          "booster": "No",
+          // SCORING GUIDELINE: Always "No" at child path level.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+        }
       },
       "4_7_3_dedicated_path": {
+        // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.0 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.0) or Telemacro (max 10.0).
         "dedicated_macro_mp": {
           "value": 0,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.0
+          // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_mp, 0, 6). The score equals the Megapixel (MP) count, capped at 6.0. A value of 0 MP means no dedicated macro lens is present (score = 0.0). Values above 6 MP all score 6.0 maximum.
         },
-        "predicted_score": 0.0,
-        "final_score": 0.0
+        // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore. Source: §4.7.3.
+        "predicted_score": 0.00,
+        "final_score": {
+          "value": 0.00,
+          // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
+          "method_used": "Predictor",
+          // SCORING GUIDELINE: Must be "Predictor" natively.
+          "booster": "No",
+          // SCORING GUIDELINE: Always "No" at child path level.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+        }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation. Source: §4.7 MCFP Max formula.
+      "predicted_score": 8.39,
+      "final_score": {
+        "value": 8.39,
+        // SCORING GUIDELINE: Definitive MCFP score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
+        "method_used": "Predictor",
+        // SCORING GUIDELINE: Must be "Predictor" natively.
+        "booster": "No",
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
+        "confidence": "N/A"
+        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
+      }
     },
     "4_8_rear_video_resolution": {
       "max_resolution": {

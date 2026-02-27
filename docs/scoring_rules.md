@@ -33,16 +33,16 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 
 | Score    | Frame Material Class       |
 | :------- | :------------------------- | 
-| **10.0** | **Titanium Alloy Frame**   |  
-| **8.5**  | **Stainless Steel Frame**  |
-| **7.0**  | **Aluminum Alloy Frame**   |  
-| **4.0**  | **Polymer Composite Frame**| 
+| **10.0** | **Titanium Alloy**         |  
+| **8.5**  | **Stainless Steel**        |
+| **7.0**  | **Aluminum Alloy**         |  
+| **4.0**  | **Polymer Composite**      | 
 | **0.0**  | **Material Not Disclosed** | 
 
-**Titanium Alloy Frame**: Titanium alloy structural frame; high strength-to-weight ratio, low thermal conductivity versus steel, high corrosion resistance
-**Stainless Steel Frame**: Steel alloy structural frame; very high rigidity and mass, high thermal conductivity, strong impact resistance
-**Aluminum Alloy Frame**: Aluminum structural frame; moderate rigidity, low mass, high thermal conductivity
-**Polymer Composite Frame**: Structural frame made from plastic or fiber-reinforced polymer; low thermal conductivity, lower stiffness than metals
+**Titanium Alloy**: Titanium alloy structural frame; high strength-to-weight ratio, low thermal conductivity versus steel, high corrosion resistance
+**Stainless Steel**: Steel alloy structural frame; very high rigidity and mass, high thermal conductivity, strong impact resistance
+**Aluminum Alloy**: Aluminum structural frame; moderate rigidity, low mass, high thermal conductivity
+**Polymer Composite**: Structural frame made from plastic or fiber-reinforced polymer; low thermal conductivity, lower stiffness than metals
 **Material Not Disclosed**: Frame material not specified in official documentation or teardown sources
 
 #### 1.1.B Back Panel Material (Surface Class)
@@ -50,18 +50,18 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Material Class
 *   **Significance:** Affects scratch resistance, shatter risk, and radio signal transparency.
 
-| Score    | Back Material Class        |                                                |
+| Score    | Back Material Class        |
 | :------- | :------------------------- | 
-| **10.0** | **Ceramic Back**           |
-| **8.0**  | **Strengthened Glass Back**|
-| **6.0**  | **Standard Glass Back**    |
-| **4.0**  | **Polymer Back**           |
+| **10.0** | **Ceramic**                |
+| **8.0**  | **Strengthened Glass**     |
+| **6.0**  | **Standard Glass**         |
+| **4.0**  | **Polymer**                |
 | **0.0**  | **Material Not Disclosed** |
 
-**Ceramic Back**: Back panel made from ceramic or ceramic composite; high surface hardness, low radio frequency interference, high brittleness
-**Strengthened Glass Back**: Chemically strengthened aluminosilicate glass (e.g., Gorilla Glass, Victus); moderate hardness, brittle fracture behavior
-**Standard Glass Back**: Glass back without strengthened certification; similar brittleness with lower surface hardness
-**Polymer Back**: Plastic or polymer rear panel; low brittleness, low surface hardness, high radio frequency transparency
+**Ceramic**: Back panel made from ceramic or ceramic composite; high surface hardness, low radio frequency interference, high brittleness
+**Strengthened Glass**: Chemically strengthened aluminosilicate glass (e.g., Gorilla Glass, Victus); moderate hardness, brittle fracture behavior
+**Standard Glass**: Glass back without strengthened certification; similar brittleness with lower surface hardness
+**Polymer**: Plastic or polymer rear panel; low brittleness, low surface hardness, high radio frequency transparency
 **Material Not Disclosed**: Back material not specified in official documentation or teardown sources   
 
 ### 🔹 1.2 Durability (Ingress Protection)
