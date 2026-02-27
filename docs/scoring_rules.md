@@ -111,27 +111,34 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Glass Protection Tier (0–10)
 *   **Significance:** Indicates expected resistance to cracking and surface damage from drops and daily handling.
 
-| Score    | Declared Glass Type                                          | Example Models                              |
-| :------- | :----------------------------------------------------------- | :------------------------------------------ |
-| **10.0** | **Gorilla Glass Armor**                                      | Galaxy S24 Ultra                            |
-| **9.5**  | **Ceramic Shield (current gen)**                             | iPhone 15 / 16 series                       |
-| **9.0**  | **Gorilla Glass Victus 2**                                   | OnePlus 12, S23 Ultra                       |
-| **8.0**  | **Gorilla Glass Victus / Victus+ or Dragontrail Star / Pro** | Pixel 7 Pro, Xiaomi 12S Ultra, Xperia 1 VI  |
-| **7.0**  | **Gorilla Glass 5 / 6 or Dragontrail X**                     | Galaxy A54, Nothing Phone (1), Xperia 10 VI |
-| **5.0**  | **Gorilla Glass 3 or Panda Glass or Dragontrail (standard)** | Budget mid-range, Sharp AQUOS (budget)      |
-| **3.0**  | **Tempered Glass**                                           | Low-end devices                             |
-| **2.0**  | **Glass (Unspecified)**                                      | Entry-level                                 |
-| **0.0**  | **Plastic or No Glass**                                      | Feature phones                              |
+| Score    | Declared Glass Type                            | Example Models                              |
+| :------- | :--------------------------------------------- | :------------------------------------------ |
+| **10.0** | **Gorilla Glass Armor**                        | Galaxy S24 Ultra                            |
+| **9.5**  | **Ceramic Shield (current gen)**               | iPhone 15 / 16 series                       |
+| **9.0**  | **Gorilla Glass Victus 2**                     | OnePlus 12, S23 Ultra                       |
+| **8.0**  | **Gorilla Glass Victus or Victus+**            | Pixel 7 Pro, Xiaomi 12S Ultra               |
+| **8.0**  | **Dragontrail Star or Dragontrail Pro**        | Sony Xperia 1 VI, Sharp AQUOS R9            |
+| **7.0**  | **Gorilla Glass 5 or 6**                       | Galaxy A54, Nothing Phone (1)               |
+| **7.0**  | **Dragontrail X**                              | Sony Xperia 10 VI                           |
+| **5.0**  | **Gorilla Glass 3**                            | Budget mid-range                            |
+| **5.0**  | **Panda Glass**                                | Motorola budget models                      |
+| **5.0**  | **Dragontrail (standard)**                     | Sharp AQUOS (budget)                        |
+| **3.0**  | **Tempered Glass**                             | Low-end devices                             |
+| **2.0**  | **Glass (Unspecified)**                        | Entry-level                                 |
+| **0.0**  | **Plastic or No Glass**                        | Feature phones                              |
 
-**Gorilla Glass Armor**: Flagship reinforced glass (Corning) with anti-reflective coating and ≥2.0m-class drop certification\
-**Ceramic Shield (current gen)**: Ceramic-infused glass (Apple / Corning) with ≥2.0m-class drop certification\
-**Gorilla Glass Victus 2**: Advanced reinforced glass (Corning) rated for drops on rough surfaces (~2.0m class)\
-**Gorilla Glass Victus / Victus+ or Dragontrail Star / Pro**: ~2.0m-class drop protection. *Dragontrail Star* and *Dragontrail Pro* are ASAHI Glass equivalents used on Sony Xperia flagship and Sharp AQUOS lineup.\
-**Gorilla Glass 5 / 6 or Dragontrail X**: ~1.6m-class drop protection. *Dragontrail X* (ASAHI) is the equivalent used on Sony Xperia mid-range.\
-**Gorilla Glass 3 / Panda Glass or Dragontrail (standard)**: ~1.2m-class drop protection. Standard *Dragontrail* (ASAHI, 1st-gen) used on budget Japanese-market devices.\
+**Gorilla Glass Armor**: Flagship reinforced glass with anti-reflective coating (≥2.0m-class drop certification)\
+**Ceramic Shield (current gen)**: Ceramic-infused glass with ≥2.0m-class drop certification\
+**Gorilla Glass Victus 2**: Advanced reinforced glass rated for drops on rough surfaces (~2.0m class)\
+**Gorilla Glass Victus or Victus+**: High-end drop protection (~2.0m class)\
+**Dragontrail Star or Pro**: High-end Japanese reinforced glass (~2.0m class)\
+**Gorilla Glass 5 or 6**: Standard mid-to-high end drop protection (~1.6m class)\
+**Dragontrail X**: Mid-range Japanese reinforced glass (~1.6m class)\
+**Gorilla Glass 3**: Legacy reinforced glass (~1.2m class)\
+**Panda Glass or Dragontrail (standard)**: Entry-level reinforced glass (~1.2m class)\
 **Tempered Glass**: Basic chemically strengthened glass (no certified drop class)\
 **Glass (Unspecified)**: Manufacturer does not disclose protection class\
-**Plastic / No Glass**: Polymer display cover
+**Plastic or No Glass**: Polymer display cover
 
 ### 🔹 1.4 Thickness
 *Description:* Device thickness excluding camera bump. Thinner phones are easier to hold and fit better in pockets.

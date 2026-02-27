@@ -98,14 +98,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively with related scores: Titanium Alloy = 10.0, Stainless Steel = 8.5, Aluminum Alloy = 7.0, Polymer Composite = 4.0, Not Disclosed = 0.0.
+        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively with related scores:
+        //   • Titanium Alloy       → 10.0
+        //   • Stainless Steel      → 8.5
+        //   • Aluminum Alloy       → 7.0
+        //   • Polymer Composite    → 4.0
+        //   • Not Disclosed        → 0.0
       },
       "back_material": {
         "value": "Strengthened Glass",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
-        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively with related scores: Ceramic = 10.0, Strengthened Glass = 8.0, Standard Glass = 6.0, Polymer = 4.0, Not Disclosed = 0.0.
+        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively with related scores:
+        //   • Ceramic              → 10.0
+        //   • Strengthened Glass   → 8.0
+        //   • Standard Glass       → 6.0
+        //   • Polymer              → 4.0
+        //   • Not Disclosed        → 0.0
       },
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
       "predicted_score": 9.20,
@@ -134,14 +144,27 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "1_2_durability.ip_rating.value",
         "exact_extract": "6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Digit 6 = 10.0, 5 = 8.0, 4 = 6.0, 3 = 4.0, 2 = 2.0, 0–1 = 0.0.
+        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively with related scores:
+        //   • Digit 6    → 10.0
+        //   • Digit 5    → 8.0
+        //   • Digit 4    → 6.0
+        //   • Digit 3    → 4.0
+        //   • Digit 2    → 2.0
+        //   • Digit 0–1  → 0.0
       },
       "water_protection_digit": {
         "value": 8,
         "source": "1_2_durability.ip_rating.value",
         "exact_extract": "8",
         "subscore": 9.00
-        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Digit 9 = 10.0, 8 = 9.0, 7 = 8.0, 6 = 6.0, 5 = 4.0, 4 = 2.0, 0–3 = 0.0.
+        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively with related scores:
+        //   • Digit 9    → 10.0
+        //   • Digit 8    → 9.0
+        //   • Digit 7    → 8.0
+        //   • Digit 6    → 6.0
+        //   • Digit 5    → 4.0
+        //   • Digit 4    → 2.0
+        //   • Digit 0–3  → 0.0
       },
       // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
       "predicted_score": 9.50,
@@ -163,7 +186,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.0
-        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Scores: Gorilla Glass Armor = 10.0 | Ceramic Shield (current gen) = 9.5 | Gorilla Glass Victus 2 = 9.0 | Gorilla Glass Victus / Victus+ or Dragontrail Star / Pro = 8.0 | Gorilla Glass 5 / 6 or Dragontrail X = 7.0 | Gorilla Glass 3 or Panda Glass or Dragontrail (standard) = 5.0 | Tempered Glass = 3.0 | Glass (Unspecified) = 2.0 | Plastic or No Glass = 0.0. Note: Dragontrail variants (ASAHI Glass) are used by Sony Xperia and Sharp AQUOS — map them to their Gorilla Glass equivalent tier.
+        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively with related scores:
+        //   • Gorilla Glass Armor                  → 10.0
+        //   • Ceramic Shield (current gen)         → 9.5
+        //   • Gorilla Glass Victus 2               → 9.0
+        //   • Gorilla Glass Victus or Victus+      → 8.0
+        //   • Dragontrail Star or Dragontrail Pro  → 8.0
+        //   • Gorilla Glass 5 or 6                 → 7.0
+        //   • Dragontrail X                        → 7.0
+        //   • Gorilla Glass 3                      → 5.0
+        //   • Panda Glass                          → 5.0
+        //   • Dragontrail (standard)               → 5.0
+        //   • Tempered Glass                       → 3.0
+        //   • Glass (Unspecified)                  → 2.0
+        //   • Plastic or No Glass                  → 0.0
       },
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
       "predicted_score": 10.00,
@@ -342,7 +378,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
-        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Make sure to use the following terms exclusively with related scores: Tandem OLED = 10.0, LTPO OLED = 9.0, AMOLED or OLED = 8.0, IPS LCD = 6.0, TFT or PLS LCD = 2.0, TN LCD or Legacy = 0.0.
+        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Use the following terms exclusively with related scores:
+        //   • Tandem OLED        → 10.0
+        //   • LTPO OLED          → 9.0
+        //   • AMOLED or OLED     → 8.0
+        //   • IPS LCD            → 6.0
+        //   • TFT or PLS LCD     → 2.0
+        //   • TN LCD or Legacy   → 0.0
       },
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
       "predicted_score": 9.00,
@@ -426,7 +468,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.0
-        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively with related scores: Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10) = 10.0, Primary Dynamic HDR (Dolby Vision + HDR10 only) = 9.0, Alternative Dynamic HDR (HDR10+ + HDR10 only) = 8.0, Basic Static HDR (HDR10 only) = 6.0, No HDR = 0.0. HLG is supplementary and does not change the tier.
+        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table.
+        //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.0
+        //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.0
+        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)         → 8.0
+        //   • Basic Static HDR (HDR10 only)                         → 6.0
+        //   • No HDR                                                → 0.0
+        //   Note: HLG is supplementary and does not change the tier.
       },
       // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
       "predicted_score": 8.00,
@@ -625,7 +673,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.0
-        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table. Use the following terms exclusively with related scores: Balanced/Symmetrical Stereo (two identical drivers) = 10.0, Standard Hybrid Stereo (earpiece + bottom driver) = 7.0, Mono Speaker = 3.0, No Usable Speaker = 0.0. Verify via spec sheet or review that explicitly states symmetry for 10.0.
+        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table.
+        //   • Balanced / Symmetrical Stereo (two identical drivers)  → 10.0
+        //   • Standard Hybrid Stereo (earpiece + bottom driver)      → 7.0
+        //   • Mono Speaker                                           → 3.0
+        //   • No Usable Speaker                                      → 0.0
+        //   Note: Verify via spec sheet or a review that explicitly states symmetry for 10.0.
       },
       // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
       "predicted_score": 7.00,
@@ -649,7 +702,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table. Use the following terms exclusively with related scores: Dolby Atmos AND DTS:X = 10.0, Dolby Atmos ONLY = 8.0, Multichannel Surround (Dolby Digital/DTS) only = 5.0, Stereo only = 0.0.
+          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table.
+          //   • Dolby Atmos AND DTS:X                           → 10.0
+          //   • Dolby Atmos ONLY                                → 8.0
+          //   • Multichannel Surround (Dolby Digital/DTS) only  → 5.0
+          //   • Stereo only                                     → 0.0
         }
       },
       "spatial_audio_rendering": {
@@ -659,7 +716,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.0
-          // SCORING GUIDELINE: Look up in the Section 3.2.2 table. Use the following terms exclusively with related scores: Spatial audio WITH Dynamic Head Tracking (gyroscope-anchored soundstage) = 10.0, Static spatial audio (no head tracking) = 7.0, No spatial rendering = 0.0.
+          // SCORING GUIDELINE: Look up in the Section 3.2.2 table.
+          //   • Spatial audio WITH Dynamic Head Tracking (gyroscope-anchored soundstage)  → 10.0
+          //   • Static spatial audio (no head tracking)                                   → 7.0
+          //   • No spatial rendering                                                      → 0.0
         }
       },
       // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
@@ -682,7 +742,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 3.0
-        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table. Use the following terms exclusively with related scores: 3.5mm headphone jack (native analog) = 10.0, USB-C with documented analog audio output = 6.0, USB-C digital audio only (dongle required) = 3.0, No wired audio support = 0.0.
+        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table.
+        //   • 3.5mm headphone jack (native analog)               → 10.0
+        //   • USB-C with documented analog audio output          → 6.0
+        //   • USB-C digital audio only (dongle required)         → 3.0
+        //   • No wired audio support                             → 0.0
       },
       // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
       "predicted_score": 3.0,
@@ -706,7 +770,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table. Use the following terms exclusively with related scores: ≥4 microphones = 10.0, 3 = 8.0, 2 = 5.0, 1 = 2.0, unknown = 0.0.
+          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table.
+          //   • ≥4 microphones   → 10.0
+          //   • 3                 → 8.0
+          //   • 2                 → 5.0
+          //   • 1                 → 2.0
+          //   • Unknown           → 0.0
         }
       },
       "rcm": {
@@ -716,7 +785,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up in the Section 3.4.2 table. Use the following terms exclusively with related scores: Multi-channel/Spatial audio = 10.0, Stereo = 8.0, Mono = 5.0, Voice-only/Unclear = 0.0.
+          // SCORING GUIDELINE: Look up in the Section 3.4.2 table.
+          //   • Multi-channel / Spatial audio   → 10.0
+          //   • Stereo                          → 8.0
+          //   • Mono                            → 5.0
+          //   • Voice-only / Unclear            → 0.0
         }
       },
       "acf": {
@@ -932,7 +1005,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.0
-        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively with related scores: Multi-Axis Gimbal/Multi-Sensor Shift = 10.0, Sensor-Shift OIS = 9.0, Lens-Based OIS = 8.0, EIS (Electronic Image Stabilization) only = 5.0, None = 0.0. "Standard OIS" maps to Lens-Based OIS = 8.0.
+        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table.
+        //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.0
+        //   • Sensor-Shift OIS                           → 9.0
+        //   • Lens-Based OIS                             → 8.0
+        //   • EIS (Electronic Image Stabilization) only  → 5.0
+        //   • None                                       → 0.0
+        //   Note: "Standard OIS" maps to Lens-Based OIS (8.0).
       },
       // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
       "predicted_score": 8.00,
@@ -1105,7 +1184,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "8K",
         "source": "TBD",
         "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Scores: ≥ 4K (Ultra HD, incl. 8K) = 10 | 1440p / QHD (2.5K) = 8 | 1080p (Full HD) = 6 | 720p (HD) = 3 | ≤ 480p = 0. Important: 8K and 4K both score 10 — see §4.8 for rationale.
+        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table.
+        //   • ≥ 4K Ultra HD (incl. 8K)   → 10.0
+        //   • 1440p / QHD (2.5K)         → 8.0
+        //   • 1080p Full HD              → 6.0
+        //   • 720p HD                    → 3.0
+        //   • ≤ 480p                     → 0.0
+        //   Note: 8K and 4K both score 10 — see §4.8 for rationale.
       },
       "predicted_score": 0.0,
       "final_score": 0.0
@@ -1258,7 +1343,33 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "value": "One UI 6.1",
       "source": "TBD",
       "exact_extract": "Proof pending"
-      // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer. Section 5.2 maps this string to a score. Known platforms and scores: iOS = 10.0 | Pixel UI / Stock Android = 9.0 | AOSP / Generic Stock Android = 9.0 | Fairphone OS = 9.0 | Nothing OS = 9.0 | Motorola MyUX / Hello UI = 8.0 | Sony Xperia UI = 8.0 | Nokia (Stock Android) = 8.0 | Sharp AQUOS UI = 8.0 | ASUS ZenUI / ROG UI = 7.0 | Samsung One UI = 6.0 | OxygenOS (OnePlus) = 6.0 | Redmagic OS = 6.0 | Honor MagicOS = 5.0 | Vivo FunTouch OS / OriginOS = 5.0 | ColorOS (Oppo) = 5.0 | Realme UI = 5.0 | LG UX (Legacy) = 5.0 | HTC Sense (Legacy) = 5.0 | ZTE MiFavor UI / MyOS = 4.0 | HyperOS (Xiaomi) = 4.0 | Huawei EMUI / HarmonyOS = 3.0 | MIUI (Legacy Xiaomi) = 3.0 | Tecno HiOS / Infinix XOS / Itel OS = 2.0. If unlisted, score = N/A (update Section 5.2 first).
+      // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
+      //   Section 5.2 maps this string to a score. Known platforms:
+      //   • iOS                                    → 10.0
+      //   • Pixel UI / Stock Android               → 9.0
+      //   • AOSP / Generic Stock Android           → 9.0
+      //   • Fairphone OS                           → 9.0
+      //   • Nothing OS                             → 9.0
+      //   • Motorola MyUX / Hello UI               → 8.0
+      //   • Sony Xperia UI                         → 8.0
+      //   • Nokia (Stock Android)                  → 8.0
+      //   • Sharp AQUOS UI                         → 8.0
+      //   • ASUS ZenUI / ROG UI                    → 7.0
+      //   • Samsung One UI                         → 6.0
+      //   • OxygenOS (OnePlus)                     → 6.0
+      //   • Redmagic OS                            → 6.0
+      //   • Honor MagicOS                          → 5.0
+      //   • Vivo FunTouch OS / OriginOS            → 5.0
+      //   • ColorOS (Oppo)                         → 5.0
+      //   • Realme UI                              → 5.0
+      //   • LG UX (Legacy)                         → 5.0
+      //   • HTC Sense (Legacy)                     → 5.0
+      //   • ZTE MiFavor UI / MyOS                  → 4.0
+      //   • HyperOS (Xiaomi)                       → 4.0
+      //   • Huawei EMUI / HarmonyOS                → 3.0
+      //   • MIUI (Legacy Xiaomi)                   → 3.0
+      //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.0
+      //   If unlisted, score = N/A (update Section 5.2 first).
     },
     "5_1_support_longevity": {
       "years_os": {
@@ -1390,7 +1501,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Adreno 750",
         "source": "TBD",
         "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset". Then look up the Standard Graphics, Ray Tracing, Ref Freq and Efficiency scores in the Section 6.3.0 table. Known GPU models include: Immortalis-G720 MC12, Adreno 750, Xclipse 940, Adreno 740, Immortalis-G715 MC11, Apple GPU (A18 Pro), Apple GPU (A17 Pro), Apple GPU (A16 Bionic), Adreno 730, Mali-G715 MC9, Xclipse 920, Mali-G710 MC10, Adreno 660, Mali-G715 (Tensor G3), Mali-G715 MC7, Apple GPU (A15 Bionic), Adreno 650, Adreno 642L, Mali-G610 MC6, Mali-G77 MC9, Apple GPU (A14 Bionic), Adreno 640, Mali-G610 MC4, Adreno 620, Adreno 619, Mali-G68 MC4, Adreno 618, Mali-G57 MC3, Adreno 610, Mali-G57 MC2, Mali-G52 MP2, PowerVR GE8320. If not listed, add to Section 6.3.0 before scoring.
+        // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset".
+        //   Then look up the Standard Graphics, Ray Tracing, Ref Freq, and Efficiency scores
+        //   in the Section 6.3.0 table. Known GPU models (add to Section 6.3.0 if unlisted):
+        //   Immortalis-G720 MC12 · Adreno 750 · Xclipse 940 · Adreno 740 · Immortalis-G715 MC11
+        //   Apple GPU (A18 Pro) · Apple GPU (A17 Pro) · Apple GPU (A16 Bionic) · Adreno 730
+        //   Mali-G715 MC9 · Xclipse 920 · Mali-G710 MC10 · Adreno 660 · Mali-G715 (Tensor G3)
+        //   Mali-G715 MC7 · Apple GPU (A15 Bionic) · Adreno 650 · Adreno 642L · Mali-G610 MC6
+        //   Mali-G77 MC9 · Apple GPU (A14 Bionic) · Adreno 640 · Mali-G610 MC4 · Adreno 620
+        //   Adreno 619 · Mali-G68 MC4 · Adreno 618 · Mali-G57 MC3 · Adreno 610 · Mali-G57 MC2
+        //   Mali-G52 MP2 · PowerVR GE8320
       },
       "standard_graphics_score": {
         "value": 10,
@@ -1476,7 +1596,31 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "predicted_score": 9.75,
       "final_score": 9.75,
-      // SCORING GUIDELINE: SoC AI scores for Method C (predicted_score) — look up the SoC in the Section 6.4 table: Snapdragon 8 Gen 3 = 10 | Dimensity 9300 = 10 | Exynos 2400 = 9 | Apple A18 Pro = 9 | Tensor G4 = 8 | Snapdragon 8 Gen 2 = 8 | Apple A17 Pro = 8 | Apple A16 Bionic = 7 | Tensor G3 = 7 | Dimensity 9200 = 7 | Apple A15 Bionic = 6 | Snapdragon 8 Gen 1 = 6 | Dimensity 9000 = 6 | Tensor G2 = 5 | Apple A14 Bionic = 5 | Snapdragon 888 = 4 | Snapdragon 7 Gen 3 = 4 | Dimensity 8200 = 4 | Snapdragon 7 Gen 1 / 7 Gen 2 = 3 | Dimensity 8100 = 3 | Budget (Helio G / Snapdragon 4xx) = 1. If the SoC is NOT listed: add it to Section 6.4 first (use its Geekbench AI score via the Method A formula) — do not guess. final_score uses Method A (Geekbench AI) if available, else Method B (Neighbor), else Method C (predicted).
+      // SCORING GUIDELINE: SoC AI scores for Method C (predicted_score) — look up the SoC in the Section 6.4 table.
+      //   • Snapdragon 8 Gen 3                    → 10
+      //   • Dimensity 9300                        → 10
+      //   • Exynos 2400                           → 9
+      //   • Apple A18 Pro                         → 9
+      //   • Tensor G4                             → 8
+      //   • Snapdragon 8 Gen 2                    → 8
+      //   • Apple A17 Pro                         → 8
+      //   • Apple A16 Bionic                      → 7
+      //   • Tensor G3                             → 7
+      //   • Dimensity 9200                        → 7
+      //   • Apple A15 Bionic                      → 6
+      //   • Snapdragon 8 Gen 1                    → 6
+      //   • Dimensity 9000                        → 6
+      //   • Tensor G2                             → 5
+      //   • Apple A14 Bionic                      → 5
+      //   • Snapdragon 888                        → 4
+      //   • Snapdragon 7 Gen 3                    → 4
+      //   • Dimensity 8200                        → 4
+      //   • Snapdragon 7 Gen 1 / 7 Gen 2          → 3
+      //   • Dimensity 8100                        → 3
+      //   • Budget (Helio G / Snapdragon 4xx)     → 1
+      //   If the SoC is NOT listed: add it to Section 6.4 first (use its Geekbench AI score
+      //   via the Method A formula) — do not guess.
+      //   final_score uses Method A (Geekbench AI) if available, else Method B (Neighbor), else Method C (predicted).
     },
     "6_5_ram_technology": {
       "technology": {
