@@ -1,5 +1,5 @@
 **1. Design & Ergonomics**
-### 1.4 Dimensions (Thickness)
+### 1.4 Thickness
 ### 1.5 Weight
 ### 1.6 Ergonomics (Width)
 **2. Display**

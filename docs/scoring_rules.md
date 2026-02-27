@@ -111,29 +111,29 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Glass Protection Tier (0–10)
 *   **Significance:** Indicates expected resistance to cracking and surface damage from drops and daily handling.
 
-| Score    | Declared Glass Type                | Example Models                |
-| :------- | :--------------------------------- | :---------------------------- |
-| **10.0** | **Gorilla Glass Armor**            | Galaxy S24 Ultra              |
-| **9.5**  | **Ceramic Shield (current gen)**   | iPhone 15 / 16 series         |
-| **9.0**  | **Gorilla Glass Victus 2**         | OnePlus 12, S23 Ultra         |
-| **8.0**  | **Gorilla Glass Victus / Victus+** | Pixel 7 Pro, Xiaomi 12S Ultra |
-| **7.0**  | **Gorilla Glass 5 / 6**            | Galaxy A54, Nothing Phone (1) |
-| **5.0**  | **Gorilla Glass 3 / Panda Glass**  | Budget mid-range              |
-| **3.0**  | **Tempered Glass**                 | Low-end devices               |
-| **2.0**  | **Glass (Unspecified)**            | Entry-level                   |
-| **0.0**  | **Plastic / No Glass**             | Feature phones                |
+| Score    | Declared Glass Type                                          | Example Models                              |
+| :------- | :----------------------------------------------------------- | :------------------------------------------ |
+| **10.0** | **Gorilla Glass Armor**                                      | Galaxy S24 Ultra                            |
+| **9.5**  | **Ceramic Shield (current gen)**                             | iPhone 15 / 16 series                       |
+| **9.0**  | **Gorilla Glass Victus 2**                                   | OnePlus 12, S23 Ultra                       |
+| **8.0**  | **Gorilla Glass Victus / Victus+ or Dragontrail Star / Pro** | Pixel 7 Pro, Xiaomi 12S Ultra, Xperia 1 VI  |
+| **7.0**  | **Gorilla Glass 5 / 6 or Dragontrail X**                     | Galaxy A54, Nothing Phone (1), Xperia 10 VI |
+| **5.0**  | **Gorilla Glass 3 or Panda Glass or Dragontrail (standard)** | Budget mid-range, Sharp AQUOS (budget)      |
+| **3.0**  | **Tempered Glass**                                           | Low-end devices                             |
+| **2.0**  | **Glass (Unspecified)**                                      | Entry-level                                 |
+| **0.0**  | **Plastic or No Glass**                                      | Feature phones                              |
 
-**Gorilla Glass Armor**: Flagship reinforced glass with anti-reflective and ≥2.0m-class drop certification  
-**Ceramic Shield (current gen)**: Ceramic-infused glass with ≥2.0m-class drop certification  
-**Gorilla Glass Victus 2**: Advanced reinforced glass rated for drops on rough surfaces (~2.0m class)  
-**Gorilla Glass Victus / Victus+**: Reinforced glass rated for ~2.0m drops  
-**Gorilla Glass 5 / 6**: Mid-tier reinforced glass rated for ~1.6m drops  
-**Gorilla Glass 3 / Panda Glass**: Entry-tier reinforced glass rated for ~1.2m drops  
-**Tempered Glass**: Basic chemically strengthened glass (no certified drop class)  
-**Glass (Unspecified)**: Manufacturer does not disclose protection class  
+**Gorilla Glass Armor**: Flagship reinforced glass (Corning) with anti-reflective coating and ≥2.0m-class drop certification\
+**Ceramic Shield (current gen)**: Ceramic-infused glass (Apple / Corning) with ≥2.0m-class drop certification\
+**Gorilla Glass Victus 2**: Advanced reinforced glass (Corning) rated for drops on rough surfaces (~2.0m class)\
+**Gorilla Glass Victus / Victus+ or Dragontrail Star / Pro**: ~2.0m-class drop protection. *Dragontrail Star* and *Dragontrail Pro* are ASAHI Glass equivalents used on Sony Xperia flagship and Sharp AQUOS lineup.\
+**Gorilla Glass 5 / 6 or Dragontrail X**: ~1.6m-class drop protection. *Dragontrail X* (ASAHI) is the equivalent used on Sony Xperia mid-range.\
+**Gorilla Glass 3 / Panda Glass or Dragontrail (standard)**: ~1.2m-class drop protection. Standard *Dragontrail* (ASAHI, 1st-gen) used on budget Japanese-market devices.\
+**Tempered Glass**: Basic chemically strengthened glass (no certified drop class)\
+**Glass (Unspecified)**: Manufacturer does not disclose protection class\
 **Plastic / No Glass**: Polymer display cover
 
-### 🔹 1.4 Dimensions (Thickness)
+### 🔹 1.4 Thickness
 *Description:* Device thickness excluding camera bump. Thinner phones are easier to hold and fit better in pockets.
 *   **Measurement:** Calipers at the thickest point of the body (excluding camera protrusion).
 *   **Unit:** Millimeters (mm)
@@ -189,24 +189,107 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 ## 🟣 2. Display
 
 ### 🔹 2.1 Display Panel Architecture (DPA)
-*Description:* Evaluates the physical display technology used to generate light and images. Focuses on panel construction and emission method — not brightness, color accuracy, refresh behavior, or power efficiency. OLED panels offer perfect blacks and vibrant colors due to self-emissive pixel control.
-*   **Measurement:** Manufacturer specifications and teardown confirmations.
+*Description:* Scores **three hardware properties that no other Section 2 subsection captures**:
+1.  **Contrast ratio and black level** — OLED pixels switch fully off for true black (infinite contrast). LCD backlights are always on, producing light leakage and finite contrast (~1000:1 for IPS). This determines visibility in dark scenes, night-mode legibility, and the hardware's ability to render Dolby Vision / HDR10 without a "grey black" floor. Note: §2.3 scores the *measured colour gamut*, §2.4 scores *HDR format certification* — neither scores whether the panel hardware can physically deliver true black.
+2.  **Viewing angle colour stability** — TN LCD inverts colours beyond ~30°. IPS maintains acceptable accuracy. OLED maintains full colour accuracy at any angle. Not scored anywhere else in Section 2.
+3.  **Local dimming granularity** — OLED achieves pixel-level local dimming with zero bloom. LCD relies on zone-based local dimming, creating a visible glow ("halo") around bright objects on dark backgrounds, especially during HDR playback.
+
+**What §2.1 deliberately excludes (scored elsewhere, no double counting):**
+*   **Brightness in nits** → §2.2 scores actual measured peak and HBM nits. A bright IPS scores identically to a bright OLED in §2.2 regardless of panel type.
+*   **Colour gamut %** → §2.3 scores the actual measured DCI-P3 coverage. Panel type determines the achievable ceiling, but §2.3 scores the measured value — no structural overlap with §2.1.
+*   **HDR format certifications** → §2.4 scores Dolby Vision / HDR10+ support. §2.1 scores the *rendering hardware quality* (black level, local dimming) that makes those formats meaningful.
+*   **Maximum refresh rate (Hz)** → §2.6 scores the peak refresh rate. §2.1's LTPO vs AMOLED split rewards content-rate matching and Always-On Display quality — not the Hz ceiling.
+*   **Battery efficiency of adaptive refresh** → §5.1 Battery uses separate dedicated fields (`refresh_rate_min_hz`, `refresh_rate_adaptive`) that live in the battery section. §2.1 rewards the *display quality* dimension of LTPO; §5.1 rewards the *battery efficiency* dimension. Different score categories, different weights, no overlap.
+*   **PWM dimming and eye comfort** → §2.10 scores dimming frequency and flicker. §2.1 does not reward or penalise the dimming method.
+
+*   **Measurement:** Manufacturer panel specifications and teardown confirmations.
 *   **Unit:** Panel Technology Tier (0–10)
-*   **Significance:** Determines contrast capability, viewing angle stability, and pixel-level light control.
+*   **Significance:** Determines three display hardware capabilities absent from all other metrics: (1) contrast ratio and true black quality, (2) off-axis colour stability, and (3) local dimming artefact freedom.
 
-| Score    | Panel Type                 | Example Models              |
-| :------- | :------------------------- | :-------------------------- |
-| **10.0** | **Tandem OLED**            | iPad Pro M4 (Reference)     |
-| **9.0**  | **OLED (LTPO/AMOLED)**     | S24 Ultra, iPhone 15 Pro    |
-| **6.0**  | **IPS LCD**                | iPhone 11, Poco X4 GT       |
-| **2.0**  | **TFT / PLS LCD**          | Budget devices              |
-| **0.0**  | **TN LCD / Legacy**        | Galaxy J1 (Legacy)          |
+#### Scoring Table
 
-**Tandem OLED**: Dual-stack emissive OLED panel (two light-emitting layers)  
-**OLED (LTPO/AMOLED)**: Self-emissive OLED panel (AMOLED, P-OLED, Dynamic AMOLED, LTPO OLED, LTPS OLED)  
-**IPS LCD**: LED-backlit LCD with in-plane switching  
-**TFT / PLS LCD**: Thin-film transistor LCD (non-IPS), includes PLS (Plane-to-Line Switching)  
-**TN LCD / Legacy**: Twisted nematic LCD and other legacy technologies
+| Score    | Canonical Panel Type | Hardware Basis                                                 | Example Models                            |
+| :------- | :------------------- | :------------------------------------------------------------- | :---------------------------------------- |
+| **10.0** | **Tandem OLED**      | Dual-stack emissive OLED (two light-emitting layers)           | iPad Pro M4, OnePlus 12                   |
+| **9.0**  | **LTPO OLED**        | True variable refresh rate down to 1 Hz (LTPO backplane)       | S24 Ultra, iPhone 15/16 Pro, Pixel 8 Pro  |
+| **8.0**  | **AMOLED or OLED**   | Self-emissive, fixed or limited-range refresh (LTPS backplane) | Galaxy A55, Pixel 8, Xiaomi 13, iPhone 14 |
+| **6.0**  | **IPS LCD**          | LED-backlit LCD with in-plane switching                        | iPhone 11, Poco X4 GT                     |
+| **2.0**  | **TFT or PLS LCD**   | Non-IPS LCD, budget (incl. Samsung PLS)                        | Budget devices                            |
+| **0.0**  | **TN LCD or Legacy** | Twisted nematic LCD and obsolete technologies                  | Galaxy J1 (Legacy)                        |
+
+#### Marketing Name → Canonical Tier Lookup
+
+> When recording a phone's panel type, find its exact spec-sheet denomination in the table below to determine the correct canonical tier and score.
+
+**Tier 10.0 — Tandem OLED**
+
+| Marketing Name (spec sheet)  | Brand / Device               |
+| :--------------------------- | :----------------------------|
+| "Tandem OLED"                | OnePlus 12; generic          |
+| "Dual-Layer OLED"            | Generic / press descriptions |
+
+**Tier 9.0 — LTPO OLED**
+
+| Marketing Name (spec sheet)                   | Brand / Device                                              |
+| :-------------------------------------------- | :---------------------------------------------------------- |
+| "Dynamic AMOLED 2X"                           | Samsung (S21 Ultra onwards; all Ultra / Fold / Flip)        |
+| "OLED ProMotion"                              | Apple — iPhone 16 Pro, 16 Pro Max                           |
+| "Super Retina XDR with ProMotion"             | Apple — iPhone 13 Pro, 13 Pro Max, 14 Pro, 14 Pro Max       |
+| "Super Retina XDR ProMotion"                  | Apple — same devices (alternative spec wording)             |
+| "ProMotion" (combined with any OLED label)    | Apple — always LTPO when ProMotion is mentioned             |
+| "ProXDR Display"                              | OnePlus (e.g. OnePlus 12)                                   |
+| "LTPO OLED"                                   | Google Pixel 8 Pro, generic high-end Android                |
+| "LTPO4" / "LTPO 4.0"                          | Generic high-end OLED (Xiaomi Ultra, etc.)                  |
+
+**Tier 8.0 — AMOLED or OLED**
+
+| Marketing Name (spec sheet)                | Brand / Device                                                    |
+| :----------------------------------------- | :-----------------------------------------------------------------|
+| "Super AMOLED"                             | Samsung (Galaxy S-series pre-S21 Ultra, Galaxy A-series)          |
+| "Dynamic AMOLED" (without "2X")            | Samsung 1st-gen (Galaxy S20, Note 20, etc.)                       |
+| "AMOLED"                                   | Generic Samsung, OnePlus (older), Xiaomi, Realme                  |
+| "Super Retina XDR" (without ProMotion)     | Apple — iPhone 12, 12 Pro, 13, 13 Mini, 14, 14 Plus, 15, 15 Plus  |
+| "Super Retina HD"                          | Apple — iPhone X, XS, XS Max (OLED, no ProMotion)                 |
+| "P-OLED" / "pOLED"                         | Motorola Edge series; LG (G Flex era)                             |
+| "Flexible OLED"                            | Generic, Sony (some models)                                       |
+| "OLED" (no further LTPO qualifier)         | Google Pixel 8, various mid-range OLED                            |
+
+**Tier 6.0 — IPS LCD**
+
+| Marketing Name (spec sheet) | Brand / Device                                              |
+| :--------------------------- | :----------------------------------------------------------|
+| "Liquid Retina HD"           | Apple — iPhone XR, iPhone 11                               |
+| "Liquid Retina"              | Apple — various (always IPS LCD when used by Apple)        |
+| "Retina LCD"                 | Apple — older iPhones (iPhone 6 through SE 2nd gen)        |
+| "Retina HD"                  | Apple — iPhone 6 Plus through iPhone 8 Plus                |
+| "IPS LCD"                    | Generic (any spec sheet stating IPS LCD)                   |
+| "IPS NEO"                    | Some Xiaomi / Samsung mid-range labelling                  |
+| "In-Cell Touch IPS"          | Generic / budget-flagship                                  |
+
+**Tier 2.0 — TFT or PLS LCD**
+
+| Marketing Name (spec sheet) | Brand / Device                                   |
+| :--------------------------- | :---------------------------------------------- |
+| "PLS TFT"                    | Samsung (budget Galaxy A / M series)            |
+| "PLS"                        | Samsung (Plane-to-Line Switching, non-IPS)      |
+| "TFT LCD" / plain "TFT"      | Generic budget (any TFT without IPS qualifier)  |
+
+**Tier 0.0 — TN LCD or Legacy**
+
+| Marketing Name (spec sheet)  | Brand / Device                            |
+| :---------------------------- | :--------------------------------------- |
+| "TFT (TN)"                    | Very old budget devices; old spec sheets |
+| Any explicitly TN-type label  | Legacy and feature phones                |
+
+> [!IMPORTANT]
+> **Decision rule when the spec sheet is ambiguous:** If a phone is listed as plain "OLED" or "AMOLED" with no LTPO qualifier, default to **AMOLED or OLED (8.0)**. Only assign **LTPO OLED (9.0)** when the LTPO backplane or a marketing name from the Tier 9.0 table above is explicitly confirmed.
+
+**Tandem OLED**: Two stacked emissive OLED layers. Higher peak brightness and better power efficiency than single-stack OLED. Currently limited to premium tablets and select flagships.\
+**LTPO OLED**: Single-stack OLED with an LTPO (Low Temperature Polycrystalline Oxide) backplane. True variable refresh rate to **1 Hz**; always adaptive.\
+**AMOLED or OLED**: Single-stack OLED with an LTPS (Low Temperature Polycrystalline Silicon) backplane. Self-emissive, but refresh is fixed or limited-range — cannot reach 1 Hz.\
+**IPS LCD**: LED-backlit LCD with in-plane switching. Good viewing angles; no true black.\
+**TFT or PLS LCD**: Budget thin-film transistor LCD (non-IPS). Narrower viewing angles and lower colour accuracy.\
+**TN LCD or Legacy**: Twisted nematic (TN) LCD and any obsolete display technology.
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all display panel scores. Battery efficiency scoring references this table.
@@ -782,12 +865,15 @@ MAR is a weighted composite of three subsections:
 *   **Significance:** Higher resolution allows greater detail, cropping flexibility, and higher-quality downscaling.
 
 | Score  | Max Rear Video Resolution |
-| :----- | :------------------------ |
-| **10** | **≥ 4K (Ultra HD)**       |
+| :----- | :-------------------------|
+| **10** | **≥ 4K (Ultra HD) or 8K** |
 | **8**  | **1440p / QHD (2.5K)**    |
 | **6**  | **1080p (Full HD)**       |
 | **3**  | **720p (HD)**             |
 | **0**  | **≤ 480p**                |
+
+> [!NOTE]
+> **Why is 8K not a separate tier above 4K?** 8K video (7680×4320) on smartphones (e.g., Samsung Galaxy S-series) is currently a gimmick tier: extreme heat, massive file sizes, and no streaming platform requires it. The perceptual benefit over 4K on a phone screen is zero. Both map to Score 10 as the "best available" practical tier.
 
 ### 🔹 4.9 Rear Video Frame Rate
 *Description:* Maximum frame rate supported at the highest commonly used resolution (≥1080p).
@@ -1041,34 +1127,37 @@ Each platform is evaluated on three dimensions (from public documentation and ve
 
 #### Platform Cleanliness Table
 
-| Platform / Skin                | Score    | Justification                                                             |
-| :----------------------------- | :------- | :------------------------------------------------------------------------ |
-| **iOS**                        | **10.0** | No third-party bloatware, no ads, all non-core apps fully deletable       |
-| **Pixel UI / Stock Android**   | **9.0**  | Minimal Google apps, no third-party bloat, no ads, most apps removable    |
-| **Nothing OS**                 | **9.0**  | Near-stock Android, minimal preinstalls, no ads                           |
-| **Motorola MyUX / Hello UI**   | **8.0**  | Light customization, some carrier bloat possible, no system ads           |
-| **Sony Xperia UI**             | **8.0**  | Clean experience, minimal preinstalls, no ads                             |
-| **Nokia (Stock Android)**      | **8.0**  | Near-stock Android One, minimal bloatware                                 |
-| **ASUS ZenUI / ROG UI**        | **7.0**  | Moderate ASUS apps, gaming features, no system ads                        |
-| **Samsung One UI**             | **6.0**  | Significant Samsung/Microsoft preinstalls, ads present (can be disabled)  |
-| **OxygenOS (OnePlus)**         | **6.0**  | Moderate preinstalls, occasional promotions                               |
-| **Redmagic OS**                | **6.0**  | Gaming-focused, moderate preinstalls, no ads                              |
-| **Honor MagicOS**              | **5.0**  | Moderate preinstalls, regional apps, some promotions                      |
-| **Vivo FunTouch OS / OriginOS**| **5.0**  | Moderate preinstalls, regional third-party apps                           |
-| **ColorOS (Oppo)**             | **5.0**  | More preinstalls, regional third-party apps, some ads                     |
-| **Realme UI**                  | **5.0**  | Based on ColorOS, similar bloatware profile                               |
-| **LG UX (Legacy)**             | **5.0**  | Moderate LG apps, carrier bloatware varied                                |
-| **HTC Sense (Legacy)**         | **5.0**  | Moderate HTC apps, historical reference                                   |
-| **HyperOS (Xiaomi)**           | **4.0**  | Heavy preinstalls, system ads in multiple apps                            |
-| **Huawei EMUI / HarmonyOS**    | **3.0**  | No Google services, significant Huawei apps, regional bloatware           |
-| **MIUI (Legacy Xiaomi)**       | **3.0**  | Significant bloatware, persistent ads difficult to disable                |
-| **Tecno HiOS / Infinix XOS**   | **2.0**  | Heavy third-party bloatware, ads present                                  |
+| Platform / Skin                        | Score    | Justification                                                             |
+| :------------------------------------- | :------- | :------------------------------------------------------------------------ |
+| **iOS**                                | **10.0** | No third-party bloatware, no ads, all non-core apps fully deletable       |
+| **Pixel UI / Stock Android**           | **9.0**  | Minimal Google apps, no third-party bloat, no ads, most apps removable    |
+| **AOSP / Generic Stock Android**       | **9.0**  | Pure Android with no OEM skin; identical policy to Pixel UI               |
+| **Fairphone OS**                       | **9.0**  | Near-stock Android, minimal preinstalls, strong update transparency       |
+| **Nothing OS**                         | **9.0**  | Near-stock Android, minimal preinstalls, no ads                           |
+| **Motorola MyUX / Hello UI**           | **8.0**  | Light customization, some carrier bloat possible, no system ads           |
+| **Sony Xperia UI**                     | **8.0**  | Clean experience, minimal preinstalls, no ads                             |
+| **Nokia (Stock Android)**              | **8.0**  | Near-stock Android One, minimal bloatware                                 |
+| **Sharp AQUOS UI**                     | **8.0**  | Clean, near-stock Android for Japan market; minimal preinstalls, no ads   |
+| **ASUS ZenUI / ROG UI**                | **7.0**  | Moderate ASUS apps, gaming features, no system ads                        |
+| **Samsung One UI**                     | **6.0**  | Significant Samsung/Microsoft preinstalls, ads present (can be disabled)  |
+| **OxygenOS (OnePlus)**                 | **6.0**  | Moderate preinstalls, occasional promotions                               |
+| **Redmagic OS**                        | **6.0**  | Gaming-focused, moderate preinstalls, no ads                              |
+| **Honor MagicOS**                      | **5.0**  | Moderate preinstalls, regional apps, some promotions                      |
+| **Vivo FunTouch OS / OriginOS**        | **5.0**  | Moderate preinstalls, regional third-party apps                           |
+| **ColorOS (Oppo)**                     | **5.0**  | More preinstalls, regional third-party apps, some ads                     |
+| **Realme UI**                          | **5.0**  | Based on ColorOS, similar bloatware profile                               |
+| **LG UX (Legacy)**                     | **5.0**  | Moderate LG apps, carrier bloatware varied                                |
+| **HTC Sense (Legacy)**                 | **5.0**  | Moderate HTC apps, historical reference                                   |
+| **ZTE MiFavor UI / MyOS**              | **4.0**  | Moderate preinstalls, regional third-party apps, some promotions          |
+| **HyperOS (Xiaomi)**                   | **4.0**  | Heavy preinstalls, system ads in multiple apps                            |
+| **Huawei EMUI / HarmonyOS**            | **3.0**  | No Google services, significant Huawei apps, regional bloatware           |
+| **MIUI (Legacy Xiaomi)**               | **3.0**  | Significant bloatware, persistent ads difficult to disable                |
+| **Tecno HiOS / Infinix XOS / Itel OS** | **2.0**  | Heavy third-party bloatware, ads present                                  |
 
 **Formula:**
 ```
 SCC = Platform_Cleanliness_Score (direct lookup from skin field)
 ```
-
 
 ### 🔹 5.3 AI Feature Suite
 *Description:* Evaluates the *software features* and practical AI tools available to the user. This measures "what you can do" (features), distinct from **Section 6.4** which measures "how fast it runs" (hardware power).
@@ -1113,21 +1202,25 @@ This table provides the authoritative CPU core architecture scores used througho
 
 **Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
 
-| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                          |
-|------------------------------|:---------:|:--------------:|:----------:|--------------------------------|
-| **Apple A18 / A17 Pro / A17**| **10**    | **3.78**       | 2023-2024  | Highest IPC, 3nm process       |
-| **Cortex-X925**              | **10**    | **3.60**       | 2024       | ARMv9.2, latest flagship       |
-| **Cortex-X4**                | **10**    | **3.30**       | 2023       | ARMv9, flagship performance    |
-| **Cortex-X3**                | **9**     | **3.20**       | 2022       | ARMv9 flagship                 |
-| **Cortex-X2**                | **8**     | **3.00**       | 2021       | ARMv9 early flagship           |
-| **Cortex-A720 / A715**       | **7**     | **2.80**       | 2023-2024  | ARMv9 modern performance       |
-| **Cortex-A710**              | **6**     | **2.50**       | 2021       | ARMv9 transitional             |
-| **Cortex-A78 / A77**         | **6**     | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship        |
-| **Cortex-A76 / A75**         | **5**     | **2.20**       | 2017-2018  | ARMv8.2 older flagship         |
-| **Cortex-A73**               | **4**     | **2.00**       | 2016       | ARMv8 budget performance       |
-| **Cortex-A55**               | **2**     | **1.80**       | 2017       | ARMv8.2 modern efficiency      |
-| **Cortex-A520 / A510**       | **2**     | **2.00**       | 2021-2023  | ARMv9 efficiency cores         |
-| **Cortex-A53 / A7**          | **0**     | **1.50**       | 2012-2014  | ARMv8 ancient efficiency       |
+| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                                      |
+|------------------------------|:---------:|:--------------:|:----------:|--------------------------------------------|
+| **Apple A18 / A17 Pro / A17**| **10**    | **3.78**       | 2023-2024  | Highest IPC, 3nm process                   |
+| **Cortex-X925**              | **10**    | **3.60**       | 2024       | ARMv9.2, latest flagship                   |
+| **Cortex-X4**                | **10**    | **3.30**       | 2023       | ARMv9, flagship performance                |
+| **Apple A16 Bionic**         | **9**     | **3.46**       | 2022       | iPhone 14 Pro / iPhone 15; ARMv8.6         |
+| **Cortex-X3**                | **9**     | **3.20**       | 2022       | ARMv9 flagship                             |
+| **Apple A15 Bionic**         | **8**     | **3.22**       | 2021       | iPhone 13 / iPhone 14; ARMv8.5             |
+| **Cortex-X2**                | **8**     | **3.00**       | 2021       | ARMv9 early flagship (SD 8 Gen 1)          |
+| **Apple A14 Bionic**         | **7**     | **3.10**       | 2020       | iPhone 12; ARMv8.4, 5nm                    |
+| **Cortex-X1**                | **7**     | **2.84**       | 2020       | ARMv8.4, SD 888 prime core                 |
+| **Cortex-A720 / A715**       | **7**     | **2.80**       | 2023-2024  | ARMv9 modern performance                   |
+| **Cortex-A710**              | **6**     | **2.50**       | 2021       | ARMv9 transitional                         |
+| **Cortex-A78 / A77**         | **6**     | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship                    |
+| **Cortex-A76 / A75**         | **5**     | **2.20**       | 2017-2018  | ARMv8.2 older flagship                     |
+| **Cortex-A73**               | **4**     | **2.00**       | 2016       | ARMv8 budget performance                   |
+| **Cortex-A55**               | **2**     | **1.80**       | 2017       | ARMv8.2 modern efficiency                  |
+| **Cortex-A520 / A510**       | **2**     | **2.00**       | 2021-2023  | ARMv9 efficiency cores                     |
+| **Cortex-A53 / A7**          | **0**     | **1.50**       | 2012-2014  | ARMv8 ancient efficiency                   |
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
@@ -1303,35 +1396,40 @@ This table provides the authoritative GPU architecture scores used throughout th
 > *   *Why separate from performance?* Some GPUs (e.g., Snapdragon 888's Adreno 660) have high Standard Graphics scores but terrible efficiency (overheats, drains battery). Others (e.g., Snapdragon 778G's Adreno 642L) have moderate performance but excellent efficiency.
 > *   **Process node benefits** (3nm vs 5nm) are scored separately in Section 6.10. This Efficiency score focuses on architectural design and thermal management.
 > 
-| GPU Model                | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                          |
-| :----------------------- | :---------------: | :---------: | :------------: | :--------: | :----------------------------- |
-| **Immortalis-G720 MC12** | **10**            | **10**      | **1300**       | **10**     | Dimensity 9300 (Top tier)      |
-| **Adreno 750**           | **10**            | **10**      | **903**        | **9**      | Snapdragon 8 Gen 3             |
-| **Adreno 740**           | **9**             | **8**       | **680**        | **9**      | Snapdragon 8 Gen 2             |
-| **Immortalis-G715 MC11** | **9**             | **8**       | **981**        | **9**      | Dimensity 9200                 |
-| **Apple GPU (A18 Pro)**  | **9**             | **9**       | **1398**       | **10**     | 6-core (iPhone 16 Pro)         |
-| **Apple GPU (A17 Pro)**  | **8**             | **7**       | **1398**       | **9**      | 6-core (iPhone 15 Pro)         |
-| **Adreno 730**           | **8**             | **6**       | **900**        | **7**      | Snapdragon 8 Gen 1             |
-| **Mali-G715 MC9**        | **8**             | **6**       | **850**        | **9**      | Dimensity 9000                 |
-| **Mali-G710 MC10**       | **7**             | **5**       | **850**        | **8**      | Dimensity 9000                 |
-| **Adreno 660**           | **7**             | **0**       | **840**        | **5**      | Snapdragon 888 (No RT)         |
-| **Mali-G715 (Tensor G3)**| **7**             | **4**       | **890**        | **6**      | Google Tensor G3               |
-| **Mali-G715 MC7**        | **7**             | **5**       | **850**        | **9**      | Dimensity 8200                 |
-| **Adreno 650**           | **6**             | **0**       | **587**        | **6**      | Snapdragon 865                 |
-| **Adreno 642L**          | **6**             | **0**       | **490**        | **8**      | Snapdragon 778G                |
-| **Mali-G610 MC6**        | **6**             | **0**       | **850**        | **8**      | Dimensity 1080                 |
-| **Mali-G77 MC9**         | **6**             | **0**       | **850**        | **6**      | Dimensity 1000+                |
-| **Adreno 640**           | **5**             | **0**       | **585**        | **5**      | Snapdragon 855                 |
-| **Mali-G610 MC4**        | **5**             | **0**       | **850**        | **7**      | Dimensity 920                  |
-| **Adreno 620**           | **4**             | **0**       | **625**        | **6**      | Snapdragon 765G                |
-| **Adreno 619**           | **4**             | **0**       | **825**        | **6**      | Snapdragon 750G                |
-| **Mali-G68 MC4**         | **4**             | **0**       | **900**        | **6**      | Dimensity 900                  |
-| **Adreno 618**           | **3**             | **0**       | **610**        | **5**      | Snapdragon 730G                |
-| **Mali-G57 MC3**         | **3**             | **0**       | **950**        | **5**      | Budget 5G                      |
-| **Adreno 610**           | **2**             | **0**       | **600**        | **8**      | Snapdragon 680                 |
-| **Mali-G57 MC2**         | **2**             | **0**       | **950**        | **5**      | Entry 5G                       |
-| **Mali-G52 MP2**         | **1**             | **0**       | **850**        | **4**      | Entry Level                    |
-| **PowerVR GE8320**       | **0**             | **0**       | **680**        | **2**      | Ultra-budget legacy            |
+| GPU Model                 | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                                   |
+| :------------------------ | :---------------: | :---------: | :------------: | :--------: | :-------------------------------------- |
+| **Immortalis-G720 MC12**  | **10**            | **10**      | **1300**       | **10**     | Dimensity 9300                          |
+| **Adreno 750**            | **10**            | **10**      | **903**        | **9**      | Snapdragon 8 Gen 3                      |
+| **Xclipse 940**           | **9**             | **8**       | **1100**       | **7**      | Exynos 2400; AMD RDNA 3                 |
+| **Adreno 740**            | **9**             | **8**       | **680**        | **9**      | Snapdragon 8 Gen 2                      |
+| **Immortalis-G715 MC11**  | **9**             | **8**       | **981**        | **9**      | Dimensity 9200                          |
+| **Apple GPU (A18 Pro)**   | **9**             | **9**       | **1398**       | **10**     | 6-core (iPhone 16 Pro)                  |
+| **Apple GPU (A17 Pro)**   | **8**             | **7**       | **1398**       | **9**      | 6-core (iPhone 15 Pro)                  |
+| **Apple GPU (A16 Bionic)**| **7**             | **4**       | **1398**       | **8**      | 5-core (iPhone 14 Pro / iPhone 15)      |
+| **Adreno 730**            | **8**             | **6**       | **900**        | **7**      | Snapdragon 8 Gen 1                      |
+| **Mali-G715 MC9**         | **8**             | **6**       | **850**        | **9**      | Dimensity 9000                          |
+| **Xclipse 920**           | **7**             | **5**       | **1300**       | **6**      | Exynos 2200; AMD RDNA 2                 |
+| **Mali-G710 MC10**        | **7**             | **5**       | **850**        | **8**      | Dimensity 9000 (mid config)             |
+| **Adreno 660**            | **7**             | **0**       | **840**        | **5**      | Snapdragon 888 (No RT)                  |
+| **Mali-G715 (Tensor G3)** | **7**             | **4**       | **890**        | **6**      | Google Tensor G3                        |
+| **Mali-G715 MC7**         | **7**             | **5**       | **850**        | **9**      | Dimensity 8200                          |
+| **Apple GPU (A15 Bionic)**| **6**             | **0**       | **1296**       | **8**      | 4-core (iPhone 13) / 5-core (Pro model) |
+| **Adreno 650**            | **6**             | **0**       | **587**        | **6**      | Snapdragon 865                          |
+| **Adreno 642L**           | **6**             | **0**       | **490**        | **8**      | Snapdragon 778G                         |
+| **Mali-G610 MC6**         | **6**             | **0**       | **850**        | **8**      | Dimensity 1080                          |
+| **Mali-G77 MC9**          | **6**             | **0**       | **850**        | **6**      | Dimensity 1000+                         |
+| **Apple GPU (A14 Bionic)**| **5**             | **0**       | **1086**       | **7**      | 4-core (iPhone 12)                      |
+| **Adreno 640**            | **5**             | **0**       | **585**        | **5**      | Snapdragon 855                          |
+| **Mali-G610 MC4**         | **5**             | **0**       | **850**        | **7**      | Dimensity 920                           |
+| **Adreno 620**            | **4**             | **0**       | **625**        | **6**      | Snapdragon 765G                         |
+| **Adreno 619**            | **4**             | **0**       | **825**        | **6**      | Snapdragon 750G                         |
+| **Mali-G68 MC4**          | **4**             | **0**       | **900**        | **6**      | Dimensity 900                           |
+| **Adreno 618**            | **3**             | **0**       | **610**        | **5**      | Snapdragon 730G                         |
+| **Mali-G57 MC3**          | **3**             | **0**       | **950**        | **5**      | Budget 5G                               |
+| **Adreno 610**            | **2**             | **0**       | **600**        | **8**      | Snapdragon 680                          |
+| **Mali-G57 MC2**          | **2**             | **0**       | **950**        | **5**      | Entry 5G                                |
+| **Mali-G52 MP2**          | **1**             | **0**       | **850**        | **4**      | Entry Level                             |
+| **PowerVR GE8320**        | **0**             | **0**       | **680**        | **2**      | Ultra-budget legacy                     |
 
 > [!NOTE]
 > **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
@@ -1506,20 +1604,35 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 
 This table provides the authoritative AI scores for major SoCs, reflecting their Neural Processing Unit (NPU) hardware acceleration capabilities (INT8/FP16) for machine learning.
 
-| SoC Model                | NPU / Neural Engine      | AI Score (0-10) |
-| :----------------------- | :----------------------- | :-------------- | 
-| **Snapdragon 8 Gen 3**   | Hexagon (2024)           | **10**          |
-| **Dimensity 9300**       | APU 790                  | **10**          |
-| **Apple A18 Pro**        | 16-core Neural Engine    | **9**           |
-| **Snapdragon 8 Gen 2**   | Hexagon (2023)           | **8**           |
-| **Apple A17 Pro**        | 16-core Neural Engine    | **8**           |
-| **Tensor G3**            | Google TPU (2023)        | **7**           |
-| **Dimensity 9200**       | APU 690                  | **7**           |
-| **Snapdragon 8 Gen 1**   | Hexagon (2022)           | **6**           |
-| **Tensor G2**            | Google TPU (2022)        | **5**           |
-| **Snapdragon 888**       | Hexagon 780              | **4**           |
-| **Mid-Range (7 Gen 3)**  | Hexagon (Mid)            | **4**           |
-| **Budget**               | N/A or DSP only          | **1**           |
+| SoC Model                             | NPU / Neural Engine            | AI Score (0-10) |
+| :------------------------------------ | :----------------------------- | :-------------- |
+| **Snapdragon 8 Gen 3**                | Hexagon (2024)                 | **10**          |
+| **Dimensity 9300**                    | APU 790                        | **10**          |
+| **Exynos 2400**                       | NPU 5th-gen (34.7 TOPS)        | **9**           |
+| **Apple A18 Pro**                     | 16-core Neural Engine          | **9**           |
+| **Tensor G4**                         | Google TPU (2024)              | **8**           |
+| **Snapdragon 8 Gen 2**                | Hexagon (2023)                 | **8**           |
+| **Apple A17 Pro**                     | 16-core Neural Engine          | **8**           |
+| **Apple A16 Bionic**                  | 16-core Neural Engine          | **7**           |
+| **Tensor G3**                         | Google TPU (2023)              | **7**           |
+| **Dimensity 9200**                    | APU 690                        | **7**           |
+| **Apple A15 Bionic**                  | 16-core Neural Engine          | **6**           |
+| **Snapdragon 8 Gen 1**                | Hexagon (2022)                 | **6**           |
+| **Dimensity 9000**                    | APU 670                        | **6**           |
+| **Tensor G2**                         | Google TPU (2022)              | **5**           |
+| **Apple A14 Bionic**                  | 16-core Neural Engine          | **5**           |
+| **Snapdragon 888**                    | Hexagon 780                    | **4**           |
+| **Snapdragon 7 Gen 3**                | Hexagon (mid-tier, 2023)       | **4**           |
+| **Dimensity 8200**                    | APU 8 (mid-tier, 2022)         | **4**           |
+| **Snapdragon 7 Gen 1 / 7 Gen 2**      | Hexagon (mid-tier, 2021–2023)  | **3**           |
+| **Dimensity 8100**                    | APU 810 (mid-tier, 2022)       | **3**           |
+| **Budget (Helio G / Snapdragon 4xx)** | DSP only or no dedicated NPU   | **1**           |
+
+> [!IMPORTANT]
+> **SoC not listed above?** Do **not** guess a score. Add a new row to this table first:
+> 1. Find the SoC's Geekbench AI (Quantized INT8) score on the [Geekbench AI Leaderboard](https://browser.geekbench.com/ai-benchmarks).
+> 2. Normalise it against the Min/Max constants (Method A formula below) to get an authoritative score.
+> 3. Insert the new row in descending score order, then use it for scoring.
 
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
@@ -1544,7 +1657,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 *   **Distance Metric:** Weighted Euclidean Distance.
     *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
-        *   `AI` (table above, Sec 6.4.0), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
+        *   `AI` (table above, Sec 6.4), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
     *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
     *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
 *   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
@@ -1569,7 +1682,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
 
 1.  **SoC AI Score (40%) – The Engine**
-    *   **Source:** Retrieve `AI Score` from **the Section 6.4.0 table above**.
+    *   **Source:** Retrieve `AI Score` from **the Section 6.4 table above**.
     *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
 
 2.  **RAM Technology Score (25%) – The Highway**
@@ -1727,7 +1840,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Min Score (0.0):** ≤ Thermal_Thickness_mm_Min
 
 > [!NOTE]
-> **Data Structure Mapping:** `1_4_dimensions.thickness_mm`
+> **Data Structure Mapping:** `1_4_thickness.thickness_mm`
 
 **Part A Score:**  
 `Part_A = (0.40 × A1) + (0.25 × A2) + (0.20 × A3) + (0.15 × A4)`
@@ -1845,7 +1958,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 
 > [!NOTE]
 > **Why are eSIM and iSIM scored identically?**
-> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Dimensions)** and **Section 8.1 (Battery Endurance)**.
+> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Thickness)** and **Section 8.1 (Battery Endurance)**.
 > 
 > **Approximation Note:** This is currently an approximation. While **Section 8.1** rewards overall battery life, the theoretical model does not yet strictly quantify the specific µW savings of iSIM vs eSIM, nor do general benchmarks (like GSMArena) typically isolate this specific variable. However, treating them as functionally equivalent in this section prevents double-counting the engineering benefits that don't directly alter the user's *connectivity* options. 
 

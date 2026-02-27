@@ -12,7 +12,7 @@
 
 **1. Design & Build**
 
-### 1.4 Dimensions (Thickness)
+### 1.4 Thickness
 *   `Thickness_mm_Min` = 6.0 (Score 10), `Thickness_mm_Max` = 10.0 (Score 0)
 
 ### 1.5 Weight

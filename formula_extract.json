@@ -20,7 +20,7 @@
     "context": "\n**Predicted Score Formula:**\n`IP Score = (0.5 \u00d7 Dust Protection Score) + (0.5 \u00d7 Water Protection Score)`\n\n#### 1.2.A Dust Protection (First Digit of IP Code)\n*   **Measurement:** Manufacturer IP certification.\n*   **Unit:** IEC 60529 First Digit (0\u20136)\n*   **Significance:** Determines resistance to fine particles that cause long-term mechanical and electrical wear (ports, speakers, buttons, seals).\n\n| IEC Level | Score    | Objective Definition                                       |\n"
   },
   {
-    "section": "### \ud83d\udd39 1.4 Dimensions (Thickness)",
+    "section": "### \ud83d\udd39 1.4 Thickness",
     "line": "*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_mm_Min) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0-10)",
     "context": "*   **Unit:** Millimeters (mm)\n*   **Significance:** Affects pocketability and hand comfort.\n*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_mm_Min) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0-10)\n*   **Max Score (10.0):** \u2264 Thickness_mm_Min\n*   **Min Score (0.0):** \u2265 Thickness_mm_Max\n*   *Constants: See [scoring_constants.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_constants.md) Section 1*\n> [!NOTE]\n> This is a continuous linear scoring metric. Thinner is better.\n\n### \ud83d\udd39 1.5 Weight\n"
   },

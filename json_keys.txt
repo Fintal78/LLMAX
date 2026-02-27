@@ -12,7 +12,7 @@ identity
   1_1_materials
   1_2_durability
   1_3_glass_protection
-  1_4_dimensions
+  1_4_thickness
   height_mm
   width_mm
   1_5_weight

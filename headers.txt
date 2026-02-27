@@ -2,7 +2,7 @@
 ### 🔹 1.1 Materials (Frame/Back)
 ### 🔹 1.2 Durability (Ingress Protection)
 ### 🔹 1.3 Display Glass Protection (DGP)
-### 🔹 1.4 Dimensions (Thickness)
+### 🔹 1.4 Thickness
 ### 🔹 1.5 Weight
 ### 🔹 1.6 Ergonomics (Width & Handling)
 ## 🟣 2. Display
