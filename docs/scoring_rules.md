@@ -331,7 +331,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *   **Unit:** Percentage (%)
 *   **Significance:** Determines real-world color vibrancy and HDR reproduction capability.
 
-*Formula:* `Score = 10 * (P3_percent - Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max - Display_P3_Coverage_Percent_Min)` (Clamped 0-10)
+*Formula:* `Score = 10 * (DCI-P3_percent - Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max - Display_P3_Coverage_Percent_Min)` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Display_P3_Coverage_Percent_Max
 *   **Min Score (0.0):** ≤ Display_P3_Coverage_Percent_Min
 

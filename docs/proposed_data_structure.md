@@ -413,9 +413,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.21
-        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, estimate hbm_nits = peak_nits / 1.5.
+        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, then set "value" to "Not found" and use the formula with the fallback value hbm_nits = peak_nits / 1.5.
       },
-      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore). HBM is weighted at 70% because it reflects true daily outdoor usability; Peak at 30% for HDR media capability.
+      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
       "predicted_score": 7.37,
       "final_score": {
         "value": 7.37,
@@ -435,24 +435,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. If dci_p3_percent is not available from any source then set "value" to "Not found" and subscore to "N/A". Then use the "srgb_percent" bloc below as fallback scoring. 
       },
       "srgb_percent": {
         "value": 100,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": "N/A"
-        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. Its subscore is always "N/A". Use it to estimate DCI-P3 ONLY when dci_p3_percent is not available from any source: DCI-P3_estimate = min(srgb_percent × 0.75, 100). Once converted, score the estimate via the dci_p3_percent formula above.
+        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this bloc. When dci_p3_percent is available and the subscore was calculated in the previous bloc then set the subscore of this bloc to "N/A".
       },
-      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore.
+      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
       "predicted_score": 10.00,
       "final_score": {
         "value": 10.00,
-        // SCORING GUIDELINE: Definitive color gamut score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster (e.g., when an expert review validates exceptional factory calibration accuracy).
+        // SCORING GUIDELINE: Definitive color gamut score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
         // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.2"), or "No" if unadjusted. Example: booster "11_2_toms_guide_display_factory_calibration" would be referenced here.
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.2"), or "No" if unadjusted.
         "confidence": "N/A"
         // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
