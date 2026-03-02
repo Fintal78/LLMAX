@@ -205,8 +205,8 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Brightness in nits** → §2.2 scores actual measured peak and HBM nits. A bright IPS scores identically to a bright OLED in §2.2 regardless of panel type.
 *   **Colour gamut %** → §2.3 scores the actual measured DCI-P3 coverage. Panel type determines the achievable ceiling, but §2.3 scores the measured value — no structural overlap with §2.1.
 *   **HDR format certifications** → §2.4 scores Dolby Vision / HDR10+ support. §2.1 scores the *rendering hardware quality* (black level, local dimming) that makes those formats meaningful.
-*   **Maximum refresh rate (Hz)** → §2.6 scores the peak refresh rate. §2.1's LTPO vs AMOLED split rewards content-rate matching and Always-On Display quality — not the Hz ceiling.
-*   **Battery efficiency of adaptive refresh** → §5.1 Battery uses separate dedicated fields (`refresh_rate_min_hz`, `refresh_rate_adaptive`) that live in the battery section. §2.1 rewards the *display quality* dimension of LTPO; §5.1 rewards the *battery efficiency* dimension. Different score categories, different weights, no overlap.
+*   **Maximum refresh rate (Hz)** → §2.6 Motion Smoothness scores the peak refresh rate. §2.1's LTPO vs AMOLED split rewards content-rate matching and Always-On Display quality — not the Hz ceiling.
+*   **Battery efficiency of adaptive refresh** → §8.1 Battery (Endurance Model) uses separate dedicated fields (`refresh_rate_min_hz`, `refresh_rate_adaptive`) that live in the battery section. §2.1 rewards the *display quality* dimension of LTPO; §8.1 rewards the *battery efficiency* dimension. Different score categories, different weights, no overlap.
 *   **PWM dimming and eye comfort** → §2.10 scores dimming frequency and flicker. §2.1 does not reward or penalise the dimming method.
 
 *   **Measurement:** Manufacturer panel specifications and teardown confirmations.
@@ -389,7 +389,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > [!NOTE]
 > **Why Logarithmic?** Human visual acuity has diminishing returns. The difference in sharpness between 200 and 300 PPI is immediately obvious, while the difference between 500 and 600 PPI is barely perceptible to the naked eye.
 
-### 🔹 2.6 Motion Smoothness (Max Refresh Rate)
+### 🔹 2.6 Motion Smoothness
 *Description:* How many times the screen updates per second. 120Hz+ makes scrolling and animations look incredibly smooth compared to standard 60Hz.
 *   **Measurement:** High-speed camera analysis or system reporting.
 *   **Unit:** Hertz (Hz)
@@ -493,7 +493,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 > [!NOTE]
 > **Why Weight the Euclidean Distance?**
 > DXOMARK's display protocol does not treat every metric equally. It tests six core pillars: Readability, Color, Video, Motion, Touch, and Artifacts. To accurately find a neighbor that fundamentally behaves like the target device, our Euclidean search relies on a weighted algorithm designed to mirror these pillars:
-> *   **Primary Pillars (15-20% each):** 2.2 Brightness (DXO Readability) at **20%**, 2.1 Panel Tech (DXO Contrast/Blacks) at **15%**, and 2.6 Refresh Rate (DXO Motion) at **15%**.
+> *   **Primary Pillars (15-20% each):** 2.2 Brightness (DXO Readability) at **20%**, 2.1 Panel Tech (DXO Contrast/Blacks) at **15%**, and 2.6 Motion Smoothness (DXO Motion) at **15%**.
 > *   **Secondary Pillars (10% each):** 2.3 Color Gamut (DXO Color), 2.4 HDR (DXO Video), 2.7 Touch Hz (DXO Touch), 2.5 PPI (DXO Aliasing Artifacts), and 2.10 PWM (DXO Flicker Artifacts).
 > *   **Excluded (0%):** 2.8 Bezels and 2.9 Screen Size are purely physical aesthetic elements. Including them corrupts the search, as DXOMARK evaluates the panel's *output*, not its dimensions.
 

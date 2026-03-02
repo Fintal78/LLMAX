@@ -10,7 +10,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-02-27"
+    "last_updated": "2026-03-02"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -98,7 +98,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively for "value" with related scores:
         //   • Titanium Alloy       → 10.0
         //   • Stainless Steel      → 8.5
         //   • Aluminum Alloy       → 7.0
@@ -110,7 +110,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
-        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively for "value" with related scores:
         //   • Ceramic              → 10.0
         //   • Strengthened Glass   → 8.0
         //   • Standard Glass       → 6.0
@@ -140,11 +140,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ip_rating.value` for reference.
       "dust_protection_digit": {
-        "value": 6,
+        "value": "Digit 6",
         "source": "1_2_durability.ip_rating.value",
         "exact_extract": "6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 6    → 10.0
         //   • Digit 5    → 8.0
         //   • Digit 4    → 6.0
@@ -153,11 +153,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Digit 0–1  → 0.0
       },
       "water_protection_digit": {
-        "value": 8,
+        "value": "Digit 8",
         "source": "1_2_durability.ip_rating.value",
         "exact_extract": "8",
         "subscore": 9.00
-        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 9    → 10.0
         //   • Digit 8    → 9.0
         //   • Digit 7    → 8.0
@@ -186,7 +186,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.0
-        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively for "value" with related scores:
         //   • Gorilla Glass Armor                  → 10.0
         //   • Ceramic Shield (current gen)         → 9.5
         //   • Gorilla Glass Victus 2               → 9.0
@@ -378,7 +378,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
-        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Use the following terms exclusively with related scores:
+        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Use the following terms exclusively for "value" with related scores:
         //   • Tandem OLED        → 10.0
         //   • LTPO OLED          → 9.0
         //   • AMOLED or OLED     → 8.0
@@ -460,21 +460,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "2_4_hdr_format_support": {
       // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the display officially supports. Dynamic HDR formats optimize brightness and colour frame-by-frame, unlocking the full quality of premium streaming content.
       "formats": {
-        "value": [
-          "HDR10+",
-          "HDR10",
-          "HLG"
-        ],
+        "value": "Alternative Dynamic HDR (HDR10+ + HDR10 only)",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.0
-        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table.
+        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively for "value" with related scores:
         //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.0
         //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.0
         //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)         → 8.0
         //   • Basic Static HDR (HDR10 only)                         → 6.0
         //   • No HDR                                                → 0.0
-        //   Note: HLG is supplementary and does not change the tier.
       },
       // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
       "predicted_score": 8.00,
@@ -492,23 +487,25 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "2_5_resolution_density": {
       // SCORING GOAL: Scores pixel density (Pixels Per Inch, PPI) as a measure of display sharpness. Higher PPI means text and images look crisp with no visible pixels.
       "resolution_width_px": {
-        // GUIDELINE: Horizontal pixel count of the display (e.g. 1440 for QHD+). Used to derive PPI via PPI = √(width² + height²) / diagonal_inches. Source from manufacturer spec sheet or GSMArena.
+        // GUIDELINE: Horizontal pixel count of the display. Used for scoring ONLY when ppi is not available from any source.
         "value": 1440,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
       },
       "resolution_height_px": {
-        // GUIDELINE: Vertical pixel count of the display (e.g. 3120 for QHD+). Used together with resolution_width_px to derive PPI. Source from manufacturer spec sheet or GSMArena.
+        // GUIDELINE: Vertical pixel count of the display. Used for scoring ONLY when ppi is not available from any source.
         "value": 3120,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
       },
       "ppi": {
         "value": 505,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.43
-        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(ppi) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Logarithmic because human visual acuity has diminishing returns at high PPI. Derive ppi if not published: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches.
+        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(ppi) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly ppi.value if available from any source. 
+        // ONLY if ppi is NOT available derive ppi: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
+        // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
       // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore.
       "predicted_score": 8.43,
@@ -523,16 +520,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
-    "2_6_refresh_rate_max_hz": {
+    "2_6_motion_smoothness": {
       // SCORING GOAL: Scores Motion Smoothness via maximum refresh rate. Higher Hertz (Hz) means scrolling and animations look smoother. 120 Hz and above are perceptibly superior to standard 60 Hz.
-      "max_hz": {
+      "maximum_refresh_rate_hz": {
         "value": 120,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.55
-        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(max_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10. Logarithmic because the perceptual smoothness gain of each additional Hz diminishes at high frequencies.
+        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits max_hz.subscore.
+      // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
       "predicted_score": 7.55,
       "final_score": {
         "value": 7.55,
@@ -552,7 +549,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 5.00
-        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10. Logarithmic because the perceptual benefit of a faster sampling rate diminishes at high frequencies.
+        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
       // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore.
       "predicted_score": 5.00,
@@ -569,14 +566,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "2_8_screen_to_body_ratio": {
       // SCORING GOAL: Scores the Screen-to-Body Ratio (SBR) — how much of the front face is active display versus border (bezel). Higher percentage means a more immersive, modern design.
-      "percent": {
+      "screen_to_body_ratio_percent": {
         "value": 88.5,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.64
-        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10. Linear because each percentage point represents a proportional increase in visible display area.
+        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
+        // FALLBACK: If "screen_to_body_ratio_percent" is NOT available from primary sources, derive it using: (Active Display Area / Total Frontal Area) * 100. That should be well documented and justified via "source" and "exact_extract", if needed by providing multiple sources and extracts (stored in "source" and "exact_extract" and separated via commas). 
       },
-      // SCORING GUIDELINE: predicted_score directly inherits percent.subscore.
+      // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
       "predicted_score": 8.64,
       "final_score": {
         "value": 8.64,
@@ -596,7 +594,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 6.93
-        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10. Quadratic because usable screen real estate scales as area (proportional to the square of the diagonal), heavily rewarding larger screens.
+        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
       },
       // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
       "predicted_score": 6.93,
@@ -615,11 +613,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // SCORING GOAL: Evaluates how the screen dims at low brightness levels to prevent eye strain and headaches. It scores either the perfect continuous light of Direct Current (DC) Dimming, or scales the Pulse-Width Modulation (PWM) frequency if flickering is present.
       "dimming_hardware": {
         "pwm_dimming_active": {
-          "value": true,
+          "value": "PWM Dimming active",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": "N/A"
-          // SCORING GUIDELINE: If value = true then PWM Dimming is active, this subscore remains "N/A" as the score will be defined by the frequency 'pwm_dimming_hz'. If value = false then DC Dimming is active, this specific subscore is evaluated as 10.0 without any impact of 'pwm_dimming_hz'.
+          // SCORING GUIDELINE: Look up the dimming technology in the Section 2.10.1 table. Use the following terms exclusively for "value" with related scores:
+          //   • PWM Dimming active   → N/A (determined by frequency)
+          //   • DC (Direct Current)  → 10.0 (no flicker)
+          //   Note: If value = "PWM Dimming active", subscore is "N/A" (frequency counts). If value = "DC (Direct Current)", subscore is 10.0.
         },
         "pwm_dimming_hz": {
           "value": 492,
@@ -657,7 +658,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": 9.34,
         // SCORING GUIDELINE: Use Method A if dxomark_display_score is available (dxomark_display_score.subscore becomes the final value). Otherwise use Method B (Nearest Neighbor Interpolation per Section 2.11 Euclidean distance search). Otherwise fall back to Method C (predicted_score). No Booster applies to Benchmark or Neighbor Interpolation results.
         "method_used": "Benchmark (DXOMARK)",
-        // SCORING GUIDELINE: Set to "Benchmark (DXOMARK)" for Method A, "Neighbor Interpolation" for Method B, or "Predictor" for Method C.
+        // SCORING GUIDELINE: Set the method used based on the hierarchy (A→B→C). Use the following terms exclusively for "value" with related scores:
+        //   • Benchmark (DXOMARK)    → Method A (documented score)
+        //   • Neighbor Interpolation → Method B (similar device benchmarks)
+        //   • Predictor              → Method C (weighted spec calculation)
         "booster": "No",
         // SCORING GUIDELINE: Must always be "No" for Benchmark and Neighbor Interpolation methods. Boosters are only allowed on Predictor results.
         "confidence": "N/A"
@@ -669,11 +673,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "3_1_speaker_quality": {
       // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
       "speaker_configuration": {
-        "value": "Balanced Stereo (Hybrid)",
+        "value": "Standard Hybrid Stereo (earpiece + bottom driver)",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.0
-        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table.
+        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table. Use the following terms exclusively for "value" with related scores:
         //   • Balanced / Symmetrical Stereo (two identical drivers)  → 10.0
         //   • Standard Hybrid Stereo (earpiece + bottom driver)      → 7.0
         //   • Mono Speaker                                           → 3.0
@@ -702,7 +706,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table.
+          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table. Use the following terms exclusively for "value" with related scores:
           //   • Dolby Atmos AND DTS:X                           → 10.0
           //   • Dolby Atmos ONLY                                → 8.0
           //   • Multichannel Surround (Dolby Digital/DTS) only  → 5.0
@@ -712,11 +716,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "spatial_audio_rendering": {
         // SCORING GUIDELINE: 3.2.2 Spatial Audio Rendering. Per the hierarchical category rule, only the highest-tier capability is stored.
         "best_spatial_capability": {
-          "value": "Spatial audio (Static, no head tracking)",
+          "value": "Static spatial audio (no head tracking)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.0
-          // SCORING GUIDELINE: Look up in the Section 3.2.2 table.
+          // SCORING GUIDELINE: Look up in the Section 3.2.2 table. Use the following terms exclusively for "value" with related scores:
           //   • Spatial audio WITH Dynamic Head Tracking (gyroscope-anchored soundstage)  → 10.0
           //   • Static spatial audio (no head tracking)                                   → 7.0
           //   • No spatial rendering                                                      → 0.0
@@ -742,7 +746,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 3.0
-        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table.
+        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table. Use the following terms exclusively for "value" with related scores:
         //   • 3.5mm headphone jack (native analog)               → 10.0
         //   • USB-C with documented analog audio output          → 6.0
         //   • USB-C digital audio only (dongle required)         → 3.0
@@ -766,11 +770,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "mhc": {
         // SCORING GUIDELINE: 3.4.1 Microphone Hardware Count (MHC). The subscore is placed on the data field itself, not in a separate score object.
         "microphone_count": {
-          "value": 3,
+          "value": "3",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table.
+          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table. Use the following terms exclusively for "value" with related scores:
           //   • ≥4 microphones   → 10.0
           //   • 3                 → 8.0
           //   • 2                 → 5.0
@@ -785,7 +789,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.0
-          // SCORING GUIDELINE: Look up in the Section 3.4.2 table.
+          // SCORING GUIDELINE: Look up in the Section 3.4.2 table. Use the following terms exclusively for "value" with related scores:
           //   • Multi-channel / Spatial audio   → 10.0
           //   • Stereo                          → 8.0
           //   • Mono                            → 5.0
@@ -1005,7 +1009,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.0
-        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table.
+        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively for "value" with related scores:
         //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.0
         //   • Sensor-Shift OIS                           → 9.0
         //   • Lens-Based OIS                             → 8.0
@@ -1089,11 +1093,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "4_7_1_ultrawide_path": {
         // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
         "ultrawide_af": {
-          "value": true,
+          "value": "Autofocus",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.0
-          // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. If true: value = true (Autofocus) → subscore = 10.0; value = false (Fixed focus) → subscore = 6.0. If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.0.
+          // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
+          //   • Autofocus    → 10.0
+          //   • Fixed focus  → 6.0
+          //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.0.
         },
         "min_focus_distance_cm": {
           "value": 2.5,
@@ -1869,7 +1876,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           },
           "dependencies": [
             "2_display.2_1_panel_architecture",
-            "2_display.2_6_refresh_rate_max_hz.max_hz"
+            "2_display.2_6_motion_smoothness.maximum_refresh_rate_hz"
           ],
           "breakdown": {
             "panel_technology_score": 9,
