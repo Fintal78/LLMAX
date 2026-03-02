@@ -117,8 +117,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Polymer              → 4.0
         //   • Not Disclosed        → 0.0
       },
-      // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
       "predicted_score": 9.20,
+      // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
       "final_score": {
         "value": 9.20,
         // SCORING GUIDELINE: Definitive materials score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -166,8 +166,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Digit 4    → 2.0
         //   • Digit 0–3  → 0.0
       },
-      // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
       "predicted_score": 9.50,
+      // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
       "final_score": {
         "value": 9.50,
         // SCORING GUIDELINE: Definitive durability score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -201,8 +201,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Glass (Unspecified)                  → 2.0
         //   • Plastic or No Glass                  → 0.0
       },
-      // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
       "predicted_score": 10.00,
+      // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
       "final_score": {
         "value": 10.00,
         // SCORING GUIDELINE: Definitive glass protection score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -223,8 +223,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 3.50
         // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore.
       "predicted_score": 3.50,
+      // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore.
       "final_score": {
         "value": 3.50,
         // SCORING GUIDELINE: Definitive thickness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -245,8 +245,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 1.64
         // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore.
       "predicted_score": 1.64,
+      // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore.
       "final_score": {
         "value": 1.64,
         // SCORING GUIDELINE: Definitive weight score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -267,8 +267,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 0.00
         // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore.
       "predicted_score": 0.00,
+      // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore.
       "final_score": {
         "value": 0.00,
         // SCORING GUIDELINE: Definitive ergonomics score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -386,8 +386,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • TFT or PLS LCD     → 2.0
         //   • TN LCD or Legacy   → 0.0
       },
-      // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
       "predicted_score": 9.00,
+      // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
       "final_score": {
         "value": 9.00,
         // SCORING GUIDELINE: Definitive panel architecture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -415,8 +415,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 7.21
         // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, then set "value" to "Not found" and use the formula with the fallback value hbm_nits = peak_nits / 1.5.
       },
-      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
       "predicted_score": 7.37,
+      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
       "final_score": {
         "value": 7.37,
         // SCORING GUIDELINE: Definitive brightness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -444,8 +444,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": "N/A"
         // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this bloc. When dci_p3_percent is available and the subscore was calculated in the previous bloc then set the subscore of this bloc to "N/A".
       },
-      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
       "predicted_score": 10.00,
+      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
       "final_score": {
         "value": 10.00,
         // SCORING GUIDELINE: Definitive color gamut score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -471,8 +471,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Basic Static HDR (HDR10 only)                         → 6.0
         //   • No HDR                                                → 0.0
       },
-      // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
       "predicted_score": 8.00,
+      // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
       "final_score": {
         "value": 8.00,
         // SCORING GUIDELINE: Definitive HDR format score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -507,8 +507,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // ONLY if ppi is NOT available derive ppi: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
-      // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore.
       "predicted_score": 8.43,
+      // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore.
       "final_score": {
         "value": 8.43,
         // SCORING GUIDELINE: Definitive resolution density score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -529,8 +529,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 7.55
         // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
       "predicted_score": 7.55,
+      // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
       "final_score": {
         "value": 7.55,
         // SCORING GUIDELINE: Definitive motion smoothness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -551,8 +551,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 5.00
         // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore.
       "predicted_score": 5.00,
+      // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore.
       "final_score": {
         "value": 5.00,
         // SCORING GUIDELINE: Definitive touch responsiveness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -574,8 +574,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
         // FALLBACK: If "screen_to_body_ratio_percent" is NOT available from primary sources, derive it using: (Active Display Area / Total Frontal Area) * 100. That should be well documented and justified via "source" and "exact_extract", if needed by providing multiple sources and extracts (stored in "source" and "exact_extract" and separated via commas). 
       },
-      // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
       "predicted_score": 8.64,
+      // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
       "final_score": {
         "value": 8.64,
         // SCORING GUIDELINE: Definitive screen-to-body ratio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -596,8 +596,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 6.93
         // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
       "predicted_score": 6.93,
+      // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
       "final_score": {
         "value": 6.93,
         // SCORING GUIDELINE: Definitive screen size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -611,59 +611,155 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "2_10_eye_comfort": {
       // SCORING GOAL: Evaluates how the screen dims at low brightness levels to prevent eye strain and headaches. It scores either the perfect continuous light of Direct Current (DC) Dimming, or scales the Pulse-Width Modulation (PWM) frequency if flickering is present.
-      "dimming_hardware": {
-        "pwm_dimming_active": {
-          "value": "PWM Dimming active",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": "N/A"
-          // SCORING GUIDELINE: Look up the dimming technology in the Section 2.10.1 table. Use the following terms exclusively for "value" with related scores:
-          //   • PWM Dimming active   → N/A (determined by frequency)
-          //   • DC (Direct Current)  → 10.0 (no flicker)
-          //   Note: If value = "PWM Dimming active", subscore is "N/A" (frequency counts). If value = "DC (Direct Current)", subscore is 10.0.
+
+      // ─────────────────────────────────────────────────────────────────────────────
+      // DIMMING TECHNOLOGY → VERIFICATION RULE LOOKUP (static reference — do not score from here)
+      // Source: Section 2.10.1 PWM Dimming (Flicker) Presence table.
+      //
+      // Step 1: Identify if the panel uses Pulse-Width Modulation (PWM) or Direct Current (DC) dimming.
+      // Step 2: Use the "presence" value (Yes/No) for flicker_presence.
+      // Step 3: Match with the corresponding technical details below.
+      // ─────────────────────────────────────────────────────────────────────────────
+      "dimming_technology_lookup": { // this is a lookup table, do not modify
+        "option_flicker_active": {
+          "presence": "Yes",
+          "technology": "PWM Dimming active",
+          "verification_rule": "Any OLED/AMOLED panel (inherent), or an LCD specifically tested to have PWM flicker.",
+          "score_impact": "Determined by frequency (Hz)"
         },
-        "pwm_dimming_hz": {
-          "value": 492,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 4.07
-          // SCORING GUIDELINE: If `pwm_dimming_active` = true, evaluate this specific subscore using the Section 2.10.2 logarithmic formula with the provided value of 'pwm_dimming_hz'. If `pwm_dimming_active` = false, this specific subscore MUST be "N/A".
+        "option_no_flicker": {
+          "presence": "No",
+          "technology": "DC (Direct Current)",
+          "verification_rule": "Standard LCD/IPS panel with confirmed DC (Direct Current) dimming (no measurable PWM flicker).",
+          "score_impact": 10.0
         }
       },
-      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" from the `dimming_hardware` block above.
+      // Start of the actual data structure and scoring process
+      "flicker_presence": {
+        "value": "Yes",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": "N/A"
+        // SCORING GUIDELINE: Record if PWM flicker is present (Yes/No) based on the verification rules in dimming_technology_lookup above.
+        //   • If "No" (DC Dimming), subscore is 10.0.
+        //   • If "Yes" (PWM Dimming), subscore is "N/A" as the score is derived from frequency below.
+      },
+      "pwm_dimming_hz": {
+        "value": 492,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 4.07
+        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pwm_dimming_hz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", this subscore MUST be "N/A".
+      },
       "predicted_score": 4.07,
+      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pwm_dimming_hz. 
+      // (If No-Flicker, inherits 10.0 from flicker_presence; if Flicker-Active, inherits frequency score from pwm_dimming_hz).
       "final_score": {
         "value": 4.07,
-        // SCORING GUIDELINE: The definitive eye comfort score. It inherits the `predicted_score` unless mathematically modified by a Section 11 expert review Booster. (This section has no Benchmark or Neighbor equivalents).
+        // SCORING GUIDELINE: The definitive eye comfort score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
         // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 rule applied (e.g., "11.5"), or "No" if unadjusted.
+        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
         // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_11_display_benchmark_final_scoring": {
-      // SCORING GOAL: Produces the overall Display Final Score using a three-method hierarchy (A→B→C). Method A uses the DXOMARK Display benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback when no benchmarks exist for any similar device.
+      // SCORING GOAL: Produces the overall Display Final Score using a three-method hierarchy (A→B→C). Method A uses the DXOMARK Display benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback weighted sum of sub-section predicted scores.
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Direct Benchmark (Primary)
+      // ═══════════════════════════════════════════════════════════════════════════
       "dxomark_display_score": {
         "value": 150,
-        "source": "https://www.dxomark.com/smartphones/#display",
+        "source": "https://www.dxomark.com/smartphones/#display", // if the score is available for the device you MUST put the exact url here
         "exact_extract": "Proof pending",
         "subscore": 9.34
-        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_score) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to null and subscore to "N/A".
+        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_score) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and exact_extract and subscore to "N/A".
       },
-      // SCORING GUIDELINE: predicted_score = weighted sum of sub-section predicted scores per Method C formula (Section 2.11): (0.15 × 2.1) + (0.20 × 2.2) + (0.10 × 2.3) + (0.10 × 2.4) + (0.10 × 2.5) + (0.15 × 2.6) + (0.10 × 2.7) + (0.10 × 2.10). Sections 2.8 and 2.9 are excluded because DXOMARK does not evaluate physical dimensions.
-      "predicted_score": 7.51,
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Predicted Calculation (Tertiary / baseline for Method B)
+      // ═══════════════════════════════════════════════════════════════════════════
+      
+      "method_c_predicted_score": {
+        // SCORING GUIDELINE (Section 2.11 Method C), these are the 8 perceptual sub-section predicted scores and their weights:
+        "subscore_2_1":  { "subscore_path": "2_1_panel_architecture.predicted_score",   "weight_2_1": 0.15 },
+        "subscore_2_2":  { "subscore_path": "2_2_brightness.predicted_score",            "weight_2_2": 0.20 },
+        "subscore_2_3":  { "subscore_path": "2_3_color_gamut_coverage.predicted_score",  "weight_2_3": 0.10 },
+        "subscore_2_4":  { "subscore_path": "2_4_hdr_format_support.predicted_score",    "weight_2_4": 0.10 },
+        "subscore_2_5":  { "subscore_path": "2_5_resolution_density.predicted_score",    "weight_2_5": 0.10 },
+        "subscore_2_6":  { "subscore_path": "2_6_motion_smoothness.predicted_score",     "weight_2_6": 0.15 },
+        "subscore_2_7":  { "subscore_path": "2_7_touch_responsiveness.predicted_score",  "weight_2_7": 0.10 },
+        "subscore_2_10": { "subscore_path": "2_10_eye_comfort.predicted_score",          "weight_2_10": 0.10 },
+
+        // These inputs are used to calculate the overall predicted_score (Method C):
+        "predicted_score": 7.51,
+        // SCORING GUIDELINE: predicted_score = Sum(subscore_X × weight_X) for all 8 entries above. 
+
+        // Sections 2.8 (Screen-to-Body Ratio) and 2.9 (Screen Size) are excluded because DXOMARK does not evaluate physical dimensions.
+        // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+      },
+    
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      
+      "method_b_neighbor_interpolation": {
+        // SCORING GUIDELINE (Section 2.11 Method B): Only populated when Method A is NOT available but at least 3 devices with DXOMARK Display scores exist in the database. If Method A is available for the device then Method B can be skipped completely, all fields must be set to "N/A".
+        // Step 1 (Section 2.11 Method B.1): Find the 3 devices with the smallest weighted Euclidean distance using the method_c_predicted_score weights and sub-section predicted scores.
+        //         Distance = √( Sum( weight_i × (SubScore_Target_i − SubScore_Neighbor_i)² ) )
+        //         Where 'i' iterates over each of the 8 method_c_predicted_score entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
+        //         Search space: all phones that have a known DXOMARK Display score (Method A).
+        // Step 2 (Section 2.11 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "N/A",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "google_pixel_9_pro")
+            "euclidean_distance_1": "N/A",
+            // GUIDELINE: Weighted Euclidean distance from Step 1
+            "predicted_score_1": "N/A",
+            // GUIDELINE: The neighbor's own Method C predicted_score (overall display)
+            "benchmark_score_1": "N/A"
+            // GUIDELINE: The neighbor's Method A dxomark_display_score.subscore
+          },
+          {
+            // Neighbor2
+            "device_id_2": "N/A",
+            "euclidean_distance_2": "N/A",
+            "predicted_score_2": "N/A",
+            "benchmark_score_2": "N/A"
+          },
+          {
+            // Neighbor3
+            "device_id_3": "N/A",
+            "euclidean_distance_3": "N/A",
+            "predicted_score_3": "N/A",
+            "benchmark_score_3": "N/A"
+          }
+        ],
+        "avg_predicted_neighbors": "N/A",
+        // SCORING GUIDELINE (Section 2.11 Method B Step 2): (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+        "avg_benchmark_neighbors": "N/A",
+        // SCORING GUIDELINE (Section 2.11 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+        "correction_ratio": "N/A",
+        // SCORING GUIDELINE (Section 2.11 Method B Step 2): method_c_predicted_score.predicted_score / avg_predicted_neighbors.
+        "interpolated_score": "N/A"
+        // SCORING GUIDELINE (Section 2.11 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score, used only if Method A is unavailable.
+      },
+
       "final_score": {
         "value": 9.34,
-        // SCORING GUIDELINE: Use Method A if dxomark_display_score is available (dxomark_display_score.subscore becomes the final value). Otherwise use Method B (Nearest Neighbor Interpolation per Section 2.11 Euclidean distance search). Otherwise fall back to Method C (predicted_score). No Booster applies to Benchmark or Neighbor Interpolation results.
+        // SCORING GUIDELINE (Section 2.11): Use Method A if dxomark_display_score is available (dxomark_display_score.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_predicted_score.predicted_score). 
         "method_used": "Benchmark (DXOMARK)",
-        // SCORING GUIDELINE: Set the method used based on the hierarchy (A→B→C). Use the following terms exclusively for "value" with related scores:
-        //   • Benchmark (DXOMARK)    → Method A (documented score)
+        // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+        //   • Benchmark (DXOMARK)    → Method A (documented DXOMARK score)
         //   • Neighbor Interpolation → Method B (similar device benchmarks)
         //   • Predictor              → Method C (weighted spec calculation)
         "booster": "No",
-        // SCORING GUIDELINE: Must always be "No" for Benchmark and Neighbor Interpolation methods. Boosters are only allowed on Predictor results.
+        // SCORING GUIDELINE: Must always be set to "No".
         "confidence": "N/A"
         // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor. "High", "Medium", or "Low" only when 2 independent benchmarks are cross-referenced.
       }
@@ -684,8 +780,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • No Usable Speaker                                      → 0.0
         //   Note: Verify via spec sheet or a review that explicitly states symmetry for 10.0.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
       "predicted_score": 7.00,
+      // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
       "final_score": {
         "value": 7.00,
         // SCORING GUIDELINE: Definitive speaker quality score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -726,8 +822,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • No spatial rendering                                                      → 0.0
         }
       },
-      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
       "predicted_score": 7.5,
+      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
       "final_score": {
         "value": 7.5,
         // SCORING GUIDELINE: Definitive PAPI score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -752,8 +848,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • USB-C digital audio only (dongle required)         → 3.0
         //   • No wired audio support                             → 0.0
       },
-      // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
       "predicted_score": 3.0,
+      // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
       "final_score": {
         "value": 3.0,
         // SCORING GUIDELINE: Definitive wired audio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -809,8 +905,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.5 × count (clamped 0–10). Example: 2 features × 2.5 = 5.0. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
         }
       },
-      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.microphone_count.subscore) + (0.30 × rcm.recording_channels.subscore) + (0.40 × acf.features.subscore). Weights from the MAR formula in Section 3.4.
       "predicted_score": 6.80,
+      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.microphone_count.subscore) + (0.30 × rcm.recording_channels.subscore) + (0.40 × acf.features.subscore). Weights from the MAR formula in Section 3.4.
       "final_score": {
         "value": 6.80,
         // SCORING GUIDELINE: Definitive MAR score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -945,8 +1041,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 8.11
         // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769). Logarithmic because the real-world photographic benefit of a larger sensor follows a diminishing return curve.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
       "predicted_score": 8.11,
+      // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
       "final_score": {
         "value": 8.11,
         // SCORING GUIDELINE: Definitive sensor size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -967,8 +1063,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 6.40
         // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
       "predicted_score": 6.40,
+      // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
       "final_score": {
         "value": 6.40,
         // SCORING GUIDELINE: Definitive aperture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -989,8 +1085,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 10.00
         // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(mp) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10. Logarithmic because beyond ~50 MP, real-world detail gains hit a diffraction ceiling.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits mp.subscore.
       "predicted_score": 10.00,
+      // SCORING GUIDELINE: predicted_score directly inherits mp.subscore.
       "final_score": {
         "value": 10.00,
         // SCORING GUIDELINE: Definitive resolution score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -1017,8 +1113,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • None                                       → 0.0
         //   Note: "Standard OIS" maps to Lens-Based OIS (8.0).
       },
-      // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
       "predicted_score": 8.00,
+      // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
       "final_score": {
         "value": 8.00,
         // SCORING GUIDELINE: Definitive stabilization score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -1053,8 +1149,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 10.00
         // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true.
       },
-      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0. FOV is weighted 55% because it is the primary purpose of an ultrawide lens, while sensor size (45%) governs low-light quality.
       "predicted_score": 8.17,
+      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0. FOV is weighted 55% because it is the primary purpose of an ultrawide lens, while sensor size (45%) governs low-light quality.
       "final_score": {
         "value": 8.17,
         // SCORING GUIDELINE: Definitive UCC score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -1075,8 +1171,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 6.99
         // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10. Logarithmic because the reach improvement from 1x to 3x is transformational, while the difference between 10x and 12x is marginal.
       },
-      // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
       "predicted_score": 6.99,
+      // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
       "final_score": {
         "value": 6.99,
         // SCORING GUIDELINE: Definitive zoom score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -1109,8 +1205,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "subscore": 7.31
           // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. Lower focus distance = higher score.
         },
-        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.4 × ultrawide_af.subscore) + (0.6 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.0. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
         "predicted_score": 8.39,
+        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.4 × ultrawide_af.subscore) + (0.6 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.0. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
         "final_score": {
           "value": 8.39,
           // SCORING GUIDELINE: Intermediate path score feeding into the parent 4_7 final formula. Inherits predicted_score. (No Booster applies at this child level.)
@@ -1138,8 +1234,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "subscore": "N/A"
           // SCORING GUIDELINE: Only evaluated if telemacro_presence = true. Apply the Section 4.7.2 formula: Score_4.7.2 = 7.0 + (3.0 × Zoom_Score / 10), where Zoom_Score = 10 × (log(magnification) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10. This guarantees a minimum of 7.0 for the architectural advantage of telemacro.
         },
-        // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
         "predicted_score": 0.00,
+        // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
         "final_score": {
           "value": 0.00,
           // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
@@ -1160,8 +1256,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "subscore": 0.0
           // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_mp, 0, 6). The score equals the Megapixel (MP) count, capped at 6.0. A value of 0 MP means no dedicated macro lens is present (score = 0.0). Values above 6 MP all score 6.0 maximum.
         },
-        // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore.
         "predicted_score": 0.00,
+        // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore.
         "final_score": {
           "value": 0.00,
           // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
@@ -1173,8 +1269,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
         }
       },
-      // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
       "predicted_score": 8.39,
+      // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
       "final_score": {
         "value": 8.39,
         // SCORING GUIDELINE: Definitive MCFP score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
@@ -1393,8 +1489,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "5_2_system_cleanliness_control": {
-      // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
       "platform_score": 6.0,
+      // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
       "predicted_score": 6.0,
       "final_score": 6.0
     },
