@@ -152,17 +152,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "1_2_durability": {
-      // GUIDELINE: `ip_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ip_rating.value` string.
-      "ip_rating": {
+      // GUIDELINE: `ingress_protection_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ingress_protection_rating.value` string.
+      "ingress_protection_rating": {
         "value": "IP68",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": "N/A" // no score here, it will be calculated below from dust_protection_digit and water_protection_digit
       },
-      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ip_rating.value` for reference.
+      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
       "dust_protection_digit": {
         "value": "Digit 6",
-        "source": "1_2_durability.ip_rating.value",
+        "source": "1_2_durability.ingress_protection_rating.value",
         "exact_extract": "6",
         "subscore": 10.00
         // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
@@ -175,7 +175,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "water_protection_digit": {
         "value": "Digit 8",
-        "source": "1_2_durability.ip_rating.value",
+        "source": "1_2_durability.ingress_protection_rating.value",
         "exact_extract": "8",
         "subscore": 9.00
         // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
@@ -487,22 +487,22 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
       },
       "resolution_height_px": {
-        // GUIDELINE: Vertical pixel count of the display. Used for scoring ONLY when ppi is not available from any source.
+        // GUIDELINE: Vertical pixel count of the display. Used for scoring ONLY when pixels_per_inch is not available from any source.
         "value": 3120,
         "source": "TBD",
         "exact_extract": "Proof pending",
       },
-      "ppi": {
+      "pixels_per_inch": {
         "value": 505,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.43
-        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(ppi) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly ppi.value if available from any source. 
-        // ONLY if ppi is NOT available derive ppi: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
+        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
+        // ONLY if pixels_per_inch is NOT available derive PPI: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
       "predicted_score": 8.43,
-      // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore.
+      // SCORING GUIDELINE: predicted_score directly inherits pixels_per_inch.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.43,
@@ -623,16 +623,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • If "No" (DC Dimming), subscore is 10.00.
         //   • If "Yes" (PWM Dimming), subscore is "N/A" as the score is derived from frequency below.
       },
-      "pwm_dimming_hz": {
+      "pulse_width_modulation_dimming_hertz": {
         "value": 492,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 4.07
-        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pwm_dimming_hz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", this subscore MUST be "N/A".
+        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", this subscore MUST be "N/A".
       },
       "predicted_score": 4.07,
-      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pwm_dimming_hz. 
-      // (If No-Flicker, inherits 10.00 from flicker_presence; if Flicker-Active, inherits frequency score from pwm_dimming_hz).
+      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pulse_width_modulation_dimming_hertz. 
+      // (If No-Flicker, inherits 10.00 from flicker_presence; if Flicker-Active, inherits frequency score from pulse_width_modulation_dimming_hertz).
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 4.07,
@@ -739,437 +739,496 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "confidence": "N/A"
         // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor. "High", "Medium", or "Low" only when 2 independent benchmarks are cross-referenced.
       }
-    }
-  },
-  "3_audio": {
-    "3_1_speaker_system_capability": {
-      // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
+    },
+    "3_audio": {
+      "3_1_speaker_system_capability": {
+        // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
 
-      // ─────────────────────────────────────────────────────────────────────────────
-      // SPEAKER CONFIGURATION → CANONICAL TIER LOOKUP (static reference — do not score from here)
-      // Source: Section 3.1 Speaker System Capability (SSC) tiers and Explanation of Tiers.
-      //
-      // Step 1: Identify the device's physical speaker setup (count and placement) from spec sheets or teardowns.
-      // Step 2: Match the setup to the matching "canonical" string as speaker_configuration.value.
-      // Step 3: Copy the matching "score" into speaker_configuration.subscore.
-      // ─────────────────────────────────────────────────────────────────────────────
-      "speaker_system_lookup": { // this is a lookup table, do not score here
-        "balanced_stereo": {
-          "canonical": "Balanced / Symmetrical Stereo",
-          "score": 10.00,
-          "definition": "Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.",
-          "justification": "A rare, hardware-intensive setup where both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability. Review explicitly states 'Symmetrical speakers' or 'Balanced stereo'."
+        // ─────────────────────────────────────────────────────────────────────────────
+        // SPEAKER CONFIGURATION → CANONICAL TIER LOOKUP (static reference — do not score from here)
+        // Source: Section 3.1 Speaker System Capability (SSC) tiers and Explanation of Tiers.
+        //
+        // Step 1: Identify the device's physical speaker setup (count and placement) from spec sheets or teardowns.
+        // Step 2: Match the setup to the matching "canonical" string as speaker_configuration.value.
+        // Step 3: Copy the matching "score" into speaker_configuration.subscore.
+        // ─────────────────────────────────────────────────────────────────────────────
+        "speaker_system_lookup": { // this is a lookup table, do not score here
+          "balanced_stereo": {
+            "canonical": "Balanced / Symmetrical Stereo",
+            "score": 10.00,
+            "definition": "Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.",
+            "justification": "A rare, hardware-intensive setup where both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability. Review explicitly states 'Symmetrical speakers' or 'Balanced stereo'."
+          },
+          "standard_stereo": {
+            "canonical": "Standard Hybrid Stereo",
+            "score": 7.00,
+            "definition": "Can use the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer).",
+            "justification": "The smaller earpiece focuses on highs while the bottom driver handles mids/lows, creating a slight tonal imbalance compared to perfect symmetry. Spec sheet lists 'Stereo Speakers' without specific 'Symmetrical' confirmation."
+          },
+          "mono_speaker": {
+            "canonical": "Mono Speaker",
+            "score": 3.00,
+            "definition": "Single active loudspeaker, typically bottom-firing only.",
+            "justification": "Provides no spatial separation; all sound originates from a single point. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
+          },
+          "no_speaker": {
+            "canonical": "No Usable Speaker",
+            "score": 0.00,
+            "definition": "No built-in loudspeaker; relies entirely on external audio.",
+            "justification": "Zero capability for independent audio output."
+          }
         },
-        "standard_stereo": {
-          "canonical": "Standard Hybrid Stereo",
-          "score": 7.00,
-          "definition": "Can use the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer).",
-          "justification": "The smaller earpiece focuses on highs while the bottom driver handles mids/lows, creating a slight tonal imbalance compared to perfect symmetry. Spec sheet lists 'Stereo Speakers' without specific 'Symmetrical' confirmation."
+
+        "speaker_configuration": {
+          "value": "Standard Hybrid Stereo",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 7.00
+          // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above. Use the matching "canonical" string for "value" and its "score" for subscore.
+          // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.00.
         },
-        "mono_speaker": {
-          "canonical": "Mono Speaker",
-          "score": 3.00,
-          "definition": "Single active loudspeaker, typically bottom-firing only.",
-          "justification": "Provides no spatial separation; all sound originates from a single point. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
-        },
-        "no_speaker": {
-          "canonical": "No Usable Speaker",
-          "score": 0.00,
-          "definition": "No built-in loudspeaker; relies entirely on external audio.",
-          "justification": "Zero capability for independent audio output."
+        "predicted_score": 7.00,
+        // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       },
-
-      "speaker_configuration": {
-        "value": "Standard Hybrid Stereo",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 7.00
-        // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above. Use the matching "canonical" string for "value" and its "score" for subscore.
-        // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.00.
-      },
-      "predicted_score": 7.00,
-      // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "3_2_playback_audio_processing_immersion": {
-      // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
-      "audio_format_decode": {
-        "value": "Dolby Atmos ONLY",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.00
-        // SCORING GUIDELINE: Identify the highest-tier supported format capability. Use the following terms exclusively for "value" with related scores:
-        //   • Dolby Atmos AND DTS:X                          → 10.00
-        //   • Dolby Atmos ONLY                               → 8.00
-        //   • Multichannel Surround (Dolby Digital / DTS)    → 5.00
-        //   • Stereo ONLY                                    → 0.00
-      },
-      "spatial_audio_rendering": {
-        "value": "Static spatial audio (no head tracking)",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 7.00
-        // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores:
-        //   • Spatial audio with Dynamic Head Tracking      → 10.00
-        //   • Static spatial audio (no head tracking)       → 7.00
-        //   • No spatial rendering                          → 0.00
-      },
-      "predicted_score": 7.50,
-      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.50,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "3_3_wired_audio_capability": {
-      // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored.
-      "wired_audio_tier": {
-        "value": "USB-C digital audio only (dongle required)",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 3.00
-        // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following terms exclusively for "value" with related scores:
-        //   • 3.5mm headphone jack (native analog output)   → 10.00
-        //   • USB-C with documented analog audio output     → 6.00
-        //   • USB-C digital audio only (dongle required)    → 3.00
-        //   • No wired audio support                        → 0.00
-      },
-      "predicted_score": 3.00,
-      // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 3.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "3_4_microphone_audio_recording": {
-      // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%).
-      "mhc": {
-        "value": "3",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.00
-        // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores:
-        //   • ≥4 microphones   → 10.00
-        //   • 3                → 8.00
-        //   • 2                → 5.00
-        //   • 1                → 2.00
-        //   • Unknown          → 0.00
-      },
-      "rcm": {
-        "value": "Stereo",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.00
-        // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores:
-        //   • Multi-channel / spatial audio   → 10.00
-        //   • Stereo                          → 8.00
-        //   • Mono                            → 5.00
-        //   • Voice-only / unclear            → 0.00
-      },
-      "acf": {
-        "value": [
-          "Directional/Audio Zoom",
-          "Wind noise reduction"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 5.00
-        // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.50 × count (clamped 0.00–10.00). Example: 2 features × 2.50 = 5.00. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
-      },
-      "predicted_score": 6.80,
-      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.subscore) + (0.30 × rcm.subscore) + (0.40 × acf.subscore). Weights from the MAR formula in Section 3.4.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 6.80,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    }
-  },
-  "4_camera_systems": {
-    "camera_hardware_specs": {
-      "rear": [
-        {
-          "role": {
-            "value": "Main",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor": {
-            "value": "ISOCELL HP2",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "mp": {
-            "value": 200,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            "value": "f/1.7",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "ois": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
+      "3_2_playback_audio_processing_immersion": {
+        // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
+        "audio_format_decode": {
+          "value": "Dolby Atmos ONLY",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Identify the highest-tier supported format capability. Use the following terms exclusively for "value" with related scores:
+          //   • Dolby Atmos AND DTS:X                          → 10.00
+          //   • Dolby Atmos ONLY                               → 8.00
+          //   • Multichannel Surround (Dolby Digital / DTS)    → 5.00
+          //   • Stereo ONLY                                    → 0.00
         },
-        {
-          "role": {
-            "value": "Tele 5x",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor": {
-            "value": "IMX854",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "mp": {
-            "value": 50,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            "value": "f/3.4",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "ois": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
+        "spatial_audio_rendering": {
+          "value": "Static spatial audio (no head tracking)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 7.00
+          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores:
+          //   • Spatial audio with Dynamic Head Tracking      → 10.00
+          //   • Static spatial audio (no head tracking)       → 7.00
+          //   • No spatial rendering                          → 0.00
         },
-        {
-          "role": {
-            "value": "Tele 3x",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor": {
-            "value": "IMX754",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "mp": {
-            "value": 10,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            "value": "f/2.4",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "ois": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        {
-          "role": {
-            "value": "Ultrawide",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor": {
-            "value": "IMX564",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "mp": {
-            "value": 12,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            "value": "f/2.2",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "fov": {
-            "value": 120,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
+        "predicted_score": 7.50,
+        // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
-      ]
-    },
-    "4_1_main_sensor_size": {
-      // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
-      "optical_format": {
-        "value": "1/1.3 inches",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.11
-        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769).
       },
-      "predicted_score": 8.11,
-      // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.11,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "3_3_wired_audio_capability": {
+        // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored. Source: §3.3 Wired Audio Capability.
+        "wired_audio_tier": {
+          "value": "USB-C digital audio only (dongle required)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 3.00
+          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following terms exclusively for "value" with related scores:
+          //   • 3.5mm headphone jack (native analog output)   → 10.00
+          //   • USB-C with documented analog audio output     → 6.00
+          //   • USB-C digital audio only (dongle required)    → 3.00
+          //   • No wired audio support                        → 0.00
+        },
+        "predicted_score": 3.00,
+        // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 3.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "3_4_microphone_audio_recording": {
+        // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%). Source: §3.4 Microphone & Audio Recording.
+        "microphone_hardware_count": {
+          "value": "3",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores:
+          //   • ≥4 microphones   → 10.00
+          //   • 3                → 8.00
+          //   • 2                → 5.00
+          //   • 1                → 2.00
+          //   • None             → 0.00
+        },
+        "recording_channels_modes": {
+          "value": "Stereo",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores:
+          //   • Multi-channel / spatial audio   → 10.00
+          //   • Stereo                          → 8.00
+          //   • Mono                            → 5.00
+          //   • Voice-only / unclear            → 0.00
+        },
+        "advanced_capture_features": {
+          "value": [
+            "Directional / Audio Zoom",
+            "Wind Noise Reduction"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features × 2.50 = 5.00.
+          //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
+          //   • Wind Noise Reduction: Dedicated toggle or feature to filter wind rumble
+          //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
+          //   • Pro Mic Support: Accepts an external mic for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing for example "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording
+          // Always populate the full list of detected features in "value". Do not selectively omit. Source: §3.4.3 Advanced Capture Features.
+        },
+        "predicted_score": 6.80,
+        // SCORING GUIDELINE: predicted_score = (0.30 × microphone_hardware_count.subscore) + (0.30 × recording_channels_modes.subscore) + (0.40 × advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.80,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
-    "4_2_main_camera_aperture": {
-      // SCORING GOAL: Scores the main camera lens aperture (f-number).
-      "aperture_f_stop": {
-        "value": "f/1.7",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 6.40
-        // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+    "4_camera_systems": {
+      "camera_hardware_specs": {
+        "rear": [
+          {
+            "role": {
+              "value": "Main",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "sensor": {
+              "value": "ISOCELL HP2",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "megapixels": {
+              "value": 200,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "aperture": {
+              "value": "f/1.7",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "optical_image_stabilization": {
+              "value": true,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            }
+          },
+          {
+            "role": {
+              "value": "Tele 5x",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "sensor": {
+              "value": "IMX854",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "megapixels": {
+              "value": 50,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "aperture": {
+              "value": "f/3.4",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "optical_image_stabilization": {
+              "value": true,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            }
+          },
+          {
+            "role": {
+              "value": "Tele 3x",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "sensor": {
+              "value": "IMX754",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "megapixels": {
+              "value": 10,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "aperture": {
+              "value": "f/2.4",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "optical_image_stabilization": {
+              "value": true,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            }
+          },
+          {
+            "role": {
+              "value": "Ultrawide",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "sensor": {
+              "value": "IMX564",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "megapixels": {
+              "value": 12,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "aperture": {
+              "value": "f/2.2",
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            },
+            "field_of_view": {
+              "value": 120,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            }
+          }
+        ]
       },
-      "predicted_score": 6.40,
-      // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 6.40,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_3_main_camera_resolution": {
-      // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP).
-      "mp": {
-        "value": 200,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(mp) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
+      "4_1_main_sensor_size": {
+        // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
+        "optical_format": {
+          "value": "1/1.3 inches",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.11
+          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769).
+        },
+        "predicted_score": 8.11,
+        // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.11,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
-      "predicted_score": 10.00,
-      // SCORING GUIDELINE: predicted_score directly inherits mp.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 10.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_4_image_stabilization": {
-      // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake.
-      "stabilization_type": {
-        "value": "Lens-Based OIS",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.00
-        // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively for "value" with related scores:
-        //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.00
-        //   • Sensor-Shift OIS                           → 9.00
-        //   • Lens-Based OIS                             → 8.00
-        //   • EIS (Electronic Image Stabilization) only  → 5.00
-        //   • None                                       → 0.00
-        //   Note: "Standard OIS" maps to Lens-Based OIS (8.00).
+      "4_2_main_camera_aperture": {
+        // SCORING GOAL: Scores the main camera lens aperture (f-number).
+        "aperture_f_stop": {
+          "value": "f/1.7",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 6.40
+          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+        },
+        "predicted_score": 6.40,
+        // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.40,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
-      "predicted_score": 8.00,
-      // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_5_ultrawide_capability": {
-      // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens.
-      "presence": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": "N/A"
-        // SCORING GUIDELINE: Binary gate — this field has no numeric subscore. If value = false, the entire UCC score is 0.0 and all other subscores in this subsection MUST be "N/A". If value = true, proceed to score fov_degrees and sensor_size_format.
-      },
-      "fov_degrees": {
-        "value": 120,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 6.67
-        // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (fov_degrees − Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Ultrawide_FOV_Deg_Min), clamped 0–10. Only evaluated if presence = true.
-      },
-      "sensor_size_format": {
-        "value": "1/2.0",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true.
-      },
-      "predicted_score": 8.17,
-      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.17,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_6_zoom_capability": {
-      // SCORING GOAL: Scores optical zoom power. Only true optical magnification is counted; digital/crop zoom is excluded.
-      "optical_zoom_x": {
-        "value": 5,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 6.99
-        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
-      },
-      "predicted_score": 6.99,
-      // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 6.99,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_7_macro_capability": {
-      // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths.
-      "4_7_1_ultrawide_path": {
-        // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
-        "ultrawide_af": {
-          "value": "Autofocus",
+      "4_3_main_camera_resolution": {
+        // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP).
+        "megapixels": {
+          "value": 200,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
-          //   • Autofocus    → 10.00
-          //   • Fixed focus  → 6.00
-          //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.00.
+          // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
         },
-        "min_focus_distance_cm": {
-          "value": 2.5,
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits megapixels.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_4_image_stabilization": {
+        // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake.
+        "stabilization_type": {
+          "value": "Lens-Based OIS",
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 7.31
-          // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0.00–10.00. Lower focus distance = higher score.
+          "subscore": 8.00
+          // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively for "value" with related scores:
+          //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.00
+          //   • Sensor-Shift OIS                           → 9.00
+          //   • Lens-Based OIS                             → 8.00
+          //   • EIS (Electronic Image Stabilization) only  → 5.00
+          //   • None                                       → 0.00
+          //   Note: "Standard OIS" maps to Lens-Based OIS (8.00).
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_5_ultrawide_capability": {
+        // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens.
+        "presence": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": "N/A"
+          // SCORING GUIDELINE: Binary gate — this field has no numeric subscore. If value = false, the entire UCC score is 0.0 and all other subscores in this subsection MUST be "N/A". If value = true, proceed to score field_of_view_degrees and sensor_size_format.
+        },
+        "field_of_view_degrees": {
+          "value": 120,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 6.67
+          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Ultrawide_FOV_Deg_Min), clamped 0–10. Only evaluated if presence = true.
+        },
+        "sensor_size_format": {
+          "value": "1/2.0",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true.
+        },
+        "predicted_score": 8.17,
+        // SCORING GUIDELINE: predicted_score = (0.55 × field_of_view_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.00.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.17,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_6_zoom_capability": {
+        // SCORING GOAL: Scores optical zoom power. Only true optical magnification is counted; digital/crop zoom is excluded.
+        "optical_zoom_x": {
+          "value": 5,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 6.99
+          // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
+        },
+        "predicted_score": 6.99,
+        // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.99,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_7_macro_capability": {
+        // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths.
+        "4_7_1_ultrawide_path": {
+          // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
+          "ultrawide_autofocus": {
+            "value": "Autofocus",
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 10.00
+            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
+            //   • Autofocus    → 10.00
+            //   • Fixed focus  → 6.00
+            //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.00.
+          },
+          "min_focus_distance_cm": {
+            "value": 2.5,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 7.31
+            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. Lower focus distance = higher score.
+          },
+          "predicted_score": 8.39,
+          // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.00. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
+          "final_score": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.39,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        },
+        "4_7_2_telemacro_path": {
+          // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 cm away), preventing the phone from casting a shadow and delivering natural background blur.
+          "telemacro_presence": {
+            "value": false,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": "N/A"
+            // SCORING GUIDELINE: Binary gate. If value = false, Score_4.7.2 = 0.0 and telemacro_optical_x.subscore MUST be "N/A". If value = true, proceed to score telemacro_optical_x using the Section 4.7.2 formula.
+          },
+          "telemacro_optical_x": {
+            "value": 0,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": "N/A"
+            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true. Apply the Section 4.7.2 formula: Score_4.7.2 = 7.0 + (3.0 × Zoom_Score / 10), where Zoom_Score = 10 × (log(magnification) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10. This guarantees a minimum of 7.0 for the architectural advantage of telemacro.
+          },
+          "predicted_score": 0.00,
+          // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
+          "final_score": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        },
+        "4_7_3_dedicated_path": {
+          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.00 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.00) or Telemacro (max 10.00).
+          "dedicated_macro_megapixels": {
+            "value": 0,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.00
+            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_megapixels, 0.00, 6.00). The score equals the Megapixel (MP) count, capped at 6.00. A value of 0 MP means no dedicated macro lens is present (score = 0.00). Values above 6 MP all score 6.00 maximum.
+          },
+          "predicted_score": 0.00,
+          // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
+          "final_score": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         },
         "predicted_score": 8.39,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.40 × ultrawide_af.subscore) + (0.60 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.00. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
+        // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.39,
@@ -1178,731 +1237,331 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "confidence": "N/A"
         }
       },
-      "4_7_2_telemacro_path": {
-        // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 cm away), preventing the phone from casting a shadow and delivering natural background blur.
-        "telemacro_presence": {
-          "value": false,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": "N/A"
-          // SCORING GUIDELINE: Binary gate. If value = false, Score_4.7.2 = 0.0 and telemacro_optical_x.subscore MUST be "N/A". If value = true, proceed to score telemacro_optical_x using the Section 4.7.2 formula.
-        },
-        "telemacro_optical_x": {
-          "value": 0,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": "N/A"
-          // SCORING GUIDELINE: Only evaluated if telemacro_presence = true. Apply the Section 4.7.2 formula: Score_4.7.2 = 7.0 + (3.0 × Zoom_Score / 10), where Zoom_Score = 10 × (log(magnification) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10. This guarantees a minimum of 7.0 for the architectural advantage of telemacro.
-        },
-        "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
-        }
-      },
-      "4_7_3_dedicated_path": {
-        // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.00 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.00) or Telemacro (max 10.00).
-        "dedicated_macro_mp": {
-          "value": 0,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 0.00
-          // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_mp, 0.00, 6.00). The score equals the Megapixel (MP) count, capped at 6.00. A value of 0 MP means no dedicated macro lens is present (score = 0.00). Values above 6 MP all score 6.00 maximum.
-        },
-        "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
-        }
-      },
-      "predicted_score": 8.39,
-      // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.39,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
-      }
-    },
-    "4_8_rear_video_resolution": {
-      "value": "8K",
-      "source": "TBD",
-      "exact_extract": "Proof pending",
-      "subscore": 10.00
-      // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores:
-      //   • ≥ 4K Ultra HD (incl. 8K)   → 10.00
-      //   • 1440p / QHD (2.5K)         → 8.00
-      //   • 1080p Full HD              → 6.00
-      //   • 720p HD                    → 3.00
-      //   • ≤ 480p                     → 0.00
-    },
-    "4_9_rear_video_fps": {
-      "max_fps_1080p_plus": {
-        "value": 120,
+      "4_8_rear_video_resolution": {
+        "value": "8K",
         "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "4_10_video_hdr": {
-      "value": "Dolby Vision",
-      "source": "TBD",
-      "exact_extract": "Proof pending",
-      "subscore": 0.00
-    },
-    "4_11_video_encoding": {
-      "professional_codec_support": {
-        "value": "ProRes 4K60",
-        "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
-        "exact_extract": "export ProRes footage via USB-C at up to 4K and 60 frames per second",
-        "subscore": 10.00
-      },
-      "log_color_profile_support": {
-        "value": "Apple Log",
-        "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
-        "exact_extract": "export ProRes footage",
-        "subscore": 10.00
-      },
-      "color_bit_depth": {
-        "value": 10,
-        "source": "https://www.gsmarena.com/apple_iphone_15_pro-12557.php",
-        "exact_extract": "Display [...] 10-bit HDR",
-        "subscore": 10.00
-      },
-      "predicted_score": 10.00,
-      "final_score": 10.00
-    },
-    "4_12_slow_motion": {
-      "max_fps": {
-        "value": 120,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "resolution_mp": {
-        "value": 8.3,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "4_13_front_camera_resolution": {
-      "value": 12,
-      "source": "TBD",
-      "exact_extract": "Proof pending",
-      "subscore": 0.00
-    },
-    "4_14_front_camera_focus": {
-      "value": "Autofocus",
-      "source": "TBD",
-      "exact_extract": "Proof pending",
-      "subscore": 0.00
-    },
-    "4_15_front_camera_video": {
-      "max_resolution": {
-        "value": "4K",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "max_fps": {
-        "value": 60,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "hdr_capability": {
-        "value": "SDR",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "4_16_multiframe_photo": {
-      "features": {
-        "value": [
-          "Advanced HDR",
-          "Night Mode"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "score_adjustment": {
-        "booster_1": {
-          "value": 1.05,
-          "booster_title": "11_1_dxomark_24mp_texture_rendering"
-        }
-      },
-      "final_score": 0.00
-    },
-    "4_17_semantic_ai": {
-      "features": {
-        "value": [
-          "Semantic Segmentation"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "score_adjustment": {
-        "booster_1": {
-          "value": 1.05,
-          "booster_title": "11_3_dxomark_portrait_skin_tone_rendering"
-        }
-      },
-      "final_score": 0.00
-    },
-    "4_18_generative_ai_tools": {
-      "features": {
-        "value": [
-          "Magic Eraser"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    }
-  },
-  "5_software_and_longevity": {
-    "os_version": {
-      "value": "Android 14",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "skin": {
-      "value": "One UI 6.1",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-      // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
-      //   Section 5.2 maps this string to a score. Known platforms:
-      //   • iOS                                    → 10.00
-      //   • Pixel UI / Stock Android               → 9.00
-      //   • AOSP / Generic Stock Android           → 9.00
-      //   • Fairphone OS                           → 9.00
-      //   • Nothing OS                             → 9.00
-      //   • Motorola MyUX / Hello UI               → 8.00
-      //   • Sony Xperia UI                         → 8.00
-      //   • Nokia (Stock Android)                  → 8.00
-      //   • Sharp AQUOS UI                         → 8.00
-      //   • ASUS ZenUI / ROG UI                    → 7.00
-      //   • Samsung One UI                         → 6.00
-      //   • OxygenOS (OnePlus)                     → 6.00
-      //   • Redmagic OS                            → 6.00
-      //   • Honor MagicOS                          → 5.00
-      //   • Vivo FunTouch OS / OriginOS            → 5.00
-      //   • ColorOS (Oppo)                         → 5.00
-      //   • Realme UI                              → 5.00
-      //   • LG UX (Legacy)                         → 5.00
-      //   • HTC Sense (Legacy)                     → 5.00
-      //   • ZTE MiFavor UI / MyOS                  → 4.00
-      //   • HyperOS (Xiaomi)                       → 4.00
-      //   • Huawei EMUI / HarmonyOS                → 3.00
-      //   • MIUI (Legacy Xiaomi)                   → 3.00
-      //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.00
-      //   If unlisted, score = N/A (update Section 5.2 first).
-    },
-    "5_1_support_longevity": {
-      "years_os": {
-        "value": 7,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "years_security": {
-        "value": 7,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "5_2_system_cleanliness_control": {
-      "platform_score": 6.00,
-      // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
-      "predicted_score": 6.00,
-      "final_score": 6.00
-    },
-    "5_3_ai_feature_suite": {
-      "visual_screen_search": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "live_speech_translation": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "content_summarization": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "writing_tools": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "on_device_processing": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 10.00,
-      "final_score": 0.00
-    }
-  },
-  "6_processing_power_and_performance": {
-    "soc_name": {
-      "value": "Snapdragon 8 Gen 3",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "6_1_0_soc_reference": {
-      "cortex_x4": {
-        "count": 1,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "cortex_a720": {
-        "count": 5,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "cortex_a520": {
-        "count": 2,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      }
-    },
-    "6_1_cpu_multi_core_performance": {
-      "geekbench_6_multi_score": {
-        "value": 7200,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "scoring_components": {
-        "frequency_adjusted_core_score": [
-          {
-            "name": "Cortex-X4",
-            "value": 10.00,
-            "description": "Frequency-Adjusted Core Score"
-          },
-          {
-            "name": "Cortex-A720",
-            "value": 39.90,
-            "description": "Frequency-Adjusted Core Score"
-          },
-          {
-            "name": "Cortex-A520",
-            "value": 4.60,
-            "description": "Frequency-Adjusted Core Score"
-          }
-        ]
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_2_cpu_architecture_single_core": {
-      "geekbench_6_single_score": {
-        "value": 2200,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "scoring_components": {
-        "core_architecture_score": {
-          "value": 10.00,
-          "description": "Core Architecture Score - strongest core"
-        },
-        "frequency_scaling_factor": {
-          "value": 1.03,
-          "description": "Frequency Scaling Factor",
-          "actual_frequency_ghz": {
-            "value": 3.4,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        }
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_3_0_gpu_architecture_reference": {
-      "gpu_model": {
-        "value": "Adreno 750",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset".
-        //   Then look up the Standard Graphics, Ray Tracing, Ref Freq, and Efficiency scores
-        //   in the Section 6.3.0 table. Known GPU models (add to Section 6.3.0 if unlisted):
-        //   Immortalis-G720 MC12 · Adreno 750 · Xclipse 940 · Adreno 740 · Immortalis-G715 MC11
-        //   Apple GPU (A18 Pro) · Apple GPU (A17 Pro) · Apple GPU (A16 Bionic) · Adreno 730
-        //   Mali-G715 MC9 · Xclipse 920 · Mali-G710 MC10 · Adreno 660 · Mali-G715 (Tensor G3)
-        //   Mali-G715 MC7 · Apple GPU (A15 Bionic) · Adreno 650 · Adreno 642L · Mali-G610 MC6
-        //   Mali-G77 MC9 · Apple GPU (A14 Bionic) · Adreno 640 · Mali-G610 MC4 · Adreno 620
-        //   Adreno 619 · Mali-G68 MC4 · Adreno 618 · Mali-G57 MC3 · Adreno 610 · Mali-G57 MC2
-        //   Mali-G52 MP2 · PowerVR GE8320
-      },
-      "standard_graphics_score": {
-        "value": 10.00,
-        "description": "Section 6.3.0 Standard Graphics Score"
-      },
-      "ray_tracing_score": {
-        "value": 10.00,
-        "description": "Section 6.3.0 Ray Tracing Score"
-      },
-      "efficiency_score": {
-        "value": 9.00,
-        "description": "Section 6.3.0 Efficiency Score (for battery calculations)"
-      }
-    },
-    "6_3_gpu_performance": {
-      "benchmark_steel_nomad_light": {
-        "value": 1800,
-        "source": "UL Benchmarks Leaderboard",
         "exact_extract": "Proof pending",
-        "description": "3DMark Steel Nomad Light Score (Vulkan 1.1 Rasterization)"
+        "subscore": 10.00
+        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores:
+        //   • ≥ 4K Ultra HD (incl. 8K)   → 10.00
+        //   • 1440p / QHD (2.5K)         → 8.00
+        //   • 1080p Full HD              → 6.00
+        //   • 720p HD                    → 3.00
+        //   • ≤ 480p                     → 0.00
       },
-      "scoring_components": {
-        "graphics_architecture_score": {
-          "value": "6_3_0_gpu_architecture_reference.standard_graphics_score",
-          "description": "GPU Architecture Score (Standard Graphics) from Section 6.3.0"
-        },
-        "frequency_scaling_factor": {
-          "value": 1.0,
-          "description": "Frequency Scaling Factor",
-          "actual_frequency_mhz": {
-            "value": 903,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "reference_frequency_mhz": {
-            "value": "6_3_0_gpu_architecture_reference.reference_frequency_mhz",
-            "description": "Reference frequency from Section 6.3.0 for FSF calculation"
-          }
-        },
-        "api_modifier": {
-          "value": 1.0,
-          "description": "API Efficiency Modifier (0.75-1.0)",
-          "formula": "0.75 + (0.25 * API_Score / 10)",
-          "components": {
-            "vulkan_version": {
-              "value": "1.3",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "opengl_es_version": {
-              "value": "3.2",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "api_score": {
-              "value": 10.00,
-              "description": "Highest API score (Vulkan 1.3 = 10.00)"
-            }
-          }
-        },
-        "ray_tracing_score": {
-          "reference": "6_3_0_gpu_architecture_reference.ray_tracing_score",
-          "description": "Ray Tracing Score from Section 6.3.0 (0-10)"
-        }
-      },
-      "standard_graphics_score": {
-        "value": 10.00,
-        "description": "Standard Graphics Score (from Method A/B/C)",
-        "method_used": "A"
-      },
-      "final_score": {
-        "value": 10.00,
-        "formula": "(SGS * 0.9) + (RTS * 0.1)",
-        "description": "Final GPU Performance Score"
-      },
-      "confidence": "High"
-    },
-    "6_4_npu_hardware_performance": {
-      "geekbench_ai_score_quantized": {
-        "value": 4500,
-        "source": "https://browser.geekbench.com/ai-benchmarks",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 9.75,
-      "final_score": 9.75,
-      // SCORING GUIDELINE: SoC AI scores for Method C (predicted_score) — look up the SoC in the Section 6.4 table.
-      //   • Snapdragon 8 Gen 3                    → 10.00
-      //   • Dimensity 9300                        → 10.00
-      //   • Exynos 2400                           → 9.00
-      //   • Apple A18 Pro                         → 9.00
-      //   • Tensor G4                             → 8.00
-      //   • Snapdragon 8 Gen 2                    → 8.00
-      //   • Apple A17 Pro                         → 8.00
-      //   • Apple A16 Bionic                      → 7.00
-      //   • Tensor G3                             → 7.00
-      //   • Dimensity 9200                        → 7.00
-      //   • Apple A15 Bionic                      → 6.00
-      //   • Snapdragon 8 Gen 1                    → 6.00
-      //   • Dimensity 9000                        → 6.00
-      //   • Tensor G2                             → 5.00
-      //   • Apple A14 Bionic                      → 5.00
-      //   • Snapdragon 888                        → 4.00
-      //   • Snapdragon 7 Gen 3                    → 4.00
-      //   • Dimensity 8200                        → 4.00
-      //   • Snapdragon 7 Gen 1 / 7 Gen 2          → 3.00
-      //   • Dimensity 8100                        → 3.00
-      //   • Budget (Helio G / Snapdragon 4xx)     → 1.00
-      //   If the SoC is NOT listed: add it to Section 6.4 first (use its Geekbench AI score
-      //   via the Method A formula) — do not guess.
-      //   final_score uses Method A (Geekbench AI) if available, else Method B (Neighbor), else Method C (predicted).
-    },
-    "6_5_ram_technology": {
-      "technology": {
-        "value": "LPDDR5X",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_6_ram_capacity": {
-      "max_gb": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_7_storage_technology": {
-      "technology": {
-        "value": "UFS 4.0",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_8_storage_capacity": {
-      "capacity_gb": {
-        "value": 1024,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_9_storage_expandability": {
-      "slot_type": {
-        "value": "No Expansion Slot",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "6_10_thermal_dissipation_stability": {
-      "process_nm": {
-        "value": 4,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "foundry": {
-        "value": "TSMC",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "frame_material": {
-        "value": "Titanium Alloy Frame",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "weight_g": {
-        "value": 232,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "height_mm": {
-        "value": 162.3,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "width_mm": {
-        "value": 79.0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "thickness_mm": {
-        "value": 8.6,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "cooling_system": {
-        "value": "Vapor Chamber (Standard)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 8.16
-    }
-  },
-  "7_connectivity_and_sensors": {
-    "7_1_cellular_capabilities": {
-      "features": {
-        "value": [
-          "5G mmWave",
-          "5G Sub-6"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_2_sim_capabilities": {
-      "value": {
-        "value": "Dual SIM (Nano + eSIM)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_3_wifi_standard": {
-      "value": {
-        "value": "Wi-Fi 7",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_4_bluetooth_codecs": {
-      "value": {
-        "value": "BT 5.3 + LDAC/aptX HD",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_5_biometrics": {
-      "value": {
-        "value": "Ultrasonic Fingerprint",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_6_sensors": {
-      "value": {
-        "value": "Full (Gyro, Compass, Baro)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_7_nfc_uwb": {
-      "value": {
-        "value": "NFC + UWB (Precision)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_8_ecosystem_continuity": {
-      "value": {
-        "value": [
-          "AirDrop",
-          "Handoff",
-          "Universal Clipboard"
-        ],
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    },
-    "7_9_usb_port_speed": {
-      "version": {
-        "value": "USB 3.2 Gen 2 (10Gbps)",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "video_out": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    }
-  },
-  "8_battery_and_charging": {
-    "mah": {
-      "value": 5000,
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "battery_voltage_v": {
-      "value": "Not available",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "battery_cell_configuration": {
-      "value": "dual-cell",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
-    "8_1_battery_endurance": {
-      "layer_a_energy": {
-        "wh": {
-          "value": 19.25,
+      "4_9_rear_video_frames_per_second": {
+        "maximum_frames_per_second_1080p_plus": {
+          "value": 120,
           "source": "TBD",
           "exact_extract": "Proof pending"
         },
-        "score": 6.62
+        "predicted_score": 0.00,
+        "final_score": 0.00
       },
-      "layer_b_hardware_efficiency": {
-        "b_1_soc_efficiency": {
-          "dependencies": [
-            "6_processing_power_and_performance.6_9_efficiency_node",
-            "6_processing_power_and_performance.6_1_0_soc_reference",
-            "6_processing_power_and_performance.6_3_0_gpu_architecture_reference"
-          ],
-          "breakdown": {
-            "process_node_score": 8.64,
-            "gpu_efficiency_score": 9.00,
-            "gpu_performance_score": 9.00,
-            "cpu_architecture_score_aes": 7.50
-          },
-          "score": 8.37
+      "4_10_video_hdr": {
+        "value": "Dolby Vision",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+      },
+      "4_11_video_encoding": {
+        "professional_codec_support": {
+          "value": "ProRes 4K60",
+          "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
+          "exact_extract": "export ProRes footage via USB-C at up to 4K and 60 frames per second",
+          "subscore": 10.00
         },
-        "b_2_display_efficiency": {
-          // NOTE: megapixels_mp, refresh_rate_min_hz and refresh_rate_adaptive are raw input fields stored here because they are only used in this battery sub-formula — they are not scored in any Section 2 subsection.
-          "megapixels_mp": {
-            // GUIDELINE: Total display pixel count in Megapixels (MP), computed as (resolution_width_px × resolution_height_px) / 1 000 000 and rounded to 1 decimal. Example: 1440 × 3120 → 4.5 MP. Used directly in the B.2.3 Resolution Efficiency formula. Derive from 2_display.2_5_resolution_density.resolution_width_px and resolution_height_px.
-            "value": 4.5,
-            "source": "derived",
-            "exact_extract": "N/A"
+        "log_color_profile_support": {
+          "value": "Apple Log",
+          "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
+          "exact_extract": "export ProRes footage",
+          "subscore": 10.00
+        },
+        "color_bit_depth": {
+          "value": 10,
+          "source": "https://www.gsmarena.com/apple_iphone_15_pro-12557.php",
+          "exact_extract": "Display [...] 10-bit HDR",
+          "subscore": 10.00
+        },
+        "predicted_score": 10.00,
+        "final_score": 10.00
+      },
+      "4_12_slow_motion": {
+        "maximum_frames_per_second": {
+          "value": 120,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "resolution_megapixels": {
+          "value": 8.3,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      },
+      "4_13_front_camera_resolution": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+      },
+      "4_14_front_camera_focus": {
+        "value": "Autofocus",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+      },
+      "4_15_front_camera_video": {
+        "maximum_resolution_pixels": {
+          "value": "4K",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "maximum_frames_per_second": {
+          "value": 60,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "high_dynamic_range_capability": {
+          "value": "SDR",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      },
+      "4_16_multiframe_photo": {
+        "features": {
+          "value": [
+            "Advanced HDR",
+            "Night Mode"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "score_adjustment": {
+          "booster_1": {
+            "value": 1.05,
+            "booster_title": "11_1_dxomark_24mp_texture_rendering"
+          }
+        },
+        "final_score": 0.00
+      },
+      "4_17_semantic_ai": {
+        "features": {
+          "value": [
+            "Semantic Segmentation"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "score_adjustment": {
+          "booster_1": {
+            "value": 1.05,
+            "booster_title": "11_3_dxomark_portrait_skin_tone_rendering"
+          }
+        },
+        "final_score": 0.00
+      },
+      "4_18_generative_ai_tools": {
+        "features": {
+          "value": [
+            "Magic Eraser"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      }
+    },
+    "5_software_and_longevity": {
+      "operating_system_version": {
+        "value": "Android 14",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "skin": {
+        "value": "One UI 6.1",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
+        //   Section 5.2 maps this string to a score. Known platforms:
+        //   • iOS                                    → 10.00
+        //   • Pixel UI / Stock Android               → 9.00
+        //   • AOSP / Generic Stock Android           → 9.00
+        //   • Fairphone OS                           → 9.00
+        //   • Nothing OS                             → 9.00
+        //   • Motorola MyUX / Hello UI               → 8.00
+        //   • Sony Xperia UI                         → 8.00
+        //   • Nokia (Stock Android)                  → 8.00
+        //   • Sharp AQUOS UI                         → 8.00
+        //   • ASUS ZenUI / ROG UI                    → 7.00
+        //   • Samsung One UI                         → 6.00
+        //   • OxygenOS (OnePlus)                     → 6.00
+        //   • Redmagic OS                            → 6.00
+        //   • Honor MagicOS                          → 5.00
+        //   • Vivo FunTouch OS / OriginOS            → 5.00
+        //   • ColorOS (Oppo)                         → 5.00
+        //   • Realme UI                              → 5.00
+        //   • LG UX (Legacy)                         → 5.00
+        //   • HTC Sense (Legacy)                     → 5.00
+        //   • ZTE MiFavor UI / MyOS                  → 4.00
+        //   • HyperOS (Xiaomi)                       → 4.00
+        //   • Huawei EMUI / HarmonyOS                → 3.00
+        //   • MIUI (Legacy Xiaomi)                   → 3.00
+        //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.00
+        //   If unlisted, score = N/A (update Section 5.2 first).
+      },
+      "5_1_support_longevity": {
+        "years_operating_system": {
+          "value": 7,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "years_security": {
+          "value": 7,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      },
+      "5_2_system_cleanliness_control": {
+        "platform_score": 6.00,
+        // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
+        "predicted_score": 6.00,
+        "final_score": 6.00
+      },
+      "5_3_ai_feature_suite": {
+        "visual_screen_search": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "live_speech_translation": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "content_summarization": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "writing_tools": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "on_device_processing": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "predicted_score": 10.00,
+        "final_score": 0.00
+      }
+    },
+    "6_processing_power_and_performance": {
+      "system_on_chip_name": {
+        "value": "Snapdragon 8 Gen 3",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "6_1_0_system_on_chip_reference": {
+        "cortex_x4": {
+          "count": 1,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "cortex_a720": {
+          "count": 5,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "cortex_a520": {
+          "count": 2,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
+      },
+      "6_1_cpu_multi_core_performance": {
+        "geekbench_6_multi_score": {
+          "value": 7200,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "scoring_components": {
+          "frequency_adjusted_core_score": [
+            {
+              "name": "Cortex-X4",
+              "value": 10.00,
+              "description": "Frequency-Adjusted Core Score"
+            },
+            {
+              "name": "Cortex-A720",
+              "value": 39.90,
+              "description": "Frequency-Adjusted Core Score"
+            },
+            {
+              "name": "Cortex-A520",
+              "value": 4.60,
+              "description": "Frequency-Adjusted Core Score"
+            }
+          ]
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      },
+      "6_2_cpu_architecture_single_core": {
+        "geekbench_6_single_score": {
+          "value": 2200,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "scoring_components": {
+          "core_architecture_score": {
+            "value": 10.00,
+            "description": "Core Architecture Score - strongest core"
           },
-          "refresh_rate_min_hz": {
-            // GUIDELINE: Minimum refresh rate the display can drop to, in Hertz (Hz). On LTPO (Low Temperature Polycrystalline Oxide) panels this can be as low as 1 Hz. Used in the B.2.2 formula: effective_hz = adaptive ? (min_hz + max_hz) / 2 : max_hz.
-            "value": 1,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "refresh_rate_adaptive": {
+          "frequency_scaling_factor": {
+            "value": 1.03,
+            "description": "Frequency Scaling Factor",
+            "actual_frequency_ghz": {
+              "value": 3.4,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+            }
+          }
+        },
+        "predicted_score": 0.00,
+        "final_score": 0.00
+      },
+      "6_3_0_graphics_processing_unit_architecture_reference": {
+        "graphics_processing_unit_model": {
+          "value": "Adreno 750",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset".
+          //   Then look up the Standard Graphics, Ray Tracing, Ref Freq, and Efficiency scores
+          //   in the Section 6.3.0 table. Known GPU models (add to Section 6.3.0 if unlisted):
+          //   Immortalis-G720 MC12 · Adreno 750 · Xclipse 940 · Adreno 740 · Immortalis-G715 MC11
+          //   Apple GPU (A18 Pro) · Apple GPU (A17 Pro) · Apple GPU (A16 Bionic) · Adreno 730
+          //   Mali-G715 MC9 · Xclipse 920 · Mali-G710 MC10 · Adreno 660 · Mali-G715 (Tensor G3)
+          //   Mali-G715 MC7 · Apple GPU (A15 Bionic) · Adreno 650 · Adreno 642L · Mali-G610 MC6
+          //   Mali-G77 MC9 · Apple GPU (A14 Bionic) · Adreno 640 · Mali-G610 MC4 · Adreno 620
+          //   Adreno 619 · Mali-G68 MC4 · Adreno 618 · Mali-G57 MC3 · Adreno 610 · Mali-G57 MC2
+          //   Mali-G52 MP2 · PowerVR GE8320
+        },
+        "standard_graphics_score": {
+          "value": 10.00,
+          "description": "Section 6.3.0 Standard Graphics Score"
+        },
+        "ray_tracing_score": {
             // GUIDELINE: Whether the display adjusts its refresh rate dynamically between min_hz and max_hz. true = LTPO/adaptive panel; false = fixed-rate panel (always at max_hz). Controls the B.2.2 formula: effective_hz = adaptive ? (min_hz + max_hz) / 2 : max_hz.
             "value": true,
             "source": "TBD",
@@ -1936,18 +1595,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ],
           "score": 8.20
         },
-        "total_hei_score": 7.14
+        "hardware_efficiency_index_total_score": 7.14
       },
       "layer_c_software_optimization": {
         "dependencies": [
-          "6_software.os_version",
-          "6_software.6_3_system_cleanliness_control"
+          "5_software_and_longevity.operating_system_version",
+          "5_software_and_longevity.5_2_system_cleanliness_control"
         ],
         "breakdown": {
-          "c_1_os_generation": 10.00,
+          "c_1_operating_system_generation": 10.00,
           "c_2_bloatware": 6.00
         },
-        "total_soi_score": 8.40
+        "software_optimization_index_total_score": 8.40
       },
       "predicted_score": 7.16,
       "benchmarks": {
@@ -2038,12 +1697,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "9_3_repairability": {
       "ifixit_score": 8.00,
-      "eu_repairability_index": {
-        "value": 4.0,
+      "european_union_repairability_index": {
+        "value": 4.00,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "eu_converted_score": 8.00,
+      "european_union_converted_score": 8.00,
       "predicted_score": 8.00,
       "confidence": {
         "value": "High",
@@ -2055,7 +1714,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   },
   "10_miscellaneous": {
     "10_1_stylus_hardware_system_support": {
-      "value": "Integrated active stylus + dedicated digitizer + BT features",
+      "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
       "source": "TBD",
       "exact_extract": "Proof pending",
       "predicted_score": 10.00,

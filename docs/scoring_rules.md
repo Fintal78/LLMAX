@@ -637,13 +637,13 @@ MAR is a weighted composite of three subsections:
 *What it measures:* Physical microphones available for capture (bottom, top, rear, front).
 *Why it matters:* More microphones enable better noise separation, spatial capture, and redundancy.
 
-| Score    | Microphone Count                      |
-| :------- | :------------------------------------ |
-| **10.0** | **≥ 4 microphones**                   |
-| **8.0**  | **3 microphones**                     |
-| **5.0**  | **2 microphones**                     |
-| **2.0**  | **1 microphone**                      |
-| **0.0**  | **Unknown / undocumented**            |
+| Score    | Microphone Count      |
+| :------- | :---------------------|
+| **10.0** | **≥ 4 microphones**   |
+| **8.0**  | **3 microphones**     |
+| **5.0**  | **2 microphones**     |
+| **2.0**  | **1 microphone**      |
+| **0.0**  | **None**              |
 
 #### 3.4.2 Recording Channels & Modes (RCM)
 *What it measures:* How many audio channels the phone can record and in which modes.
@@ -652,8 +652,8 @@ MAR is a weighted composite of three subsections:
 | Score    | Recording Capability                  |
 | :------- | :------------------------------------ |
 | **10.0** | **Multi-channel / spatial audio**     |
-| **8.0**  | **Stereo audio recording**            |
-| **5.0**  | **Mono recording**                    |
+| **8.0**  | **Stereo**                            |
+| **5.0**  | **Mono**                              |
 | **0.0**  | **Voice-only / unclear**              |
 
 #### 3.4.3 Advanced Capture Features (ACF)
@@ -664,7 +664,7 @@ MAR is a weighted composite of three subsections:
 *   **Directional / Audio Zoom (+2.5):** Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic").
 *   **Wind Noise Reduction (+2.5):** Dedicated toggle or feature to filter wind rumble.
 *   **Voice Focus / Isolation (+2.5):** Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser").
-*   **Pro Mic Support (+2.5):** High-quality external mic support via USB-C/3.5mm with gain control or Bluetooth Mic support.
+*   **Pro Mic Support (+2.5):** The device accepts an external microphone for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording. This is distinct from the three features above, which process the phone's built-in microphones.
 
 *Formula:* `ACF = 2.5 × number_of_features` (Clamped 0-10)
 
