@@ -5,6 +5,30 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
 ```json
 {
   // GUIDELINE: All scoring formulas and lookup tables referenced as "Section X.X" or "§X.X" throughout this document are defined in scoring_rules.md. All numeric constants (e.g. _Min / _Max thresholds) are from scoring_constants.md. There is no need to repeat these file names in individual Source comments below.
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // FINAL_SCORE_PREDICTOR_TEMPLATE — applies to ALL subsections that use the "Predictor" method.
+  // This template defines the structure and rules for every "final_score" object in Predictor-only subsections.
+  // Each "final_score" block that references this template MUST follow it exactly.
+  // Do NOT add per-field scoring guidelines inside those final_score blocks.
+  //
+  //   "final_score": {
+  //     "value": <number>,         → The definitive score for this subsection.
+  //                                  Calculation: 
+  //                                  If no booster is applied, value = predicted_score (i.e., multiplier is 1.0).
+  //                                  If there is one booster:
+  //                                  value = predicted_score × booster_multiplier
+  //                                  If there are several boosters:
+  //                                  value = predicted_score × booster_multiplier_1 × booster_multiplier_2 × ... 
+  //                                  Each booster multiplier comes from the corresponding Section 11 entry.
+  //     "method_used": "Predictor" → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
+  //     "booster": "No"            → Which Section 11 adjustment(s) are applied to the predicted score:
+  //                                  • "No"                    = No booster applied (value = predicted_score).
+  //                                  • "Section #"             = Single booster (e.g., "11.1").
+  //                                  • "Section # + Section #" = Multiple boosters applied in sequence (e.g., "11.1 + 11.2").
+  //     "confidence": "N/A"        → Always "N/A" for Predictor methods.
+  //   }
+  // ─────────────────────────────────────────────────────────────────────────────
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
@@ -120,14 +144,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 9.20,
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 9.20,
-        // SCORING GUIDELINE: Definitive materials score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "1_2_durability": {
@@ -169,14 +190,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 9.50,
       // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 9.50,
-        // SCORING GUIDELINE: Definitive durability score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "1_3_glass_protection": {
@@ -204,14 +222,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 10.00,
-        // SCORING GUIDELINE: Definitive glass protection score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "1_4_thickness": {
@@ -226,14 +241,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 3.50,
       // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 3.50,
-        // SCORING GUIDELINE: Definitive thickness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "1_5_weight": {
@@ -248,14 +260,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 1.64,
       // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 1.64,
-        // SCORING GUIDELINE: Definitive weight score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "1_6_ergonomics": {
@@ -270,14 +279,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 0.00,
       // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 0.00,
-        // SCORING GUIDELINE: Definitive ergonomics score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     }
   },
@@ -389,14 +395,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 9.00,
-        // SCORING GUIDELINE: Definitive panel architecture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_2_brightness": {
@@ -418,14 +421,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 7.37,
       // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.37,
-        // SCORING GUIDELINE: Definitive brightness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_3_color_gamut_coverage": {
@@ -447,14 +447,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 10.00,
-        // SCORING GUIDELINE: Definitive color gamut score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.2"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_4_hdr_format_support": {
@@ -474,14 +471,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.00,
       // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.00,
-        // SCORING GUIDELINE: Definitive HDR format score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_5_resolution_density": {
@@ -510,14 +504,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.43,
       // SCORING GUIDELINE: predicted_score directly inherits ppi.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.43,
-        // SCORING GUIDELINE: Definitive resolution density score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_6_motion_smoothness": {
@@ -532,14 +523,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 7.55,
       // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.55,
-        // SCORING GUIDELINE: Definitive motion smoothness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_7_touch_responsiveness": {
@@ -554,14 +542,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 5.00,
       // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 5.00,
-        // SCORING GUIDELINE: Definitive touch responsiveness score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_8_screen_to_body_ratio": {
@@ -577,14 +562,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.64,
       // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.64,
-        // SCORING GUIDELINE: Definitive screen-to-body ratio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_9_screen_size": {
@@ -599,14 +581,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 6.93,
       // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.93,
-        // SCORING GUIDELINE: Definitive screen size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_10_eye_comfort": {
@@ -655,14 +634,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pwm_dimming_hz. 
       // (If No-Flicker, inherits 10.0 from flicker_presence; if Flicker-Active, inherits frequency score from pwm_dimming_hz).
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 4.07,
-        // SCORING GUIDELINE: The definitive eye comfort score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "2_11_display_benchmark_final_scoring": {
@@ -783,14 +759,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 7.00,
       // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.00,
-        // SCORING GUIDELINE: Definitive speaker quality score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "3_2_playback_audio_processing_immersion": {
@@ -825,14 +798,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 7.5,
       // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.5,
-        // SCORING GUIDELINE: Definitive PAPI score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "3_3_wired_audio_capability": {
@@ -851,14 +821,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 3.0,
       // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 3.0,
-        // SCORING GUIDELINE: Definitive wired audio score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "3_4_microphone_audio_recording": {
@@ -908,14 +875,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 6.80,
       // SCORING GUIDELINE: predicted_score = (0.30 × mhc.microphone_count.subscore) + (0.30 × rcm.recording_channels.subscore) + (0.40 × acf.features.subscore). Weights from the MAR formula in Section 3.4.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.80,
-        // SCORING GUIDELINE: Definitive MAR score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     }
   },
@@ -1044,14 +1008,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.11,
       // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.11,
-        // SCORING GUIDELINE: Definitive sensor size score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_2_main_camera_aperture": {
@@ -1066,14 +1027,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 6.40,
       // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.40,
-        // SCORING GUIDELINE: Definitive aperture score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_3_main_camera_resolution": {
@@ -1088,14 +1046,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits mp.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 10.00,
-        // SCORING GUIDELINE: Definitive resolution score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_4_image_stabilization": {
@@ -1116,14 +1071,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.00,
       // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.00,
-        // SCORING GUIDELINE: Definitive stabilization score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_5_ultrawide_capability": {
@@ -1152,14 +1104,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 8.17,
       // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0. FOV is weighted 55% because it is the primary purpose of an ultrawide lens, while sensor size (45%) governs low-light quality.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.17,
-        // SCORING GUIDELINE: Definitive UCC score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_6_zoom_capability": {
@@ -1174,14 +1123,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 6.99,
       // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.99,
-        // SCORING GUIDELINE: Definitive zoom score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_7_macro_capability": {
@@ -1208,14 +1154,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "predicted_score": 8.39,
         // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.4 × ultrawide_af.subscore) + (0.6 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.0. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
         "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.39,
-          // SCORING GUIDELINE: Intermediate path score feeding into the parent 4_7 final formula. Inherits predicted_score. (No Booster applies at this child level.)
           "method_used": "Predictor",
-          // SCORING GUIDELINE: Must be "Predictor" natively.
           "booster": "No",
-          // SCORING GUIDELINE: Always "No" at child path level. Boosters are only applied at the parent 4_7 level.
           "confidence": "N/A"
-          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
         }
       },
       "4_7_2_telemacro_path": {
@@ -1237,14 +1180,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "predicted_score": 0.00,
         // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
         "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.00,
-          // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
           "method_used": "Predictor",
-          // SCORING GUIDELINE: Must be "Predictor" natively.
           "booster": "No",
-          // SCORING GUIDELINE: Always "No" at child path level.
           "confidence": "N/A"
-          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
         }
       },
       "4_7_3_dedicated_path": {
@@ -1259,27 +1199,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "predicted_score": 0.00,
         // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore.
         "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.00,
-          // SCORING GUIDELINE: Intermediate path score. Inherits predicted_score. (No Booster applies at child level.)
           "method_used": "Predictor",
-          // SCORING GUIDELINE: Must be "Predictor" natively.
           "booster": "No",
-          // SCORING GUIDELINE: Always "No" at child path level.
           "confidence": "N/A"
-          // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
         }
       },
       "predicted_score": 8.39,
       // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
       "final_score": {
+        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.39,
-        // SCORING GUIDELINE: Definitive MCFP score. Inherits predicted_score unless adjusted by a Section 11 expert review Booster. (No Benchmark or Neighbor Interpolation applies here.)
         "method_used": "Predictor",
-        // SCORING GUIDELINE: Must be "Predictor" natively.
         "booster": "No",
-        // SCORING GUIDELINE: Lists the Section 11 booster rule applied (e.g., "11.1"), or "No" if unadjusted.
         "confidence": "N/A"
-        // SCORING GUIDELINE: Must be "N/A" for Predictor methods.
       }
     },
     "4_8_rear_video_resolution": {
