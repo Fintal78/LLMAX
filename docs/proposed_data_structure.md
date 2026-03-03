@@ -123,11 +123,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
         "subscore": 10.00
         // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively for "value" with related scores:
-        //   • Titanium Alloy       → 10.0
-        //   • Stainless Steel      → 8.5
-        //   • Aluminum Alloy       → 7.0
-        //   • Polymer Composite    → 4.0
-        //   • Not Disclosed        → 0.0
+        //   • Titanium Alloy       → 10.00
+        //   • Stainless Steel      → 8.50
+        //   • Aluminum Alloy       → 7.00
+        //   • Polymer Composite    → 4.00
+        //   • Not Disclosed        → 0.00
       },
       "back_material": {
         "value": "Strengthened Glass",
@@ -135,11 +135,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
         "subscore": 8.00
         // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively for "value" with related scores:
-        //   • Ceramic              → 10.0
-        //   • Strengthened Glass   → 8.0
-        //   • Standard Glass       → 6.0
-        //   • Polymer              → 4.0
-        //   • Not Disclosed        → 0.0
+        //   • Ceramic              → 10.00
+        //   • Strengthened Glass   → 8.00
+        //   • Standard Glass       → 6.00
+        //   • Polymer              → 4.00
+        //   • Not Disclosed        → 0.00
       },
       "predicted_score": 9.20,
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
@@ -166,12 +166,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "6",
         "subscore": 10.00
         // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
-        //   • Digit 6    → 10.0
-        //   • Digit 5    → 8.0
-        //   • Digit 4    → 6.0
-        //   • Digit 3    → 4.0
-        //   • Digit 2    → 2.0
-        //   • Digit 0–1  → 0.0
+        //   • Digit 6    → 10.00
+        //   • Digit 5    → 8.00
+        //   • Digit 4    → 6.00
+        //   • Digit 3    → 4.00
+        //   • Digit 2    → 2.00
+        //   • Digit 0–1  → 0.00
       },
       "water_protection_digit": {
         "value": "Digit 8",
@@ -179,13 +179,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "8",
         "subscore": 9.00
         // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
-        //   • Digit 9    → 10.0
-        //   • Digit 8    → 9.0
-        //   • Digit 7    → 8.0
-        //   • Digit 6    → 6.0
-        //   • Digit 5    → 4.0
-        //   • Digit 4    → 2.0
-        //   • Digit 0–3  → 0.0
+        //   • Digit 9    → 10.00
+        //   • Digit 8    → 9.00
+        //   • Digit 7    → 8.00
+        //   • Digit 6    → 6.00
+        //   • Digit 5    → 4.00
+        //   • Digit 4    → 2.00
+        //   • Digit 0–3  → 0.00
       },
       "predicted_score": 9.50,
       // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
@@ -203,21 +203,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Gorilla Glass Armor",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 10.0
+        "subscore": 10.00
         // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively for "value" with related scores:
-        //   • Gorilla Glass Armor                  → 10.0
-        //   • Ceramic Shield (current gen)         → 9.5
-        //   • Gorilla Glass Victus 2               → 9.0
-        //   • Gorilla Glass Victus or Victus+      → 8.0
-        //   • Dragontrail Star or Dragontrail Pro  → 8.0
-        //   • Gorilla Glass 5 or 6                 → 7.0
-        //   • Dragontrail X                        → 7.0
-        //   • Gorilla Glass 3                      → 5.0
-        //   • Panda Glass                          → 5.0
-        //   • Dragontrail (standard)               → 5.0
-        //   • Tempered Glass                       → 3.0
-        //   • Glass (Unspecified)                  → 2.0
-        //   • Plastic or No Glass                  → 0.0
+        //   • Gorilla Glass Armor                  → 10.00
+        //   • Ceramic Shield (current gen)         → 9.50
+        //   • Gorilla Glass Victus 2               → 9.00
+        //   • Gorilla Glass Victus or Victus+      → 8.00
+        //   • Dragontrail Star or Dragontrail Pro  → 8.00
+        //   • Gorilla Glass 5 or 6                 → 7.00
+        //   • Dragontrail X                        → 7.00
+        //   • Gorilla Glass 3                      → 5.00
+        //   • Panda Glass                          → 5.00
+        //   • Dragontrail (standard)               → 5.00
+        //   • Tempered Glass                       → 3.00
+        //   • Glass (Unspecified)                  → 2.00
+        //   • Plastic or No Glass                  → 0.00
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
@@ -307,12 +307,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       //
       // DECISION RULE — ambiguous labels:
       //   Plain "OLED" or "AMOLED" with NO LTPO qualifier → default to "AMOLED or OLED" (8.0).
-      //   Assign "LTPO OLED" (9.0) ONLY when LTPO backplane OR a Tier-9 name below is confirmed.
+      //   Assign "LTPO OLED" (9.00) ONLY when LTPO backplane OR a Tier-9 name below is confirmed.
       // ─────────────────────────────────────────────────────────────────────────────
       "panel_type_lookup": {
         "tier_10_tandem_oled": {
           "canonical": "Tandem OLED",
-          "score": 10.0,
+          "score": 10.00,
           "marketing_names": [
             "Tandem OLED",
             "Dual-Layer OLED"
@@ -320,7 +320,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "tier_9_ltpo_oled": {
           "canonical": "LTPO OLED",
-          "score": 9.0,
+          "score": 9.00,
           "marketing_names": [
             "Dynamic AMOLED 2X",
             "OLED ProMotion",
@@ -334,7 +334,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "tier_8_amoled_or_oled": {
           "canonical": "AMOLED or OLED",
-          "score": 8.0,
+          "score": 8.00,
           "marketing_names": [
             "Super AMOLED",
             "Dynamic AMOLED (without 2X suffix)",
@@ -348,7 +348,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "tier_6_ips_lcd": {
           "canonical": "IPS LCD",
-          "score": 6.0,
+          "score": 6.00,
           "marketing_names": [
             "Liquid Retina HD",
             "Liquid Retina",
@@ -361,7 +361,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "tier_2_tft_or_pls_lcd": {
           "canonical": "TFT or PLS LCD",
-          "score": 2.0,
+          "score": 2.00,
           "marketing_names": [
             "PLS TFT",
             "PLS",
@@ -371,7 +371,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "tier_0_tn_lcd_or_legacy": {
           "canonical": "TN LCD or Legacy",
-          "score": 0.0,
+          "score": 0.00,
           "marketing_names": [
             "TFT (TN)",
             "Any explicitly TN-type label"
@@ -385,12 +385,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
         "subscore": 9.00
         // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Use the following terms exclusively for "value" with related scores:
-        //   • Tandem OLED        → 10.0
-        //   • LTPO OLED          → 9.0
-        //   • AMOLED or OLED     → 8.0
-        //   • IPS LCD            → 6.0
-        //   • TFT or PLS LCD     → 2.0
-        //   • TN LCD or Legacy   → 0.0
+        //   • Tandem OLED        → 10.00
+        //   • LTPO OLED          → 9.00
+        //   • AMOLED or OLED     → 8.00
+        //   • IPS LCD            → 6.00
+        //   • TFT or PLS LCD     → 2.00
+        //   • TN LCD or Legacy   → 0.00
       },
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
@@ -460,13 +460,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Alternative Dynamic HDR (HDR10+ + HDR10 only)",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.0
+        "subscore": 8.00
         // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively for "value" with related scores:
-        //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.0
-        //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.0
-        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)         → 8.0
-        //   • Basic Static HDR (HDR10 only)                         → 6.0
-        //   • No HDR                                                → 0.0
+        //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.00
+        //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.00
+        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)         → 8.00
+        //   • Basic Static HDR (HDR10 only)                         → 6.00
+        //   • No HDR                                                → 0.00
       },
       "predicted_score": 8.00,
       // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
@@ -620,7 +620,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
         "subscore": "N/A"
         // SCORING GUIDELINE: Record if PWM flicker is present (Yes/No) based on the verification rules in dimming_technology_lookup above.
-        //   • If "No" (DC Dimming), subscore is 10.0.
+        //   • If "No" (DC Dimming), subscore is 10.00.
         //   • If "Yes" (PWM Dimming), subscore is "N/A" as the score is derived from frequency below.
       },
       "pwm_dimming_hz": {
@@ -632,7 +632,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "predicted_score": 4.07,
       // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pwm_dimming_hz. 
-      // (If No-Flicker, inherits 10.0 from flicker_presence; if Flicker-Active, inherits frequency score from pwm_dimming_hz).
+      // (If No-Flicker, inherits 10.00 from flicker_presence; if Flicker-Active, inherits frequency score from pwm_dimming_hz).
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 4.07,
@@ -756,25 +756,25 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "speaker_system_lookup": { // this is a lookup table, do not score here
         "balanced_stereo": {
           "canonical": "Balanced / Symmetrical Stereo",
-          "score": 10.0,
+          "score": 10.00,
           "definition": "Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.",
           "justification": "A rare, hardware-intensive setup where both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability. Review explicitly states 'Symmetrical speakers' or 'Balanced stereo'."
         },
         "standard_stereo": {
           "canonical": "Standard Hybrid Stereo",
-          "score": 7.0,
+          "score": 7.00,
           "definition": "Can use the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer).",
           "justification": "The smaller earpiece focuses on highs while the bottom driver handles mids/lows, creating a slight tonal imbalance compared to perfect symmetry. Spec sheet lists 'Stereo Speakers' without specific 'Symmetrical' confirmation."
         },
         "mono_speaker": {
           "canonical": "Mono Speaker",
-          "score": 3.0,
+          "score": 3.00,
           "definition": "Single active loudspeaker, typically bottom-firing only.",
           "justification": "Provides no spatial separation; all sound originates from a single point. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
         },
         "no_speaker": {
           "canonical": "No Usable Speaker",
-          "score": 0.0,
+          "score": 0.00,
           "definition": "No built-in loudspeaker; relies entirely on external audio.",
           "justification": "Zero capability for independent audio output."
         }
@@ -784,9 +784,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Standard Hybrid Stereo",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 7.0
+        "subscore": 7.00
         // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above. Use the matching "canonical" string for "value" and its "score" for subscore.
-        // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.0.
+        // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.00.
       },
       "predicted_score": 7.00,
       // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
@@ -804,28 +804,28 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Dolby Atmos ONLY",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.0
+        "subscore": 8.00
         // SCORING GUIDELINE: Identify the highest-tier supported format capability. Use the following terms exclusively for "value" with related scores:
-        //   • Dolby Atmos AND DTS:X                          → 10.0
-        //   • Dolby Atmos ONLY                               → 8.0
-        //   • Multichannel Surround (Dolby Digital / DTS)    → 5.0
-        //   • Stereo ONLY                                    → 0.0
+        //   • Dolby Atmos AND DTS:X                          → 10.00
+        //   • Dolby Atmos ONLY                               → 8.00
+        //   • Multichannel Surround (Dolby Digital / DTS)    → 5.00
+        //   • Stereo ONLY                                    → 0.00
       },
       "spatial_audio_rendering": {
         "value": "Static spatial audio (no head tracking)",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 7.0
+        "subscore": 7.00
         // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores:
-        //   • Spatial audio with Dynamic Head Tracking      → 10.0
-        //   • Static spatial audio (no head tracking)       → 7.0
-        //   • No spatial rendering                          → 0.0
+        //   • Spatial audio with Dynamic Head Tracking      → 10.00
+        //   • Static spatial audio (no head tracking)       → 7.00
+        //   • No spatial rendering                          → 0.00
       },
-      "predicted_score": 7.5,
+      "predicted_score": 7.50,
       // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.5,
+        "value": 7.50,
         "method_used": "Predictor",
         "booster": "No",
         "confidence": "N/A"
@@ -837,18 +837,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "USB-C digital audio only (dongle required)",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 3.0
+        "subscore": 3.00
         // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following terms exclusively for "value" with related scores:
-        //   • 3.5mm headphone jack (native analog)          → 10.0
-        //   • USB-C with documented analog audio output     → 6.0
-        //   • USB-C digital audio only (dongle required)    → 3.0
-        //   • No wired audio support                        → 0.0
+        //   • 3.5mm headphone jack (native analog output)   → 10.00
+        //   • USB-C with documented analog audio output     → 6.00
+        //   • USB-C digital audio only (dongle required)    → 3.00
+        //   • No wired audio support                        → 0.00
       },
-      "predicted_score": 3.0,
-      // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
+      "predicted_score": 3.00,
+      // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 3.0,
+        "value": 3.00,
         "method_used": "Predictor",
         "booster": "No",
         "confidence": "N/A"
