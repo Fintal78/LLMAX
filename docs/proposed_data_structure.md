@@ -905,117 +905,122 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_camera_systems": {
-      "camera_hardware_specs": {
-        "rear": [
-          {
-            "role": {
-              "value": "Main",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "sensor": {
-              "value": "ISOCELL HP2",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "megapixels": {
-              "value": 200,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "aperture": {
-              "value": "f/1.7",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "optical_image_stabilization": {
-              "value": true,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            }
-          },
-          {
-            "role": {
-              "value": "Tele 5x",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "sensor": {
-              "value": "IMX854",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "megapixels": {
-              "value": 50,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "aperture": {
-              "value": "f/3.4",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "optical_image_stabilization": {
-              "value": true,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            }
-          },
-          {
-            "role": {
-              "value": "Tele 3x",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "sensor": {
-              "value": "IMX754",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "megapixels": {
-              "value": 10,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "aperture": {
-              "value": "f/2.4",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "optical_image_stabilization": {
-              "value": true,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            }
-          },
-          {
-            "role": {
-              "value": "Ultrawide",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "sensor": {
-              "value": "IMX564",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "megapixels": {
-              "value": 12,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "aperture": {
-              "value": "f/2.2",
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            },
-            "field_of_view": {
-              "value": 120,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-            }
+      // GUIDELINE: Hardware inventory of all physical camera modules. Contains ONLY unscored reference data
+      // (Rule 1 — non-scoring data at section root). All scored parameters are stored in their respective
+      // scoring subsections and are NOT duplicated here.
+      // Each key under "rear_camera" / "front_camera" is the lens role (e.g., "main", "tele_5x"). All fields inside are unscored reference data.
+      // MISSING DATA RULE: If a required specification cannot be verified (either because the feature is absent 
+      // or the data is unavailable after an exhaustive research), set the "value" field strictly to "Not found or non existing" 
+      // and set "source" and "exact_extract" to "N/A".
+      "rear_camera": {
+        "main": {
+          // GUIDELINE: Main rear camera module. Only the sensor model name is stored here as unscored reference.
+          "sensor_model_name": {
+            // GUIDELINE: Sensor model name (e.g., "ISOCELL HP2").
+            "value": "ISOCELL HP2",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
           }
-        ]
+        },
+        "telephoto_1": {
+          // GUIDELINE: First telephoto rear camera module (highest optical zoom). Use "telephoto_1" for the primary
+          // telephoto lens, "telephoto_2" for a second one if present. 
+          "optical_zoom": {
+            // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "5x", "3x", "10x").
+            "value": "5x",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "sensor_model_name": {
+            // GUIDELINE: Sensor model name.
+            "value": "IMX854",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "megapixels": {
+            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+            "value": 50,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "aperture": {
+            // GUIDELINE: Aperture of this non-main lens.
+            "value": "f/3.4",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "optical_image_stabilization": {
+            // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        },
+        "telephoto_2": {
+          // GUIDELINE: Second telephoto rear camera module (if present).
+          "optical_zoom": {
+            // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "3x", "2x").
+            "value": "3x",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "sensor_model_name": {
+            // GUIDELINE: Sensor model name.
+            "value": "IMX754",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "megapixels": {
+            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+            "value": 10,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "aperture": {
+            // GUIDELINE: Aperture of this non-main lens.
+            "value": "f/2.4",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "optical_image_stabilization": {
+            // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        },
+        "ultrawide": {
+          // GUIDELINE: Ultrawide rear camera module.
+          "sensor_model_name": {
+            // GUIDELINE: Sensor model name.
+            "value": "IMX564",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "megapixels": {
+            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+            "value": 12,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          },
+          "aperture": {
+            // GUIDELINE: Aperture of this non-main lens.
+            "value": "f/2.2",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+          }
+        }
+      },
+      "front_camera": {
+        "main": {
+          // GUIDELINE: Main front-facing camera module. Only the sensor model name is stored here as unscored reference.
+          "sensor_model_name": {
+            // GUIDELINE: Front sensor model name.
+            "value": "Not found or non existing",
+            "source": "N/A",
+            "exact_extract": "N/A"
+          }
+        }
       },
       "4_1_main_sensor_size": {
         // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
