@@ -34,7 +34,7 @@ SUB_KEY_MAP = {
     "2_11_display_benchmark_final_scoring": "2_11_display_benchmark_final_scoring",
     
     # 3. Audio (Old 8)
-    "8_1_speaker_quality": "3_1_speaker_quality",
+    "8_1_speaker_quality": "3_1_speaker_system_capability",
     "8_2_playback_audio_processing_immersion": "3_2_playback_audio_processing_immersion",
     "8_3_wired_audio_capability": "3_3_wired_audio_capability",
     "8_4_microphone_audio_recording": "3_4_microphone_audio_recording",

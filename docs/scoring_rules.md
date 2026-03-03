@@ -591,8 +591,8 @@ PAPI is a weighted composite of two subsections:
 
 | Score    | Spatial Rendering Capability                 |
 | :------- | :------------------------------------------- |
-| **10.0** | **Spatial audio WITH Dynamic Head Tracking** |
-| **7.0**  | **Spatial audio (Static, no head tracking)** |
+| **10.0** | **Spatial audio with Dynamic Head Tracking** |
+| **7.0**  | **Static spatial audio (no head tracking)**  |
 | **0.0**  | **No spatial rendering**                     |
 
 > [!NOTE]
@@ -1899,7 +1899,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Significance (The Peak vs. Baseline Demand Paradox):** Peak performance draws extreme wattage, generating massive heat. A flagship chip doing maximum computing (Section 6.1 Peak Score = 10) draws 15+ watts, requiring heavy cooling. A budget chip (Peak Score = 2) might only physically draw 4 watts. However, a flagship chip built on an efficient 3nm node generates *less* waste heat per watt than an inefficient 5nm node.
 *   **Calculate Thermal Mitigation:**
     *   We combine two sources of thermal relief: having a less powerful chip (which restricts maximum power draw) and having a highly efficient manufacturing node (which wastes far less drawn power as heat).
-    *   `Peak_Thermal_Demand = Section_3_1_Score`
+    *   `Peak_Thermal_Demand = Section_6_1_Score`
     *   `Node_Efficiency_Relief = Process_Node_Score`
     *   `Thermal_Mitigation = (10 - Peak_Thermal_Demand) + Node_Efficiency_Relief`
 *   **Calculate Load Compensation Bonus:**

@@ -34,7 +34,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-02"
+    "last_updated": "2026-03-03"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -599,7 +599,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // Step 2: Use the "presence" value (Yes/No) for flicker_presence.
       // Step 3: Match with the corresponding technical details below.
       // ─────────────────────────────────────────────────────────────────────────────
-      "dimming_technology_lookup": { // this is a lookup table, do not modify
+      "dimming_technology_lookup": { // this is a lookup table, do not score here
         "option_flicker_active": {
           "presence": "Yes",
           "technology": "PWM Dimming active",
@@ -613,7 +613,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "score_impact": 10.0
         }
       },
-      // Start of the actual data structure and scoring process
+      
       "flicker_presence": {
         "value": "Yes",
         "source": "TBD",
@@ -693,13 +693,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           {
             // Neighbor1
             "device_id_1": "N/A",
-            // GUIDELINE: The identity.id of the neighbor device (e.g., "google_pixel_9_pro")
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "google_pixel_9_pro").
             "euclidean_distance_1": "N/A",
-            // GUIDELINE: Weighted Euclidean distance from Step 1
+            // GUIDELINE: Weighted Euclidean distance from Step 1.
             "predicted_score_1": "N/A",
-            // GUIDELINE: The neighbor's own Method C predicted_score (overall display)
+            // GUIDELINE: The neighbor's own Method C predicted_score (overall display).
             "benchmark_score_1": "N/A"
-            // GUIDELINE: The neighbor's Method A dxomark_display_score.subscore
+            // GUIDELINE: The neighbor's Method A dxomark_display_score.subscore.
           },
           {
             // Neighbor2
@@ -742,19 +742,51 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     }
   },
   "3_audio": {
-    "3_1_speaker_quality": {
+    "3_1_speaker_system_capability": {
       // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
+
+      // ─────────────────────────────────────────────────────────────────────────────
+      // SPEAKER CONFIGURATION → CANONICAL TIER LOOKUP (static reference — do not score from here)
+      // Source: Section 3.1 Speaker System Capability (SSC) tiers and Explanation of Tiers.
+      //
+      // Step 1: Identify the device's physical speaker setup (count and placement) from spec sheets or teardowns.
+      // Step 2: Match the setup to the matching "canonical" string as speaker_configuration.value.
+      // Step 3: Copy the matching "score" into speaker_configuration.subscore.
+      // ─────────────────────────────────────────────────────────────────────────────
+      "speaker_system_lookup": { // this is a lookup table, do not score here
+        "balanced_stereo": {
+          "canonical": "Balanced / Symmetrical Stereo",
+          "score": 10.0,
+          "definition": "Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.",
+          "justification": "A rare, hardware-intensive setup where both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability. Review explicitly states 'Symmetrical speakers' or 'Balanced stereo'."
+        },
+        "standard_stereo": {
+          "canonical": "Standard Hybrid Stereo",
+          "score": 7.0,
+          "definition": "Can use the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer).",
+          "justification": "The smaller earpiece focuses on highs while the bottom driver handles mids/lows, creating a slight tonal imbalance compared to perfect symmetry. Spec sheet lists 'Stereo Speakers' without specific 'Symmetrical' confirmation."
+        },
+        "mono_speaker": {
+          "canonical": "Mono Speaker",
+          "score": 3.0,
+          "definition": "Single active loudspeaker, typically bottom-firing only.",
+          "justification": "Provides no spatial separation; all sound originates from a single point. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
+        },
+        "no_speaker": {
+          "canonical": "No Usable Speaker",
+          "score": 0.0,
+          "definition": "No built-in loudspeaker; relies entirely on external audio.",
+          "justification": "Zero capability for independent audio output."
+        }
+      },
+
       "speaker_configuration": {
-        "value": "Standard Hybrid Stereo (earpiece + bottom driver)",
+        "value": "Standard Hybrid Stereo",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.0
-        // SCORING GUIDELINE: Look up the configuration in the Section 3.1 table. Use the following terms exclusively for "value" with related scores:
-        //   • Balanced / Symmetrical Stereo (two identical drivers)  → 10.0
-        //   • Standard Hybrid Stereo (earpiece + bottom driver)      → 7.0
-        //   • Mono Speaker                                           → 3.0
-        //   • No Usable Speaker                                      → 0.0
-        //   Note: Verify via spec sheet or a review that explicitly states symmetry for 10.0.
+        // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above. Use the matching "canonical" string for "value" and its "score" for subscore.
+        // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.0.
       },
       "predicted_score": 7.00,
       // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
@@ -769,34 +801,28 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "3_2_playback_audio_processing_immersion": {
       // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
       "audio_format_decode": {
-        // SCORING GUIDELINE: 3.2.1 Audio Format Decode Support. Per the hierarchical category rule, only the highest-tier supported format is stored. Identify the best combination from the Section 3.2.1 table.
-        "best_supported_format": {
-          "value": "Dolby Atmos ONLY",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.0
-          // SCORING GUIDELINE: Look up the highest-tier combination in the Section 3.2.1 table. Use the following terms exclusively for "value" with related scores:
-          //   • Dolby Atmos AND DTS:X                           → 10.0
-          //   • Dolby Atmos ONLY                                → 8.0
-          //   • Multichannel Surround (Dolby Digital/DTS) only  → 5.0
-          //   • Stereo only                                     → 0.0
-        }
+        "value": "Dolby Atmos ONLY",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.0
+        // SCORING GUIDELINE: Identify the highest-tier supported format capability. Use the following terms exclusively for "value" with related scores:
+        //   • Dolby Atmos AND DTS:X                          → 10.0
+        //   • Dolby Atmos ONLY                               → 8.0
+        //   • Multichannel Surround (Dolby Digital / DTS)    → 5.0
+        //   • Stereo ONLY                                    → 0.0
       },
       "spatial_audio_rendering": {
-        // SCORING GUIDELINE: 3.2.2 Spatial Audio Rendering. Per the hierarchical category rule, only the highest-tier capability is stored.
-        "best_spatial_capability": {
-          "value": "Static spatial audio (no head tracking)",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 7.0
-          // SCORING GUIDELINE: Look up in the Section 3.2.2 table. Use the following terms exclusively for "value" with related scores:
-          //   • Spatial audio WITH Dynamic Head Tracking (gyroscope-anchored soundstage)  → 10.0
-          //   • Static spatial audio (no head tracking)                                   → 7.0
-          //   • No spatial rendering                                                      → 0.0
-        }
+        "value": "Static spatial audio (no head tracking)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 7.0
+        // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores:
+        //   • Spatial audio with Dynamic Head Tracking      → 10.0
+        //   • Static spatial audio (no head tracking)       → 7.0
+        //   • No spatial rendering                          → 0.0
       },
       "predicted_score": 7.5,
-      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.best_supported_format.subscore) + (0.5 × spatial_audio_rendering.best_spatial_capability.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
+      // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.5,
@@ -812,11 +838,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 3.0
-        // SCORING GUIDELINE: Look up the highest-tier natively supported option in the Section 3.3 table. Use the following terms exclusively for "value" with related scores:
-        //   • 3.5mm headphone jack (native analog)               → 10.0
-        //   • USB-C with documented analog audio output          → 6.0
-        //   • USB-C digital audio only (dongle required)         → 3.0
-        //   • No wired audio support                             → 0.0
+        // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following terms exclusively for "value" with related scores:
+        //   • 3.5mm headphone jack (native analog)          → 10.0
+        //   • USB-C with documented analog audio output     → 6.0
+        //   • USB-C digital audio only (dongle required)    → 3.0
+        //   • No wired audio support                        → 0.0
       },
       "predicted_score": 3.0,
       // SCORING GUIDELINE: predicted_score directly inherits wired_audio_tier.subscore.
@@ -831,49 +857,40 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "3_4_microphone_audio_recording": {
       // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%).
       "mhc": {
-        // SCORING GUIDELINE: 3.4.1 Microphone Hardware Count (MHC). The subscore is placed on the data field itself, not in a separate score object.
-        "microphone_count": {
-          "value": "3",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.0
-          // SCORING GUIDELINE: Look up count in the Section 3.4.1 table. Use the following terms exclusively for "value" with related scores:
-          //   • ≥4 microphones   → 10.0
-          //   • 3                 → 8.0
-          //   • 2                 → 5.0
-          //   • 1                 → 2.0
-          //   • Unknown           → 0.0
-        }
+        "value": "3",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.0
+        // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores:
+        //   • ≥4 microphones   → 10.0
+        //   • 3                → 8.0
+        //   • 2                → 5.0
+        //   • 1                → 2.0
+        //   • Unknown          → 0.0
       },
       "rcm": {
-        // SCORING GUIDELINE: 3.4.2 Recording Channels & Modes (RCM). Per the hierarchical category rule, store only the highest-tier recording capability.
-        "recording_channels": {
-          "value": "Stereo",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.0
-          // SCORING GUIDELINE: Look up in the Section 3.4.2 table. Use the following terms exclusively for "value" with related scores:
-          //   • Multi-channel / Spatial audio   → 10.0
-          //   • Stereo                          → 8.0
-          //   • Mono                            → 5.0
-          //   • Voice-only / Unclear            → 0.0
-        }
+        "value": "Stereo",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.0
+        // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores:
+        //   • Multi-channel / spatial audio   → 10.0
+        //   • Stereo                          → 8.0
+        //   • Mono                            → 5.0
+        //   • Voice-only / unclear            → 0.0
       },
       "acf": {
-        // SCORING GUIDELINE: 3.4.3 Advanced Capture Features (ACF). The list is additive: each documented feature from the Section 3.4.3 checklist (Directional Zoom, Wind Noise Reduction, Voice Focus, Pro Mic Support) adds +2.5 points, capped at 10.0.
-        "features": {
-          "value": [
-            "Directional/Audio Zoom",
-            "Wind noise reduction"
-          ],
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.0
-          // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.5 × count (clamped 0–10). Example: 2 features × 2.5 = 5.0. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
-        }
+        "value": [
+          "Directional/Audio Zoom",
+          "Wind noise reduction"
+        ],
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 5.0
+        // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.5 × count (clamped 0–10). Example: 2 features × 2.5 = 5.0. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
       },
       "predicted_score": 6.80,
-      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.microphone_count.subscore) + (0.30 × rcm.recording_channels.subscore) + (0.40 × acf.features.subscore). Weights from the MAR formula in Section 3.4.
+      // SCORING GUIDELINE: predicted_score = (0.30 × mhc.subscore) + (0.30 × rcm.subscore) + (0.40 × acf.subscore). Weights from the MAR formula in Section 3.4.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.80,
@@ -997,13 +1014,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       ]
     },
     "4_1_main_sensor_size": {
-      // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality. Larger sensors capture more light, yielding better low-light performance, more dynamic range, and natural background blur (bokeh).
+      // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
       "optical_format": {
         "value": "1/1.3 inches",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.11
-        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769). Logarithmic because the real-world photographic benefit of a larger sensor follows a diminishing return curve.
+        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769).
       },
       "predicted_score": 8.11,
       // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
@@ -1016,7 +1033,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_2_main_camera_aperture": {
-      // SCORING GOAL: Scores the main camera lens aperture (f-number). Wider apertures (lower f-number) admit more light into the sensor, improving low-light performance and enabling natural background blur.
+      // SCORING GOAL: Scores the main camera lens aperture (f-number).
       "aperture_f_stop": {
         "value": "f/1.7",
         "source": "TBD",
@@ -1035,13 +1052,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_3_main_camera_resolution": {
-      // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP). Higher resolution allows finer detail capture and more flexible cropping, especially in good lighting conditions.
+      // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP).
       "mp": {
         "value": 200,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(mp) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10. Logarithmic because beyond ~50 MP, real-world detail gains hit a diffraction ceiling.
+        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(mp) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits mp.subscore.
@@ -1054,7 +1071,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_4_image_stabilization": {
-      // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake. Better stabilization produces sharper low-light photos and smoother video.
+      // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake.
       "stabilization_type": {
         "value": "Lens-Based OIS",
         "source": "TBD",
@@ -1079,7 +1096,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_5_ultrawide_capability": {
-      // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens. A wider FOV and larger sensor both directly improve the quality of wide-perspective photography.
+      // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens.
       "presence": {
         "value": true,
         "source": "TBD",
@@ -1102,7 +1119,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true.
       },
       "predicted_score": 8.17,
-      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0. FOV is weighted 55% because it is the primary purpose of an ultrawide lens, while sensor size (45%) governs low-light quality.
+      // SCORING GUIDELINE: predicted_score = (0.55 × fov_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.0.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.17,
@@ -1112,13 +1129,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_6_zoom_capability": {
-      // SCORING GOAL: Scores optical zoom power. Optical zoom allows sharp photos of distant subjects (e.g., concert, wildlife) without digital quality loss. Only true optical magnification is counted; digital/crop zoom is excluded.
+      // SCORING GOAL: Scores optical zoom power. Only true optical magnification is counted; digital/crop zoom is excluded.
       "optical_zoom_x": {
         "value": 5,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 6.99
-        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10. Logarithmic because the reach improvement from 1x to 3x is transformational, while the difference between 10x and 12x is marginal.
+        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
       },
       "predicted_score": 6.99,
       // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
@@ -1131,7 +1148,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_7_macro_capability": {
-      // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths, ensuring the best hardware implementation wins regardless of type.
+      // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths.
       "4_7_1_ultrawide_path": {
         // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
         "ultrawide_af": {
@@ -1217,20 +1234,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_8_rear_video_resolution": {
-      "max_resolution": {
-        "value": "8K",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table.
-        //   • ≥ 4K Ultra HD (incl. 8K)   → 10.0
-        //   • 1440p / QHD (2.5K)         → 8.0
-        //   • 1080p Full HD              → 6.0
-        //   • 720p HD                    → 3.0
-        //   • ≤ 480p                     → 0.0
-        //   Note: 8K and 4K both score 10 — see §4.8 for rationale.
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "value": "8K",
+      "source": "TBD",
+      "exact_extract": "Proof pending",
+      "subscore": 10.0
+      // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores:
+      //   • ≥ 4K Ultra HD (incl. 8K)   → 10.0
+      //   • 1440p / QHD (2.5K)         → 8.0
+      //   • 1080p Full HD              → 6.0
+      //   • 720p HD                    → 3.0
+      //   • ≤ 480p                     → 0.0
     },
     "4_9_rear_video_fps": {
       "max_fps_1080p_plus": {
@@ -1242,13 +1255,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "4_10_video_hdr": {
-      "capability": {
-        "value": "Dolby Vision",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "value": "Dolby Vision",
+      "source": "TBD",
+      "exact_extract": "Proof pending",
+      "subscore": 0.0
     },
     "4_11_video_encoding": {
       "professional_codec_support": {
@@ -1287,22 +1297,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "final_score": 0.0
     },
     "4_13_front_camera_resolution": {
-      "mp": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "value": 12,
+      "source": "TBD",
+      "exact_extract": "Proof pending",
+      "subscore": 0.0
     },
     "4_14_front_camera_focus": {
-      "type": {
-        "value": "Autofocus",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "value": "Autofocus",
+      "source": "TBD",
+      "exact_extract": "Proof pending",
+      "subscore": 0.0
     },
     "4_15_front_camera_video": {
       "max_resolution": {
