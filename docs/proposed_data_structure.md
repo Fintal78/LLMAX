@@ -610,7 +610,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "presence": "No",
           "technology": "DC (Direct Current)",
           "verification_rule": "Standard LCD/IPS panel with confirmed DC (Direct Current) dimming (no measurable PWM flicker).",
-          "score_impact": 10.0
+          "score_impact": 10.00
         }
       },
       
@@ -860,24 +860,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "3",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.0
+        "subscore": 8.00
         // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores:
-        //   • ≥4 microphones   → 10.0
-        //   • 3                → 8.0
-        //   • 2                → 5.0
-        //   • 1                → 2.0
-        //   • Unknown          → 0.0
+        //   • ≥4 microphones   → 10.00
+        //   • 3                → 8.00
+        //   • 2                → 5.00
+        //   • 1                → 2.00
+        //   • Unknown          → 0.00
       },
       "rcm": {
         "value": "Stereo",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.0
+        "subscore": 8.00
         // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores:
-        //   • Multi-channel / spatial audio   → 10.0
-        //   • Stereo                          → 8.0
-        //   • Mono                            → 5.0
-        //   • Voice-only / unclear            → 0.0
+        //   • Multi-channel / spatial audio   → 10.00
+        //   • Stereo                          → 8.00
+        //   • Mono                            → 5.00
+        //   • Voice-only / unclear            → 0.00
       },
       "acf": {
         "value": [
@@ -886,8 +886,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         ],
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 5.0
-        // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.5 × count (clamped 0–10). Example: 2 features × 2.5 = 5.0. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
+        "subscore": 5.00
+        // SCORING GUIDELINE: Count the number of features in the list and apply: subscore = 2.50 × count (clamped 0.00–10.00). Example: 2 features × 2.50 = 5.00. Always populate the full list from the Omni-Scan Rule — do not selectively omit.
       },
       "predicted_score": 6.80,
       // SCORING GUIDELINE: predicted_score = (0.30 × mhc.subscore) + (0.30 × rcm.subscore) + (0.40 × acf.subscore). Weights from the MAR formula in Section 3.4.
@@ -1076,14 +1076,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value": "Lens-Based OIS",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.0
+        "subscore": 8.00
         // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively for "value" with related scores:
-        //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.0
-        //   • Sensor-Shift OIS                           → 9.0
-        //   • Lens-Based OIS                             → 8.0
-        //   • EIS (Electronic Image Stabilization) only  → 5.0
-        //   • None                                       → 0.0
-        //   Note: "Standard OIS" maps to Lens-Based OIS (8.0).
+        //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.00
+        //   • Sensor-Shift OIS                           → 9.00
+        //   • Lens-Based OIS                             → 8.00
+        //   • EIS (Electronic Image Stabilization) only  → 5.00
+        //   • None                                       → 0.00
+        //   Note: "Standard OIS" maps to Lens-Based OIS (8.00).
       },
       "predicted_score": 8.00,
       // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1155,21 +1155,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "value": "Autofocus",
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 10.0
+          "subscore": 10.00
           // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
-          //   • Autofocus    → 10.0
-          //   • Fixed focus  → 6.0
-          //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.0.
+          //   • Autofocus    → 10.00
+          //   • Fixed focus  → 6.00
+          //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.00.
         },
         "min_focus_distance_cm": {
           "value": 2.5,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.31
-          // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. Lower focus distance = higher score.
+          // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0.00–10.00. Lower focus distance = higher score.
         },
         "predicted_score": 8.39,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.4 × ultrawide_af.subscore) + (0.6 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.0. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
+        // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.40 × ultrawide_af.subscore) + (0.60 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.00. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.39,
@@ -1205,13 +1205,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_7_3_dedicated_path": {
-        // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.0 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.0) or Telemacro (max 10.0).
+        // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.00 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.00) or Telemacro (max 10.00).
         "dedicated_macro_mp": {
           "value": 0,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 0.0
-          // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_mp, 0, 6). The score equals the Megapixel (MP) count, capped at 6.0. A value of 0 MP means no dedicated macro lens is present (score = 0.0). Values above 6 MP all score 6.0 maximum.
+          "subscore": 0.00
+          // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_mp, 0.00, 6.00). The score equals the Megapixel (MP) count, capped at 6.00. A value of 0 MP means no dedicated macro lens is present (score = 0.00). Values above 6 MP all score 6.00 maximum.
         },
         "predicted_score": 0.00,
         // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_mp.subscore.
@@ -1237,13 +1237,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "value": "8K",
       "source": "TBD",
       "exact_extract": "Proof pending",
-      "subscore": 10.0
+      "subscore": 10.00
       // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores:
-      //   • ≥ 4K Ultra HD (incl. 8K)   → 10.0
-      //   • 1440p / QHD (2.5K)         → 8.0
-      //   • 1080p Full HD              → 6.0
-      //   • 720p HD                    → 3.0
-      //   • ≤ 480p                     → 0.0
+      //   • ≥ 4K Ultra HD (incl. 8K)   → 10.00
+      //   • 1440p / QHD (2.5K)         → 8.00
+      //   • 1080p Full HD              → 6.00
+      //   • 720p HD                    → 3.00
+      //   • ≤ 480p                     → 0.00
     },
     "4_9_rear_video_fps": {
       "max_fps_1080p_plus": {
@@ -1251,36 +1251,36 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "4_10_video_hdr": {
       "value": "Dolby Vision",
       "source": "TBD",
       "exact_extract": "Proof pending",
-      "subscore": 0.0
+      "subscore": 0.00
     },
     "4_11_video_encoding": {
       "professional_codec_support": {
         "value": "ProRes 4K60",
         "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
         "exact_extract": "export ProRes footage via USB-C at up to 4K and 60 frames per second",
-        "subscore": 10.0
+        "subscore": 10.00
       },
       "log_color_profile_support": {
         "value": "Apple Log",
         "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
         "exact_extract": "export ProRes footage",
-        "subscore": 10.0
+        "subscore": 10.00
       },
       "color_bit_depth": {
         "value": 10,
         "source": "https://www.gsmarena.com/apple_iphone_15_pro-12557.php",
         "exact_extract": "Display [...] 10-bit HDR",
-        "subscore": 10.0
+        "subscore": 10.00
       },
-      "predicted_score": 10.0,
-      "final_score": 10.0
+      "predicted_score": 10.00,
+      "final_score": 10.00
     },
     "4_12_slow_motion": {
       "max_fps": {
@@ -1293,20 +1293,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "4_13_front_camera_resolution": {
       "value": 12,
       "source": "TBD",
       "exact_extract": "Proof pending",
-      "subscore": 0.0
+      "subscore": 0.00
     },
     "4_14_front_camera_focus": {
       "value": "Autofocus",
       "source": "TBD",
       "exact_extract": "Proof pending",
-      "subscore": 0.0
+      "subscore": 0.00
     },
     "4_15_front_camera_video": {
       "max_resolution": {
@@ -1324,8 +1324,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "4_16_multiframe_photo": {
       "features": {
@@ -1336,14 +1336,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
+      "predicted_score": 0.00,
       "score_adjustment": {
         "booster_1": {
           "value": 1.05,
           "booster_title": "11_1_dxomark_24mp_texture_rendering"
         }
       },
-      "final_score": 0.0
+      "final_score": 0.00
     },
     "4_17_semantic_ai": {
       "features": {
@@ -1353,14 +1353,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
+      "predicted_score": 0.00,
       "score_adjustment": {
         "booster_1": {
           "value": 1.05,
           "booster_title": "11_3_dxomark_portrait_skin_tone_rendering"
         }
       },
-      "final_score": 0.0
+      "final_score": 0.00
     },
     "4_18_generative_ai_tools": {
       "features": {
@@ -1370,8 +1370,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     }
   },
   "5_software_and_longevity": {
@@ -1386,30 +1386,30 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "exact_extract": "Proof pending"
       // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
       //   Section 5.2 maps this string to a score. Known platforms:
-      //   • iOS                                    → 10.0
-      //   • Pixel UI / Stock Android               → 9.0
-      //   • AOSP / Generic Stock Android           → 9.0
-      //   • Fairphone OS                           → 9.0
-      //   • Nothing OS                             → 9.0
-      //   • Motorola MyUX / Hello UI               → 8.0
-      //   • Sony Xperia UI                         → 8.0
-      //   • Nokia (Stock Android)                  → 8.0
-      //   • Sharp AQUOS UI                         → 8.0
-      //   • ASUS ZenUI / ROG UI                    → 7.0
-      //   • Samsung One UI                         → 6.0
-      //   • OxygenOS (OnePlus)                     → 6.0
-      //   • Redmagic OS                            → 6.0
-      //   • Honor MagicOS                          → 5.0
-      //   • Vivo FunTouch OS / OriginOS            → 5.0
-      //   • ColorOS (Oppo)                         → 5.0
-      //   • Realme UI                              → 5.0
-      //   • LG UX (Legacy)                         → 5.0
-      //   • HTC Sense (Legacy)                     → 5.0
-      //   • ZTE MiFavor UI / MyOS                  → 4.0
-      //   • HyperOS (Xiaomi)                       → 4.0
-      //   • Huawei EMUI / HarmonyOS                → 3.0
-      //   • MIUI (Legacy Xiaomi)                   → 3.0
-      //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.0
+      //   • iOS                                    → 10.00
+      //   • Pixel UI / Stock Android               → 9.00
+      //   • AOSP / Generic Stock Android           → 9.00
+      //   • Fairphone OS                           → 9.00
+      //   • Nothing OS                             → 9.00
+      //   • Motorola MyUX / Hello UI               → 8.00
+      //   • Sony Xperia UI                         → 8.00
+      //   • Nokia (Stock Android)                  → 8.00
+      //   • Sharp AQUOS UI                         → 8.00
+      //   • ASUS ZenUI / ROG UI                    → 7.00
+      //   • Samsung One UI                         → 6.00
+      //   • OxygenOS (OnePlus)                     → 6.00
+      //   • Redmagic OS                            → 6.00
+      //   • Honor MagicOS                          → 5.00
+      //   • Vivo FunTouch OS / OriginOS            → 5.00
+      //   • ColorOS (Oppo)                         → 5.00
+      //   • Realme UI                              → 5.00
+      //   • LG UX (Legacy)                         → 5.00
+      //   • HTC Sense (Legacy)                     → 5.00
+      //   • ZTE MiFavor UI / MyOS                  → 4.00
+      //   • HyperOS (Xiaomi)                       → 4.00
+      //   • Huawei EMUI / HarmonyOS                → 3.00
+      //   • MIUI (Legacy Xiaomi)                   → 3.00
+      //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.00
       //   If unlisted, score = N/A (update Section 5.2 first).
     },
     "5_1_support_longevity": {
@@ -1423,14 +1423,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "5_2_system_cleanliness_control": {
-      "platform_score": 6.0,
+      "platform_score": 6.00,
       // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
-      "predicted_score": 6.0,
-      "final_score": 6.0
+      "predicted_score": 6.00,
+      "final_score": 6.00
     },
     "5_3_ai_feature_suite": {
       "visual_screen_search": {
@@ -1458,8 +1458,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 10.0,
-      "final_score": 0.0
+      "predicted_score": 10.00,
+      "final_score": 0.00
     }
   },
   "6_processing_power_and_performance": {
@@ -1495,23 +1495,23 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "frequency_adjusted_core_score": [
           {
             "name": "Cortex-X4",
-            "value": 10.0,
+            "value": 10.00,
             "description": "Frequency-Adjusted Core Score"
           },
           {
             "name": "Cortex-A720",
-            "value": 39.9,
+            "value": 39.90,
             "description": "Frequency-Adjusted Core Score"
           },
           {
             "name": "Cortex-A520",
-            "value": 4.6,
+            "value": 4.60,
             "description": "Frequency-Adjusted Core Score"
           }
         ]
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_2_cpu_architecture_single_core": {
       "geekbench_6_single_score": {
@@ -1521,7 +1521,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "scoring_components": {
         "core_architecture_score": {
-          "value": 10,
+          "value": 10.00,
           "description": "Core Architecture Score - strongest core"
         },
         "frequency_scaling_factor": {
@@ -1534,8 +1534,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           }
         }
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_3_0_gpu_architecture_reference": {
       "gpu_model": {
@@ -1554,15 +1554,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   Mali-G52 MP2 · PowerVR GE8320
       },
       "standard_graphics_score": {
-        "value": 10,
+        "value": 10.00,
         "description": "Section 6.3.0 Standard Graphics Score"
       },
       "ray_tracing_score": {
-        "value": 10,
+        "value": 10.00,
         "description": "Section 6.3.0 Ray Tracing Score"
       },
       "efficiency_score": {
-        "value": 9,
+        "value": 9.00,
         "description": "Section 6.3.0 Efficiency Score (for battery calculations)"
       }
     },
@@ -1607,8 +1607,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
               "exact_extract": "Proof pending"
             },
             "api_score": {
-              "value": 10.0,
-              "description": "Highest API score (Vulkan 1.3 = 10.0)"
+              "value": 10.00,
+              "description": "Highest API score (Vulkan 1.3 = 10.00)"
             }
           }
         },
@@ -1618,12 +1618,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "standard_graphics_score": {
-        "value": 10.0,
+        "value": 10.00,
         "description": "Standard Graphics Score (from Method A/B/C)",
         "method_used": "A"
       },
       "final_score": {
-        "value": 10.0,
+        "value": 10.00,
         "formula": "(SGS * 0.9) + (RTS * 0.1)",
         "description": "Final GPU Performance Score"
       },
@@ -1638,27 +1638,27 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "predicted_score": 9.75,
       "final_score": 9.75,
       // SCORING GUIDELINE: SoC AI scores for Method C (predicted_score) — look up the SoC in the Section 6.4 table.
-      //   • Snapdragon 8 Gen 3                    → 10
-      //   • Dimensity 9300                        → 10
-      //   • Exynos 2400                           → 9
-      //   • Apple A18 Pro                         → 9
-      //   • Tensor G4                             → 8
-      //   • Snapdragon 8 Gen 2                    → 8
-      //   • Apple A17 Pro                         → 8
-      //   • Apple A16 Bionic                      → 7
-      //   • Tensor G3                             → 7
-      //   • Dimensity 9200                        → 7
-      //   • Apple A15 Bionic                      → 6
-      //   • Snapdragon 8 Gen 1                    → 6
-      //   • Dimensity 9000                        → 6
-      //   • Tensor G2                             → 5
-      //   • Apple A14 Bionic                      → 5
-      //   • Snapdragon 888                        → 4
-      //   • Snapdragon 7 Gen 3                    → 4
-      //   • Dimensity 8200                        → 4
-      //   • Snapdragon 7 Gen 1 / 7 Gen 2          → 3
-      //   • Dimensity 8100                        → 3
-      //   • Budget (Helio G / Snapdragon 4xx)     → 1
+      //   • Snapdragon 8 Gen 3                    → 10.00
+      //   • Dimensity 9300                        → 10.00
+      //   • Exynos 2400                           → 9.00
+      //   • Apple A18 Pro                         → 9.00
+      //   • Tensor G4                             → 8.00
+      //   • Snapdragon 8 Gen 2                    → 8.00
+      //   • Apple A17 Pro                         → 8.00
+      //   • Apple A16 Bionic                      → 7.00
+      //   • Tensor G3                             → 7.00
+      //   • Dimensity 9200                        → 7.00
+      //   • Apple A15 Bionic                      → 6.00
+      //   • Snapdragon 8 Gen 1                    → 6.00
+      //   • Dimensity 9000                        → 6.00
+      //   • Tensor G2                             → 5.00
+      //   • Apple A14 Bionic                      → 5.00
+      //   • Snapdragon 888                        → 4.00
+      //   • Snapdragon 7 Gen 3                    → 4.00
+      //   • Dimensity 8200                        → 4.00
+      //   • Snapdragon 7 Gen 1 / 7 Gen 2          → 3.00
+      //   • Dimensity 8100                        → 3.00
+      //   • Budget (Helio G / Snapdragon 4xx)     → 1.00
       //   If the SoC is NOT listed: add it to Section 6.4 first (use its Geekbench AI score
       //   via the Method A formula) — do not guess.
       //   final_score uses Method A (Geekbench AI) if available, else Method B (Neighbor), else Method C (predicted).
@@ -1669,8 +1669,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_6_ram_capacity": {
       "max_gb": {
@@ -1678,8 +1678,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_7_storage_technology": {
       "technology": {
@@ -1687,8 +1687,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_8_storage_capacity": {
       "capacity_gb": {
@@ -1696,8 +1696,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_9_storage_expandability": {
       "slot_type": {
@@ -1705,8 +1705,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "6_10_thermal_dissipation_stability": {
       "process_nm": {
@@ -1749,7 +1749,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
+      "predicted_score": 0.00,
       "final_score": 8.16
     }
   },
@@ -1763,8 +1763,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_2_sim_capabilities": {
       "value": {
@@ -1772,8 +1772,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_3_wifi_standard": {
       "value": {
@@ -1781,8 +1781,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_4_bluetooth_codecs": {
       "value": {
@@ -1790,8 +1790,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_5_biometrics": {
       "value": {
@@ -1799,8 +1799,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_6_sensors": {
       "value": {
@@ -1808,8 +1808,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_7_nfc_uwb": {
       "value": {
@@ -1817,8 +1817,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_8_ecosystem_continuity": {
       "value": {
@@ -1830,8 +1830,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "7_9_usb_port_speed": {
       "version": {
@@ -1844,8 +1844,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     }
   },
   "8_battery_and_charging": {
@@ -1882,9 +1882,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ],
           "breakdown": {
             "process_node_score": 8.64,
-            "gpu_efficiency_score": 9,
-            "gpu_performance_score": 9,
-            "cpu_architecture_score_aes": 7.5
+            "gpu_efficiency_score": 9.00,
+            "gpu_performance_score": 9.00,
+            "cpu_architecture_score_aes": 7.50
           },
           "score": 8.37
         },
@@ -1913,7 +1913,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "2_display.2_6_motion_smoothness.maximum_refresh_rate_hz"
           ],
           "breakdown": {
-            "panel_technology_score": 9,
+            "panel_technology_score": 9.00,
             "refresh_efficiency_score": 7.74,
             "resolution_efficiency_score": 5.21
           },
@@ -1925,16 +1925,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "7_connectivity.7_3_wifi_standard"
           ],
           "breakdown": {
-            "cellular_score": 0,
-            "wifi_score": 0
+            "cellular_score": 0.00,
+            "wifi_score": 0.00
           },
-          "score": 0.0
+          "score": 0.00
         },
         "b_4_thermal_efficiency": {
           "dependencies": [
             "6_processing_power_and_performance.6_10_thermal_dissipation_stability"
           ],
-          "score": 8.2
+          "score": 8.20
         },
         "total_hei_score": 7.14
       },
@@ -1944,10 +1944,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "6_software.6_3_system_cleanliness_control"
         ],
         "breakdown": {
-          "c_1_os_generation": 10,
-          "c_2_bloatware": 6.0
+          "c_1_os_generation": 10.00,
+          "c_2_bloatware": 6.00
         },
-        "total_soi_score": 8.4
+        "total_soi_score": 8.40
       },
       "predicted_score": 7.16,
       "benchmarks": {
@@ -1972,8 +1972,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "8_3_wireless_charging_speed": {
       "watts": {
@@ -1981,8 +1981,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "8_4_reverse_wired": {
       "watts": {
@@ -1990,8 +1990,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "8_5_reverse_wireless": {
       "watts": {
@@ -1999,8 +1999,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     },
     "8_6_charger_in_box": {
       "included_watts": {
@@ -2008,8 +2008,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.0,
-      "final_score": 0.0
+      "predicted_score": 0.00,
+      "final_score": 0.00
     }
   },
   "9_financial_and_economic_value": {
@@ -2019,8 +2019,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 0.8,
-      "final_score": 0.8
+      "predicted_score": 0.80,
+      "final_score": 0.80
     },
     "9_2_manufacturer_warranty_commitment": {
       "months": {
@@ -2033,24 +2033,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "predicted_score": 3.0,
-      "final_score": 3.0
+      "predicted_score": 3.00,
+      "final_score": 3.00
     },
     "9_3_repairability": {
-      "ifixit_score": 8,
+      "ifixit_score": 8.00,
       "eu_repairability_index": {
         "value": 4.0,
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "eu_converted_score": 8.0,
-      "predicted_score": 8.0,
+      "eu_converted_score": 8.00,
+      "predicted_score": 8.00,
       "confidence": {
         "value": "High",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "final_score": 8.0
+      "final_score": 8.00
     }
   },
   "10_miscellaneous": {
@@ -2058,8 +2058,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "value": "Integrated active stylus + dedicated digitizer + BT features",
       "source": "TBD",
       "exact_extract": "Proof pending",
-      "predicted_score": 10.0,
-      "final_score": 10.0
+      "predicted_score": 10.00,
+      "final_score": 10.00
     }
   },
   "11_reviews_and_performance_boosters": {
