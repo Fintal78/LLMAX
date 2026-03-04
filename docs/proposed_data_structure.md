@@ -1029,7 +1029,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.11
-          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.769).
+          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
         },
         "predicted_score": 8.11,
         // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
@@ -1048,7 +1048,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 6.40
-          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
         },
         "predicted_score": 6.40,
         // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
@@ -1080,19 +1080,57 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_4_image_stabilization": {
-        // SCORING GOAL: Scores the Optical Image Stabilization (OIS) or equivalent mechanism used to compensate for hand shake.
+        // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture.
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // STABILIZATION TYPE → TIER LOOKUP (static reference — do not score from here)
+        // Source: Section 4.4 — Spec Sheet Keyword → Tier Lookup table.
+        //
+        // Step 1: Identify which stabilization keywords appear in the device's spec sheet.
+        // Step 2: Match with the highest-applicable tier below.
+        // Step 3: Use the corresponding "tier_name" value for stabilization_type.value.
+        // ─────────────────────────────────────────────────────────────────────────────
+        "stabilization_type_lookup": {  // this is a lookup table, do not score here
+          "tier_10_multi_axis_mechanical": {
+            "tier_name": "Multi-Axis Mechanical Stabilization (Gimbal)",
+            "score": 10.00,
+            "recognized_keywords": ["Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS (hardware)", "Gimbal 2.0", "Gimbal 3.0"],
+            "verification_rule": "Manufacturer explicitly names a multi-axis mechanical gimbal system. A simple 'OIS' label is NOT sufficient."
+          },
+          "tier_9_sensor_shift": {
+            "tier_name": "Sensor-Shift Optical Image Stabilization",
+            "score": 9.00,
+            "recognized_keywords": ["Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS (In-Body Image Stabilization)", "Sensor-based OIS"],
+            "verification_rule": "Manufacturer explicitly states the sensor (not the lens) moves. Currently mostly used by Apple (iPhone 12 Pro Max+ / iPhone 13+)."
+          },
+          "tier_8_lens_based": {
+            "tier_name": "Lens-Based Optical Image Stabilization",
+            "score": 8.00,
+            "recognized_keywords": ["OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"],
+            "verification_rule": "Default tier for any unspecified 'OIS'. The majority of Android phones use lens-based mechanisms."
+          },
+          "tier_5_software_only": {
+            "tier_name": "Software-Only Stabilization",
+            "score": 5.00,
+            "recognized_keywords": ["EIS (Electronic Image Stabilization)", "Digital stabilization", "AIS (Artificial Image Stabilization)", "Software stabilization", "Video stabilization (without OIS mention)"],
+            "verification_rule": "No hardware Optical Image Stabilization is mentioned. Only software-based correction."
+          },
+          "tier_0_none": {
+            "tier_name": "None",
+            "score": 0.00,
+            "recognized_keywords": [],
+            "verification_rule": "No stabilization terms found in spec sheet or review."
+          }
+        },
+
         "stabilization_type": {
-          "value": "Lens-Based OIS",
+          "value": "Lens-Based Optical Image Stabilization",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Look up the mechanism in the Section 4.4 table. Use the following terms exclusively for "value" with related scores:
-          //   • Multi-Axis Gimbal / Multi-Sensor Shift     → 10.00
-          //   • Sensor-Shift OIS                           → 9.00
-          //   • Lens-Based OIS                             → 8.00
-          //   • EIS (Electronic Image Stabilization) only  → 5.00
-          //   • None                                       → 0.00
-          //   Note: "Standard OIS" maps to Lens-Based OIS (8.00).
+          // SCORING GUIDELINE: Identify the mechanism by matching spec sheet keywords against the stabilization_type_lookup above. 
+          // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
+          // AMBIGUITY RULE: If the spec sheet says only "OIS" without further qualification, default to the "Lens-Based Optical Image Stabilization" tier.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1105,33 +1143,33 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_5_ultrawide_capability": {
-        // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View (FOV, 55%) and sensor size (45%), gated by the presence of an ultrawide lens.
+        // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View and sensor size, gated by the presence of an ultrawide lens.
         "presence": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": "N/A"
-          // SCORING GUIDELINE: Binary gate — this field has no numeric subscore. If value = false, the entire UCC score is 0.0 and all other subscores in this subsection MUST be "N/A". If value = true, proceed to score field_of_view_degrees and sensor_size_format.
+          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00 and all other fields in the 2 sections below MUST be "N/A". If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
         },
         "field_of_view_degrees": {
           "value": 120,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 6.67
-          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Ultrawide_FOV_Deg_Min), clamped 0–10. Only evaluated if presence = true.
+          "subscore": 7.78
+          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this bloc must be "N/A".
         },
-        "sensor_size_format": {
+        "ultrawide_sensor_size": {
           "value": "1/2.0",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(Size_Inch) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true.
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this bloc must be "N/A".
         },
-        "predicted_score": 8.17,
-        // SCORING GUIDELINE: predicted_score = (0.55 × field_of_view_degrees.subscore) + (0.45 × sensor_size_format.subscore) if presence = true; otherwise predicted_score = 0.00.
+        "predicted_score": 8.67,
+        // SCORING GUIDELINE: predicted_score = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true, source: UCC Formula of Section 4.5; otherwise predicted_score = 0.00.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.17,
+          "value": 8.67,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"

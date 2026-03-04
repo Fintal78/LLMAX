@@ -65,7 +65,8 @@
 *   `Camera_Main_Resolution_MP_Min` = 12 (Score 0), `Camera_Main_Resolution_MP_Max` = 200 (Score 10)
 
 ### 4.5 Ultrawide Camera
-*   `Camera_Ultrawide_FOV_Deg_Min` = 100 (Score 0), `Camera_Ultrawide_FOV_Deg_Max` = 130 (Score 10)
+*   `Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max` = 85 (Score 0) — *Presence Floor Rule: this is the best Field of View (FOV) achievable by a phone without an ultrawide lens (main camera only ≈ 85°). Using this as the 0-score floor ensures that any ultrawide lens always scores above phones that lack one entirely.*
+*   `Camera_Ultrawide_FOV_Deg_Max` = 130 (Score 10)
 *   `Camera_Ultrawide_Sensor_Inch_Min` = 0.25 (Score 0), `Camera_Ultrawide_Sensor_Inch_Max` = 0.5 (Score 10)
 
 ### 4.6 Zoom Capability

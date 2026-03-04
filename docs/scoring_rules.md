@@ -7,6 +7,14 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 
 > **All numerical thresholds and boundary values referenced in this document are defined in [scoring_constants.md].**
 
+> [!CAUTION]
+> **Presence Floor Rule (General Scoring Principle)**
+> When a subsection uses a **Binary Gate** (feature present / absent) and a scored parameter can be measured on **both sides** of the gate, the **best-performing value from the lower class** (feature absent) must be used as the **0-score floor** for the upper class (feature present).
+>
+> **Rationale:** Without this rule, the normalization rule leads to score a 0 for the worst phone having the feature — the same as phones without the feature at all. This fails to reward the phone for having the feature, even in its weakest form. The floor ensures that the scoring range for the upper class begins where the lower class's capability ends, so any device with the feature always scores meaningfully above one without it.
+>
+> **Example:** §4.5.2 Ultrawide Field of View uses `Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max` (≈ 85°) as its 0-score floor, because 85° is the best FOV achievable by a phone without an ultrawide lens (i.e., the main camera only). Any ultrawide delivering more than 85° scores > 0.
+
 
 ## 🟣 1. Design & Build Quality
 
@@ -725,22 +733,59 @@ MAR is a weighted composite of three subsections:
 *   **Unit:** Stabilization Mechanism Class
 *   **Significance:** Determines the camera's ability to maintain image sharpness at longer exposure times and reduce motion blur in video.
 
-| Score    | Stabilization Mechanism                    |
-| :------- | :----------------------------------------- |
-| **10.0** | **Multi-Axis Gimbal / Multi-Sensor Shift** |
-| **9.0**  | **Sensor-Shift OIS**                       |
-| **8.0**  | **Lens-Based OIS**                         |
-| **5.0**  | **EIS Only**                               |
-| **0.0**  | **None**                                   |
+| Score    | Stabilization Mechanism                                   |
+| :------- | :-------------------------------------------------------- |
+| **10.0** | **Multi-Axis Mechanical Stabilization (Gimbal)**          |
+| **9.0**  | **Sensor-Shift Optical Image Stabilization**              |
+| **8.0**  | **Lens-Based Optical Image Stabilization**                |
+| **5.0**  | **Software-Only Stabilization (Electronic, no hardware)** |
+| **0.0**  | **None**                                                  |
 
-**OIS (Optical Image Stabilization)**: Physical movement of lens elements or sensor to counteract camera shake  
-**EIS (Electronic Image Stabilization)**: Software-based stabilization using frame cropping and motion compensation algorithms
+#### Mechanism Explainer
 
-**Multi-Axis Gimbal / Multi-Sensor Shift**: Mechanical stabilization system with ≥2-axis sensor or lens movement explicitly disclosed  
-**Sensor-Shift OIS**: Image sensor physically moves to compensate for motion  
-**Lens-Based OIS**: Optical lens group physically moves to compensate for motion  
-**EIS Only**: Stabilization performed purely by digital frame cropping and motion estimation  
-**None**: No stabilization mechanism disclosed
+The five tiers correspond to fundamentally different physical (or non-physical) approaches to counteracting camera shake:
+
+*   **Multi-Axis Mechanical Stabilization (Gimbal):** The entire camera module floats on a miniaturized mechanical suspension — conceptually similar to a handheld steadicam — that can rotate on ≥2 axes. This provides the highest correction angle (typically ≥ ±3°) and the smoothest video stabilization. Used by vivo ("Gimbal Stabilization 2.0/3.0"), ASUS ROG ("6-axis gimbal stabilization system"), and Samsung ("Super Steady OIS" hardware variant).
+
+*   **Sensor-Shift Optical Image Stabilization (OIS):** The image sensor itself physically moves inside the camera module to counteract shake, while the lens stays fixed. Because the sensor is significantly lighter than the lens assembly, it allows faster and more precise micro-adjustments (up to 5,000/second on Apple devices) and uniquely corrects for rotational (roll) shake. Currently used by Apple on all iPhones since the iPhone 12 Pro Max / iPhone 13 series. Apple markets this as "Sensor-shift OIS" or "Sensor-shift optical image stabilization."
+
+*   **Lens-Based Optical Image Stabilization (OIS):** A group of optical lens elements physically moves inside the lens barrel to compensate for hand shake. This is the most common form of hardware stabilization found in smartphones, used by the vast majority of Android manufacturers (Samsung, Google, OnePlus, Xiaomi, Motorola). Spec sheets typically list this simply as "OIS" or "Optical Image Stabilization." Periscope zoom modules may use a variant called "Prism Tilt OIS" where a prism rotates to correct shake.
+
+*   **Software-Only Stabilization (Electronic Image Stabilization / EIS):** No moving mechanical parts. Software algorithms detect motion via the phone's gyroscope, then crop the captured video frame and digitally shift it frame-by-frame to compensate for detected movement. This is the cheapest to implement but reduces the usable field of view and can introduce a "jelly" distortion effect. Also called "EIS" (Electronic Image Stabilization), "AIS" (Artificial Image Stabilization), or simply "Digital stabilization."
+
+*   **None:** No stabilization mechanism of any kind is disclosed or present.
+
+#### Spec Sheet Keyword → Tier Lookup
+
+To determine the correct tier, check the device's official specifications, marketing materials, or reliable teardown reviews. Match the found terminology against the recognized keywords below.
+
+---
+
+**10.0 — Multi-Axis Mechanical Stabilization (Gimbal)**
+*   **Recognized Keywords:** "Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS" (hardware variant), "Gimbal 2.0", "Gimbal 3.0"
+*   **Verification Rule:** Manufacturer **explicitly names** a multi-axis mechanical gimbal system. A simple "OIS" label is NOT sufficient.
+
+**9.0 — Sensor-Shift Optical Image Stabilization**
+*   **Recognized Keywords:** "Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS" (In-Body Image Stabilization), "Sensor-based OIS"
+*   **Verification Rule:** Manufacturer **explicitly states** the **sensor** (not the lens) moves. Currently primarily found on Apple iPhones (12 Pro Max and newer).
+
+**8.0 — Lens-Based Optical Image Stabilization**
+*   **Recognized Keywords:** "OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"
+*   **Verification Rule:** **Default tier** for any unspecified "OIS" (Optical Image Stabilization). The vast majority of Optical Image Stabilization systems in smartphones use lens-shifting.
+
+**5.0 — Software-Only Stabilization**
+*   **Recognized Keywords:** "EIS" (Electronic Image Stabilization), "Digital stabilization", "AIS" (Artificial Image Stabilization), "Software stabilization", "Video stabilization" (without any "OIS" mention)
+*   **Verification Rule:** No physical/hardware stabilization is mentioned. The correction is performed purely through software algorithms and frame cropping.
+
+**0.0 — None**
+*   **Recognized Keywords:** No stabilization terms found.
+*   **Verification Rule:** No mention of Optical Image Stabilization (OIS) or Electronic Image Stabilization (EIS) in any documentation.
+
+---
+
+#### Ambiguity Rule
+
+> When a spec sheet lists only "OIS" (Optical Image Stabilization) without further qualification — no mention of "sensor-shift", "gimbal", or similar — **default to Lens-Based Optical Image Stabilization (8.00)**. The vast majority of phones listing generic "OIS" use a lens-shift mechanism. Only upgrade to Sensor-Shift (9.0) or Multi-Axis Mechanical (10.0) if the manufacturer **explicitly uses** one of the recognized keywords for those tiers.
 
 ### 🔹 4.5 Ultrawide Camera Capability (UCC)
 *Description:* How capable the ultrawide camera is for landscapes, architecture, and group shots. This measures hardware potential, not image aesthetics.
@@ -759,11 +804,14 @@ MAR is a weighted composite of three subsections:
 **4.5.2 Ultrawide Field of View**
 *   *Why it matters:* Wider FOV captures more of the scene; this is the primary purpose of an ultrawide lens.
 *   **Measurement:** Manufacturer FOV spec (degrees).
-*   *Formula:* `Score = 10 * (FOV - Camera_Ultrawide_FOV_Deg_Min) / (Camera_Ultrawide_FOV_Deg_Max - Camera_Ultrawide_FOV_Deg_Min)` (Clamped 0-10)
+*   *Formula:* `Score = 10 * (FOV - Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max - Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Camera_Ultrawide_FOV_Deg_Max
-    *   **Min Score (0.0):** ≤ Camera_Ultrawide_FOV_Deg_Min
+    *   **Min Score (0.0):** ≤ Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max
 > [!NOTE]
 > **Why Linear?** Field of View is a direct geometric measurement where each degree adds roughly equal value to the composition. The difference between 100° and 110° is perceptually similar to the difference between 110° and 120° in terms of "wideness".
+
+> [!IMPORTANT]
+> **Presence Floor Rule applied here.** The 0-score floor (`Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max` = 85°) is the best Field of View achievable by phones **without** an ultrawide lens (main camera only, ≈ 85°). This ensures that any ultrawide lens delivering a wider angle than the main camera always scores above 0, rewarding the phone for having the feature even in its weakest form. See the general Presence Floor Rule at the top of this document.
 
 **4.5.3 Ultrawide Sensor Size**
 *   *Why it matters:* Larger sensors perform better in low light and have better dynamic range.
@@ -776,10 +824,10 @@ MAR is a weighted composite of three subsections:
 
 **Final Formula:**
 *   If Presence = No: `UCC = 0`
-*   If Presence = Yes: `UCC = (0.55 * FOV_Score) + (0.45 * Sensor_Score)`
+*   If Presence = Yes: `UCC = (0.60 * FOV_Score) + (0.40 * Sensor_Score)`
 
 > [!NOTE]
-> **Why 55/45 (FOV/Sensor)?** The whole point of an ultrawide lens is to capture a wider scene — so Field of View (FOV) is still the dominant factor (55%). However, modern photography relies heavily on ultrawide cameras in low-light conditions (indoor parties, night landscapes), where the sensor size matters enormously: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
+> **Why 60/40 (FOV/Sensor)?** The primary purpose of an ultrawide lens is to capture a wider scene, making Field of View (FOV) the dominant factor (60%). Additionally, the Presence Floor Rule (see top of document) can only be applied to the FOV component (where a shared metric exists across the binary gate), not to the sensor size component (where there is no equivalent lower-class value). Giving FOV a higher weight ensures that the floor correction propagates more strongly through the composite score, further rewarding phones that have an ultrawide — even one with a small sensor — over phones with no ultrawide at all. The remaining 40% for sensor size still accounts for low-light performance: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
 
 ### 🔹 4.6 Zoom Capability
 *Description:* Optical zoom power. Allows you to take sharp, detailed photos of distant objects (like at a concert) without losing quality. Only true optical zoom is considered. Digital/crop zoom are excluded. 
