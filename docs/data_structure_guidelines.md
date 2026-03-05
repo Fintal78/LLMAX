@@ -195,6 +195,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
 -   `"Section # + Section #"`: Multiple boosters (e.g., `"11.1 + 11.2"`).
 
 **Consistency Rule:** When a subsection references multiple boosters, all their multipliers are applied in sequence: `scores.final.value = predicted × booster_11.1 × booster_11.2 × ...`
+- **Clamping Rule:** The final result of any booster-calculated score MUST be clamped at its boundaries: **minimum 0.0 and maximum 10.0**. A booster can never push a score beyond the normalized range for ranking.
 
 **Confidence Levels (`confidence`):**
 -   **High:** Verified by 2 consistent benchmarks with low variance.

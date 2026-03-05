@@ -857,13 +857,16 @@ To determine the correct tier, check the device's official specifications, marke
 | Score    | Focus Type                     | Spec Sheet Verification Rule                               |
 | :------- | :----------------------------- | :--------------------------------------------------------- |
 | **10.0** | **Ultrawide with Autofocus**   | Specs list "AF", "PDAF", or "Dual Pixel" for the Ultrawide |
-| **6.0**  | **Ultrawide with Fixed focus** | Specs list "FF" or omit AF features for the Ultrawide      |
+| **3.0**  | **Ultrawide with Fixed focus** | Specs list "FF" or omit AF features for the Ultrawide      |
+
+> [!NOTE]
+> **Why 3.0 for Fixed Focus?** Data-driven calibration across 25 phones (see `macro_scoring_analysis.py`) showed that the original tier of 6.0 drastically overscored FF ultrawides. Fixed-focus macro is severely limited: the user must physically slide the phone back and forth to find the single focal plane, with no tap-to-focus, no subject tracking, and no compensation for hand shake. Expert review consensus consistently rates FF macro at 2.0–4.5, and a tier of 3.0 (combined with the MFD score) best fits this range.
 
 *Formula:* 
 *   If 4.5.1 Ultrawide Presence = No: `Score = 0.0`
-*   If 4.5.1 Ultrawide Presence = Yes: `Score = 10.0` or `6.0` based on the Focus Type table above
+*   If 4.5.1 Ultrawide Presence = Yes: `Score = 10.0` or `3.0` based on the Focus Type table above
 
-**4.7.1.2 Minimum Focus Distance**
+**4.7.1.2 Minimum Focus Distance (MFD)**
 *   *Why it matters:* The physical limit of how close you can get.
 *   **Measurement:** Minimum focus distance (cm).
 *   *Formula:* `Score = 10 * (log(Camera_Macro_Dist_cm_Max) - log(Distance)) / (log(Camera_Macro_Dist_cm_Max) - log(Camera_Macro_Dist_cm_Min))` (Clamped 0-10)
@@ -877,9 +880,10 @@ To determine the correct tier, check the device's official specifications, marke
 *   If 4.5.1 Presence = Yes: `Score_4.7.1 = (0.4 * Score_4.7.1.1) + (0.6 * Score_4.7.1.2)`
 
 **4.7.2 Telemacro (Telephoto Macro)**
-*   *Why it matters:* Telemacro offers a distinct perspective advantage over Ultrawide macro. Using a telephoto lens (e.g., 3x or 5x) allows the user to capture macro shots from 10cm-15cm away, preventing the phone from casting a dark shadow over the subject and providing beautiful natural background blur. 
-*   *Scoring Logic:* Just having the feature doesn't guarantee a perfect 10 or automatic superiority over an ultrawide. A weak ~2x telephoto macro will score mathematically lower than a flagship ultrawide macro capable of focusing just 2cm away. The telemacro score scales based on the specific telephoto lens's optical magnification (evaluated against telemacro-specific limits), ensuring only extreme-magnification macro lenses hit a perfect 10. Because the final formula uses `Max(Ultrawide, Telemacro)`, the system neutrally evaluates both lenses and guarantees the mathematically superior hardware implementation wins.
-*   **Measurement:** Optical Magnification (x) of the specific telephoto lens providing the macro function.
+*   *Why it matters:* Telemacro offers a distinct perspective advantage over Ultrawide macro. Using a telephoto lens (e.g., 3× or 5×) allows the user to capture macro shots from 10 cm – 15 cm away, preventing the phone from casting a dark shadow over the subject and providing beautiful natural background blur. 
+*   *Scoring Logic:* Just having the feature doesn't guarantee a perfect 10 or automatic superiority over an ultrawide. A weak ~2× telephoto macro will score mathematically lower than a flagship ultrawide macro capable of focusing just 2 cm away. The telemacro score scales based on the specific telephoto lens's optical magnification and close-focus distance (both evaluated against telemacro-specific constant ranges), ensuring only extreme-magnification macro lenses hit a perfect 10. Because the final formula uses `Max(Ultrawide, Telemacro)`, the system neutrally evaluates both lenses and guarantees the mathematically superior hardware implementation wins.
+
+**Presence Gate:**
 
 | Presence | Telephoto Focus Capability       | Spec Sheet Verification Rule                                      |
 | :------- | :------------------------------- | :---------------------------------------------------------------- |
@@ -888,22 +892,42 @@ To determine the correct tier, check the device's official specifications, marke
 | **No**   | **Standard Telephoto or None**   | Telephoto has standard minimum focus distance (usually > 50cm),   |
 |          |                                  | or no telephoto lens exists on the device.                        |
 
+**Input Parameters (two scored values):**
+
+1.  **Optical Magnification** (`Magnification_x`)
+    *   **What it is:** The optical zoom factor of the specific telephoto lens that provides the telemacro function. This is the native, hardware optical magnification — NOT a digital or hybrid zoom number.
+    *   **Unit:** × (times), e.g., 3×, 3.7×, 5×.
+    *   **Where to find it:**
+        -   **Spec sheet:** Look for the telephoto lens line in the rear camera module. It is typically listed as "3× optical zoom", "5× periscope", "70 mm telephoto", etc. If stated in mm equivalent focal length, divide by the main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
+    *   **Important:** Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
+
+2.  **Telemacro Minimum Focus Distance** (`Telemacro_MFD_cm`)
+    *   **What it is:** The closest distance (in centimeters) at which the telemacro telephoto lens can achieve sharp focus. Unlike the ultrawide MFD (§4.7.1.2) which measures how close the phone can physically get to a tiny subject (typically 2–5 cm), the telemacro MFD is longer (typically 5–30 cm) because telephoto lenses operate at a greater working distance.
+    *   **Unit:** cm (centimeters).
+    *   **Where to find it:**
+        -   **Spec sheet:** Look for "minimum focus distance" or "closest focus distance" listed specifically for the telephoto lens. Some manufacturers note it as "macro focus from X cm" (e.g., Vivo X200 Pro: "15 cm", Xiaomi 14 Ultra 3× lens: "10 cm").
+    *   **Important:** A shorter Telemacro MFD is better — it means the telephoto can focus closer, producing higher magnification macro shots.
+
 *Formula:* 
-*   If Presence = No: `Score = 0`
-*   If Presence = Yes: `Score = 7.0 + (3.0 * Telemacro_Zoom_Score / 10)`
-    *   *Where* `Telemacro_Zoom_Score` = `10 * (log(Magnification) - log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) - log(Camera_Telemacro_x_Min))` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ Camera_Telemacro_x_Max
-    *   **Min Score (0.0):** ≤ Camera_Telemacro_x_Min
-    *   *Note: This guarantees a minimum score of 7.0 for the architectural advantage, scaling up to a perfect 10.0 for extreme-magnification telemacro lenses.*
+*   If Presence = No: `Score_4.7.2 = 0`
+*   If Presence = Yes: `Score_4.7.2 = 7.0 + 0.3 × (0.70 × Zoom_Score + 0.30 × MFD_Score)`
+    *   `Zoom_Score` = `10 × (log(Magnification_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min))` — Clamped 0–10
+    *   `MFD_Score`  = `10 × (log(Camera_Telemacro_MFD_cm_Max) − log(Telemacro_MFD_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min))` — Clamped 0–10 *(inverted: shorter distance = higher score)*
+    *   **Max Score (10.0):** Achieved when the telephoto has the highest zoom (Magnification_x ≥ Camera_Telemacro_x_Max) **and** the closest focus (Telemacro_MFD_cm ≤ Camera_Telemacro_MFD_cm_Min). Both sub-scores hit 10.0, giving 7.0 + 3.0 = 10.0.
+    *   **Min Score (7.0):** Achieved when both Zoom_Score and MFD_Score are at their lowest (0.0). The 7.0 base is the "Architectural Bonus" (see below).
+
+> [!NOTE]
+> **Why the 7.0 Architectural Bonus?** Data-driven calibration across 25 phones (see `macro_scoring_analysis.py`) independently converged on 7.0 as the optimal bonus. This value reflects the inherent advantages of telemacro hardware: floating telephoto elements enabling close-focus are a rare, high-end feature that produces superior macro images (no shadow casting on the subject, natural background blur, less barrel distortion). The remaining 3.0 points scale based on actual zoom magnification (70%) and minimum focus distance (30%), ensuring differentiation among telemacro implementations.
 
 **4.7.3 Dedicated Macro Lens (Penalty-aware)**
-*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 6.0 to ensure they never outperform a high-quality Telemacro or Autofocus Ultrawide (Score 10).
-*   **Measurement:** Sensor Resolution (MP).
-*   *Formula:* `Score = clamp(MP, 0, 6)`
-    *   **Max Score (6.0):** ≥ 6 MP
-    *   **Min Score (0.0):** 0 MP (No dedicated macro lens)
+*   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 3.0 to ensure they are appropriately ranked below higher-quality macro implementations that use more capable primary or ultrawide sensors.
+*   **Measurement:** Sensor Resolution in Megapixels (MP). Dedicated macro lenses typically range from 2 MP (budget) to 5 MP (mid-range), with rare 8 MP outliers.
+*   *Formula:* `Score = clamp(3 × Megapixels / Camera_Dedicated_Macro_MP_Max, 0, 3)`
+    *   **Max Score (3.0):** ≥ Camera_Dedicated_Macro_MP_Max
+    *   **Min Score (0.0):** 0 Megapixel (No dedicated macro lens)
+    *   *Examples:* 2 Megapixels → 0.75, 5 Megapixels → 1.88, 8 Megapixels → 3.0
 > [!NOTE]
-> **Why Linear?** The useful range for dedicated macro lenses is narrow (typically 2MP to 5MP). A simple linear progression (`MP`) accurately maps the hardware capability: 0MP is useless (0), 2MP is weak (2), and 5MP is decent (5). This avoids overvaluing low-res "gimmick" sensors.
+> **Why capped at 3.0?** Data-driven calibration (see `macro_scoring_analysis.py`) found that the original cap of 6.0 allowed gimmick 5 MP sensors to outscore budget phones with real ultrawide macro hardware. Lowering the cap to 3.0 ensures dedicated lenses remain in the entry-level bracket, preventing them from competing with more sophisticated Autofocus Ultrawide or Telemacro solutions. The linear mapping over 0–8 MP ensures differentiation across the actual hardware range.
 
 **Final Formula:**
 *   `MCFP Score = Max(Ultrawide_Path, Telemacro_Path, Dedicated_Path)`
@@ -2663,6 +2687,7 @@ Boosters are applied strictly at the **subsection** level. This ensures that a r
     *   *Excluded Subsections:* **3.1** (SoC Performance), **3.2** (CPU Efficiency), **5.1** (Battery Capacity).
 *   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection or any other subsection.
 *   **Complete Assessment:** Before applying a booster, verify that the feature is not already scored in another section (e.g., Video Codecs vs. ISP tuning). Double-counting features is strictly prohibited.
+*   **Booster Clamping Rule:** The application of one or more boosters can never result in a `Final Score` higher than **10.0** or lower than **0.0**. If the mathematical calculation (`Predicted Score × Multiplier`) exceeds these boundaries, the result must be clamped to the 0–10 range. This ensures that expert adjustments remain within the same normalized scale as the standard technical metrics.
 
 ### 11.B Justification Logic
 A valid booster requires a clear logical chain linking a hidden technical feature to an observed result.

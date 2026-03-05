@@ -21,6 +21,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   //                                  If there are several boosters:
   //                                  value = predicted_score × booster_multiplier_1 × booster_multiplier_2 × ... 
   //                                  Each booster multiplier comes from the corresponding Section 11 entry.
+  //                                  CLAMPING: The result of this calculation is ALWAYS clamped to [0.00, 10.00].
   //     "method_used": "Predictor" → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
   //     "booster": "No"            → Which Section 11 adjustment(s) are applied to the predicted score:
   //                                  • "No"                    = No booster applied (value = predicted_score).
@@ -435,14 +436,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. If dci_p3_percent is not available from any source then set "value" to "Not found" and subscore to "N/A". Then use the "srgb_percent" bloc below as fallback scoring. 
+        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. If dci_p3_percent is not available from any source then set "value" to "Not found" and subscore to "N/A". Then use the "srgb_percent" block below as fallback scoring. 
       },
       "srgb_percent": {
         "value": 100,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": "N/A"
-        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this bloc. When dci_p3_percent is available and the subscore was calculated in the previous bloc then set the subscore of this bloc to "N/A".
+        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
@@ -1149,21 +1150,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": "N/A"
-          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00 and all other fields in the 2 sections below MUST be "N/A". If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
+          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no ultrawide lens, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
         },
         "field_of_view_degrees": {
           "value": 120,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.78
-          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this bloc must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "ultrawide_sensor_size": {
           "value": "1/2.0",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this bloc must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "predicted_score": 8.67,
         // SCORING GUIDELINE: predicted_score = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true, source: UCC Formula of Section 4.5; otherwise predicted_score = 0.00.
@@ -1205,18 +1206,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "subscore": 10.00
             // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
             //   • Autofocus    → 10.00
-            //   • Fixed focus  → 6.00
-            //   If presence = false, this subscore MUST be "N/A" and Score_4.7.1 = 0.00.
+            //   • Fixed focus  → 3.00
+            //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be set to "N/A", and "subscore" MUST be 0.00.
           },
           "min_focus_distance_cm": {
             "value": 2.5,
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 7.31
-            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. Lower focus distance = higher score.
+            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
           },
           "predicted_score": 8.39,
-          // SCORING GUIDELINE: predicted_score (Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if presence = true; otherwise 0.00. Minimum focus distance is weighted higher (60%) because it directly determines how close the lens can physically get to a subject.
+          // SCORING GUIDELINE: predicted_score (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
           "final_score": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 8.39,
@@ -1229,20 +1230,35 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 cm away), preventing the phone from casting a shadow and delivering natural background blur.
           "telemacro_presence": {
             "value": false,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": "N/A"
-            // SCORING GUIDELINE: Binary gate. If value = false, Score_4.7.2 = 0.0 and telemacro_optical_x.subscore MUST be "N/A". If value = true, proceed to score telemacro_optical_x using the Section 4.7.2 formula.
+            "source": "N/A",
+            "exact_extract": "N/A",
+            "subscore": 0.00
+            // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no telemacro, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
+            // VERIFICATION RULE: Set to true only if specs explicitly confirm "Macro telephoto", "floating elements", or list a focus distance between 5 cm and 30 cm for a specific telephoto lens.
           },
           "telemacro_optical_x": {
-            "value": 0,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
+            "value": "N/A",
+            "source": "N/A",
+            "exact_extract": "N/A",
             "subscore": "N/A"
-            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true. Apply the Section 4.7.2 formula: Score_4.7.2 = 7.0 + (3.0 × Zoom_Score / 10), where Zoom_Score = 10 × (log(magnification) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10. This guarantees a minimum of 7.0 for the architectural advantage of telemacro.
+            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
+            // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only mm focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
+            // IMPORTANT: Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
+            // CALCULATION: Zoom_Score = 10 × (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
+            // If telemacro_presence = false, then all fields of this block must be "N/A".
+          },
+          "telemacro_min_focus_distance_cm": {
+            "value": "N/A",
+            "source": "N/A",
+            "exact_extract": "N/A",
+            "subscore": "N/A"
+            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
+            // WHERE TO FIND IT: Look for "minimum focus distance", "closest focus distance" or "macro focus from X cm" specifically for the telephoto lens.
+            // CALCULATION: MFD_Score = 10 × (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
+            // If telemacro_presence = false, then all fields of this block must be "N/A".
           },
           "predicted_score": 0.00,
-          // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.0 if telemacro_presence = false; otherwise derived from the telemacro formula above.
+          // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
           "final_score": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 0.00,
@@ -1252,13 +1268,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           }
         },
         "4_7_3_dedicated_path": {
-          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 6.00 to ensure dedicated lenses never outperform a high-quality Autofocus Ultrawide (max 10.00) or Telemacro (max 10.00).
+          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 3.00 to appropriately rank them below higher-quality macro implementations that use more capable primary or ultrawide sensors.
           "dedicated_macro_megapixels": {
             "value": 0,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
+            "source": "N/A",
+            "exact_extract": "N/A",
             "subscore": 0.00
-            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(dedicated_macro_megapixels, 0.00, 6.00). The score equals the Megapixel (MP) count, capped at 6.00. A value of 0 MP means no dedicated macro lens is present (score = 0.00). Values above 6 MP all score 6.00 maximum.
+            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the MP count linearly onto 0–3.0, where Camera_Dedicated_Macro_MP_Max scores 3.0. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
           "predicted_score": 0.00,
           // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
