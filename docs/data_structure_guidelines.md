@@ -397,17 +397,43 @@ To prevent human or parser omission, every discrete scorable feature evaluated i
 **Definition:** A pointer to a value stored elsewhere (Rule 3).
 **Usage:** When a formula needs a parameter defined in another subsection.
 
-| Field           | Description                                                                                |
-| :-------------- | :------------------------------------------------------------------------------------------|
-| `value_path`    | The exact path to the source's value field: `"Section_Subsection.parameter.value"`.        |
-| `subscore_path` | The exact path to the source's subscore field. Use `"N/A"` if not applicable.              |
+The fields here are optional to enable flexibility. Use only the fields that are needed. 
+**Traceability Constraints:**
+- When a value is re-used from an internal reference, `value_path` MUST be present for traceability reasons.
+- Similarly, if a subscore is re-used from an internal source, `subscore_path` MUST be present for traceability reasons. 
+- If the subscore from an internal source is not re-used and directly calculated in the same block, then no path field (`subscore_path`) is needed.
+
+| Field           | Description                                                                                    |
+| :-------------- | :--------------------------------------------------------------------------------------------- |
+| `value_path`    | Path to the source value: `"Section_Subsection.parameter.value"`.                              |
+| `value`         | The literal parameter value extracted from `value_path`.                                       |
+| `subscore_path` | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                         |
+| `subscore`      | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated. |
 
 **Example:**
 ```json
-"display_glass_ref": {
-  "value_path": "1_3_display_glass_protection.glass_generation.value",
-  "subscore_path": "1_3_display_glass_protection.glass_generation.subscore"
-}
+"1_2_durability": {
+      // GUIDELINE: `ingress_protection_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ingress_protection_rating.value` string.
+      "ingress_protection_rating": {
+        "value": "IP68",
+        "source": "www.source.com",
+        "exact_extract": "Proof_extract",
+        "subscore": "N/A" // no score here, it will be calculated below from dust_protection_digit and water_protection_digit
+      },
+      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529.
+      "dust_protection_digit": {
+        "value_path": "1_2_durability.ingress_protection_rating.value",
+        "value": "Digit 6",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
+        //   • Digit 6    → 10.00
+        //   • Digit 5    → 8.00
+        //   • Digit 4    → 6.00
+        //   • Digit 3    → 4.00
+        //   • Digit 2    → 2.00
+        //   • Digit 0–1  → 0.00
+      },
+    },
 ```
 
 ### Type C: Architectural Mapping

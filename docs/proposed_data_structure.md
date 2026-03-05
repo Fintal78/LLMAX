@@ -162,9 +162,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
       "dust_protection_digit": {
+        "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 6",
-        "source": "1_2_durability.ingress_protection_rating.value",
-        "exact_extract": "6",
         "subscore": 10.00
         // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 6    → 10.00
@@ -175,9 +174,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Digit 0–1  → 0.00
       },
       "water_protection_digit": {
+        "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 8",
-        "source": "1_2_durability.ingress_protection_rating.value",
-        "exact_extract": "8",
         "subscore": 9.00
         // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 9    → 10.00
