@@ -2,7 +2,7 @@
 
 ## Purpose
 This document establishes **strict, methodic rules** for the JSON structure in `proposed_data_structure.md`.  
-**Goal:** Zero duplication, full traceability, and complete alignment with `scoring_rules.md`.
+**Goal:** Full traceability and complete alignment with `scoring_rules.md`.
 
 ---
 
@@ -83,18 +83,16 @@ Strict identification of the device to prevent ambiguity.
 
 ### 1.1 Core Principles
 
-1.  **Single Source of Truth:** Every raw data point exists in exactly one place.
-2.  **Traceability:** Every value must have a clear origin (External Source or Internal Reference).
-3.  **Neutrality:** All external data must include a verbatim extract as proof.
-4.  **Strict Field Compliance:** All fields listed for each Type are **mandatory**. No fields may be omitted or added.
-5.  **No Formulas in JSON:** All calculation logic resides strictly in scoring documentation.
-6.  **Valid and Accessible URLs:** All `source` links must be verified to work before committing data. **🚨 ZERO TOLERANCE: Providing broken, dead, or hallucinated URLs is strictly forbidden and breaks the entire architectural chain. ALWAYS VERIFY!**
-7.  **Searchable Exact Extracts:** The `exact_extract` must be found verbatim (Ctrl+F) on the source page.
+1.  **Traceability:** Every value must have a clear origin (External Source or Internal Reference).
+2.  **Neutrality:** All external data must include a verbatim extract as proof.
+3.  **Strict Field Compliance:** All fields listed for each Type are **mandatory**. No fields may be omitted or added unless explicitly allowed otherwise.
+4.  **Valid and Accessible URLs:** All `source` links must be verified to work before committing data. **🚨 ZERO TOLERANCE: Providing broken, dead, or hallucinated URLs is strictly forbidden and breaks the entire architectural chain. ALWAYS VERIFY!**
+5.  **Searchable Exact Extracts:** The `exact_extract` must be found verbatim (Ctrl+F) on the source page.
 
 ---
 
 ### 1.2 Data Verification & URL Integrity Pipeline
-To enforce Rule 6 and eliminate URL hallucinations or broken validation chains downstream, the following procedural loop is **mandatory** before any data is committed:
+To eliminate URL hallucinations or broken validation chains downstream, the following procedural loop is **mandatory** before any data is committed:
 
 > [!CAUTION]
 > ### 🚨 MANDATORY SCRIPT VERIFICATION (THE PYTHON BARRIER) 🚨
@@ -121,7 +119,7 @@ This hierarchy defines how the device is scored on its technical merits before a
 #### 1. Sections (Root Level)
 **Sections 1 to 10** → Represent major functional categories (e.g., `2_display`, `8_battery_and_charging`).
 - Align with `scoring_rules.md` chapters.
-- Contain either **non-scoring raw data** (placed at section root per Rule 1) or **Subsections** (scoring units, more details below).
+- Contain either **non-scoring raw data** (placed at section root per Rule 1 of Chapter 2. Placement Rules) or **Subsections** (scoring units, more details below).
 
 #### 2. Reference Tables (X.Y.0)
 **Definition:** Tables used solely to identify hardware components (e.g., `6_1_0_soc_reference`) so they can be referenced by multiple scoring subsections.
@@ -173,6 +171,9 @@ All scoring parameters must be broken down into specific identifier components (
 -   **Typing:** Leaf nodes must strictly adhere to the defined Types (Value + Source + Extract).
 
 **B. Scores (Output)**
+**Important Note on Formulas:**
+There is no need to repeat the source name "`scoring_rules.md`" in every inline comment. The entire data structure operates under the assumption that all formulas, tables, and rules referenced as "Section X.X" or "§X.X" are found in `scoring_rules.md`.
+
 The calculated result of the subsection's formula.
 The following rules define how the `scores` object is calculated, **bridging the technical inputs to the final ranking.**
 
@@ -259,7 +260,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
     }
   },
   "scores": {
-    "predicted": 6.5,
+    "predicted": 6.5,              // sum of all subscores
     "final": {
       "value": 6.83,               // Definitive score (Predicted x Booster multiplier of 1.05)
       "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
@@ -279,7 +280,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
 
 #### Booster Definition Schema
 
-Each booster is a standalone entry in the `11_reviews_and_performance_boosters` section. It provides the full evidence trail for the multiplier referenced in the subsection's `scores.final.booster` field.
+Each booster is a standalone entry in the `11_reviews_and_performance_boosters` section. It provides the full evidence trail for the multiplier referenced in the subsection's `scores.final.booster` field. Section "11. Reviews & Performance Boosters" of `scoring_rules.md` describes precisely the logic and requirements regarding Booster sections.
 
 **Schema Example:**
 
@@ -319,8 +320,8 @@ The following sections (2 and 3) detail how to structure the components within e
 *   **Action:**
     1.  **Primary:** Store raw data in the subsection where it is most directly measured.
     2.  **Secondary:** Reference it in other subsections using **Type B**.
-*   **Justification:** Enforces the "Single Source of Truth" (Core Rule 1). Prevents data discrepancies where a shared spec could be accidentally updated in one subsection but forgotten in another, leading to conflicting calculations.
-*   **Example:** Semiconductor node size is primarily extracted in `6_10_thermal_dissipation`, and referenced via Type B dependencies inside `8_1_battery_endurance` (and AI calculations) to calculate hardware efficiency.
+*   **Justification:** While raw values are duplicated across blocks for convenience, the **"Single Source of Truth"** is enforced via the mandatory path field in Type B references. This ensures full traceability to the primary data point and prevents administrative discrepancies by providing a clear map for systematic updates across all dependent subsections.
+*   **Example:** Semiconductor node size is primarily extracted in `6_10_thermal_dissipation`, and referenced via Type B dependencies inside `8_1_battery_endurance` to calculate hardware efficiency.
 
 ### Rule 4: Architectural Identifiers → X.Y.0 Tables (Exception)
 *   **Condition:** Hardware identifiers shared by multiple devices (e.g., SoC Model, GPU Model).
@@ -332,25 +333,34 @@ The following sections (2 and 3) detail how to structure the components within e
 
 ## 3. Field Structure Definitions (The "What")
 
-Every field must fall into one of these strict categories. **Formulas are forbidden.**
+Every field must fall into one of these strict categories.
 
 ### Type A: Raw External Data
 **Definition:** Hard facts scraped or extracted from an external source, paired with their evaluated mathematical constraint. The `value` field MUST be one of 5 strict data shapes: Continuous Numeric, Discrete Integer, Categorical String, String Array, or Pure Boolean. Artificial "logic" keys (e.g., `is_supported`) are strictly forbidden; the component key must be the name of the specification itself.
 
-| Field           | Description                                                                        |
-| :-------------- | :----------------------------------------------------------------------------------|
-| `value`         | The raw hardware specification (must match one of the 5 allowed Data Shapes).      |
-| `source`        | **MUST be a valid, accessible URL** to the exact page containing the data.         |
-| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                  |
-| `subscore`      | The evaluated 0-10 score. Use `"N/A"` if not applicable.                           |
+| Field           | Description                                                                                                         |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------ |
+| `value`         | The raw hardware specification (must match one of the 5 allowed Data Shapes).                                       |
+| `source`        | **MUST be a valid, accessible URL** to the exact page containing the data.                                          |
+| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                                                   |
+| `subscore`      | **[OPTIONAL]** The individual score mapped/calculated for this value. Omit if the parameter is not scored directly. |
 
-**Example:**
+**Example (Scored Value):**
 ```json
-"ram_capacity_gb": {
-  "value": 8,
-  "source": "https://www.gsmarena.com/samsung_galaxy_s24-12773.php",
-  "exact_extract": "Memory [...] Internal [...] 8GB RAM",
-  "subscore": 5.0
+"bluetooth_version": {
+  "value": 5.3,
+  "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+  "exact_extract": "Comms [...] Bluetooth 5.3, A2DP, LE",
+  "subscore": 4.5
+}
+```
+
+**Example (Unscored Intermediate Input):**
+```json
+"resolution_width_px": {
+  "value": 1440,
+  "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+  "exact_extract": "DISPLAY [...] Resolution [...] 1440 x 3120 pixels, 19.5:9 ratio"
 }
 ```
 #### Data Extraction & Fallback Directives
@@ -397,11 +407,11 @@ To prevent human or parser omission, every discrete scorable feature evaluated i
 **Definition:** A pointer to a value stored elsewhere (Rule 3).
 **Usage:** When a formula needs a parameter defined in another subsection.
 
-The fields here are optional to enable flexibility. Use only the fields that are needed. 
+In this particular case the fields are optional to enable flexibility. Use only the fields that are needed. 
 **Traceability Constraints:**
 - When a value is re-used from an internal reference, `value_path` MUST be present for traceability reasons.
 - Similarly, if a subscore is re-used from an internal source, `subscore_path` MUST be present for traceability reasons. 
-- If the subscore from an internal source is not re-used and directly calculated in the same block, then no path field (`subscore_path`) is needed.
+- If the subscore from an internal source is not re-used and the subscore is directly calculated in the block, then obviously no path field (`subscore_path`) is needed.
 
 | Field           | Description                                                                                    |
 | :-------------- | :--------------------------------------------------------------------------------------------- |
@@ -410,7 +420,7 @@ The fields here are optional to enable flexibility. Use only the fields that are
 | `subscore_path` | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                         |
 | `subscore`      | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated. |
 
-**Example:**
+**Example where the path `subscore_path` is not used:**
 ```json
 "1_2_durability": {
       // GUIDELINE: `ingress_protection_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ingress_protection_rating.value` string.
@@ -418,7 +428,6 @@ The fields here are optional to enable flexibility. Use only the fields that are
         "value": "IP68",
         "source": "www.source.com",
         "exact_extract": "Proof_extract",
-        "subscore": "N/A" // no score here, it will be calculated below from dust_protection_digit and water_protection_digit
       },
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529.
       "dust_protection_digit": {
@@ -437,7 +446,7 @@ The fields here are optional to enable flexibility. Use only the fields that are
 ```
 
 ### Type C: Architectural Mapping
-**Definition:** A derived constant or score determined by a hardware identifier (Rule 4).
+**Definition:** A derived constant or score determined by a hardware identifier.
 **Usage:** GPU Scores, Reference Frequencies.
 
 | Field         | Description                                                                                     |
@@ -453,9 +462,31 @@ The fields here are optional to enable flexibility. Use only the fields that are
   "identifier": "Adreno 750",
   "reference": "6_3_0_gpu_architecture_reference.gpu_model",
   "description": "Standard Graphics Score (SGS)",
-  "subscore": 10.0
+  "subscore": 10.00
 }
 ```
+
+### Type D: Lookup Tables (Helper Blocks)
+**Definition:** Static reference tables embedded in the JSON strictly to assist the scoring process. They are NOT scored themselves.
+**Usage:** When a data point requires matching a marketing name or technical specification against a predefined list of tiers to determine the correct canonical name and score (e.g., Display Panels, Audio Configurations).
+
+**Standardized Format:**
+All lookup tables MUST be suffixed with `_lookup` (e.g., `panel_type_lookup`) and follow this structure:
+```json
+"example_lookup": { // this is a lookup table, do not score here
+  "tier_key": {
+    "tier_name": "String to be copied to the target 'value' field (Alternative: 'presence' for binary/Yes-No lookups but ensure a lookup table is well suited and does not add unnecessary bloating)",
+    "score": 10.00, // Or "N/A" / descriptive string if not directly scored
+    "verification_rule": "Detailed, exhaustive explanation of what the scorer should look for in specs or reviews to select this tier. Abbreviations MUST be written in full words the FIRST time they are used in a data block (e.g., 'Liquid-Crystal Display' alongside 'LCD').",
+    "recognized_keywords": ["keyword 1", "keyword 2"] // [OPTIONAL] Specific terms to match against
+  }
+}
+```
+
+### Type E: Benchmarks
+Data structures for benchmark-derived scores follow specialized formats different from standard Predictor properties.
+
+**Example Structure:** See `"2_11_display_benchmark_final_scoring"` in `proposed_data_structure.md` for the canonical benchmark format.
 
 ---
 
@@ -465,21 +496,13 @@ To ensure the JSON data structure is entirely self-contained, every scoring subs
 
 Every subsection must contain the following "recipe":
 1.  **Subsection Goal:** An explanation at the very top of the subsection block detailing what the scoring goal is.
-2.  **Subscore Extraction:** For *every* component `subscore`, an explicit explanation of how it is mathematically obtained, no formula but with direct references to formulas from `scoring_rules.md` (or the exact conditions under which it evaluates to `"N/A"`).
-3.  **Final/Predicted Derivation:** For *each* `predicted_score` and `final_score`, a clear explanation of how they are calculated from the subscores above them.
-    *   **Crucial `final_score` Rule:** You must take into account whether the subsection can actually be impacted by a Booster OR a Benchmark/Nearest Neighbor method (they are mutually exclusive). The comment for `final_score` must ONLY mention the override method that specifically applies to that subsection. Generic boilerplate (e.g. "modified by Boosters or Benchmarks") is strictly forbidden if both do not logically apply.
-    *   **Final Score Object Structure:** The `final_score` (or just `final` in the context of `scores` wrapper) must be structured as a detailed object, and every field within it MUST be explicitly documented with inline comments according to this template:
-        ```json
-        "final": {
-          "value": 6.83,               // Definitive score
-          "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
-          "booster": "11.5",           // Section reference to the booster, or "No"
-          "confidence": "N/A"          // Confidence level, N/A for Predictor; High/Medium/Low for 2 Benchmarks
-        }
-        ```
-4.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity.
-5.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
-6.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
+2.  **Subscore Extraction:** For every `subscore` field included in the structure (noting it is optional for raw data), provide an explicit explanation of how it is derived, including the formula and its specific references from `scoring_rules.md` (or the exact conditions under which it evaluates to `"N/A"`).
+3.  **Predicted Score Logic:** For each `predicted_score` field, provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it.
+4.  **Final Score Compliance:** The `final_score` object MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template governs their logic (Booster application, clamping, etc.).
+    *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final_score` object to document which method was selected and why.
+5.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity, specifically handling fallback logic or edge cases.
+6.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
+7.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
     ```json
     "meta": {
       "schema_version": "5.1",
@@ -487,11 +510,11 @@ Every subsection must contain the following "recipe":
     }
     ```
     Leaving `last_updated` stale is a data integrity violation — it breaks the file's change-tracking guarantee.
-7.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
+8.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
     - **Intermediate calculation values** (e.g. correction ratios, normalisation factors, raw benchmark inputs): **4 decimal places** (e.g. `9.5478`, `1.0312`). This preserves enough precision so downstream calculations do not accumulate rounding errors.
     - **Scores** (`subscore`, `predicted_score`, `final_score.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
     - **Integers** (e.g. raw Megapixel (MP) counts, Hertz (Hz) values, pixel counts): store as plain integers with no decimal point (e.g. `200`, `120`).
-8.  **Handling Missing Data & Scoring Blockers**: 
+9.  **Handling Missing Data & Scoring Blockers**: 
     If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1):
     - **Value Entry**: Set the `value` field strictly to `"Not found"`. Do NOT use `null`, `0`, or empty strings. Set `source` and `exact_extract` fields to `"N/A"`.
     - **Scoring Resilience (Fallbacks & Benchmarks)**: A `"Not found"` value does NOT automatically mean the subsection is unscorable:

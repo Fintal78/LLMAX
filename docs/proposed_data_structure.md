@@ -35,7 +35,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-03"
+    "last_updated": "2026-03-06"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -153,19 +153,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "1_2_durability": {
-      // GUIDELINE: `ingress_protection_rating` stores the full human-readable IP (Ingress Protection) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ingress_protection_rating.value` string.
+      // GUIDELINE: `ingress_protection_rating` stores the full human-readable Ingress Protection (IP) composite string (e.g. "IP68") as declared by the manufacturer. It is not scored directly but the two individual digits extracted for scoring are `dust_protection_digit` and `water_protection_digit`, see below — always parse those from this `ingress_protection_rating.value` string.
       "ingress_protection_rating": {
         "value": "IP68",
         "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": "N/A" // no score here, it will be calculated below from dust_protection_digit and water_protection_digit
+        "exact_extract": "Proof pending"
       },
-      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
+      // SCORING GOAL: Scores dust and water resistance separately using the two digits of the Ingress Protection (IP) rating defined by International Electrotechnical Commission (IEC) standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
       "dust_protection_digit": {
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the first digit of the Ingress Protection (IP) rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 6    → 10.00
         //   • Digit 5    → 8.00
         //   • Digit 4    → 6.00
@@ -177,7 +176,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 8",
         "subscore": 9.00
-        // SCORING GUIDELINE: Look up the second digit of the IP rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the second digit of the Ingress Protection (IP) rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
         //   • Digit 9    → 10.00
         //   • Digit 8    → 9.00
         //   • Digit 7    → 8.00
@@ -205,7 +204,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "subscore": 10.00
         // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively for "value" with related scores:
         //   • Gorilla Glass Armor                  → 10.00
-        //   • Ceramic Shield (current gen)         → 9.50
+        //   • Ceramic Shield (current generation)  → 9.50
         //   • Gorilla Glass Victus 2               → 9.00
         //   • Gorilla Glass Victus or Victus+      → 8.00
         //   • Dragontrail Star or Dragontrail Pro  → 8.00
@@ -305,22 +304,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // Step 3: copy the matching "score" into panel_type.subscore.
       //
       // DECISION RULE — ambiguous labels:
-      //   Plain "OLED" or "AMOLED" with NO LTPO qualifier → default to "AMOLED or OLED" (8.0).
+      //   Plain "Organic Light-Emitting Diode (OLED)" or "Active Matrix Organic Light-Emitting Diode (AMOLED)" with NO Low-Temperature Polycrystalline Oxide (LTPO) qualifier → default to "AMOLED or OLED" (8.0).
       //   Assign "LTPO OLED" (9.00) ONLY when LTPO backplane OR a Tier-9 name below is confirmed.
       // ─────────────────────────────────────────────────────────────────────────────
-      "panel_type_lookup": {
+      "panel_type_lookup": { // this is a lookup table, do not score here
         "tier_10_tandem_oled": {
-          "canonical": "Tandem OLED",
+          "tier_name": "Tandem OLED",
           "score": 10.00,
-          "marketing_names": [
+          "verification_rule": "Specs explicitly state 'Tandem OLED' or 'Dual-Layer OLED'.",
+          "recognized_keywords": [
             "Tandem OLED",
             "Dual-Layer OLED"
           ]
         },
         "tier_9_ltpo_oled": {
-          "canonical": "LTPO OLED",
+          "tier_name": "LTPO OLED",
           "score": 9.00,
-          "marketing_names": [
+          "verification_rule": "Confirmed LTPO backplane OR any of the specific tier-9 pro marketing names.",
+          "recognized_keywords": [
             "Dynamic AMOLED 2X",
             "OLED ProMotion",
             "Super Retina XDR with ProMotion",
@@ -332,9 +333,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ]
         },
         "tier_8_amoled_or_oled": {
-          "canonical": "AMOLED or OLED",
+          "tier_name": "AMOLED or OLED",
           "score": 8.00,
-          "marketing_names": [
+          "verification_rule": "Standard OLED. Ambiguous 'OLED' or 'AMOLED' with NO LTPO qualifier default here.",
+          "recognized_keywords": [
             "Super AMOLED",
             "Dynamic AMOLED (without 2X suffix)",
             "AMOLED",
@@ -346,9 +348,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ]
         },
         "tier_6_ips_lcd": {
-          "canonical": "IPS LCD",
+          "tier_name": "IPS LCD",
           "score": 6.00,
-          "marketing_names": [
+          "verification_rule": "Standard In-Plane Switching (IPS) LCD panel.",
+          "recognized_keywords": [
             "Liquid Retina HD",
             "Liquid Retina",
             "Retina LCD",
@@ -359,9 +362,10 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ]
         },
         "tier_2_tft_or_pls_lcd": {
-          "canonical": "TFT or PLS LCD",
+          "tier_name": "TFT or PLS LCD",
           "score": 2.00,
-          "marketing_names": [
+          "verification_rule": "Budget-oriented LCD variants such as Plane-to-Line Switching (PLS) or Thin-Film Transistor (TFT) without an In-Plane Switching (IPS) qualifier. Note: If 'Twisted Nematic (TN)' is explicitly identified, it falls to Tier 0.",
+          "recognized_keywords": [
             "PLS TFT",
             "PLS",
             "TFT LCD",
@@ -369,10 +373,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ]
         },
         "tier_0_tn_lcd_or_legacy": {
-          "canonical": "TN LCD or Legacy",
+          "tier_name": "TN LCD or Legacy",
           "score": 0.00,
-          "marketing_names": [
-            "TFT (TN)",
+          "verification_rule": "Specifically identifies the use of legacy Twisted Nematic (TN) technology for the LCD.",
+          "recognized_keywords": [
+            "TN TFT",
             "Any explicitly TN-type label"
           ]
         }
@@ -383,13 +388,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
-        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above → copy the canonical string here and its score into subscore. Use the following terms exclusively for "value" with related scores:
-        //   • Tandem OLED        → 10.00
-        //   • LTPO OLED          → 9.00
-        //   • AMOLED or OLED     → 8.00
-        //   • IPS LCD            → 6.00
-        //   • TFT or PLS LCD     → 2.00
-        //   • TN LCD or Legacy   → 0.00
+        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above. 
+        // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
       },
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
@@ -402,7 +402,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "2_2_brightness": {
-      // SCORING GOAL: Scores peak and High Brightness Mode (HBM) brightness together, as HBM governs outdoor readability while peak brightness governs HDR (High Dynamic Range) media quality.
+      // SCORING GOAL: Scores peak and High Brightness Mode (HBM) brightness together, as HBM governs outdoor readability while peak brightness governs High Dynamic Range (HDR) media quality.
       "peak_nits": {
         "value": 2600,
         "source": "TBD",
@@ -428,7 +428,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "2_3_color_gamut_coverage": {
-      // SCORING GOAL: Scores how much of the DCI-P3 (Digital Cinema Initiatives P3) professional color space the display can reproduce. A wider gamut means richer, more saturated colors in photos, videos, and HDR content.
+      // SCORING GOAL: Scores how much of the Digital Cinema Initiatives (DCI-P3) professional color space the display can reproduce. A wider gamut means richer, more saturated colors in photos, videos, and High Dynamic Range (HDR) content.
       "dci_p3_percent": {
         "value": 100,
         "source": "TBD",
@@ -463,9 +463,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively for "value" with related scores:
         //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.00
         //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.00
-        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)         → 8.00
-        //   • Basic Static HDR (HDR10 only)                         → 6.00
-        //   • No HDR                                                → 0.00
+        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)          → 8.00
+        //   • Basic Static HDR (HDR10 only)                          → 6.00
+        //   • No HDR                                                 → 0.00
       },
       "predicted_score": 8.00,
       // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
@@ -480,16 +480,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "2_5_resolution_density": {
       // SCORING GOAL: Scores pixel density (Pixels Per Inch, PPI) as a measure of display sharpness. Higher PPI means text and images look crisp with no visible pixels.
       "resolution_width_px": {
-        // GUIDELINE: Horizontal pixel count of the display. Used for scoring ONLY when ppi is not available from any source.
+        // GUIDELINE: Horizontal pixel count of the display. Used for scoring ONLY when Pixels Per Inch (PPI) is not available from any source.
         "value": 1440,
         "source": "TBD",
-        "exact_extract": "Proof pending",
+        "exact_extract": "Proof pending"
       },
       "resolution_height_px": {
-        // GUIDELINE: Vertical pixel count of the display. Used for scoring ONLY when pixels_per_inch is not available from any source.
+        // GUIDELINE: Vertical pixel count of the display. Used for scoring ONLY when Pixels Per Inch (PPI) is not available from any source.
         "value": 3120,
         "source": "TBD",
-        "exact_extract": "Proof pending",
+        "exact_extract": "Proof pending"
       },
       "pixels_per_inch": {
         "value": 505,
@@ -497,7 +497,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "exact_extract": "Proof pending",
         "subscore": 8.43
         // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
-        // ONLY if pixels_per_inch is NOT available derive PPI: PPI = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
+        // ONLY if pixels_per_inch is NOT available derive PPI: pixels_per_inch = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
       "predicted_score": 8.43,
@@ -530,16 +530,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "2_7_touch_responsiveness": {
-      // SCORING GOAL: Scores touch sampling rate as a measure of how instantly the screen responds to finger input. Higher rates produce a "glued to your finger" feel, critical for gaming and UI fluidity.
-      "sampling_rate_hz": {
+      // SCORING GOAL: Scores touch sampling rate as a measure of how instantly the screen responds to finger input. Higher rates produce a "glued to your finger" feel, critical for gaming and User Interface (UI) fluidity.
+      "touch_sampling_rate_hz": {
         "value": 240,
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 5.00
-        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
+        "subscore": 5.00,
+        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
       "predicted_score": 5.00,
-      // SCORING GUIDELINE: predicted_score directly inherits sampling_rate_hz.subscore.
+      // SCORING GUIDELINE: predicted_score directly inherits touch_sampling_rate_hz.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 5.00,
@@ -588,50 +588,25 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "2_10_eye_comfort": {
-      // SCORING GOAL: Evaluates how the screen dims at low brightness levels to prevent eye strain and headaches. It scores either the perfect continuous light of Direct Current (DC) Dimming, or scales the Pulse-Width Modulation (PWM) frequency if flickering is present.
-
-      // ─────────────────────────────────────────────────────────────────────────────
-      // DIMMING TECHNOLOGY → VERIFICATION RULE LOOKUP (static reference — do not score from here)
-      // Source: Section 2.10.1 PWM Dimming (Flicker) Presence table.
-      //
-      // Step 1: Identify if the panel uses Pulse-Width Modulation (PWM) or Direct Current (DC) dimming.
-      // Step 2: Use the "presence" value (Yes/No) for flicker_presence.
-      // Step 3: Match with the corresponding technical details below.
-      // ─────────────────────────────────────────────────────────────────────────────
-      "dimming_technology_lookup": { // this is a lookup table, do not score here
-        "option_flicker_active": {
-          "presence": "Yes",
-          "technology": "PWM Dimming active",
-          "verification_rule": "Any OLED/AMOLED panel (inherent), or an LCD specifically tested to have PWM flicker.",
-          "score_impact": "Determined by frequency (Hz)"
-        },
-        "option_no_flicker": {
-          "presence": "No",
-          "technology": "DC (Direct Current)",
-          "verification_rule": "Standard LCD/IPS panel with confirmed DC (Direct Current) dimming (no measurable PWM flicker).",
-          "score_impact": 10.00
-        }
-      },
-      
+      // SCORING GOAL: Evaluates display flicker at low brightness levels to prevent eye strain and fatigue. Scores either the constant light of Direct Current (DC) Dimming (10.00) or a tiered penalty based on the Pulse-Width Modulation (PWM) frequency.
       "flicker_presence": {
         "value": "Yes",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": "N/A"
-        // SCORING GUIDELINE: Record if PWM flicker is present (Yes/No) based on the verification rules in dimming_technology_lookup above.
-        //   • If "No" (DC Dimming), subscore is 10.00.
-        //   • If "Yes" (PWM Dimming), subscore is "N/A" as the score is derived from frequency below.
+        // SCORING GUIDELINE: Record if PWM flicker is present (Yes/No).
+        //   • "No" (DC Dimming): Applies to Liquid-Crystal Display (LCD) or In-Plane Switching (IPS) panels utilizing standard DC dimming with zero measurable flicker. Subscore is 10.00.
+        //   • "Yes" (PWM Dimming): Applies to Organic Light-Emitting Diode (OLED) or Active Matrix Organic Light-Emitting Diode (AMOLED) panels using PWM for dimming, or any LCD confirmed to have measurable PWM flicker. Subscore is "N/A" (score will be derived from frequency, see below).
       },
       "pulse_width_modulation_dimming_hertz": {
         "value": 492,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 4.07
-        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", this subscore MUST be "N/A".
+        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", all fields MUST be "N/A".
       },
       "predicted_score": 4.07,
-      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pulse_width_modulation_dimming_hertz. 
-      // (If No-Flicker, inherits 10.00 from flicker_presence; if Flicker-Active, inherits frequency score from pulse_width_modulation_dimming_hertz).
+      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pulse_width_modulation_dimming_hertz.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 4.07,
@@ -753,28 +728,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // ─────────────────────────────────────────────────────────────────────────────
         "speaker_system_lookup": { // this is a lookup table, do not score here
           "balanced_stereo": {
-            "canonical": "Balanced / Symmetrical Stereo",
+            "tier_name": "Balanced / Symmetrical Stereo",
             "score": 10.00,
-            "definition": "Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.",
-            "justification": "A rare, hardware-intensive setup where both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability. Review explicitly states 'Symmetrical speakers' or 'Balanced stereo'."
+            "verification_rule": "Device features two identical or near-identical dedicated loudspeaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance. Both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability.Specs must explicitly state 'Symmetrical Speakers', 'Symmetrical Stereo', or 'Balanced Stereo'."
           },
           "standard_stereo": {
-            "canonical": "Standard Hybrid Stereo",
+            "tier_name": "Standard Hybrid Stereo",
             "score": 7.00,
-            "definition": "Can use the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer).",
-            "justification": "The smaller earpiece focuses on highs while the bottom driver handles mids/lows, creating a slight tonal imbalance compared to perfect symmetry. Spec sheet lists 'Stereo Speakers' without specific 'Symmetrical' confirmation."
+            "verification_rule": "Hardware configuration that utilizes the phone's earpiece as a secondary channel (tweeter) combined with a dedicated primary loudspeaker (woofer), creating a slight tonal imbalance compared to perfect symmetry. Typically listed as 'Stereo Speakers' without symmetry claims."
           },
           "mono_speaker": {
-            "canonical": "Mono Speaker",
+            "tier_name": "Mono Speaker",
             "score": 3.00,
-            "definition": "Single active loudspeaker, typically bottom-firing only.",
-            "justification": "Provides no spatial separation; all sound originates from a single point. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
+            "verification_rule": "The device features only a single active primary loudspeaker for audio output, providing no spatial separation or stereo effect. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
           },
           "no_speaker": {
-            "canonical": "No Usable Speaker",
+            "tier_name": "No Usable Speaker",
             "score": 0.00,
-            "definition": "No built-in loudspeaker; relies entirely on external audio.",
-            "justification": "Zero capability for independent audio output."
+            "verification_rule": "The device has no built-in loudspeaker capable of independent audio output."
           }
         },
 
@@ -783,7 +754,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-          // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above. Use the matching "canonical" string for "value" and its "score" for subscore.
+          // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above.
+          // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
           // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.00.
         },
         "predicted_score": 7.00,
@@ -797,7 +769,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "3_2_playback_audio_processing_immersion": {
-        // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
+        // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%). Source: Section 3.2 Playback Audio Processing & Immersion (PAPI).
         "audio_format_decode": {
           "value": "Dolby Atmos ONLY",
           "source": "TBD",
@@ -853,7 +825,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "3_4_microphone_audio_recording": {
-        // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%). Source: §3.4 Microphone & Audio Recording.
+        // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%). Source: Section 3.4 Microphone & Audio Recording (MAR).
         "microphone_hardware_count": {
           "value": "3",
           "source": "TBD",
@@ -904,9 +876,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "4_camera_systems": {
-      // GUIDELINE: Hardware inventory of all physical camera modules. Contains ONLY unscored reference data
-      // (Rule 1 — non-scoring data at section root). All scored parameters are stored in their respective
-      // scoring subsections and are NOT duplicated here.
+      // GUIDELINE: Hardware inventory of all physical camera modules. Contains ONLY unscored reference data, as non-scoring data must be placed at section root. All scored parameters are stored in their respective scoring subsections and are NOT duplicated here.
       // Each key under "rear_camera" / "front_camera" is the lens role (e.g., "main", "tele_5x"). All fields inside are unscored reference data.
       // MISSING DATA RULE: If a required specification cannot be verified (either because the feature is absent 
       // or the data is unavailable after an exhaustive research), set the "value" field strictly to "Not found or non existing" 
@@ -1093,32 +1063,32 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "tier_10_multi_axis_mechanical": {
             "tier_name": "Multi-Axis Mechanical Stabilization (Gimbal)",
             "score": 10.00,
-            "recognized_keywords": ["Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS (hardware)", "Gimbal 2.0", "Gimbal 3.0"],
-            "verification_rule": "Manufacturer explicitly names a multi-axis mechanical gimbal system. A simple 'OIS' label is NOT sufficient."
+            "verification_rule": "The manufacturer must explicitly name a multi-axis mechanical gimbal stabilization system. A standard 'Optical Image Stabilization (OIS)' label is not sufficient for this tier.",
+            "recognized_keywords": ["Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS (hardware)", "Gimbal 2.0", "Gimbal 3.0"]
           },
           "tier_9_sensor_shift": {
             "tier_name": "Sensor-Shift Optical Image Stabilization",
             "score": 9.00,
-            "recognized_keywords": ["Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS (In-Body Image Stabilization)", "Sensor-based OIS"],
-            "verification_rule": "Manufacturer explicitly states the sensor (not the lens) moves. Currently mostly used by Apple (iPhone 12 Pro Max+ / iPhone 13+)."
+            "verification_rule": "The manufacturer must explicitly identify the use of 'Sensor-Shift Optical Image Stabilization' or 'In-Body Image Stabilization (IBIS)'. It can not be lens based.",
+            "recognized_keywords": ["Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS (In-Body Image Stabilization)", "Sensor-based OIS"]
           },
           "tier_8_lens_based": {
             "tier_name": "Lens-Based Optical Image Stabilization",
             "score": 8.00,
-            "recognized_keywords": ["OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"],
-            "verification_rule": "Default tier for any unspecified 'OIS'. The majority of Android phones use lens-based mechanisms."
+            "verification_rule": "The default tier for any device that lists standard 'Optical Image Stabilization (OIS)' without further multi-axis or sensor-shift qualification.",
+            "recognized_keywords": ["OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"]
           },
           "tier_5_software_only": {
             "tier_name": "Software-Only Stabilization",
             "score": 5.00,
-            "recognized_keywords": ["EIS (Electronic Image Stabilization)", "Digital stabilization", "AIS (Artificial Image Stabilization)", "Software stabilization", "Video stabilization (without OIS mention)"],
-            "verification_rule": "No hardware Optical Image Stabilization is mentioned. Only software-based correction."
+            "verification_rule": "Identifies the absence of hardware stabilization. The device relies on software-based algorithms such as Electronic Image Stabilization (EIS) or Artificial Intelligence Stabilization (AIS).",
+            "recognized_keywords": ["EIS (Electronic Image Stabilization)", "Digital stabilization", "AIS (Artificial Image Stabilization)", "Software stabilization", "Video stabilization (without OIS mention)"]
           },
           "tier_0_none": {
             "tier_name": "None",
             "score": 0.00,
-            "recognized_keywords": [],
-            "verification_rule": "No stabilization terms found in spec sheet or review."
+            "verification_rule": "No image stabilization terms (hardware or software) are found in the official specification sheet or technical reviews.",
+            "recognized_keywords": []
           }
         },
 
@@ -1129,7 +1099,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the mechanism by matching spec sheet keywords against the stabilization_type_lookup above. 
           // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
-          // AMBIGUITY RULE: If the spec sheet says only "OIS" without further qualification, default to the "Lens-Based Optical Image Stabilization" tier.
+          // AMBIGUITY RULE: If the spec sheet says only "Optical Image Stabilization (OIS)" without further qualification, default to the "Lens-Based Optical Image Stabilization" tier.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1204,7 +1174,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "subscore": 10.00
             // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
             //   • Autofocus    → 10.00
-            //   • Fixed focus  → 3.00
+            //   • Fixed Focus  → 3.00
             //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be set to "N/A", and "subscore" MUST be 0.00.
           },
           "min_focus_distance_cm": {
@@ -1225,14 +1195,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           }
         },
         "4_7_2_telemacro_path": {
-          // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 cm away), preventing the phone from casting a shadow and delivering natural background blur.
+          // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 centimeters away), preventing the phone from casting a shadow and delivering natural background blur.
           "telemacro_presence": {
             "value": false,
             "source": "N/A",
             "exact_extract": "N/A",
             "subscore": 0.00
             // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no telemacro, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
-            // VERIFICATION RULE: Set to true only if specs explicitly confirm "Macro telephoto", "floating elements", or list a focus distance between 5 cm and 30 cm for a specific telephoto lens.
+            // VERIFICATION RULE: Set to true only if specifications explicitly confirm "Macro telephoto", "floating elements", or list a focus distance between 5 centimeters and 30 centimeters for a specific telephoto lens.
           },
           "telemacro_optical_x": {
             "value": "N/A",
@@ -1240,7 +1210,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "exact_extract": "N/A",
             "subscore": "N/A"
             // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
-            // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only mm focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
+            // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only millimeters focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
             // IMPORTANT: Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
             // CALCULATION: Zoom_Score = 10 × (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
             // If telemacro_presence = false, then all fields of this block must be "N/A".
@@ -1266,13 +1236,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           }
         },
         "4_7_3_dedicated_path": {
-          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/tele). Scores are capped at 3.00 to appropriately rank them below higher-quality macro implementations that use more capable primary or ultrawide sensors.
+          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/telephoto). Scores are capped at 3.00 to appropriately rank them below higher-quality macro implementations that use more capable primary or ultrawide sensors.
           "dedicated_macro_megapixels": {
             "value": 0,
             "source": "N/A",
             "exact_extract": "N/A",
             "subscore": 0.00
-            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the MP count linearly onto 0–3.0, where Camera_Dedicated_Macro_MP_Max scores 3.0. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
+            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.0, where Camera_Dedicated_Macro_MP_Max scores 3.0. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
           "predicted_score": 0.00,
           // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.

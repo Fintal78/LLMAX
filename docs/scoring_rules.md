@@ -857,7 +857,7 @@ To determine the correct tier, check the device's official specifications, marke
 | Score    | Focus Type                     | Spec Sheet Verification Rule                               |
 | :------- | :----------------------------- | :--------------------------------------------------------- |
 | **10.0** | **Ultrawide with Autofocus**   | Specs list "AF", "PDAF", or "Dual Pixel" for the Ultrawide |
-| **3.0**  | **Ultrawide with Fixed focus** | Specs list "FF" or omit AF features for the Ultrawide      |
+| **3.0**  | **Ultrawide with Fixed Focus** | Specs list "FF" or omit AF features for the Ultrawide      |
 
 > [!NOTE]
 > **Why 3.0 for Fixed Focus?** Data-driven calibration across 25 phones (see `macro_scoring_analysis.py`) showed that the original tier of 6.0 drastically overscored FF ultrawides. Fixed-focus macro is severely limited: the user must physically slide the phone back and forth to find the single focal plane, with no tap-to-focus, no subject tracking, and no compensation for hand shake. Expert review consensus consistently rates FF macro at 2.0–4.5, and a tier of 3.0 (combined with the MFD score) best fits this range.
