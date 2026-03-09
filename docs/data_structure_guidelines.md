@@ -468,14 +468,22 @@ In this particular case the fields are optional to enable flexibility. Use only 
 
 ### Type D: Lookup Tables (Helper Blocks)
 **Definition:** Static reference tables embedded in the JSON strictly to assist the scoring process. They are NOT scored themselves.
-**Usage:** When a data point requires matching a marketing name or technical specification against a predefined list of tiers to determine the correct canonical name and score (e.g., Display Panels, Audio Configurations).
+**Usage:** When a data point requires matching a marketing name or technical specification against a predefined list of tiers to determine the correct canonical name and score.
 
-**Standardized Format:**
-All lookup tables MUST be suffixed with `_lookup` (e.g., `panel_type_lookup`) and follow this structure:
+> [!WARNING]
+> ### 🚨 STRICT LIMITATION ON LOOKUP TABLES 🚨
+> Do **NOT** use lookup tables (Type D) unless absolutely necessary. 
+> 
+> **Rationale:** JSON lookup tables were designed for rigid regex parsing. For AI agents (LLMs), reading massive JSON arrays of keywords is highly inefficient and creates significant bloat. LLMs possess semantic understanding and can interpret direct inline guidelines much more effectively. Creating a 100-line lookup table wastes thousands of tokens per device evaluation and increases the risk of "pointer logic" errors.
+> 
+> **Best Practice:** Instead of a `_lookup` block, write a concise inline `SCORING GUIDELINE` comment directly within the relevant subscore node. Simply state the tier name, the required keyword context, and the score. Only use a lookup table if the mapping logic is so vast or non-semantic that an inline comment becomes unreadable.
+
+**Standardized Format (Only if strictly required):**
+All lookup tables MUST be suffixed with `_lookup` (e.g., `gpu_model_lookup`) and follow this structure:
 ```json
 "example_lookup": { // this is a lookup table, do not score here
   "tier_key": {
-    "tier_name": "String to be copied to the target 'value' field (Alternative: 'presence' for binary/Yes-No lookups but ensure a lookup table is well suited and does not add unnecessary bloating)",
+    "tier_name": "String to be copied to the target 'value' field.",
     "score": 10.00, // Or "N/A" / descriptive string if not directly scored
     "verification_rule": "Detailed, exhaustive explanation of what the scorer should look for in specs or reviews to select this tier. Abbreviations MUST be written in full words the FIRST time they are used in a data block (e.g., 'Liquid-Crystal Display' alongside 'LCD').",
     "recognized_keywords": ["keyword 1", "keyword 2"] // [OPTIONAL] Specific terms to match against
@@ -500,9 +508,13 @@ Every subsection must contain the following "recipe":
 3.  **Predicted Score Logic:** For each `predicted_score` field, provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it.
 4.  **Final Score Compliance:** The `final_score` object MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template governs their logic (Booster application, clamping, etc.).
     *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final_score` object to document which method was selected and why.
-5.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity, specifically handling fallback logic or edge cases.
-6.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
-7.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
+5.  **LLM Semantic Matching & Robust Aliasing:** When parsing spec sheets, the AI agent will use natural language semantic matching to identify the appropriate tier.
+    *   **Keyword Definition Standard:** Strings inside `recognized_keywords` arrays should be properly capitalized and human-readable (e.g., use `"Gorilla Glass Victus 2"`, `"Ceramic Shield"`). Do not overly strip symbols or lowercase everything.
+    *   **Precise Aliasing:** Provide several intuitive aliases per tier to help the LLM recognize valid notations (e.g., including `"Victus 2"` alongside `"Corning Gorilla Glass Victus 2"`).
+    *   **No Generic Overlaps:** Broad keywords that could trigger false positive matches across multiple tiers (e.g., `"Gorilla Glass"` alone) are strictly forbidden.
+6.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity, specifically handling fallback logic or edge cases.
+7.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
+8.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
     ```json
     "meta": {
       "schema_version": "5.1",
@@ -510,11 +522,11 @@ Every subsection must contain the following "recipe":
     }
     ```
     Leaving `last_updated` stale is a data integrity violation — it breaks the file's change-tracking guarantee.
-8.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
+9.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
     - **Intermediate calculation values** (e.g. correction ratios, normalisation factors, raw benchmark inputs): **4 decimal places** (e.g. `9.5478`, `1.0312`). This preserves enough precision so downstream calculations do not accumulate rounding errors.
     - **Scores** (`subscore`, `predicted_score`, `final_score.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
     - **Integers** (e.g. raw Megapixel (MP) counts, Hertz (Hz) values, pixel counts): store as plain integers with no decimal point (e.g. `200`, `120`).
-9.  **Handling Missing Data & Scoring Blockers**: 
+10. **Handling Missing Data & Scoring Blockers**: 
     If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1):
     - **Value Entry**: Set the `value` field strictly to `"Not found"`. Do NOT use `null`, `0`, or empty strings. Set `source` and `exact_extract` fields to `"N/A"`.
     - **Scoring Resilience (Fallbacks & Benchmarks)**: A `"Not found"` value does NOT automatically mean the subsection is unscorable:

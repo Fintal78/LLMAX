@@ -361,29 +361,36 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 ### 🔹 2.4 HDR Format Support (HFS)
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
 *   **Measurement:** Manufacturer specifications and Digital Rights Management (DRM) certification lists (e.g., Widevine L1 for HD/4K streaming from Netflix, Disney+).
-*   **Unit:** Supported Standards (Binary Features)
+*   **Unit:** Supported Standards (Additive Point-Based Score)
 *   **Significance:** Unlocks access to premium, studio-mastered content and ensures the display can render the full visual contrast and colour volume that the content creator intended.
 
-| Score    | Supported Formats                                             |
-| :------- | :------------------------------------------------------------ |
-| **10.0** | **Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)**     |
-| **9.0**  | **Primary Dynamic HDR (Dolby Vision + HDR10 only)**           |
-| **8.0**  | **Alternative Dynamic HDR (HDR10+ + HDR10 only)**             |
-| **6.0**  | **Basic Static HDR (HDR10 only)**                             |
-| **0.0**  | **No HDR formats**                                            |
+**Scoring Structure (Additive):**
+The HDR score is calculated by adding points for each supported format. A device can earn points across multiple formats, up to a maximum of 10.0.
+
+| Supported Format | Point Value |
+| :--------------- | :---------- |
+| **HDR10**        | **+ 5.0**   |
+| **Dolby Vision** | **+ 3.0**   |
+| **HDR10+**       | **+ 2.0**   |
+
+*Formula:* `Score = sum(points_for_detected_formats)` (Clamped 0–10)
 
 > [!NOTE]
-> **Understanding HDR Formats and the Tiered Scoring Rationale**
+> **Understanding HDR Formats and the Additive Scoring Rationale**
 >
-> Higher scores are awarded to devices that support dynamic metadata formats (which optimize brightness/color frame-by-frame) and have wide compatibility with premium streaming services.
+> Higher scores are awarded to devices that support dynamic metadata formats (which optimize brightness/color frame-by-frame) and have wide compatibility with premium streaming services. The additive scoring ensures each capability is accurately and independently rewarded.
 >
-> *   **Universal (10.0):** The device natively supports *both* competing dynamic standards (Dolby Vision and HDR10+). The user is guaranteed the best possible dynamic HDR stream (scene-by-scene optimization) regardless of their chosen streaming platform (Netflix, Apple TV, Amazon Prime).
-> *   **Primary (9.0):** The device supports **Dolby Vision**—the highest-tier licensed format featuring 12-bit color depth and end-to-end studio calibration. This is the dominant standard used by Netflix, Apple, and Disney+. Devices supporting only this (e.g., iPhone) get the best experience on most services, but fall back to basic static HDR10 on platforms like Amazon Prime, denying it a perfect 10.
-> *   **Alternative (8.0):** The device supports **HDR10+**—Samsung's royalty-free dynamic metadata standard. Devices supporting only this (e.g., Galaxy S24) get the best experience on Amazon Prime, but fall back to static HDR10 on Netflix, Apple TV, and Disney+. It scores lower than Dolby Vision due to its significantly smaller premium library.
-> *   **Static (6.0):** The device supports only **HDR10**, the baseline open standard. It uses *static metadata* (one brightness curve for the entire film). Every HDR-capable screen supports it, but lacking dynamic metadata means bright highlights may clip or dark shadows may crush.
+> *   **HDR10 (+5.0):** The baseline open standard. While technically the most "basic" format, it is awarded the highest point value (5.0) because it is the **universal foundation** of HDR content. It is the most broadly used standard; without it, the HDR experience is broken across almost all streaming and playback platforms. It represents the "Floor" of a modern premium experience.
+> *   **Dolby Vision (+3.0):** The highest-tier licensed dynamic format featuring 12-bit color depth and end-to-end studio calibration. This is the dominant standard used by Netflix, Apple TV, and Disney+. It carries a higher weight than HDR10+ because of its massive premium content library.
+> *   **HDR10+ (+2.0):** Samsung's royalty-free dynamic metadata standard. While functionally similar to Dolby Vision, it scores slightly lower due to its significantly smaller premium library (primarily Amazon Prime). 
+>
+> **Example Scores:**
+> *   *Universal (10.0):* Supports HDR10 (5.0) + Dolby Vision (3.0) + HDR10+ (2.0). Guaranteed best possible stream anywhere.
+> *   *Primary (8.0):* Supports HDR10 (5.0) + Dolby Vision (3.0). Gives the best experience on most services, but falls back to static HDR10 on Amazon Prime. (e.g., iPhone)
+> *   *Alternative (7.0):* Supports HDR10 (5.0) + HDR10+ (2.0). Best experience on Amazon Prime, but static HDR10 on Netflix/Disney+. (e.g., Galaxy S24)
 >
 > **Why Does HDR Format Matter if the OLED Screen is Already Good?**
-> A premium OLED screen *without* Dolby Vision will display HDR10 content using static tone-mapping, which frequently clips bright highlights or crushes dark shadows if the scene exceeds the panel's capabilities. The same content viewed on an identical OLED screen *with* Dolby Vision will render each shot perfectly tailored to the panel with its scene-specific brightness curve — the visual difference is clearly visible on high-contrast content like night scenes, fireworks, or sunsets.
+> A premium OLED screen *without* a dynamic format (Dolby Vision / HDR10+) will display content using static tone-mapping or a generic SDR fallback, which frequently clips bright highlights or crushes dark shadows if the scene exceeds the panel's capabilities. Dynamic metadata renders each shot perfectly tailored to the panel with its scene-specific brightness curve — the visual difference is clearly visible on high-contrast scenes like fireworks or sunsets.
 
 ### 🔹 2.5 Resolution Density
 *Description:* Pixel density (sharpness). Higher PPI means text and images look crisp, with no visible pixels.
@@ -539,7 +546,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 *   **Definition:** Two identical or near-identical dedicated speaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance.
 *   **Verification:** Review explicitly states "Symmetrical speakers" or "Balanced stereo".
 
-**2. Standard (Hybrid) Stereo (7.0 pts)**
+**2. Standard Hybrid Stereo (7.0 pts)**
 *   **Definition:** Uses the earpiece as a second channel (tweeter) combined with a dedicated bottom main driver (woofer). Common in most flagships.
 *   **Verification:** Spec sheet lists "Stereo Speakers" without specific "Symmetrical" confirmation.
 
@@ -569,29 +576,36 @@ PAPI is a weighted composite of two subsections:
 - **3.2.1 Audio Format Decode Support** — 50% weight
 - **3.2.2 Spatial Audio Rendering** — 50% weight
 
-*Formula:* `PAPI = (0.5 × Score_3.2.1) + (0.5 × Score_3.2.2)`
+**Predicted Score Formula:**
+`PAPI = (0.5 × Score_3.2.1) + (0.5 × Score_3.2.2)`
 
 #### 3.2.1 Audio Format Decode Support
 *What it measures:* The range of multichannel or object-based audio formats the device can natively decode.
 *Why it matters:* Determines compatibility with modern streaming and video content. A device that cannot decode these formats will downmix the audio to basic flat stereo, losing the spatial positioning intended by the director.
 
-| Score    | Supported Decode Formats             |
-| :------- | :----------------------------------- |
-| **10.0** | **Dolby Atmos AND DTS:X**            |
-| **8.0**  | **Dolby Atmos ONLY**                 |
-| **5.0**  | **Multichannel Surround (DD / DTS)** |
-| **0.0**  | **Stereo ONLY**                      |
+**Feature List (Additive Points, Clamped 0–10):**
+
+*   **3D Spatial Format**
+    *   **Dolby Atmos (+5.0):** The defacto standard for premium 3D spatial audio across 90% of commercial streaming services (Netflix, Apple TV+, etc.).
+    *   **DTS:X (+1.0):** An alternative object-based 3D spatial audio format. While less common on streaming, it is heavily utilized on Blu-ray rips and IMAX Enhanced digital content, ensuring comprehensive compatibility for local media enthusiasts.
+
+*   **Core Multichannel Format**
+    *   **Dolby Digital / Dolby Audio (+3.0):** The core multichannel format. Frequently utilized as the base layer for Dolby Atmos or as the standard 5.1/7.1 surround sound option.
+    *   **DTS / DTS-HD (+1.0):** The alternative core multichannel format.
+
+*Formula:* `Score = sum(points_for_supported_formats)` (Clamped 0–10)
+*   If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), score is **0.00**.
 
 > [!NOTE]
 > **Understanding Audio Formats**
 > *   **Object-Based Audio (Atmos / DTS:X):** Unlike traditional surround sound which assigns audio to specific speaker channels (e.g., "Left Rear speaker"), Atmos and DTS:X treat sounds as individual "objects" in 3D space. The phone's decoder dynamically maps these objects to however many speakers or headphones you are using, creating a much more convincing 3D soundscape.
-> *   **Multichannel Surround (DD / DTS):** Traditional 5.1 or 7.1 channel audio (Dolby Digital or standard DTS). It provides basic directional sound, but lacks the vertical height channels and precise object tracking of modern formats.
+> *   **Multichannel Surround (Dolby Digital / DTS):** Traditional 5.1 or 7.1 channel audio (Dolby Digital or standard DTS). It provides basic directional sound, but lacks the vertical height channels and precise object tracking of modern formats.
 > 
-> **Why is Dual Support (Atmos + DTS:X) a 10.0?**
-> While Dolby Atmos dominates major streaming platforms (Netflix, Apple TV+), DTS:X is heavily utilized on Blu-ray rips, high-end digital movie purchases (IMAX Enhanced), and certain local media ecosystems. A smartphone that supports *both* guarantees the user will never have to suffer a flat stereo downmix, regardless of where they source their movies.
->
-> **Why is Atmos alone an 8.0?**
-> Because Dolby Atmos is the defacto standard for 90% of commercial streaming, an "Atmos Only" phone will provide a premium 3D experience for the vast majority of users. It only loses 2 points for lacking the universal flexibility of a dual-format decoder during local/niche media playback.
+> **Why this point distribution?**
+> The weighting reflects the **real-world prevalence and immediate utility** of these formats for the average consumer, rather than subjective audio quality. 
+> *   **Dolby Ecosystem (8.0 total):** Dolby completely dominates the commercial streaming market. A user with Dolby Atmos and Dolby Digital support will enjoy premium spatial audio on almost every major app (Netflix, Disney+, Apple Music). This guarantees an excellent, friction-free experience for 95% of users.
+> *   **DTS Ecosystem (2.0 total):** While DTS:X offers comparable—and sometimes superior—bitrates and audio quality to Atmos, it is almost entirely absent from mainstream mobile streaming platforms. Its utility is restricted to extreme niche use cases: enthusiasts playing high-bitrate local Blu-ray rips or specific IMAX Enhanced app streams. 
+> Therefore, while a device supporting all four formats represents the absolute pinnacle of universal compatibility (10.0), a device lacking DTS support only loses a minor fraction of its score, correctly reflecting that the vast majority of consumers will never encounter a file that requires it.
 
 #### 3.2.2 Spatial Audio Rendering (Playback)
 *What it measures:* The ability of the operating system to actively virtualize and "spatialize" audio during playback, creating a 3D soundstage (usually over supported headphones or earbuds).
@@ -639,7 +653,8 @@ MAR is a weighted composite of three subsections:
 - **3.4.2 Recording Channels & Modes (RCM)** — 30% weight
 - **3.4.3 Advanced Capture Features (ACF)** — 40% weight
 
-*Formula:* `MAR = (0.30 × MHC) + (0.30 × RCM) + (0.40 × ACF)`
+**Predicted Score Formula:**
+`MAR = (0.3 × MHC) + (0.3 × RCM) + (0.4 × ACF)`
 
 #### 3.4.1 Microphone Hardware Count (MHC)
 *What it measures:* Physical microphones available for capture (bottom, top, rear, front).
@@ -674,7 +689,7 @@ MAR is a weighted composite of three subsections:
 *   **Voice Focus / Isolation (+2.5):** Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser").
 *   **Pro Mic Support (+2.5):** The device accepts an external microphone for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording. This is distinct from the three features above, which process the phone's built-in microphones.
 
-*Formula:* `ACF = 2.5 × number_of_features` (Clamped 0-10)
+*Formula:* `Score = sum(points_for_detected_features)` (Clamped 0–10)
 
 
 ## 🟣 4. Camera Systems
@@ -822,9 +837,9 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why Logarithmic?** Sensor area grows quadratically with diagonal size, but photographic benefits (dynamic range, noise) follow a diminishing return curve. Moving from a tiny 1/4" sensor to a 1/2.5" sensor is a massive leap in quality, while moving from 1/2" to 1/1.5" offers smaller relative gains for an ultrawide module.
 
-**Final Formula:**
-*   If Presence = No: `UCC = 0`
-*   If Presence = Yes: `UCC = (0.60 * FOV_Score) + (0.40 * Sensor_Score)`
+**Predicted Score Formula:**
+*   If Presence = No: `UCC = 0.00`
+*   If Presence = Yes: `UCC = (0.6 × FOV_Score) + (0.4 × Sensor_Score)`
 
 > [!NOTE]
 > **Why 60/40 (FOV/Sensor)?** The primary purpose of an ultrawide lens is to capture a wider scene, making Field of View (FOV) the dominant factor (60%). Additionally, the Presence Floor Rule (see top of document) can only be applied to the FOV component (where a shared metric exists across the binary gate), not to the sensor size component (where there is no equivalent lower-class value). Giving FOV a higher weight ensures that the floor correction propagates more strongly through the composite score, further rewarding phones that have an ultrawide — even one with a small sensor — over phones with no ultrawide at all. The remaining 40% for sensor size still accounts for low-light performance: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
@@ -875,8 +890,9 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why Logarithmic?** Magnification scales inversely with distance ($M \approx f/d$). Moving from 4cm to 2cm doubles the magnification capability (a massive gain in macro photography). Moving from 10cm to 8cm only increases magnification by ~25%. A logarithmic score flawlessly maps to this non-linear optical reality, heavily rewarding true microscopic lenses beneath 4cm.
 
+**Predicted Score Formula:** 
 *Formula for 4.7.1 Ultrawide Path:*
-*   If 4.5.1 Presence = No: `Score_4.7.1 = 0.0` *(No ultrawide means no ultrawide distance score)*
+*   If 4.5.1 Presence = No: `Score_4.7.1 = 0.00` *(No ultrawide means no ultrawide distance score)*
 *   If 4.5.1 Presence = Yes: `Score_4.7.1 = (0.4 * Score_4.7.1.1) + (0.6 * Score_4.7.1.2)`
 
 **4.7.2 Telemacro (Telephoto Macro)**
@@ -909,8 +925,8 @@ To determine the correct tier, check the device's official specifications, marke
     *   **Important:** A shorter Telemacro MFD is better — it means the telephoto can focus closer, producing higher magnification macro shots.
 
 *Formula:* 
-*   If Presence = No: `Score_4.7.2 = 0`
-*   If Presence = Yes: `Score_4.7.2 = 7.0 + 0.3 × (0.70 × Zoom_Score + 0.30 × MFD_Score)`
+*   If Presence = No: `Score_4.7.2 = 0.00`
+*   If Presence = Yes: `Score_4.7.2 = 7.0 + 0.3 × (0.7 × Zoom_Score + 0.3 × MFD_Score)`
     *   `Zoom_Score` = `10 × (log(Magnification_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min))` — Clamped 0–10
     *   `MFD_Score`  = `10 × (log(Camera_Telemacro_MFD_cm_Max) − log(Telemacro_MFD_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min))` — Clamped 0–10 *(inverted: shorter distance = higher score)*
     *   **Max Score (10.0):** Achieved when the telephoto has the highest zoom (Magnification_x ≥ Camera_Telemacro_x_Max) **and** the closest focus (Telemacro_MFD_cm ≤ Camera_Telemacro_MFD_cm_Min). Both sub-scores hit 10.0, giving 7.0 + 3.0 = 10.0.
@@ -1307,7 +1323,7 @@ This table provides the authoritative CPU core architecture scores used througho
 ### 🔹 6.1 CPU Multi-Core Performance (Sustained Outcome)
 *Description:* Measures actual delivered CPU performance in standardized workloads, ensuring the device can handle heavy multitasking and sustained processing.
 *   **Measurement:** Geekbench 6 Multi-Core Score.
-*   **Unit:** Points
+*   **Unit:** Points (0–10)
 *   **Significance:** Primary indicator of sustained CPU workloads, gaming physics, and background multitasking.
 
 #### Method A: Benchmark (Primary)
@@ -1376,7 +1392,7 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
 *Description:* Measures the responsiveness of the CPU for immediate tasks like app launching, web browsing, and UI navigation. This isolates architectural efficiency and single-thread speed.
 *   **Measurement:** Geekbench 6 Single-Core Score.
-*   **Unit:** Points
+*   **Unit:** Points (0–10)
 *   **Significance:** Determines the "snappiness" of the UI and speed of light tasks.
 
 > [!TIP]

@@ -123,7 +123,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively for "value" with related scores as subscore:
         //   • Titanium Alloy       → 10.00
         //   • Stainless Steel      → 8.50
         //   • Aluminum Alloy       → 7.00
@@ -135,7 +135,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
-        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively for "value" with related scores as subscore:
         //   • Ceramic              → 10.00
         //   • Strengthened Glass   → 8.00
         //   • Standard Glass       → 6.00
@@ -164,7 +164,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the Ingress Protection (IP) rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the first digit of the Ingress Protection (IP) rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores as subscore:
         //   • Digit 6    → 10.00
         //   • Digit 5    → 8.00
         //   • Digit 4    → 6.00
@@ -176,7 +176,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 8",
         "subscore": 9.00
-        // SCORING GUIDELINE: Look up the second digit of the Ingress Protection (IP) rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the second digit of the Ingress Protection (IP) rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores as subscore:
         //   • Digit 9    → 10.00
         //   • Digit 8    → 9.00
         //   • Digit 7    → 8.00
@@ -196,26 +196,24 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       }
     },
     "1_3_glass_protection": {
-      // SCORING GOAL: Scores the protective glass type on the display, known as Display Glass Protection (DGP), based on the manufacturer-declared glass generation's certified drop and scratch resistance class.
+      // SCORING GOAL: Scores the protective glass type on the display, known as Display Glass Protection (DGP), based on the manufacturer-declared glass generation's certified drop and scratch resistance class. Source: Section 1.3 Display Glass Protection table.
       "glass_generation": {
         "value": "Gorilla Glass Armor",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the declared glass type in the Section 1.3 table. Use the following terms exclusively for "value" with related scores:
-        //   • Gorilla Glass Armor                  → 10.00
-        //   • Ceramic Shield (current generation)  → 9.50
-        //   • Gorilla Glass Victus 2               → 9.00
-        //   • Gorilla Glass Victus or Victus+      → 8.00
-        //   • Dragontrail Star or Dragontrail Pro  → 8.00
-        //   • Gorilla Glass 5 or 6                 → 7.00
-        //   • Dragontrail X                        → 7.00
-        //   • Gorilla Glass 3                      → 5.00
-        //   • Panda Glass                          → 5.00
-        //   • Dragontrail (standard)               → 5.00
-        //   • Tempered Glass                       → 3.00
-        //   • Glass (Unspecified)                  → 2.00
-        //   • Plastic or No Glass                  → 0.00
+        // SCORING GUIDELINE: Identify the declared glass type. Use the following exact terms for "value" with related scores as subscore:
+        //   • "Gorilla Glass Armor"                                       → 10.00
+        //   • "Ceramic Shield (current gen)"                              → 9.50
+        //   • "Gorilla Glass Victus 2"                                    → 9.00
+        //   • "Gorilla Glass Victus or Victus+"                           → 8.00
+        //   • "Dragontrail Star or Dragontrail Pro"                       → 8.00
+        //   • "Gorilla Glass 5 or 6"                                      → 7.00
+        //   • "Dragontrail X"                                             → 7.00
+        //   • "Gorilla Glass 3 / Panda Glass / Dragontrail (standard)"    → 5.00
+        //   • "Tempered Glass"                                            → 3.00 (Strengthened / Reinforced glass)
+        //   • "Glass (Unspecified)"                                       → 2.00 (Generic 'Glass front')
+        //   • "Plastic or No Glass"                                       → 0.00 (Polymer)
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
@@ -293,103 +291,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "exact_extract": "Proof pending"
     },
     "2_1_panel_architecture": {
-      // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour.
-
-      // ─────────────────────────────────────────────────────────────────────────────
-      // MARKETING NAME → CANONICAL TIER LOOKUP  (static reference — do not score from here)
-      // Source: Marketing Name → Canonical Tier Lookup from Section 2.1 Display Panel Architecture (DPA)
-      //
-      // Step 1: find the spec-sheet label of the phone under test in the lists below.
-      // Step 2: use the matching "canonical" string as panel_type.value.
-      // Step 3: copy the matching "score" into panel_type.subscore.
-      //
-      // DECISION RULE — ambiguous labels:
-      //   Plain "Organic Light-Emitting Diode (OLED)" or "Active Matrix Organic Light-Emitting Diode (AMOLED)" with NO Low-Temperature Polycrystalline Oxide (LTPO) qualifier → default to "AMOLED or OLED" (8.0).
-      //   Assign "LTPO OLED" (9.00) ONLY when LTPO backplane OR a Tier-9 name below is confirmed.
-      // ─────────────────────────────────────────────────────────────────────────────
-      "panel_type_lookup": { // this is a lookup table, do not score here
-        "tier_10_tandem_oled": {
-          "tier_name": "Tandem OLED",
-          "score": 10.00,
-          "verification_rule": "Specs explicitly state 'Tandem OLED' or 'Dual-Layer OLED'.",
-          "recognized_keywords": [
-            "Tandem OLED",
-            "Dual-Layer OLED"
-          ]
-        },
-        "tier_9_ltpo_oled": {
-          "tier_name": "LTPO OLED",
-          "score": 9.00,
-          "verification_rule": "Confirmed LTPO backplane OR any of the specific tier-9 pro marketing names.",
-          "recognized_keywords": [
-            "Dynamic AMOLED 2X",
-            "OLED ProMotion",
-            "Super Retina XDR with ProMotion",
-            "Super Retina XDR ProMotion",
-            "ProMotion (combined with any OLED label)",
-            "ProXDR Display",
-            "LTPO OLED",
-            "LTPO4 / LTPO 4.0"
-          ]
-        },
-        "tier_8_amoled_or_oled": {
-          "tier_name": "AMOLED or OLED",
-          "score": 8.00,
-          "verification_rule": "Standard OLED. Ambiguous 'OLED' or 'AMOLED' with NO LTPO qualifier default here.",
-          "recognized_keywords": [
-            "Super AMOLED",
-            "Dynamic AMOLED (without 2X suffix)",
-            "AMOLED",
-            "Super Retina XDR (without ProMotion)",
-            "Super Retina HD",
-            "P-OLED / pOLED",
-            "Flexible OLED",
-            "OLED (no LTPO qualifier — see decision rule above)"
-          ]
-        },
-        "tier_6_ips_lcd": {
-          "tier_name": "IPS LCD",
-          "score": 6.00,
-          "verification_rule": "Standard In-Plane Switching (IPS) LCD panel.",
-          "recognized_keywords": [
-            "Liquid Retina HD",
-            "Liquid Retina",
-            "Retina LCD",
-            "Retina HD",
-            "IPS LCD",
-            "IPS NEO",
-            "In-Cell Touch IPS"
-          ]
-        },
-        "tier_2_tft_or_pls_lcd": {
-          "tier_name": "TFT or PLS LCD",
-          "score": 2.00,
-          "verification_rule": "Budget-oriented LCD variants such as Plane-to-Line Switching (PLS) or Thin-Film Transistor (TFT) without an In-Plane Switching (IPS) qualifier. Note: If 'Twisted Nematic (TN)' is explicitly identified, it falls to Tier 0.",
-          "recognized_keywords": [
-            "PLS TFT",
-            "PLS",
-            "TFT LCD",
-            "TFT (no IPS qualifier)"
-          ]
-        },
-        "tier_0_tn_lcd_or_legacy": {
-          "tier_name": "TN LCD or Legacy",
-          "score": 0.00,
-          "verification_rule": "Specifically identifies the use of legacy Twisted Nematic (TN) technology for the LCD.",
-          "recognized_keywords": [
-            "TN TFT",
-            "Any explicitly TN-type label"
-          ]
-        }
-      },
-
+      // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour. Source: Section 2.1 Display Panel Architecture.
       "panel_type": {
         "value": "LTPO OLED",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
-        // SCORING GUIDELINE: Find the spec-sheet label in panel_type_lookup above. 
-        // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
+        // SCORING GUIDELINE: Identify the panel type. Use the following exact terms for "value" with related scores as subscore (Note: terms indicated AFTER the scores are alternative marketing names, i.e. "Dual-Layer OLED" can be found in spec sheets as an equivalent to "Tandem OLED"):
+        //   • "Tandem OLED"      → 10.00 (Dual-Layer OLED)
+        //   • "LTPO OLED"        → 9.00  (LTPO backplane, OLED ProMotion, Super Retina XDR ProMotion, Dynamic AMOLED 2X, ProXDR, LTPO4)
+        //   • "AMOLED or OLED"   → 8.00  (Super AMOLED, Dynamic AMOLED" (without "2X"), P-OLED, Super Retina XDR/HD (without ProMotion))
+        //   • "IPS LCD"          → 6.00  (Liquid Retina, Retina LCD/HD, IPS LCD/NEO)
+        //   • "TFT or PLS LCD"   → 2.00  
+        //   • "TN LCD or Legacy" → 0.00  (Twisted Nematic)
+        // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "AMOLED or OLED" (8.00).
+        // In case of doubt consult #### Marketing Name → Canonical Tier Lookup
       },
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
@@ -455,23 +371,26 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "2_4_hdr_format_support": {
       // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the display officially supports. Dynamic HDR formats optimize brightness and colour frame-by-frame, unlocking the full quality of premium streaming content.
-      "formats": {
-        "value": "Alternative Dynamic HDR (HDR10+ + HDR10 only)",
+      "supported_formats": {
+        "value": [
+          "HDR10+",
+          "HDR10"
+        ],
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
-        // SCORING GUIDELINE: Identify the highest-tier format combination supported and look it up in the Section 2.4 table. Use the following terms exclusively for "value" with related scores:
-        //   • Universal Dynamic HDR (Dolby Vision + HDR10+ + HDR10)  → 10.00
-        //   • Primary Dynamic HDR (Dolby Vision + HDR10 only)        → 9.00
-        //   • Alternative Dynamic HDR (HDR10+ + HDR10 only)          → 8.00
-        //   • Basic Static HDR (HDR10 only)                          → 6.00
-        //   • No HDR                                                 → 0.00
+        // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. For each supported format, use the exact term below for the "value" array:
+        //   • "Dolby Vision"  → adds +3.00 to the subscore
+        //   • "HDR10+"        → adds +2.00 to the subscore
+        //   • "HDR10"         → adds +5.00 to the subscore
+        // The subscore is the sum of these points (Clamped 0–10). Example: ["HDR10+", "HDR10"] = 5.00 + 2.00 = 7.00.
+        // If the device does not list support for any High Dynamic Range formats (or explicitly only supports SDR), leave the array empty [] and set subscore to 0.00.
       },
-      "predicted_score": 8.00,
-      // SCORING GUIDELINE: predicted_score directly inherits formats.subscore.
+      "predicted_score": 7.00,
+      // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.00,
+        "value": 7.00,
         "method_used": "Predictor",
         "booster": "No",
         "confidence": "N/A"
@@ -716,47 +635,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     },
     "3_audio": {
       "3_1_speaker_system_capability": {
-        // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
-
-        // ─────────────────────────────────────────────────────────────────────────────
-        // SPEAKER CONFIGURATION → CANONICAL TIER LOOKUP (static reference — do not score from here)
-        // Source: Section 3.1 Speaker System Capability (SSC) tiers and Explanation of Tiers.
-        //
-        // Step 1: Identify the device's physical speaker setup (count and placement) from spec sheets or teardowns.
-        // Step 2: Match the setup to the matching "canonical" string as speaker_configuration.value.
-        // Step 3: Copy the matching "score" into speaker_configuration.subscore.
-        // ─────────────────────────────────────────────────────────────────────────────
-        "speaker_system_lookup": { // this is a lookup table, do not score here
-          "balanced_stereo": {
-            "tier_name": "Balanced / Symmetrical Stereo",
-            "score": 10.00,
-            "verification_rule": "Device features two identical or near-identical dedicated loudspeaker units (e.g., dual front-facing or matching top/bottom drivers) providing equal volume and tonal balance. Both left/right drivers are physically identical, guaranteeing superior stereo imaging and center-channel stability.Specs must explicitly state 'Symmetrical Speakers', 'Symmetrical Stereo', or 'Balanced Stereo'."
-          },
-          "standard_stereo": {
-            "tier_name": "Standard Hybrid Stereo",
-            "score": 7.00,
-            "verification_rule": "Hardware configuration that utilizes the phone's earpiece as a secondary channel (tweeter) combined with a dedicated primary loudspeaker (woofer), creating a slight tonal imbalance compared to perfect symmetry. Typically listed as 'Stereo Speakers' without symmetry claims."
-          },
-          "mono_speaker": {
-            "tier_name": "Mono Speaker",
-            "score": 3.00,
-            "verification_rule": "The device features only a single active primary loudspeaker for audio output, providing no spatial separation or stereo effect. Spec sheet lists 'Loudspeaker' (singular) or reviews confirm lack of stereo effect."
-          },
-          "no_speaker": {
-            "tier_name": "No Usable Speaker",
-            "score": 0.00,
-            "verification_rule": "The device has no built-in loudspeaker capable of independent audio output."
-          }
-        },
-
+        // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry. Source: Section 3.1 Speaker System Capability.
         "speaker_configuration": {
           "value": "Standard Hybrid Stereo",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-          // SCORING GUIDELINE: Look up the configuration in the speaker_system_lookup above.
-          // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
-          // Note: Verify via spec sheet or a review that explicitly states symmetry for 10.00.
+          // SCORING GUIDELINE: Identify the physical speaker setup using spec sheets or teardowns. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Balanced / Symmetrical Stereo" → 10.00 (Must explicitly state "Symmetrical speakers" or "Balanced stereo")
+          //   • "Standard Hybrid Stereo"        → 7.00  (Typically listed as 'Stereo Speakers' without symmetry claims)
+          //   • "Mono Speaker"                  → 3.00  (Single active loudspeaker)
+          //   • "No Usable Speaker"             → 0.00
         },
         "predicted_score": 7.00,
         // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
@@ -771,28 +660,33 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "3_2_playback_audio_processing_immersion": {
         // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%). Source: Section 3.2 Playback Audio Processing & Immersion (PAPI).
         "audio_format_decode": {
-          "value": "Dolby Atmos ONLY",
+          "value": [
+            "Dolby Atmos",
+            "Dolby Digital / Dolby Audio"
+          ],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest-tier supported format capability. Use the following terms exclusively for "value" with related scores:
-          //   • Dolby Atmos AND DTS:X                          → 10.00
-          //   • Dolby Atmos ONLY                               → 8.00
-          //   • Multichannel Surround (Dolby Digital / DTS)    → 5.00
-          //   • Stereo ONLY                                    → 0.00
+          // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
+          //   • "Dolby Atmos"                 → adds +5.00 to the subscore
+          //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
+          //   • "DTS:X"                       → adds +1.00 to the subscore
+          //   • "DTS / DTS-HD"                → adds +1.00 to the subscore
+          // The subscore is the sum of these points (Clamped 0–10). Example: ["Dolby Atmos", "Dolby Digital / Dolby Audio"] = 5.00 + 3.00 = 8.00.
+          // If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), leave the array empty [] and set subscore to 0.00.
         },
         "spatial_audio_rendering": {
           "value": "Static spatial audio (no head tracking)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores:
-          //   • Spatial audio with Dynamic Head Tracking      → 10.00
-          //   • Static spatial audio (no head tracking)       → 7.00
-          //   • No spatial rendering                          → 0.00
+          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores as subscore:
+          //   • "Spatial audio with Dynamic Head Tracking"      → 10.00
+          //   • "Static spatial audio (no head tracking)"       → 7.00
+          //   • "No spatial rendering"                          → 0.00
         },
         "predicted_score": 7.50,
-        // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore). Both sub-criteria are equally weighted per the PAPI formula in Section 3.2.
+        // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 7.50,
@@ -808,11 +702,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following terms exclusively for "value" with related scores:
-          //   • 3.5mm headphone jack (native analog output)   → 10.00
-          //   • USB-C with documented analog audio output     → 6.00
-          //   • USB-C digital audio only (dongle required)    → 3.00
-          //   • No wired audio support                        → 0.00
+          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "3.5mm headphone jack (native analog output)"  → 10.00
+          //   • "USB-C with documented analog audio output"    → 6.00
+          //   • "USB-C digital audio only (dongle required)"   → 3.00
+          //   • "No wired audio support"                       → 0.00
         },
         "predicted_score": 3.00,
         // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
@@ -831,7 +725,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores:
+          // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores as subscore:
           //   • ≥4 microphones   → 10.00
           //   • 3                → 8.00
           //   • 2                → 5.00
@@ -843,7 +737,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores:
+          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores as subscore:
           //   • Multi-channel / spatial audio   → 10.00
           //   • Stereo                          → 8.00
           //   • Mono                            → 5.00
@@ -1049,57 +943,19 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_4_image_stabilization": {
-        // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture.
-
-        // ─────────────────────────────────────────────────────────────────────────────
-        // STABILIZATION TYPE → TIER LOOKUP (static reference — do not score from here)
-        // Source: Section 4.4 — Spec Sheet Keyword → Tier Lookup table.
-        //
-        // Step 1: Identify which stabilization keywords appear in the device's spec sheet.
-        // Step 2: Match with the highest-applicable tier below.
-        // Step 3: Use the corresponding "tier_name" value for stabilization_type.value.
-        // ─────────────────────────────────────────────────────────────────────────────
-        "stabilization_type_lookup": {  // this is a lookup table, do not score here
-          "tier_10_multi_axis_mechanical": {
-            "tier_name": "Multi-Axis Mechanical Stabilization (Gimbal)",
-            "score": 10.00,
-            "verification_rule": "The manufacturer must explicitly name a multi-axis mechanical gimbal stabilization system. A standard 'Optical Image Stabilization (OIS)' label is not sufficient for this tier.",
-            "recognized_keywords": ["Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS (hardware)", "Gimbal 2.0", "Gimbal 3.0"]
-          },
-          "tier_9_sensor_shift": {
-            "tier_name": "Sensor-Shift Optical Image Stabilization",
-            "score": 9.00,
-            "verification_rule": "The manufacturer must explicitly identify the use of 'Sensor-Shift Optical Image Stabilization' or 'In-Body Image Stabilization (IBIS)'. It can not be lens based.",
-            "recognized_keywords": ["Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS (In-Body Image Stabilization)", "Sensor-based OIS"]
-          },
-          "tier_8_lens_based": {
-            "tier_name": "Lens-Based Optical Image Stabilization",
-            "score": 8.00,
-            "verification_rule": "The default tier for any device that lists standard 'Optical Image Stabilization (OIS)' without further multi-axis or sensor-shift qualification.",
-            "recognized_keywords": ["OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"]
-          },
-          "tier_5_software_only": {
-            "tier_name": "Software-Only Stabilization",
-            "score": 5.00,
-            "verification_rule": "Identifies the absence of hardware stabilization. The device relies on software-based algorithms such as Electronic Image Stabilization (EIS) or Artificial Intelligence Stabilization (AIS).",
-            "recognized_keywords": ["EIS (Electronic Image Stabilization)", "Digital stabilization", "AIS (Artificial Image Stabilization)", "Software stabilization", "Video stabilization (without OIS mention)"]
-          },
-          "tier_0_none": {
-            "tier_name": "None",
-            "score": 0.00,
-            "verification_rule": "No image stabilization terms (hardware or software) are found in the official specification sheet or technical reviews.",
-            "recognized_keywords": []
-          }
-        },
-
+        // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture. Source: Section 4.4 Image Stabilization.
         "stabilization_type": {
           "value": "Lens-Based Optical Image Stabilization",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the mechanism by matching spec sheet keywords against the stabilization_type_lookup above. 
-          // Set "value" to the matching tier's exact tier_name and "subscore" to that tier's score.
-          // AMBIGUITY RULE: If the spec sheet says only "Optical Image Stabilization (OIS)" without further qualification, default to the "Lens-Based Optical Image Stabilization" tier.
+          // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00 (Must contain Multi-axis mechanical and/or Gimbal)
+          //   • "Sensor-Shift Optical Image Stabilization"              → 9.00  (Must explicitly state the sensor moves, e.g. IBIS)
+          //   • "Lens-Based Optical Image Stabilization"                → 8.00  (Default for generic "OIS")
+          //   • "Software-Only Stabilization (Electronic, no hardware)" → 5.00  (EIS/AIS only. No physical/hardware stabilization is mentioned.)
+          //   • "None"                                                  → 0.00
+          // AMBIGUITY RULE: If the spec sheet lists generic "Optical Image Stabilization (OIS)" without further qualification, default to 8.00.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1172,7 +1028,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores:
+            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores as subscore:
             //   • Autofocus    → 10.00
             //   • Fixed Focus  → 3.00
             //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be set to "N/A", and "subscore" MUST be 0.00.
@@ -1242,7 +1098,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "source": "N/A",
             "exact_extract": "N/A",
             "subscore": 0.00
-            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.0, where Camera_Dedicated_Macro_MP_Max scores 3.0. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
+            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
           "predicted_score": 0.00,
           // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
@@ -1269,7 +1125,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores:
+        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores as subscore:
         //   • ≥ 4K Ultra HD (incl. 8K)   → 10.00
         //   • 1440p / QHD (2.5K)         → 8.00
         //   • 1080p Full HD              → 6.00
