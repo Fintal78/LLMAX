@@ -79,10 +79,10 @@
 *   `Camera_Dedicated_Macro_MP_Max` = 8
 
 ### 4.9 Rear Video Frame Rate
-*   `Camera_Video_FPS_Min` = 5 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)
+*   `Camera_Video_FPS_Min` = 24 (Score 0), `Camera_Video_FPS_Max` = 120 (Score 10)
 
 ### 4.12 High Frame Rate (Slow Motion)
-*   `Camera_SlowMo_MPs_Min` = 32 (Score 0), `Camera_SlowMo_MPs_Max` = 1000 (Score 10)
+*   `Camera_SlowMo_MPs_Min` = 32 (Score 0), `Camera_SlowMo_MPs_Max` = 4000 (Score 10)
 
 ### 4.13 Front Camera Sensor Resolution
 *   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)

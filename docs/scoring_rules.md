@@ -971,9 +971,9 @@ To determine the correct tier, check the device's official specifications, marke
 > **Why is 8K not a separate tier above 4K?** 8K video (7680×4320) on smartphones (e.g., Samsung Galaxy S-series) is currently a gimmick tier: extreme heat, massive file sizes, and no streaming platform requires it. The perceptual benefit over 4K on a phone screen is zero. Both map to Score 10 as the "best available" practical tier.
 
 ### 🔹 4.9 Rear Video Frame Rate
-*Description:* Maximum frame rate supported at the highest commonly used resolution (≥1080p).
-*   **Measurement:** Maximum FPS.
-*   **Unit:** Frames per second (FPS)
+*Description:* Maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K (2160p).
+*   **Measurement:** Maximum Frames per second (FPS) at Max Resolution capped at 4K.
+*   **Unit:** FPS
 *   **Significance:** Higher FPS (Frames Per Second) enables smoother motion and better motion clarity.
 *Formula:* `Score = 10 * (log(FPS) - log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) - log(Camera_Video_FPS_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Camera_Video_FPS_Max
@@ -981,30 +981,39 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why Logarithmic?** The perception of smoothness is non-linear. The +30fps jump from 30fps to 60fps is a dramatic, transformative upgrade. However, an identical +30fps increase from 90fps to 120fps is barely noticeable for standard video consumption.
 
+> [!NOTE]
+> **Why cap the search at 4K and link it to Section 4.8?** To prevent 'double-dipping', a device must prove its frame rate performance under the load of its maximum claimed resolution from Section 4.8. If a device supports 4K at only 30fps, it cannot submit its 1080p@60fps mode for a higher score here. However, to protect 8K-capable flagships from processing limits inherent to 8K sensors, the evaluation resolution is strictly capped at 4K. An 8K phone is evaluated on its 4K frame rate. This is reinforced by the fact that 8K and 4K resolutions currently receive the exact same maximum score (10.0) in Section 4.8; therefore, it is mathematically consistent that they are both evaluated for frame rate parity at the 4K baseline.  **Important:** Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+), as these are evaluated separately in Section 4.12.
+
 ### 🔹 4.10 Video Color & Dynamic Range
 *Description:* Ability to capture wide dynamic range and rich color information in video.
-*   **Measurement:** Supported HDR standards and bit depth.
-*   **Unit:** HDR Capability Tier
-*   **Significance:** HDR (High Dynamic Range) video preserves highlights and shadows and improves realism and grading headroom.
+*   **Measurement:** Supported **HDR** (High Dynamic Range) standards and bit depth.
+*   **Unit:** Composite Index (0–10)
+*   **Significance:** High Dynamic Range video preserves highlights and shadows, improving realism and color grading headroom.
 
-| Score    | Video HDR Capability                   |
-| :------- | :------------------------------------- |
-| **10.0** | **Dolby Vision or HDR10+ (10-bit)**    |
-| **8.0**  | **HDR10 / HLG**                        |
-| **6.0**  | **Extended SDR (flat / log-like SDR)** |
-| **4.0**  | **Standard SDR**                       |
-| **0.0**  | **No HDR support**                     |
+| Supported Format            | Point Value |
+| :-------------------------- | :---------- |
+| **Base HDR (HDR10 or HLG)** | **+ 5.0**   |
+| **Dolby Vision**            | **+ 3.0**   |
+| **HDR10+**                  | **+ 2.0**   |
 
-**Definitions:**
-*   **Dolby Vision:** A proprietary dynamic metadata format. It optimizes brightness, contrast, and color on a *scene-by-scene* or even *frame-by-frame* basis, ensuring the best possible picture quality for every moment of the video. It requires 10-bit or 12-bit color depth.
-*   **HDR10+:** An open-standard dynamic metadata format similar to Dolby Vision. It also adjusts brightness and tone mapping scene-by-scene, offering a significant improvement over static HDR10.
-*   **HDR10:** The baseline static metadata format. It sets a *single* brightness levels for the entire video file. If the movie has a very bright scene and a very dark scene, HDR10 must compromise between them, whereas dynamic formats optimize for both individually.
-*   **HLG (Hybrid Log-Gamma):** A broadcast-friendly HDR standard designed to be backward compatible with SDR displays. slightly less capable than HDR10/Dolby Vision in absolute dynamic range but highly convenient.
-*   **SDR (Standard Dynamic Range):** The traditional video standard (Rec.709 color space). It has limited brightness and color volume, leading to blown-out highlights (white skies) or crushed shadows in high-contrast scenes.
+*Formula:* `Score = sum(points_for_detected_formats)` (Clamped 0–10)
 
 > [!NOTE]
-> **Why is Dynamic Metadata (Score 10) better?**
-> Dynamic formats (Dolby Vision, HDR10+) tell the display exactly how to render *each specific scene*. Static formats (HDR10) force the display to pick one average setting for the whole movie, which often makes dark scenes look too dark or bright scenes look washed out.
+> **Understanding Video HDR Formats & Symmetry with Display Playback (§2.4):**
+> To ensure mathematical consistency across the project, this section perfectly mirrors the scoring logic from **Section 2.4 (Display HDR Format Support)**. 10-bit color depth is structurally required for all formats listed; therefore, any certified support automatically confirms high-bit-depth hardware capability.
+>
+> *   **Base HDR (+5.0):** The universal foundation of High Dynamic Range. It includes **HDR10** (static metadata) and **HLG** (Hybrid Log-Gamma, broadcast-standard). Supporting either represents the most critical quality leap over 8-bit **SDR** (Standard Dynamic Range), as it establishes the necessary 10-bit color pipeline. Without this "floor," a device cannot be considered HDR-capable.
+> *   **Dolby Vision (+3.0):** A proprietary dynamic metadata format that optimizes brightness, contrast, and color on a *scene-by-scene* or *frame-by-frame* basis. It is the dominant premium standard in mobile ecosystems, featuring native support in social media pipelines (Instagram, TikTok) and professional mastering. 
+> *   **HDR10+ (+2.0):** The open-standard royalty-free alternative dynamic **High Dynamic Range** format. Like Dolby Vision, it adjusts tone mapping frame-by-frame, offering a significant improvement over static HDR10. It is awarded fewer points solely due to having a smaller social media and content ecosystem.
+>
+> **Why does Dynamic Metadata (Score 7.0–10.0) matter?**
+> Standard High Dynamic Range (Score 5.0) sets a *single* brightness level for the entire file. If a video has both extremely bright and very dark scenes, static HDR must compromise. Dynamic formats (Dolby Vision, HDR10+) solve this by adjusting the brightness curve for every single shot, preventing blown-out highlights or crushed shadows.
+>
+> **Example Scores:**
+> *   *Universal (10.0):* Supports Base HDR + Dolby Vision + HDR10+. (e.g., Xiaomi 14 Ultra)
+> *   *Premium Standard (8.0):* Supports Base HDR + Dolby Vision. (e.g., iPhone 16 Pro, Vivo X100 Pro)
+> *   *Dynamic Alternative (7.0):* Supports Base HDR + HDR10+. (e.g., Galaxy S24 Ultra, Pixel 9 Pro)
+> *   *Baseline HDR (5.0):* Supports only static Base HDR (HDR10/HLG). Typical for mid-range sensors.
 
 ### 🔹 4.11 Video Encoding & Professional Recording
 *Description:* Support for professional codecs and recording profiles enabling advanced post-production. This is a composite score evaluating codec quality, color profile support, and bit depth independently.
@@ -1015,49 +1024,70 @@ To determine the correct tier, check the device's official specifications, marke
 **Structure:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
 
 #### 4.11.1 Professional Codec Support (PCS) — 40%
-*What it measures:* Whether the phone can record in a mezzanine or RAW-class format designed for post-production, not delivery.
-*   **Measurement:** Manufacturer specs, camera API codec list.
-*   **Why it matters:** Mezzanine codecs (ProRes, CinemaDNG) preserve maximum image quality with minimal compression, enabling professional color grading and VFX work.
+*What it measures:* Whether the phone can record in a **RAW** (unprocessed sensor data) or **Mezzanine** (high-quality intermediate) format. These are "production-grade" files designed specifically for high-end video editing rather than just watching or sharing on social media.
+*   **Measurement:** Manufacturer specifications, official camera feature lists.
+*   **Why it matters:** Standard videos are heavily compressed to save space, which "bakes in" the look and permanently loses data. Professional formats preserve almost all original image detail and color information, allowing for clean "post-production" (video editing) and complex **VFX** (Visual Effects) without the video falling apart or looking "pixelated." **RAW** formats offer the absolute maximum flexibility, allowing editors to completely change things like white balance after filming, while **Mezzanine** formats like ProRes are slightly more compressed but still vastly superior to standard phone video.
 
-| Condition                                                                     | Score    |
-| :---------------------------------------------------------------------------- | :------- |
-| **Supports ProRes / CinemaDNG / ProRes RAW / equivalent mezzanine or RAW**    | **10.0** |
-| **Does not**                                                                  | **0.0**  |
+| Condition                                                   | Score    |
+| :-----------------------------------------------------------| :------- |
+| **Supports true RAW video (CinemaDNG, ProRes RAW, BRAW)**   | **10.0** |
+| **Supports Mezzanine format (ProRes, APV, DNxHR/HD)**       | **8.0**  |
+| **Does not support professional recording formats**         | **0.0**  |
+*Formula:* `Score = max(points_for_detected_codecs)`
 
 #### 4.11.2 Log Color Profile Support (LCPS) — 35%
-*What it measures:* Whether the phone supports a logarithmic gamma curve, preserving dynamic range for color grading.
-*   **Measurement:** Camera feature list, video mode specs.
-*   **Why it matters:** Log profiles (e.g., S-Log, V-Log, HLG) flatten the image's contrast curve, capturing more highlight and shadow detail. This gives editors significantly more flexibility to adjust exposure and color in post-production without clipping or banding.
+*What it measures:* Whether the phone supports a **Logarithmic** (Log) gamma curve. This is a special way of storing light that makes the image look "flat" or "grey" initially but captures significantly more detail in the brightest and darkest parts of the frame.
+*   **Measurement:** Camera feature list, video mode specifications.
+*   **Why it matters:** In standard recording, a bright sky or a dark shadow might become pure white or solid black (clipping). Log profiles capture this lost information, giving editors much more flexibility during "color grading" (the process of adjusting colors and contrast) to achieve a cinematic look without the image becoming "noisy" or "distorted."
 
-| Condition                         | Score    |
-| :-------------------------------- | :------- |
-| **Log profile available**         | **10.0** |
-| **No log profile**                | **0.0**  |
+| Score    | Supported Color Profile                     |
+| :------- | :------------------------------------------ |
+| **10.0** | **Apple Log (True Log)**                    |
+| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**      |
+| **10.0** | **V-Log (True Log)**                        |
+| **10.0** | **D-Log / D-Log M (True Log)**              |
+| **10.0** | **F-Log (True Log)**                        |
+| **10.0** | **Samsung Log (True Log)**                  |
+| **10.0** | **Xiaomi Log (True Log)**                   |
+| **10.0** | **Generic / Other True Log**                |
+| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**          |
+| **0.0**  | **None (Standard contrast only)**           |
+
+*Formula:* `Score = max(points_for_detected_profiles)`
+
+> [!NOTE]
+> **Log vs. Flat:** True **Log** profiles (10.0 points) mathematically compress the sensor's maximum dynamic range, requiring a specific technical transformation (a LUT) during editing to look normal. **Flat** profiles (5.0 points) simply turn down the contrast and saturation settings of standard video. Flat profiles help retain some highlight/shadow detail compared to normal video, but they do not capture the massive data range of a true Log curve.
 
 #### 4.11.3 Color Bit Depth (CBD) — 25%
-*What it measures:* How much color information is stored per channel in video recording.
-*   **Measurement:** Codec specs, camera API output formats.
-*   **Why it matters:** 10-bit color provides 1024 shades per channel (vs 256 in 8-bit), dramatically reducing banding in gradients (like skies) and enabling smoother color grading transitions.
+*What it measures:* How much individual color information is stored per channel. This is the difference between having thousands of shades vs. millions of shades.
+*   **Measurement:** Codec specifications, manufacturer specifications.
+*   **Why it matters:** Standard "8-bit" color provides 256 levels of brightness for each color channel. Premium **10-bit** color provides 1,024 levels per channel, dramatically reducing "banding" in smooth gradients (like skies). The cutting-edge **12-bit** color provides 4,096 levels per channel, capturing extreme nuances for heavy post-production and RAW workflows.
 
-| Bit Depth           | Score    |
-| :------------------ | :------- |
-| **10-bit or higher**| **10.0** |
-| **8-bit only**      | **0.0**  |
+| Bit Depth                             | Score    |
+| :------------------------------------ | :------- |
+| **12-bit color**                      | **10.0** |
+| **10-bit color**                      | **5.0**  |
+| **8-bit color only (standard)**       | **0.0**  |
+
+*Formula:* `Score = 2.5 * (Bits - 8)` (Clamped 0-10)
+
+> [!NOTE]
+> **Why 5.0 for 10-bit?** The raw number of color shades increases exponentially with bit depth ($2^n$), but human perception of these differences follows a **logarithmic scale** (Weber-Fechner law). Because $\log_2(2^{\text{bits}}) = \text{bits}$, the resulting perceived improvement is perfectly linear relative to the bit depth itself. Therefore, the leap from 8 to 10 bits represents the same proportional visual gain as the leap from 10 to 12 bits, cleanly splitting the 10.0 score space in half.
 
 **Final Formula:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
 
 ### 🔹 4.12 High Frame Rate (Slow Motion)
-*Description:* Ability to capture video at very high frame rates for slow-motion playback.
-*   **Measurement:** Maximum slow-motion FPS and resolution.
-*   **Unit:** FPS @ Resolution (MP/s)
-*   **Significance:** Enables creative effects and analysis of fast motion.
+*Description:* The ability to capture video at very high frame rates in a dedicated camera mode, allowing for extreme deceleration of fast motion.
+*   **Measurement:** Maximum slow-motion Frames per Second (FPS) and its corresponding resolution, as explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion", "Slo-mo", "High Speed Video", or "Super Slow-mo" (Do NOT use standard video frame rates from Section 4.9).
+*   **Unit:** Megapixels per Second (MP/s)
+*   **Significance:** Enables creative effects and extreme deceleration of fast-moving subjects.
+*   **Scoring Rule:** Scanners must calculate the mathematical throughput (`Resolution_MP × FPS`) of *all* available slow-motion configurations (e.g., 4K@120fps vs. 1080p@960fps) and score based exclusively on the combination yielding the **Absolute Maximum MP/s**. If a phone has no dedicated slow-motion mode, the score is **0.0**.
 *Formula:* `Score = 10 * (log(MP_s) - log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) - log(Camera_SlowMo_MPs_Min))` (Clamped 0-10)
     *   `MP_s = Resolution_MP * FPS`
 *   **Max Score (10.0):** ≥ Camera_SlowMo_MPs_Max
 *   **Min Score (0.0):** ≤ Camera_SlowMo_MPs_Min
 > [!NOTE]
-> **Why Logarithmic?** Slow motion quality depends on both resolution and speed. A logarithmic scale on total pixels-per-second (MP/s) fairly balances high-res/low-fps against low-res/high-fps modes, rewarding the total data throughput capability.
-
+> **Why Logarithmic?** The customer's perception of slow-motion improvements follows diminishing returns. The leap from 120fps to 360fps (+240fps) is a massive, visually transformative upgrade, allowing the user to heavily decelerate everyday fast action in post-production while maintaining perfect playback fluidity. However, an identical +240fps increase from 720fps to 960fps is highly niche; the extra deceleration it provides is practically imperceptible to the human eye unless filming extreme physics like a water balloon popping. A logarithmic curve correctly matches human perception, heavily rewarding the initial leap into high-quality slow motion and offering diminishing returns for extreme speeds.
 
 ### C. Front Camera System (Selfie)
 *Groups all front-facing hardware and capabilities (both photo and video) into one cohesive chapter.*

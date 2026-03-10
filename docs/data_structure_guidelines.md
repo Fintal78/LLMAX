@@ -526,17 +526,23 @@ Every subsection must contain the following "recipe":
     - **Intermediate calculation values** (e.g. correction ratios, normalisation factors, raw benchmark inputs): **4 decimal places** (e.g. `9.5478`, `1.0312`). This preserves enough precision so downstream calculations do not accumulate rounding errors.
     - **Scores** (`subscore`, `predicted_score`, `final_score.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
     - **Integers** (e.g. raw Megapixel (MP) counts, Hertz (Hz) values, pixel counts): store as plain integers with no decimal point (e.g. `200`, `120`).
-10. **Handling Missing Data & Scoring Blockers**: 
-    If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1):
-    - **Value Entry**: Set the `value` field strictly to `"Not found"`. Do NOT use `null`, `0`, or empty strings. Set `source` and `exact_extract` fields to `"N/A"`.
-    - **Scoring Resilience (Fallbacks & Benchmarks)**: A `"Not found"` value does NOT automatically mean the subsection is unscorable:
+10. **Handling Missing Data, Unlisted Features & Scoring Blockers**: 
+    If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1), OR if a feature is found but is not scorable using the provided options (e.g., a newly released codec not yet listed):
+    - **Value Entry**: Set the `value` field strictly to `"Not found"` (if missing data) or the raw unlisted feature name (if unlisted feature). Do NOT use `null`, `0`, or empty strings. For missing data, set `source` and `exact_extract` fields to `"N/A"`.
+    - **Scoring Resilience (Fallbacks & Benchmarks)**: A `"Not found"` or unlisted value does NOT automatically mean the subsection is unscorable:
         - **Fallback Path**: If `scoring_rules.md` provides an alternate calculation path (e.g., estimating HBM from Peak brightness), use it.
         - **Benchmark Override**: If a direct benchmark (Method A) is available, the subsection is scored normally using that method, regardless of the missing raw spec.
     - **Neighbor Interpolation (Method B) Blocked**: Unlike direct benchmarks, Method B **cannot** be used as a fallback for missing specs. Because Method B requires the Predictor (Method C) to identify similar neighbors, if a raw spec is missing and has no fallback, the Predictor cannot be calculated, which in turn blocks the possibility of using Neighbor Interpolation.
-    - **Scoring Blocker Procedure**: If the missing data is mandatory for the formula and NO fallback or benchmark override is possible:
-        1. Set `subscore`, `predicted_score`, `final_score.value`, `final_score.method_used`, and `final_score.confidence` to `"N/A"`.
-        2. **Top-Level Alert**: You MUST place a GitHub Flavored Markdown (GFM) alert at the very top of `proposed_data_structure.md` (above the JSON block) following this exact template to flag the record as incomplete:
+    - **Scoring Blocker & Unlisted Feature Procedure**: If the missing data is mandatory for the formula and NO fallback or benchmark override is possible, OR if an unlisted feature is encountered that likely should be scored:
+        1. Set `subscore`, `predicted_score`, `final_score.value`, `final_score.method_used`, `final_score.booster`, and `final_score.confidence` to `"N/A"`.
+        2. **Top-Level Alert**: You MUST place a GitHub Flavored Markdown (GFM) alert at the very top of `proposed_data_structure.md` (above the JSON block) following one of these exact templates to flag the record for review:
            > [!CAUTION]
            > ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP
            > **Subsection [X.Y] ([Name])**: Score calculation is blocked due to missing required data: `[Parameter Name]`. No valid fallback exists.
+           
+           *OR*
+           
+           > [!CAUTION]
+           > ### 🚨 SCORING BLOCKER: UNLISTED FEATURE DETECTED
+           > **Subsection [X.Y] ([Name])**: A feature was found (`[Feature Name]`) but is not scorable using the provided options in the guidelines. This feature needs to be evaluated and added to the scoring guidelines.
     - **Research Guideline**: Before resorting to "Not found", attempt to derive the value from other confirmed specs (e.g., calculating PPI from resolution and diagonal size).

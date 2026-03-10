@@ -2,6 +2,21 @@
 
 This schema is strictly aligned with the `scoring_rules.md` v8.0.
 
+> [!IMPORTANT]
+> ### 🚨 Handling Missing Data, Unlisted Features & Scoring Blockers
+> If a required parameter's value cannot be found after an exhaustive search, OR if a feature is found but is not scorable using the provided options (e.g., a newly released codec not yet listed):
+> - **Value Entry**: Set the `value` field strictly to `"Not found"` (if missing data) or the raw unlisted feature name (if unlisted feature). Do NOT use `null`, `0`, or empty strings. For missing data, set `source` and `exact_extract` fields to `"N/A"`.
+> - **Scoring Procedure**: If the missing data or unlisted feature blocks the formula and NO fallback or benchmark override is possible:
+>     1. Set `subscore`, `predicted_score`, `final_score.value`, `final_score.method_used`, `final_score.booster`, and `final_score.confidence` to `"N/A"`.
+>     2. **Top-Level Alert**: You MUST place a GFM alert at the very top of the generated file (above the JSON block) following one of these exact templates:
+>        <br>`> [!CAUTION]`
+>        <br>`> ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP`
+>        <br>`> **Subsection [X.Y] ([Name])**: Score calculation is blocked due to missing required data: [Parameter Name]. No valid fallback exists.`
+>        <br>*OR*
+>        <br>`> [!CAUTION]`
+>        <br>`> ### 🚨 SCORING BLOCKER: UNLISTED FEATURE DETECTED`
+>        <br>`> **Subsection [X.Y] ([Name])**: A feature was found ([Feature Name]) but is not scorable using the provided options in the guidelines. This feature needs to be evaluated.`
+
 ```json
 {
   // GUIDELINE: All scoring formulas and lookup tables referenced as "Section X.X" or "§X.X" throughout this document are defined in scoring_rules.md. All numeric constants (e.g. _Min / _Max thresholds) are from scoring_constants.md. There is no need to repeat these file names in individual Source comments below.
@@ -35,7 +50,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-06"
+    "last_updated": "2026-03-09"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -384,7 +399,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • "HDR10+"        → adds +2.00 to the subscore
         //   • "HDR10"         → adds +5.00 to the subscore
         // The subscore is the sum of these points (Clamped 0–10). Example: ["HDR10+", "HDR10"] = 5.00 + 2.00 = 7.00.
-        // If the device does not list support for any High Dynamic Range formats (or explicitly only supports SDR), leave the array empty [] and set subscore to 0.00.
+        // If the device does not list support for any HDR formats (or explicitly only supports Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
       },
       "predicted_score": 7.00,
       // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
@@ -1121,185 +1136,322 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_8_rear_video_resolution": {
-        "value": "8K",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Look up the max resolution in the Section 4.8 table. Use the following terms exclusively for "value" with related scores as subscore:
-        //   • ≥ 4K Ultra HD (incl. 8K)   → 10.00
-        //   • 1440p / QHD (2.5K)         → 8.00
-        //   • 1080p Full HD              → 6.00
-        //   • 720p HD                    → 3.00
-        //   • ≤ 480p                     → 0.00
-      },
-      "4_9_rear_video_frames_per_second": {
-        "maximum_frames_per_second_1080p_plus": {
-          "value": 120,
+        // SCORING GOAL: Scores the maximum spatial resolution supported for rear-camera video recording.
+        "maximum_resolution": {
+          "value": "4K (Ultra HD)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "predicted_score": 0.00,
-        "final_score": 0.00
-      },
-      "4_10_video_hdr": {
-        "value": "Dolby Vision",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 0.00
-      },
-      "4_11_video_encoding": {
-        "professional_codec_support": {
-          "value": "ProRes 4K60",
-          "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
-          "exact_extract": "export ProRes footage via USB-C at up to 4K and 60 frames per second",
+          "exact_extract": "Proof pending",
           "subscore": 10.00
-        },
-        "log_color_profile_support": {
-          "value": "Apple Log",
-          "source": "https://www.tomsguide.com/reviews/iphone-15-pro-max",
-          "exact_extract": "export ProRes footage",
-          "subscore": 10.00
-        },
-        "color_bit_depth": {
-          "value": 10,
-          "source": "https://www.gsmarena.com/apple_iphone_15_pro-12557.php",
-          "exact_extract": "Display [...] 10-bit HDR",
-          "subscore": 10.00
+          // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact terms for "value" with related scores as subscore:
+          //   • "8K"                    → 10.00
+          //   • "4K (Ultra HD)"         → 10.00
+          //   • "1440p / QHD (2.5K)"    → 8.00
+          //   • "1080p (Full HD)"       → 6.00
+          //   • "720p (HD)"             → 3.00
+          //   • "≤ 480p"                → 0.00
         },
         "predicted_score": 10.00,
-        "final_score": 10.00
+        // SCORING GUIDELINE: predicted_score directly inherits maximum_resolution.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
-      "4_12_slow_motion": {
+      "4_9_rear_video_frame_rate": {
+        // SCORING GOAL: Scores the maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K (2160p).
         "maximum_frames_per_second": {
           "value": 120,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Identify the exact maximum FPS supported at the resolution evaluated in Section 4.8 capped at 4K. If the device scored 8K in 4.8, evaluate its 4K FPS instead. If the device scored 1080p in 4.8, evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
         },
-        "resolution_megapixels": {
-          "value": 8.3,
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits maximum_frames_per_second.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_10_video_hdr": {
+        // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the camera system can record in. Dynamic HDR formats (Dolby Vision, HDR10+) optimize brightness and colour frame-by-frame for superior realism and grading headroom.
+        "supported_formats": {
+          "value": [
+            "Dolby Vision",
+            "HDR10"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
+          //   • "HDR10" or "HLG"           → adds +5.00 to the subscore
+          //   • "Dolby Vision"             → adds +3.00 to the subscore.
+          //   • "HDR10+"                   → adds +2.00 to the subscore.
+          // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_11_video_encoding": {
+        // SCORING GOAL: Scores support for professional codecs and recording profiles as a composite index.
+        "professional_codec_support": {
+          "value": [
+            "ProRes (Mezzanine)"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Identify all supported professional recording codecs. Use the exact terms below for the "value" array. The subscore is the highest point value among detected codecs:
+          //   • "CinemaDNG (True RAW)"         → 10.00
+          //   • "ProRes RAW (True RAW)"        → 10.00
+          //   • "BRAW (True RAW)"              → 10.00
+          //   • "ProRes (Mezzanine)"           → 8.00
+          //   • "APV (Mezzanine)"              → 8.00
+          //   • "DNxHR/HD (Mezzanine)"         → 8.00
+          // If no professional recording codecs are supported (standard H.264/H.265 only), leave the array empty [] and set subscore to 0.00.
+        },
+        "log_color_profile_support": {
+          "value": [
+            "Apple Log (True Log)"
+          ],
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Identify all supported color profiles. Use the exact terms below for the "value" array. The subscore is the highest point value among detected profiles:
+          //   • "Apple Log (True Log)"               → 10.00
+          //   • "S-Log / S-Log2 / S-Log3 (True Log)" → 10.00
+          //   • "V-Log (True Log)"                   → 10.00
+          //   • "D-Log / D-Log M (True Log)"         → 10.00
+          //   • "F-Log (True Log)"                   → 10.00
+          //   • "Samsung Log (True Log)"             → 10.00
+          //   • "Xiaomi Log (True Log)"              → 10.00
+          //   • "Cinelike-D / Cinelike-V (Flat)"     → 5.00
+          // If no flat/log profile is supported (Standard contrast only), leave the array empty [] and set subscore to 0.00.
+        },
+        "color_bit_depth": {
+          "value": "10-bit color",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Use "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
+        },
+        "predicted_score": 7.95,
+        // SCORING GUIDELINE: predicted_score = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.95,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "4_12_slow_motion": {
+        // SCORING GOAL: Scores the ability to capture video at very high frame rates in a dedicated "Slow Motion" mode based on maximum data throughput, expressed in Megapixels per second (MP/s).
+        "supported_modes": {
+          "value": [
+            {
+              "resolution_megapixels": 2.07,
+              "frames_per_second": 960
+            },
+            {
+              "resolution_megapixels": 8.29,
+              "frames_per_second": 120
+            }
+          ],
           "source": "TBD",
           "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution × FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "predicted_score": 8.55,
+        // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels × frames_per_second. Apply the Section 4.12 logarithmic formula: predicted_score = 10 × (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set predicted_score to 0.00.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.55,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "4_13_front_camera_resolution": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 0.00
+        // SCORING GOAL: Scores the spatial resolution of the front-facing camera.
+        "megapixels": {
+          "value": 12,
+          "source": "TBD",
+          "exact_extract": "Proof pending",    
+        },
+        "predicted_score": 4.72,
+        // SCORING GUIDELINE: Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 4.72,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "4_14_front_camera_focus": {
-        "value": "Autofocus",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 0.00
+        // SCORING GOAL: Scores the ability of the front-facing camera to maintain sharp focus.
+        "focus_system_tier": {
+          "value": "Autofocus (PDAF / Dual Pixel / Laser)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+          //   • "Autofocus (PDAF / Dual Pixel / Laser)" → 10.00
+          //   • "Fixed Focus (Modern Wide-DOF)" → 6.00
+          //   • "Fixed Focus (Legacy Narrow-DOF)" → 3.00
+          //   • "No Front Camera" → 0.00
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "4_15_front_camera_video": {
-        "maximum_resolution_pixels": {
-          "value": "4K",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+        // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, and HDR capability) of the front camera as a composite score.
+        "4_15_1_video_resolution": {
+          "long_edge_resolution_pixels": {
+            "value": 3840,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 8.00
+            // SCORING GUIDELINE: The maximum front video resolution width in pixels (e.g., 3840 for 4K). Apply the Section 4.15.1 logarithmic formula: ResScore = 10 × (log(long_edge_resolution_pixels) − log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) − log(Camera_Front_Video_Res_Width_Min)), clamped 0–10.
+          }
         },
-        "maximum_frames_per_second": {
-          "value": 60,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+        "4_15_2_video_frame_rate": {
+          "maximum_frames_per_second": {
+            "value": 60,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 10.00
+            // SCORING GUIDELINE: Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 × (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
+          }
         },
-        "high_dynamic_range_capability": {
-          "value": "SDR",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
+        "4_15_3_dynamic_range_codec": {
+          "video_capability": {
+            "value": "Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)",
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 10.00
+            // SCORING GUIDELINE: Lookup value in Section 4.15.3 table. Exact terms:
+            //   • "Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)" → 10.00
+            //   • "Dolby Vision HDR recording" → 9.00
+            //   • "HDR10 or HDR10+ recording" → 7.00
+            //   • "HLG HDR or manufacturer-labeled “HDR video”" → 4.00
+            //   • "SDR only (8-bit, Rec.709)" → 1.00
+            //   • "No front camera" → 0.00
+          }
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "predicted_score": 9.20,
+        // SCORING GUIDELINE: predicted_score = (0.40 × 4_15_1_video_resolution.long_edge_resolution_pixels.subscore) + (0.35 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.25 × 4_15_3_dynamic_range_codec.video_capability.subscore).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.20,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "4_16_multiframe_photo": {
-        "features": {
-          "value": [
-            "Advanced HDR",
-            "Night Mode"
-          ],
+        // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
+        "processing_tier": {
+          "value": "Always-on multi-frame HDR + Night stacking",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+          //   • "Always-on multi-frame HDR + Night stacking" → 10.00
+          //   • "Conditional multi-frame processing" → 6.00
+          //   • "Single-frame capture only" → 0.00
         },
-        "predicted_score": 0.00,
-        "score_adjustment": {
-          "booster_1": {
-            "value": 1.05,
-            "booster_title": "11_1_dxomark_24mp_texture_rendering"
-          }
-        },
-        "final_score": 0.00
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "Yes: 11_1_dxomark_24mp_texture_rendering (+5%)",
+          "confidence": "N/A"
+        }
       },
       "4_17_semantic_ai": {
-        "features": {
-          "value": [
-            "Semantic Segmentation"
-          ],
+        // SCORING GOAL: Scores the ability of the camera software to understand and segment scenes and subjects.
+        "capability_tier": {
+          "value": "Full semantic segmentation (faces, sky, objects)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+          //   • "Full semantic segmentation (faces, sky, objects)" → 10.00
+          //   • "Basic portrait / scene detection" → 6.00
+          //   • "None" → 0.00
         },
-        "predicted_score": 0.00,
-        "score_adjustment": {
-          "booster_1": {
-            "value": 1.05,
-            "booster_title": "11_3_dxomark_portrait_skin_tone_rendering"
-          }
-        },
-        "final_score": 0.00
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "Yes: 11_3_dxomark_portrait_skin_tone_rendering (+5%)",
+          "confidence": "N/A"
+        }
       },
       "4_18_generative_ai_tools": {
-        "features": {
-          "value": [
-            "Magic Eraser"
-          ],
+        // SCORING GOAL: Scores the ability to modify images after capture using AI.
+        "feature_tier": {
+          "value": "Generative erase / expand / relight",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+          //   • "Generative erase / expand / relight" → 10.00
+          //   • "Non-generative AI edits" → 6.00
+          //   • "None" → 0.00
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "5_software_and_longevity": {
       "operating_system_version": {
+        // GUIDELINE: The operating system and version shipped with the device.
         "value": "Android 14",
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
       "skin": {
+        // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer. Section 5.2 uses this for scoring. Known platforms include iOS, Pixel UI / Stock Android, Samsung One UI, HyperOS (Xiaomi), etc.
         "value": "One UI 6.1",
         "source": "TBD",
         "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
-        //   Section 5.2 maps this string to a score. Known platforms:
-        //   • iOS                                    → 10.00
-        //   • Pixel UI / Stock Android               → 9.00
-        //   • AOSP / Generic Stock Android           → 9.00
-        //   • Fairphone OS                           → 9.00
-        //   • Nothing OS                             → 9.00
-        //   • Motorola MyUX / Hello UI               → 8.00
-        //   • Sony Xperia UI                         → 8.00
-        //   • Nokia (Stock Android)                  → 8.00
-        //   • Sharp AQUOS UI                         → 8.00
-        //   • ASUS ZenUI / ROG UI                    → 7.00
-        //   • Samsung One UI                         → 6.00
-        //   • OxygenOS (OnePlus)                     → 6.00
-        //   • Redmagic OS                            → 6.00
-        //   • Honor MagicOS                          → 5.00
-        //   • Vivo FunTouch OS / OriginOS            → 5.00
-        //   • ColorOS (Oppo)                         → 5.00
-        //   • Realme UI                              → 5.00
-        //   • LG UX (Legacy)                         → 5.00
-        //   • HTC Sense (Legacy)                     → 5.00
-        //   • ZTE MiFavor UI / MyOS                  → 4.00
-        //   • HyperOS (Xiaomi)                       → 4.00
-        //   • Huawei EMUI / HarmonyOS                → 3.00
-        //   • MIUI (Legacy Xiaomi)                   → 3.00
-        //   • Tecno HiOS / Infinix XOS / Itel OS     → 2.00
-        //   If unlisted, score = N/A (update Section 5.2 first).
       },
       "5_1_support_longevity": {
+        // SCORING GOAL: Scores the manufacturer's update policy commitment length.
         "years_operating_system": {
           "value": 7,
           "source": "TBD",
@@ -1308,45 +1460,85 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "years_security": {
           "value": 7,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 5.1 logarithmic formula: Score = 10 × (log(years) − log(Support_Years_Min)) / (log(Support_Years_Max) − log(Support_Years_Min)), clamped 0–10. Use the maximum committed years (OS or security) as the "years" variable.
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits years_security.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "5_2_system_cleanliness_control": {
-        "platform_score": 6.00,
-        // SCORING GUIDELINE: platform_score is a direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula — just look up the skin string and copy the table score here.
+        // SCORING GOAL: Evaluates the out-of-box software experience (bloatware, user control, ads) derived from the platform/skin.
+        "platform_score": {
+          "value": 6.00,
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": 6.00
+          // SCORING GUIDELINE: Direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula. Known platforms: iOS -> 10.0, Pixel UI / Stock Android -> 9.0, Samsung One UI -> 6.0, HyperOS -> 4.0, etc. If unlisted, score = N/A.
+        },
         "predicted_score": 6.00,
-        "final_score": 6.00
+        // SCORING GUIDELINE: predicted_score directly inherits platform_score.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
       "5_3_ai_feature_suite": {
+        // SCORING GOAL: Evaluates the specific AI software features available. Score is calculated using weighted binary features. Max score is 10.00.
         "visual_screen_search": {
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 2.50
+          // SCORING GUIDELINE: If value = true, subscore = 2.50. If value = false, subscore = 0.00.
         },
         "live_speech_translation": {
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If value = true, subscore = 2.00. If value = false, subscore = 0.00.
         },
         "content_summarization": {
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 1.50
+          // SCORING GUIDELINE: If value = true, subscore = 1.50. If value = false, subscore = 0.00.
         },
         "writing_tools": {
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 1.00
+          // SCORING GUIDELINE: If value = true, subscore = 1.00. If value = false, subscore = 0.00.
         },
         "on_device_processing": {
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 3.00
+          // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
         },
         "predicted_score": 10.00,
-        "final_score": 0.00
+        // SCORING GUIDELINE: predicted_score is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "6_processing_power_and_performance": {
@@ -1445,165 +1637,628 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "description": "Section 6.3.0 Standard Graphics Score"
         },
         "ray_tracing_score": {
-            // GUIDELINE: Whether the display adjusts its refresh rate dynamically between min_hz and max_hz. true = LTPO/adaptive panel; false = fixed-rate panel (always at max_hz). Controls the B.2.2 formula: effective_hz = adaptive ? (min_hz + max_hz) / 2 : max_hz.
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "dependencies": [
-            "2_display.2_1_panel_architecture",
-            "2_display.2_6_motion_smoothness.maximum_refresh_rate_hz"
-          ],
-          "breakdown": {
-            "panel_technology_score": 9.00,
-            "refresh_efficiency_score": 7.74,
-            "resolution_efficiency_score": 5.21
-          },
-          "score": 7.42
+          "value": 10.00,
+          "description": "Section 6.3.0 Ray Tracing Score"
         },
-        "b_3_connectivity_efficiency": {
-          "dependencies": [
-            "7_connectivity.7_1_cellular_capabilities",
-            "7_connectivity.7_3_wifi_standard"
-          ],
-          "breakdown": {
-            "cellular_score": 0.00,
-            "wifi_score": 0.00
-          },
-          "score": 0.00
-        },
-        "b_4_thermal_efficiency": {
-          "dependencies": [
-            "6_processing_power_and_performance.6_10_thermal_dissipation_stability"
-          ],
-          "score": 8.20
-        },
-        "hardware_efficiency_index_total_score": 7.14
-      },
-      "layer_c_software_optimization": {
-        "dependencies": [
-          "5_software_and_longevity.operating_system_version",
-          "5_software_and_longevity.5_2_system_cleanliness_control"
-        ],
-        "breakdown": {
-          "c_1_operating_system_generation": 10.00,
-          "c_2_bloatware": 6.00
-        },
-        "software_optimization_index_total_score": 8.40
-      },
-      "predicted_score": 7.16,
-      "benchmarks": {
-        "gsmarena_active_use": {
-          "hours": 16.75,
-          "normalized_score": 5.84
-        },
-        "phonearena_battery_life": {
-          "hours": 10.5,
-          "normalized_score": 8.82
+        "efficiency_score": {
+          "value": 10.00,
+          "description": "Section 6.3.0 Efficiency Score"
         }
       },
-      "final_score": 7.33,
-      "score_adjustment": {
-        "booster": 1.024,
-        "source": "GSMArena Active Use + PhoneArena Battery Life"
+      "6_3_graphics_processing_unit_performance": {
+        // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
+        "3d_mark_steel_nomad_light_score": {
+          "value": 1850,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 6.3 Part 1 formula: SGS_Bench = 10 × (log(Score) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min))
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score = (SGS × 0.9) + (RTS × 0.1). SGS is derived either from Benchmark (Method A) or 6.3.0 table (Method C). RTS is unconditionally derived from 6.3.0 table.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_4_ai_hardware_performance": {
+        // SCORING GOAL: Evaluates the Neural Processing Unit (NPU) speed.
+        "geekbench_ai_quantized_score": {
+          "value": 6000,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits geekbench_ai_quantized_score.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_5_ram_technology": {
+        // SCORING GOAL: Evaluates RAM type efficiency and bandwidth.
+        "technology_generation": {
+          "value": "LPDDR5X",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 6.5 memory technology table. E.g., LPDDR5X -> 10.0, LPDDR5 -> 8.0, LPDDR4X -> 5.0, LPDDR4 -> 3.0, older -> 0.0.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits technology_generation.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_6_ram_capacity": {
+        // SCORING GOAL: Evaluates total system RAM capacity.
+        "capacity_gb": {
+          "value_path": "identity.hardware_configuration.ram_gb.value",
+          "value": 12,
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula based on RAM Capacity. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_7_storage_technology": {
+        // SCORING GOAL: Evaluates internal storage format efficiency and read/write speeds.
+        "storage_format": {
+          "value": "UFS 4.0",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 6.7 storage technology table. NVMe / UFS 4.0 -> 10.0, UFS 3.1 -> 8.0, UFS 3.0 -> 6.0, UFS 2.2 -> 4.0, UFS 2.1 -> 3.0, eMMC 5.1 -> 0.0.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits storage_format.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_8_storage_capacity": {
+        // SCORING GOAL: Evaluates maximum internal storage capacity.
+        "capacity_gb": {
+          "value_path": "identity.hardware_configuration.storage_gb.value",
+          "value": 512,
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula based on Storage Capacity. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_9_storage_expandability": {
+        // SCORING GOAL: Evaluates if SD Card expansion is supported.
+        "expandability_support": {
+          "value": "No SD Card slot",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Look up the value in Section 6.9 storage expandability table. Dedicated MicroSD Slot -> 10.0, Shared SIM slot -> 7.0, NM Card -> 5.0, None -> 0.0.
+        },
+        "predicted_score": 0.00,
+        // SCORING GUIDELINE: predicted_score directly inherits expandability_support.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "6_10_thermal_dissipation_stability": {
+        // SCORING GOAL: Evaluates thermal cooling capability based on frame architecture, weight, surface area, and active/passive cooling system.
+        "part_b_cooling_system_class": {
+          "value": "Large Vapor Chamber (≥4000 mm²)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Look up the value in Section 6.10 Part B table. Active Cooling (Fan) -> 10.0, Large VC -> 8.0, Vapor Chamber -> 7.0, Multi-layer Graphite -> 5.0, Single Heat Spreader -> 3.0, None -> 0.0.
+        },
+        "part_c_process_node_size_nm": {
+          "value": 4,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Process Node Score calculated via Section 6.10 Part C Node Score formula.
+        },
+        "part_c_foundry": {
+          "value": "TSMC",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table (TSMC=10, Samsung=5, Others=0).
+        },
+        "predicted_score": 9.50,
+        // SCORING GUIDELINE: predicted_score calculated using Physical Score and Peak Thermal Demand Compensation from Section 6.10.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
-    "8_2_wired_charging_speed": {
-      "watts": {
-        "value": 45,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+    "7_connectivity_and_sensors": {
+      "7_1_cellular_capabilities": {
+        // SCORING GOAL: Evaluates max cellular network standards.
+        "network_technology": {
+          "value": "5G mmWave + Sub-6 (Global band coverage)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.1 table.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits network_technology.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
-      "predicted_score": 0.00,
-      "final_score": 0.00
+      "7_2_sim_capabilities": {
+        // SCORING GOAL: Evaluates subscriber identity module format support.
+        "sim_configuration": {
+          "value": "Dual eSIM / iSIM + Physical Nano-SIM Slot",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.2 table.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits sim_configuration.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_3_wifi_standard": {
+        // SCORING GOAL: Evaluates Wi-Fi network standards.
+        "standard": {
+          "value": "Wi-Fi 7",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.3 table.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits standard.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_4_bluetooth_and_audio_codecs": {
+        // SCORING GOAL: Evaluates Bluetooth version and high-fidelity audio codec support.
+        "bluetooth_version": {
+          "value": 5.3,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 4.50
+          // SCORING GUIDELINE: Look up Bluetooth version score in Section 7.4 Part 1 table.
+        },
+        "highest_codec_supported": {
+          "value": "aptX HD / LDAC",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 4.00
+          // SCORING GUIDELINE: Look up highest codec tier in Section 7.4 Part 2 table. Lossless -> 5.0, High-Res -> 4.0, Standard -> 1.5.
+        },
+        "predicted_score": 8.50,
+        // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_5_biometrics": {
+        // SCORING GOAL: Evaluates secure unlock mechanisms.
+        "best_technology": {
+          "value": "Ultrasonic FP",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Look up best available biometric method in Section 7.5 table.
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_6_sensors": {
+        // SCORING GOAL: Evaluates navigation and accessory sensors.
+        "core_sensor_suite": {
+          "accelerometer": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 1.00
+            // SCORING GUIDELINE: If true, 1.00; false, 0.00.
+          },
+          "gyroscope": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 1.50
+            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          },
+          "magnetometer": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 1.00
+            // SCORING GUIDELINE: If true, 1.00; false, 0.00.
+          },
+          "proximity_sensor": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.75
+            // SCORING GUIDELINE: If true, 0.75; false, 0.00.
+          },
+          "ambient_light_sensor": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.75
+            // SCORING GUIDELINE: If true, 0.75; false, 0.00.
+          }
+        },
+        "advanced_sensor_capabilities": {
+          "barometer": {
+            "value": true,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 1.50
+            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          },
+          "lidar_tof_3d_depth_sensor": {
+            "value": false,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.00
+            // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          },
+          "color_spectrum_flicker_sensor": {
+            "value": false,
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.00
+            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          }
+        },
+        "predicted_score": 6.50,
+        // SCORING GUIDELINE: predicted_score is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_7_nfc_and_uwb": {
+        // SCORING GOAL: Evaluates short-range wireless connectivity technologies.
+        "configuration": {
+          "value": "NFC + UWB",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up value in Section 7.7 table.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits configuration.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_8_connectivity_and_cdc_index": {
+        // SCORING GOAL: Evaluates seamless ecosystem connectivity features.
+        "fast_file_transfer": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "cross_device_clipboard": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "task_handoff": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "communication_integration": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "camera_virtualization": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score is sum of all subscores above (Max 10.0).
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "7_9_usb_port_speed": {
+        // SCORING GOAL: Evaluates wired transfer speed.
+        "version_speed": {
+          "value": "USB 3.2 Gen 2 (10Gbps)",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up value in Section 7.9 table.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits version_speed.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
     },
-    "8_3_wireless_charging_speed": {
-      "watts": {
-        "value": 15,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+    "8_battery_and_charging": {
+      "8_1_battery_endurance_score": {
+        // SCORING GOAL: Evaluates real-world battery life.
+        "predicted_score": 7.90,
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.33,
+          "method_used": "Benchmark (GSMArena + PhoneArena)",
+          "booster": "No",
+          "confidence": "High"
+        }
       },
-      "predicted_score": 0.00,
-      "final_score": 0.00
+      "8_2_wired_charging_speed": {
+        // SCORING GOAL: Evaluates maximum wired charging input.
+        "watts": {
+          "value": 45,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min))
+        },
+        "predicted_score": 8.00,
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "8_3_wireless_charging_speed": {
+        // SCORING GOAL: Evaluates maximum wireless charging input.
+        "watts": {
+          "value": 15,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Apply Section 8.3 logarithmic formula. Score = 10 * (log(W) - log(Wireless_W_Min)) / (log(Wireless_W_Max) - log(Wireless_W_Min)). Set to 0 if unsupported.
+        },
+        "predicted_score": 5.00,
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 5.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "8_4_reverse_wired": {
+        // SCORING GOAL: Evaluates reverse wired charging output capability.
+        "watts": {
+          "value": 0,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        },
+        "predicted_score": 0.00,
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "8_5_reverse_wireless": {
+        // SCORING GOAL: Evaluates reverse wireless charging output capability.
+        "watts": {
+          "value": 4.5,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        },
+        "predicted_score": 5.00,
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 5.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "8_6_charger_in_box": {
+        // SCORING GOAL: Rewards devices that include a high-speed charger in the box.
+        "included_watts": {
+          "value": 0,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Section 8.6 scoring based on included charger wattage: >= 60W -> 10.0, 30W-59W -> 7.0, 15W-29W -> 4.0, <15W -> 2.0, None -> 0.0.
+        },
+        "predicted_score": 0.00,
+        // SCORING GUIDELINE: predicted_score directly inherits included_watts.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
     },
-    "8_4_reverse_wired": {
-      "watts": {
-        "value": 0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
+    "9_financial_and_economic_value": {
+      "9_1_price": {
+        // SCORING GOAL: Evaluates device price relative to standard flagships. Lower is better.
+        "usd": {
+          "value": 1299,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.80
+          // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 × (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
+        },
+        "predicted_score": 0.80,
+        // SCORING GUIDELINE: predicted_score directly inherits usd.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.80,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       },
-      "predicted_score": 0.00,
-      "final_score": 0.00
+      "9_2_manufacturer_warranty_commitment": {
+        // SCORING GOAL: Evaluates standard included warranty length.
+        "months": {
+          "value": 12,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 3.00
+          // SCORING GUIDELINE: Section 9.2 table: 36+ Months -> 10.0, 24 Months -> 7.0, 12 Months -> 3.0.
+        },
+        "predicted_score": 3.00,
+        // SCORING GUIDELINE: predicted_score directly inherits months.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 3.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      },
+      "9_3_repairability": {
+        // SCORING GOAL: Evaluates official repairability scores.
+        "european_union_repairability_index": {
+          "value": 7.50,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 7.50
+          // SCORING GUIDELINE: Direct inheritance. Max 10.00.
+        },
+        "predicted_score": 7.50,
+        // SCORING GUIDELINE: predicted_score directly inherits european_union_repairability_index.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
     },
-    "8_5_reverse_wireless": {
-      "watts": {
-        "value": 4.5,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
+    "10_miscellaneous": {
+      "10_1_stylus_hardware_system_support": {
+        // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
+        "support_tier": {
+          "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Section 10.1 table: Integrated Active -> 10.0, Active (No Silo) -> 7.0, Passive/Basic -> 3.0, None -> 0.0.
+        },
+        "predicted_score": 10.00,
+        // SCORING GUIDELINE: predicted_score directly inherits support_tier.subscore.
+        "final_score": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
     },
-    "8_6_charger_in_box": {
-      "included_watts": {
-        "value": 0,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.00,
-      "final_score": 0.00
-    }
-  },
-  "9_financial_and_economic_value": {
-    "9_1_price": {
-      "usd": {
-        "value": 1299,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 0.80,
-      "final_score": 0.80
-    },
-    "9_2_manufacturer_warranty_commitment": {
-      "months": {
-        "value": 12,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "value": {
-        "value": "1 Year Standard",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "predicted_score": 3.00,
-      "final_score": 3.00
-    },
-    "9_3_repairability": {
-      "ifixit_score": 8.00,
-      "european_union_repairability_index": {
-        "value": 4.00,
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "european_union_converted_score": 8.00,
-      "predicted_score": 8.00,
-      "confidence": {
-        "value": "High",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
-      "final_score": 8.00
-    }
-  },
-  "10_miscellaneous": {
-    "10_1_stylus_hardware_system_support": {
-      "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
-      "source": "TBD",
-      "exact_extract": "Proof pending",
-      "predicted_score": 10.00,
-      "final_score": 10.00
-    }
-  },
   "11_reviews_and_performance_boosters": {
     "11_1_dxomark_24mp_texture_rendering": {
       "source_link": "https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/",
