@@ -245,10 +245,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "thickness_mm": {
         "value": 8.6,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 3.50
+        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
       },
       "predicted_score": 3.50,
-        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 3.50,
@@ -262,10 +264,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "weight_g": {
         "value": 232,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 1.64
+        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
       },
       "predicted_score": 1.64,
-        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 1.64,
@@ -279,10 +283,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "width_mm": {
         "value": 79.0,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
       },
       "predicted_score": 0.00,
-        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 0.00,
@@ -364,10 +370,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "srgb_percent": {
         "value": 100,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": "N/A"
+        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
       },
       "predicted_score": 10.00,
-        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
+      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 10.00,
@@ -384,7 +392,9 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "HDR10"
         ],
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. For each supported format, use the exact term below for the "value" array:
         //   • "Dolby Vision"  → adds +3.00 to the subscore
         //   • "HDR10+"        → adds +2.00 to the subscore
         //   • "HDR10"         → adds +5.00 to the subscore
@@ -392,7 +402,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // If the device does not list support for any HDR formats (or explicitly only supports Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
       },
       "predicted_score": 7.00,
-        // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. For each supported format, use the exact term below for the "value" array:
+      // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.00,
@@ -418,12 +428,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "pixels_per_inch": {
         "value": 505,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.43
+        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
         // ONLY if pixels_per_inch is NOT available derive PPI: pixels_per_inch = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
       "predicted_score": 8.43,
-        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
+      // SCORING GUIDELINE: predicted_score directly inherits pixels_per_inch.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.43,
@@ -437,10 +449,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "maximum_refresh_rate_hz": {
         "value": 120,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 7.55
+        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
       },
       "predicted_score": 7.55,
-        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 7.55,
@@ -454,10 +468,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "touch_sampling_rate_hz": {
         "value": 240,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 5.00,
+        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
       "predicted_score": 5.00,
-        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits touch_sampling_rate_hz.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 5.00,
@@ -471,11 +487,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "screen_to_body_ratio_percent": {
         "value": 88.5,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 8.64
+        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
         // FALLBACK: If "screen_to_body_ratio_percent" is NOT available from primary sources, derive it using: (Active Display Area / Total Frontal Area) * 100. That should be well documented and justified via "source" and "exact_extract", if needed by providing multiple sources and extracts (stored in "source" and "exact_extract" and separated via commas). 
       },
       "predicted_score": 8.64,
-        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 8.64,
@@ -489,10 +507,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "diagonal_inches": {
         "value": 6.8,
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "subscore": 6.93
+        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
       },
       "predicted_score": 6.93,
-        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
+      // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
       "final_score": {
         // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
         "value": 6.93,
@@ -634,14 +654,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "speaker_configuration": {
           "value": "Standard Hybrid Stereo",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 7.00
+          // SCORING GUIDELINE: Identify the physical speaker setup using spec sheets or teardowns. Use the following exact terms for "value" with related scores as subscore:
           //   • "Balanced / Symmetrical Stereo" → 10.00 (Must explicitly state "Symmetrical speakers" or "Balanced stereo")
           //   • "Standard Hybrid Stereo"        → 7.00  (Typically listed as 'Stereo Speakers' without symmetry claims)
           //   • "Mono Speaker"                  → 3.00  (Single active loudspeaker)
           //   • "No Usable Speaker"             → 0.00
         },
         "predicted_score": 7.00,
-        // SCORING GUIDELINE: Identify the physical speaker setup using spec sheets or teardowns. Use the following exact terms for "value" with related scores as subscore:
+        // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 7.00,
@@ -660,7 +682,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
+          // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
           //   • "Dolby Atmos"                 → adds +5.00 to the subscore
           //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
           //   • "DTS:X"                       → adds +1.00 to the subscore
@@ -673,7 +695,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-        // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores as subscore:
           //   • "Spatial audio with Dynamic Head Tracking"      → 10.00
           //   • "Static spatial audio (no head tracking)"       → 7.00
           //   • "No spatial rendering"                          → 0.00
@@ -695,7 +717,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-        // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact terms for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact terms for "value" with related scores as subscore:
           //   • "3.5mm headphone jack (native analog output)"  → 10.00
           //   • "USB-C with documented analog audio output"    → 6.00
           //   • "USB-C digital audio only (dongle required)"   → 3.00
@@ -718,7 +740,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores as subscore:
           //   • ≥4 microphones   → 10.00
           //   • 3                → 8.00
           //   • 2                → 5.00
@@ -730,7 +752,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores as subscore:
           //   • Multi-channel / spatial audio   → 10.00
           //   • Stereo                          → 8.00
           //   • Mono                            → 5.00
@@ -744,7 +766,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 5.00
-        // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features × 2.50 = 5.00.
+          // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features × 2.50 = 5.00.
           //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
           //   • Wind Noise Reduction: Dedicated toggle or feature to filter wind rumble
           //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
@@ -883,10 +905,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "optical_format": {
           "value": "1/1.3 inches",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.11
+          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
         },
         "predicted_score": 8.11,
-        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
+        // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.11,
@@ -900,10 +924,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "aperture_f_stop": {
           "value": "f/1.7",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 6.40
+          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
         },
         "predicted_score": 6.40,
-        // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+        // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 6.40,
@@ -917,10 +943,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "megapixels": {
           "value": 200,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
+        // SCORING GUIDELINE: predicted_score directly inherits megapixels.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -936,7 +964,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact terms for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact terms for "value" with related scores as subscore:
           //   • "Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00 (Must contain Multi-axis mechanical and/or Gimbal)
           //   • "Sensor-Shift Optical Image Stabilization"              → 9.00  (Must explicitly state the sensor moves, e.g. IBIS)
           //   • "Lens-Based Optical Image Stabilization"                → 8.00  (Default for generic "OIS")
@@ -961,21 +989,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": "N/A"
-        // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no ultrawide lens, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
+          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no ultrawide lens, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
         },
         "field_of_view_degrees": {
           "value": 120,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.78
-        // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "ultrawide_sensor_size": {
           "value": "1/2.0",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "predicted_score": 8.67,
         // SCORING GUIDELINE: predicted_score = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true, source: UCC Formula of Section 4.5; otherwise predicted_score = 0.00.
@@ -992,10 +1020,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "optical_zoom_x": {
           "value": 5,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 6.99
+          // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
         },
         "predicted_score": 6.99,
-        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
+        // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 6.99,
@@ -1026,7 +1056,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
           },
           "predicted_score": 8.39,
-        // SCORING GUIDELINE: predicted_score (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
+          // SCORING GUIDELINE: predicted_score (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
           "final_score": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 8.39,
@@ -1067,7 +1097,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             // If telemacro_presence = false, then all fields of this block must be "N/A".
           },
           "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
+          // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
           "final_score": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 0.00,
@@ -1086,7 +1116,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
           "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
+          // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
           "final_score": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 0.00,
@@ -1112,7 +1142,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-        // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact terms for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact terms for "value" with related scores as subscore:
           //   • "8K"                    → 10.00
           //   • "4K (Ultra HD)"         → 10.00
           //   • "1440p / QHD (2.5K)"    → 8.00
@@ -1135,10 +1165,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "maximum_frames_per_second": {
           "value": 120,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Identify the exact maximum FPS supported at the resolution evaluated in Section 4.8 capped at 4K. If the device scored 8K in 4.8, evaluate its 4K FPS instead. If the device scored 1080p in 4.8, evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Identify the exact maximum FPS supported at the resolution evaluated in Section 4.8 capped at 4K. If the device scored 8K in 4.8, evaluate its 4K FPS instead. If the device scored 1080p in 4.8, evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
+        // SCORING GUIDELINE: predicted_score directly inherits maximum_frames_per_second.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1182,7 +1214,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Identify all supported professional recording codecs. Use the exact terms below for the "value" array. The subscore is the highest point value among detected codecs:
+          // SCORING GUIDELINE: Identify all supported professional recording codecs. Use the exact terms below for the "value" array. The subscore is the highest point value among detected codecs:
           //   • "CinemaDNG (True RAW)"         → 10.00
           //   • "ProRes RAW (True RAW)"        → 10.00
           //   • "BRAW (True RAW)"              → 10.00
@@ -1198,7 +1230,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-        // SCORING GUIDELINE: Identify all supported color profiles. Use the exact terms below for the "value" array. The subscore is the highest point value among detected profiles:
+          // SCORING GUIDELINE: Identify all supported color profiles. Use the exact terms below for the "value" array. The subscore is the highest point value among detected profiles:
           //   • "Apple Log (True Log)"               → 10.00
           //   • "S-Log / S-Log2 / S-Log3 (True Log)" → 10.00
           //   • "V-Log (True Log)"                   → 10.00
@@ -1214,7 +1246,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 5.00
-        // SCORING GUIDELINE: Use "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
+          // SCORING GUIDELINE: Use "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
         },
         "predicted_score": 7.95,
         // SCORING GUIDELINE: predicted_score = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
@@ -1241,7 +1273,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           ],
           "source": "TBD",
           "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution × FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
+          // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution × FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
         },
         "predicted_score": 8.55,
         // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels × frames_per_second. Apply the Section 4.12 logarithmic formula: predicted_score = 10 × (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set predicted_score to 0.00.
@@ -1275,14 +1307,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "focus_system_tier": {
           "value": "Autofocus (PDAF / Dual Pixel / Laser)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
           //   • "Autofocus (PDAF / Dual Pixel / Laser)" → 10.00
           //   • "Fixed Focus (Modern Wide-DOF)" → 6.00
           //   • "Fixed Focus (Legacy Narrow-DOF)" → 3.00
           //   • "No Front Camera" → 0.00
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+        // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1341,13 +1375,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "processing_tier": {
           "value": "Always-on multi-frame HDR + Night stacking",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
           //   • "Always-on multi-frame HDR + Night stacking" → 10.00
           //   • "Conditional multi-frame processing" → 6.00
           //   • "Single-frame capture only" → 0.00
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+        // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1361,13 +1397,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "capability_tier": {
           "value": "Full semantic segmentation (faces, sky, objects)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
           //   • "Full semantic segmentation (faces, sky, objects)" → 10.00
           //   • "Basic portrait / scene detection" → 6.00
           //   • "None" → 0.00
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+        // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1381,13 +1419,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "feature_tier": {
           "value": "Generative erase / expand / relight",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
           //   • "Generative erase / expand / relight" → 10.00
           //   • "Non-generative AI edits" → 6.00
           //   • "None" → 0.00
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
+        // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1420,10 +1460,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "years_security": {
           "value": 7,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 5.1 logarithmic formula: Score = 10 × (log(years) − log(Support_Years_Min)) / (log(Support_Years_Max) − log(Support_Years_Min)), clamped 0–10. Use the maximum committed years (OS or security) as the "years" variable.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Apply the Section 5.1 logarithmic formula: Score = 10 × (log(years) − log(Support_Years_Min)) / (log(Support_Years_Max) − log(Support_Years_Min)), clamped 0–10. Use the maximum committed years (OS or security) as the "years" variable.
+        // SCORING GUIDELINE: predicted_score directly inherits years_security.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1437,10 +1479,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "platform_score": {
           "value": 6.00,
           "source": "N/A",
-          "exact_extract": "N/A"
+          "exact_extract": "N/A",
+          "subscore": 6.00
+          // SCORING GUIDELINE: Direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula. Known platforms: iOS -> 10.0, Pixel UI / Stock Android -> 9.0, Samsung One UI -> 6.0, HyperOS -> 4.0, etc. If unlisted, score = N/A.
         },
         "predicted_score": 6.00,
-        // SCORING GUIDELINE: Direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula. Known platforms: iOS -> 10.0, Pixel UI / Stock Android -> 9.0, Samsung One UI -> 6.0, HyperOS -> 4.0, etc. If unlisted, score = N/A.
+        // SCORING GUIDELINE: predicted_score directly inherits platform_score.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 6.00,
@@ -1456,35 +1500,35 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.50
-        // SCORING GUIDELINE: If value = true, subscore = 2.50. If value = false, subscore = 0.00.
+          // SCORING GUIDELINE: If value = true, subscore = 2.50. If value = false, subscore = 0.00.
         },
         "live_speech_translation": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If value = true, subscore = 2.00. If value = false, subscore = 0.00.
+          // SCORING GUIDELINE: If value = true, subscore = 2.00. If value = false, subscore = 0.00.
         },
         "content_summarization": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 1.50
-        // SCORING GUIDELINE: If value = true, subscore = 1.50. If value = false, subscore = 0.00.
+          // SCORING GUIDELINE: If value = true, subscore = 1.50. If value = false, subscore = 0.00.
         },
         "writing_tools": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 1.00
-        // SCORING GUIDELINE: If value = true, subscore = 1.00. If value = false, subscore = 0.00.
+          // SCORING GUIDELINE: If value = true, subscore = 1.00. If value = false, subscore = 0.00.
         },
         "on_device_processing": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-        // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
+          // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
@@ -1577,7 +1621,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "value": "Adreno 750",
           "source": "TBD",
           "exact_extract": "Proof pending"
-        // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset".
+          // SCORING GUIDELINE: Record the exact GPU model name as listed on GSMArena under "Chipset".
           //   Then look up the Standard Graphics, Ray Tracing, Ref Freq, and Efficiency scores
           //   in the Section 6.3.0 table. Known GPU models (add to Section 6.3.0 if unlisted):
           //   Immortalis-G720 MC12 · Adreno 750 · Xclipse 940 · Adreno 740 · Immortalis-G715 MC11
@@ -1608,7 +1652,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 6.3 Part 1 formula: SGS_Bench = 10 × (log(Score) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min))
+          // SCORING GUIDELINE: Apply the Section 6.3 Part 1 formula: SGS_Bench = 10 × (log(Score) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min))
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score = (SGS × 0.9) + (RTS × 0.1). SGS is derived either from Benchmark (Method A) or 6.3.0 table (Method C). RTS is unconditionally derived from 6.3.0 table.
@@ -1625,10 +1669,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "geekbench_ai_quantized_score": {
           "value": 6000,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score.
+        // SCORING GUIDELINE: predicted_score directly inherits geekbench_ai_quantized_score.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1642,10 +1688,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "technology_generation": {
           "value": "LPDDR5X",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 6.5 memory technology table. E.g., LPDDR5X -> 10.0, LPDDR5 -> 8.0, LPDDR4X -> 5.0, LPDDR4 -> 3.0, older -> 0.0.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up the value in Section 6.5 memory technology table. E.g., LPDDR5X -> 10.0, LPDDR5 -> 8.0, LPDDR4X -> 5.0, LPDDR4 -> 3.0, older -> 0.0.
+        // SCORING GUIDELINE: predicted_score directly inherits technology_generation.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1659,9 +1707,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "capacity_gb": {
           "value_path": "identity.hardware_configuration.ram_gb.value",
           "value": 12,
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula based on RAM Capacity. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))
         },
         "predicted_score": 8.00,
-        // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula based on RAM Capacity. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))
+        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.00,
@@ -1675,10 +1725,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "storage_format": {
           "value": "UFS 4.0",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 6.7 storage technology table. NVMe / UFS 4.0 -> 10.0, UFS 3.1 -> 8.0, UFS 3.0 -> 6.0, UFS 2.2 -> 4.0, UFS 2.1 -> 3.0, eMMC 5.1 -> 0.0.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up the value in Section 6.7 storage technology table. NVMe / UFS 4.0 -> 10.0, UFS 3.1 -> 8.0, UFS 3.0 -> 6.0, UFS 2.2 -> 4.0, UFS 2.1 -> 3.0, eMMC 5.1 -> 0.0.
+        // SCORING GUIDELINE: predicted_score directly inherits storage_format.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1692,9 +1744,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "capacity_gb": {
           "value_path": "identity.hardware_configuration.storage_gb.value",
           "value": 512,
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula based on Storage Capacity. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))
         },
         "predicted_score": 8.00,
-        // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula based on Storage Capacity. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))
+        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.00,
@@ -1708,10 +1762,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "expandability_support": {
           "value": "No SD Card slot",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Look up the value in Section 6.9 storage expandability table. Dedicated MicroSD Slot -> 10.0, Shared SIM slot -> 7.0, NM Card -> 5.0, None -> 0.0.
         },
         "predicted_score": 0.00,
-        // SCORING GUIDELINE: Look up the value in Section 6.9 storage expandability table. Dedicated MicroSD Slot -> 10.0, Shared SIM slot -> 7.0, NM Card -> 5.0, None -> 0.0.
+        // SCORING GUIDELINE: predicted_score directly inherits expandability_support.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.00,
@@ -1727,21 +1783,21 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Look up the value in Section 6.10 Part B table. Active Cooling (Fan) -> 10.0, Large VC -> 8.0, Vapor Chamber -> 7.0, Multi-layer Graphite -> 5.0, Single Heat Spreader -> 3.0, None -> 0.0.
+          // SCORING GUIDELINE: Look up the value in Section 6.10 Part B table. Active Cooling (Fan) -> 10.0, Large VC -> 8.0, Vapor Chamber -> 7.0, Multi-layer Graphite -> 5.0, Single Heat Spreader -> 3.0, None -> 0.0.
         },
         "part_c_process_node_size_nm": {
           "value": 4,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-        // SCORING GUIDELINE: Process Node Score calculated via Section 6.10 Part C Node Score formula.
+          // SCORING GUIDELINE: Process Node Score calculated via Section 6.10 Part C Node Score formula.
         },
         "part_c_foundry": {
           "value": "TSMC",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-        // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table (TSMC=10, Samsung=5, Others=0).
+          // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table (TSMC=10, Samsung=5, Others=0).
         },
         "predicted_score": 9.50,
         // SCORING GUIDELINE: predicted_score calculated using Physical Score and Peak Thermal Demand Compensation from Section 6.10.
@@ -1760,10 +1816,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "network_technology": {
           "value": "5G mmWave + Sub-6 (Global band coverage)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.1 table.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up the value in Section 7.1 table.
+        // SCORING GUIDELINE: predicted_score directly inherits network_technology.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1777,10 +1835,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "sim_configuration": {
           "value": "Dual eSIM / iSIM + Physical Nano-SIM Slot",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.2 table.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up the value in Section 7.2 table.
+        // SCORING GUIDELINE: predicted_score directly inherits sim_configuration.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1794,10 +1854,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "standard": {
           "value": "Wi-Fi 7",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up the value in Section 7.3 table.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up the value in Section 7.3 table.
+        // SCORING GUIDELINE: predicted_score directly inherits standard.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1813,14 +1875,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.50
-        // SCORING GUIDELINE: Look up Bluetooth version score in Section 7.4 Part 1 table.
+          // SCORING GUIDELINE: Look up Bluetooth version score in Section 7.4 Part 1 table.
         },
         "highest_codec_supported": {
           "value": "aptX HD / LDAC",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.00
-        // SCORING GUIDELINE: Look up highest codec tier in Section 7.4 Part 2 table. Lossless -> 5.0, High-Res -> 4.0, Standard -> 1.5.
+          // SCORING GUIDELINE: Look up highest codec tier in Section 7.4 Part 2 table. Lossless -> 5.0, High-Res -> 4.0, Standard -> 1.5.
         },
         "predicted_score": 8.50,
         // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
@@ -1837,10 +1899,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "best_technology": {
           "value": "Ultrasonic FP",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Look up best available biometric method in Section 7.5 table.
         },
         "predicted_score": 8.00,
-        // SCORING GUIDELINE: Look up best available biometric method in Section 7.5 table.
+        // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.00,
@@ -1926,10 +1990,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "configuration": {
           "value": "NFC + UWB",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up value in Section 7.7 table.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up value in Section 7.7 table.
+        // SCORING GUIDELINE: predicted_score directly inherits configuration.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -1945,35 +2011,35 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
         },
         "cross_device_clipboard": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
         },
         "task_handoff": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
         },
         "communication_integration": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
         },
         "camera_virtualization": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score is sum of all subscores above (Max 10.0).
@@ -1990,10 +2056,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "version_speed": {
           "value": "USB 3.2 Gen 2 (10Gbps)",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Look up value in Section 7.9 table.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Look up value in Section 7.9 table.
+        // SCORING GUIDELINE: predicted_score directly inherits version_speed.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
@@ -2020,10 +2088,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "watts": {
           "value": 45,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 8.00
+          // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min))
         },
         "predicted_score": 8.00,
-        // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min))
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.00,
@@ -2037,10 +2107,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "watts": {
           "value": 15,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Apply Section 8.3 logarithmic formula. Score = 10 * (log(W) - log(Wireless_W_Min)) / (log(Wireless_W_Max) - log(Wireless_W_Min)). Set to 0 if unsupported.
         },
         "predicted_score": 5.00,
-        // SCORING GUIDELINE: Apply Section 8.3 logarithmic formula. Score = 10 * (log(W) - log(Wireless_W_Min)) / (log(Wireless_W_Max) - log(Wireless_W_Min)). Set to 0 if unsupported.
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 5.00,
@@ -2054,10 +2126,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "watts": {
           "value": 0,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
         },
         "predicted_score": 0.00,
-        // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.00,
@@ -2071,10 +2145,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "watts": {
           "value": 4.5,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
         },
         "predicted_score": 5.00,
-        // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 5.00,
@@ -2088,10 +2164,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "included_watts": {
           "value": 0,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Section 8.6 scoring based on included charger wattage: >= 60W -> 10.0, 30W-59W -> 7.0, 15W-29W -> 4.0, <15W -> 2.0, None -> 0.0.
         },
         "predicted_score": 0.00,
-        // SCORING GUIDELINE: Section 8.6 scoring based on included charger wattage: >= 60W -> 10.0, 30W-59W -> 7.0, 15W-29W -> 4.0, <15W -> 2.0, None -> 0.0.
+        // SCORING GUIDELINE: predicted_score directly inherits included_watts.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.00,
@@ -2107,10 +2185,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "usd": {
           "value": 1299,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 0.80
+          // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 × (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
         },
         "predicted_score": 0.80,
-        // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 × (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
+        // SCORING GUIDELINE: predicted_score directly inherits usd.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.80,
@@ -2124,10 +2204,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "months": {
           "value": 12,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 3.00
+          // SCORING GUIDELINE: Section 9.2 table: 36+ Months -> 10.0, 24 Months -> 7.0, 12 Months -> 3.0.
         },
         "predicted_score": 3.00,
-        // SCORING GUIDELINE: Section 9.2 table: 36+ Months -> 10.0, 24 Months -> 7.0, 12 Months -> 3.0.
+        // SCORING GUIDELINE: predicted_score directly inherits months.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 3.00,
@@ -2141,10 +2223,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "european_union_repairability_index": {
           "value": 7.50,
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 7.50
+          // SCORING GUIDELINE: Direct inheritance. Max 10.00.
         },
         "predicted_score": 7.50,
-        // SCORING GUIDELINE: Direct inheritance. Max 10.00.
+        // SCORING GUIDELINE: predicted_score directly inherits european_union_repairability_index.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 7.50,
@@ -2160,10 +2244,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "support_tier": {
           "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
           "source": "TBD",
-          "exact_extract": "Proof pending"
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Section 10.1 table: Integrated Active -> 10.0, Active (No Silo) -> 7.0, Passive/Basic -> 3.0, None -> 0.0.
         },
         "predicted_score": 10.00,
-        // SCORING GUIDELINE: Section 10.1 table: Integrated Active -> 10.0, Active (No Silo) -> 7.0, Passive/Basic -> 3.0, None -> 0.0.
+        // SCORING GUIDELINE: predicted_score directly inherits support_tier.subscore.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
