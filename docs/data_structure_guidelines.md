@@ -338,14 +338,36 @@ Every field must fall into one of these strict categories.
 ### Type A: Raw External Data
 **Definition:** Hard facts scraped or extracted from an external source, paired with their evaluated mathematical constraint. The `value` field MUST be one of 5 strict data shapes: Continuous Numeric, Discrete Integer, Categorical String, String Array, or Pure Boolean. Artificial "logic" keys (e.g., `is_supported`) are strictly forbidden; the component key must be the name of the specification itself.
 
-| Field           | Description                                                                                                         |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------ |
-| `value`         | The raw hardware specification (must match one of the 5 allowed Data Shapes).                                       |
-| `source`        | **MUST be a valid, accessible URL** to the exact page containing the data.                                          |
-| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                                                   |
-| `subscore`      | **[OPTIONAL]** The individual score mapped/calculated for this value. Omit if the parameter is not scored directly. |
+| Field           | Description                                                                              |
+| :-------------- | :--------------------------------------------------------------------------------------- |
+| `value`         | Raw hardware specification (must match one of the 5 allowed Data Shapes).                |
+| `value_details` | **[OPTIONAL]** Brand marketing names or identifiers justifying the `value`. See below.   |
+| `source`        | **MUST be a valid URL** to the exact page containing the data.                           |
+| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                        |
+| `subscore`      | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.           |
 
-**Example (Scored Value):**
+#### `value` vs. `value_details` — When to Use Each
+
+| Aspect         | `value`                                | `value_details`                                               |
+| :------------- | :------------------------------------- | :------------------------------------------------------------ |
+| **Role**       | **Canonical tier** used for scoring.   | **Brand-specific names** for traceability.                    |
+| **Mandatory?** | Yes — always required.                 | No — only when mapping marketing terms or for additional info |
+| **Data shape** | Standard (numeric, string, bool, etc.) | Always a **string array** (e.g. `["Apple Log"]`).             |
+
+**When to add `value_details`:** Only when the canonical `value` is a **categorical tier** that maps from multiple possible real-world marketing names. If `value` is already a precise number (e.g., `120` Hz), a boolean (e.g., `true`), or the exact marketing name itself (e.g., `"Gorilla Glass Armor"`), then `value_details` is NOT needed.
+
+**Example (Categorical with details):**
+```json
+"processing_tier": {
+  "value": "Advanced Semantic & Neural Stacking",
+  "value_details": ["Deep Fusion", "Smart HDR 5"],
+  "source": "https://www.apple.com/iphone-16-pro/specs/",
+  "exact_extract": "Photonic Engine [...] Deep Fusion [...] Smart HDR 5",
+  "subscore": 10.00
+}
+```
+
+**Example (Scored Value — no details needed):**
 ```json
 "bluetooth_version": {
   "value": 5.3,
@@ -355,7 +377,7 @@ Every field must fall into one of these strict categories.
 }
 ```
 
-**Example (Unscored Intermediate Input):**
+**Example (Unscored Intermediate Input — no details needed):**
 ```json
 "resolution_width_px": {
   "value": 1440,

@@ -50,7 +50,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-09"
+    "last_updated": "2026-03-11"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -135,6 +135,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // SCORING GOAL: Scores the structural frame and back panel materials to evaluate build premium and durability class.
       "frame_material": {
         "value": "Titanium Alloy",
+        "value_details": ["Grade 5 Titanium"],
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
@@ -144,9 +145,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Aluminum Alloy       → 7.00
         //   • Polymer Composite    → 4.00
         //   • Not Disclosed        → 0.00
+        // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for the frame material (e.g., ["Grade 5 Titanium"], ["Armor Aluminum"], ["Stainless Steel 316L"]).
       },
       "back_material": {
         "value": "Strengthened Glass",
+        "value_details": ["Gorilla Glass Victus 2"],
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
@@ -156,6 +159,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • Standard Glass       → 6.00
         //   • Polymer              → 4.00
         //   • Not Disclosed        → 0.00
+        // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for the back material (e.g., ["Gorilla Glass Victus 2"], ["Ceramic Shield"], ["Glastic"]).
       },
       "predicted_score": 9.20,
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
@@ -309,6 +313,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour. Source: Section 2.1 Display Panel Architecture.
       "panel_type": {
         "value": "LTPO OLED",
+        "value_details": ["Dynamic AMOLED 2X"],
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
@@ -321,6 +326,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         //   • "TN LCD or Legacy" → 0.00  (Twisted Nematic)
         // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "AMOLED or OLED" (8.00).
         // In case of doubt consult #### Marketing Name → Canonical Tier Lookup
+        // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name found in specs (e.g., ["Dynamic AMOLED 2X"], ["Super Retina XDR ProMotion"], ["LTPO4 AMOLED"]).
       },
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
@@ -692,6 +698,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "spatial_audio_rendering": {
           "value": "Static spatial audio (no head tracking)",
+          "value_details": ["360 Audio"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
@@ -699,6 +706,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • "Spatial audio with Dynamic Head Tracking"      → 10.00
           //   • "Static spatial audio (no head tracking)"       → 7.00
           //   • "No spatial rendering"                          → 0.00
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for the spatial audio feature (e.g. ["360 Audio"], ["Dolby Atmos spatial"]).
         },
         "predicted_score": 7.50,
         // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
@@ -961,6 +969,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture. Source: Section 4.4 Image Stabilization.
         "stabilization_type": {
           "value": "Lens-Based Optical Image Stabilization",
+          "value_details": ["OIS"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
@@ -971,6 +980,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • "Software-Only Stabilization (Electronic, no hardware)" → 5.00  (EIS/AIS only. No physical/hardware stabilization is mentioned.)
           //   • "None"                                                  → 0.00
           // AMBIGUITY RULE: If the spec sheet lists generic "Optical Image Stabilization (OIS)" without further qualification, default to 8.00.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM stabilization term (e.g., ["OIS"], ["Sensor-Shift OIS"], ["SteadyShot with Active Mode"], ["Super Steady OIS + EIS"]).
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1208,33 +1218,28 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "4_11_video_encoding": {
         // SCORING GOAL: Scores support for professional codecs and recording profiles as a composite index.
         "professional_codec_support": {
-          "value": [
-            "ProRes (Mezzanine)"
-          ],
+          "value": "Mezzanine",
+          "value_details": ["ProRes"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify all supported professional recording codecs. Use the exact terms below for the "value" array. The subscore is the highest point value among detected codecs:
-          //   • "CinemaDNG (True RAW)"         → 10.00
-          //   • "ProRes RAW (True RAW)"        → 10.00
-          //   • "BRAW (True RAW)"              → 10.00
-          //   • "ProRes (Mezzanine)"           → 8.00
-          //   • "APV (Mezzanine)"              → 8.00
-          //   • "DNxHR/HD (Mezzanine)"         → 8.00
-          // If no professional recording codecs are supported (standard H.264/H.265 only), leave the array empty [] and set subscore to 0.00.
+          // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "True RAW"    → 10.00 (Codecs: CinemaDNG, ProRes RAW, Blackmagic RAW (BRAW))
+          //   • "Mezzanine"   → 8.00  (Codecs: ProRes, Advanced Professional Video (APV), DNxHR/HD)
+          //   • "None"        → 0.00  (Standard H.264/H.265 only)
+          // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]).
         },
         "log_color_profile_support": {
-          "value": [
-            "Apple Log"
-          ],
+          "value": "True Log",
+          "value_details": ["Apple Log"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify all supported color profiles based on Section 4.11.2. Add them to the "value" array. The subscore is the highest point value among detected profiles:
-          //   • True Log (10.00 points): Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log.
-          //   • Flat Profile (5.00 points): S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike.
-          //   • Standard (0.00 points): None (Standard contrast only).
-          // If no flat/log profile is supported, leave the array empty [] and set subscore to 0.00.
+          // SCORING GUIDELINE: Identify the highest supported color profile tier based on Section 4.11.2. Use the following exact terms for "value" with related scores as subscore:
+          //   • "True Log"      → 10.00 (Profiles: Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log)
+          //   • "Flat Profile"  → 5.00  (Profiles: S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike)
+          //   • "Standard"      → 0.00  (None / Standard contrast only)
+          // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]).
         },
         "color_bit_depth": {
           "value": "10-bit color",
@@ -1313,6 +1318,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "focus_system_tier": {
           "value": "Autofocus",
+          "value_details": ["Phase Detection Auto Focus (PDAF)"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
@@ -1322,6 +1328,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • "Fixed Focus (Legacy Narrow-DOF)"  → 3.00  (Identified by aperture_f_number < 2.0 AND sensor_size > 1/3".)
           //   • "No Front Camera"                  → 0.00
           // MISSING DATA FALLBACK: If sensor size is missing from specs but aperture (f-number) is known, classify based solely on the aperture.
+          // VALUE_DETAILS GUIDELINE: Record the exact technology (e.g., ["Phase Detection Auto Focus (PDAF)"], ["Dual Pixel PDAF"], ["Laser AF"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
@@ -1378,35 +1385,30 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "4_15_4_1_professional_codec_support": {
           "supported_codecs": {
-            "value": [
-              "ProRes (Mezzanine)"
-            ],
+            "value": "Mezzanine",
+            "value_details": ["ProRes"],
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 8.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify all supported professional recording codecs. Use the exact terms for the "value" array. The subscore is the highest point value among detected codecs:
-            //   • "CinemaDNG (True RAW)"         → 10.00
-            //   • "ProRes RAW (True RAW)"        → 10.00
-            //   • "BRAW (True RAW)"              → 10.00
-            //   • "ProRes (Mezzanine)"           → 8.00
-            //   • "APV (Mezzanine)"              → 8.00
-            //   • "DNxHR/HD (Mezzanine)"         → 8.00
-            // If none supported, leave array empty [] and set subscore to 0.00.
+            // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact terms for "value" with related scores as subscore:
+            //   • "True RAW"    → 10.00 (Codecs: CinemaDNG, ProRes RAW, Blackmagic RAW (BRAW))
+            //   • "Mezzanine"   → 8.00  (Codecs: ProRes, Advanced Professional Video (APV), DNxHR/HD)
+            //   • "None"        → 0.00  (Standard H.264/H.265 only)
+            // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]).
           }
         },
         "4_15_4_2_log_color_profile_support": {
           "supported_profiles": {
-            "value": [
-              "Apple Log (True Log)"
-            ],
+            "value": "True Log",
+            "value_details": ["Apple Log"],
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCPS). Identify all supported color profiles. Add them to the "value" array with the mention (True Log) or (Flat Profile). For example: S-Log3 (True Log), Cinelike-D (Flat Profile). The subscore is the highest point value among detected profiles:
-            //   • True Log (10.00 points): Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log.
-            //   • Flat Profile (5.00 points): S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike.
-            //   • Standard (0.00 points): None (Standard contrast only).
-            // If no flat/log profile is supported, leave the array empty [] and set subscore to 0.00.
+            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCPS). Identify the highest supported color profile tier. Use the following exact terms for "value" with related scores as subscore:
+            //   • "True Log"      → 10.00 (Profiles: Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log)
+            //   • "Flat Profile"  → 5.00  (Profiles: S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike)
+            //   • "Standard"      → 0.00  (None / Standard contrast only)
+            // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]).
           }
         },
         "predicted_score": 9.80,
@@ -1424,18 +1426,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
         "processing_tier": {
           "value": "Advanced Semantic & Neural Stacking",
+          "value_details": ["Deep Fusion", "Smart HDR 5"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore (Reference Section 4.16 for full details):
           //   • "Advanced Semantic & Neural Stacking" → 10.00
-          //     Terms: Apple (Photonic Engine, Deep Fusion, Smart HDR 4/5), Google (HDR+ with Bracketing (Tensor-based), Super Res Zoom), Samsung (Enhanced Processing [S23+], Expert RAW Stacking), Vivo (V3/V4 Imaging Chip, BlueImage, Neural HDR), Oppo (MariSilicon X/Y, Ultra HDR), Common (Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL)).
+          //     Look for: Apple (Photonic Engine, Deep Fusion, Smart HDR 4/5), Google (HDR+ with Bracketing (Tensor-based), Super Res Zoom), Samsung (Enhanced Processing [S23+], Expert RAW Stacking), Vivo (V3/V4 Imaging Chip, BlueImage, Neural HDR), Oppo (MariSilicon X/Y, Ultra HDR), Common (Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL)).
           //   • "Standard Always-on Multi-Frame HDR"  → 7.50
-          //     Terms: Apple (Smart HDR 2/3), Google (Standard HDR+ [Pixel 1-5]), Samsung (Scene Optimizer [Multi-frame mode]), Common (Always-on HDR, Automatic Multi-frame Fusion).
+          //     Look for: Apple (Smart HDR 2/3), Google (Standard HDR+ [Pixel 1-5]), Samsung (Scene Optimizer [Multi-frame mode]), Common (Always-on HDR, Automatic Multi-frame Fusion).
           //   • "Conditional / Manual Multi-Frame"    → 5.00
-          //     Terms: Generic "Auto-HDR", Manual HDR Mode, Night Mode Stacking (if only in dedicated mode).
+          //     Look for: Generic "Auto-HDR", Manual HDR Mode, Night Mode Stacking (if only in dedicated mode).
           //   • "Basic / Single Frame (Legacy)"       → 0.00
-          //     Terms: No multi-frame stacking, standard single exposure.
+          //     Look for: No multi-frame stacking, standard single exposure.
+          // VALUE_DETAILS GUIDELINE: List the exact OEM feature names that justify the tier (e.g., ["Deep Fusion", "Smart HDR 5"], ["Neural HDR", "BlueImage"], ["HDR+ with Bracketing"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
@@ -1451,6 +1455,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Scores the ability of the camera software to understand and segment scenes and subjects.
         "capability_tier": {
           "value": "Full semantic segmentation (faces, sky, objects)",
+          "value_details": ["Scene Optimizer"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
@@ -1458,6 +1463,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • "Full semantic segmentation (faces, sky, objects)" → 10.00
           //   • "Basic portrait / scene detection" → 6.00
           //   • "None" → 0.00
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM feature names (e.g., ["Scene Optimizer"], ["Visual Intelligence", "Photographic Styles"], ["Google Lens integration"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
@@ -1473,6 +1479,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Scores the ability to modify images after capture using AI.
         "feature_tier": {
           "value": "Generative erase / expand / relight",
+          "value_details": ["Magic Eraser", "Best Take"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
@@ -1480,6 +1487,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           //   • "Generative erase / expand / relight" → 10.00
           //   • "Non-generative AI edits" → 6.00
           //   • "None" → 0.00
+          // VALUE_DETAILS GUIDELINE: List the exact OEM AI tool names (e.g., ["Magic Eraser", "Best Take"], ["Clean Up", "Image Playground"], ["AI Expand", "Generative Fill"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
@@ -1835,10 +1843,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Evaluates thermal cooling capability based on frame architecture, weight, surface area, and active/passive cooling system.
         "part_b_cooling_system_class": {
           "value": "Large Vapor Chamber (≥4000 mm²)",
+          "value_details": ["Vapor Chamber cooling system"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Look up the value in Section 6.10 Part B table. Active Cooling (Fan) -> 10.0, Large VC -> 8.0, Vapor Chamber -> 7.0, Multi-layer Graphite -> 5.0, Single Heat Spreader -> 3.0, None -> 0.0.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM cooling marketing term (e.g., ["IceLoop Thermal System"], ["Cryo-Velocity Vapor Chamber"], ["LiquidCool Technology"]).
         },
         "part_c_process_node_size_nm": {
           "value": 4,
@@ -1934,10 +1944,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "highest_codec_supported": {
           "value": "aptX HD / LDAC",
+          "value_details": ["LDAC", "aptX HD", "AAC", "SBC"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.00
           // SCORING GUIDELINE: Look up highest codec tier in Section 7.4 Part 2 table. Lossless -> 5.0, High-Res -> 4.0, Standard -> 1.5.
+          // VALUE_DETAILS GUIDELINE: List all specific Bluetooth audio codecs supported by the device (e.g., ["LDAC", "aptX HD", "AAC", "SBC"], ["aptX Lossless", "LDAC", "aptX Adaptive"]).
         },
         "predicted_score": 8.50,
         // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
@@ -1953,10 +1965,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Evaluates secure unlock mechanisms.
         "best_technology": {
           "value": "Ultrasonic FP",
+          "value_details": ["Qualcomm 3D Sonic Gen 2"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Look up best available biometric method in Section 7.5 table.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM biometric sensor model or marketing name (e.g., ["Qualcomm 3D Sonic Gen 2"], ["Face ID"], ["Optical in-display fingerprint"]).
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.
@@ -2298,10 +2312,12 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
         "support_tier": {
           "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
+          "value_details": ["S Pen"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Section 10.1 table: Integrated Active -> 10.0, Active (No Silo) -> 7.0, Passive/Basic -> 3.0, None -> 0.0.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM stylus product name (e.g., ["S Pen"], ["Apple Pencil Pro"], ["Xiaomi Smart Pen"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits support_tier.subscore.
