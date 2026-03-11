@@ -986,7 +986,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 ### 🔹 4.10 Video Color & Dynamic Range
 *Description:* Ability to capture wide dynamic range and rich color information in video.
-*   **Measurement:** Supported **HDR** (High Dynamic Range) standards and bit depth.
+*   **Measurement:** Supported **HDR** (High Dynamic Range) standards.
 *   **Unit:** Composite Index (0–10)
 *   **Significance:** High Dynamic Range video preserves highlights and shadows, improving realism and color grading headroom.
 
@@ -1040,18 +1040,21 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Measurement:** Camera feature list, video mode specifications.
 *   **Why it matters:** In standard recording, a bright sky or a dark shadow might become pure white or solid black (clipping). Log profiles capture this lost information, giving editors much more flexibility during "color grading" (the process of adjusting colors and contrast) to achieve a cinematic look without the image becoming "noisy" or "distorted."
 
-| Score    | Supported Color Profile                     |
-| :------- | :------------------------------------------ |
-| **10.0** | **Apple Log (True Log)**                    |
-| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**      |
-| **10.0** | **V-Log (True Log)**                        |
-| **10.0** | **D-Log / D-Log M (True Log)**              |
-| **10.0** | **F-Log (True Log)**                        |
-| **10.0** | **Samsung Log (True Log)**                  |
-| **10.0** | **Xiaomi Log (True Log)**                   |
-| **10.0** | **Generic / Other True Log**                |
-| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**          |
-| **0.0**  | **None (Standard contrast only)**           |
+| Score    | Supported Color Profile                               |
+| :------- | :---------------------------------------------------- |
+| **10.0** | **Apple Log (True Log)**                              |
+| **10.0** | **Samsung / Galaxy Log (True Log)**                   |
+| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**                |
+| **10.0** | **V-Log (True Log)**                                  |
+| **10.0** | **D-Log / D-Log M (True Log)**                        |
+| **10.0** | **F-Log (True Log)**                                  |
+| **10.0** | **OPPO Log (True Log)**                               |
+| **10.0** | **Vivo Log (True Log)**                               |
+| **10.0** | **Xiaomi Log (True Log)**                             |
+| **5.0**  | **S-Cinetone for mobile (Sony Flat)**                 |
+| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**                    |
+| **5.0**  | **D-Cinelike (Flat)**                                 |
+| **0.0**  | **None (Standard contrast only)**                     |
 
 *Formula:* `Score = max(points_for_detected_profiles)`
 
@@ -1102,70 +1105,145 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Min Score (0.0):** ≤ Camera_Front_Resolution_MP_Min
 > [!NOTE]
 > **Why Logarithmic?** Selfie detail benefits diminish rapidly after a certain point. 32MP is sufficient for high-quality prints; beyond that, sensor size matters more than pixel count.
+>
+> **Homogenization with Rear Camera (Section 4.3):**
+> This section mirrors the logarithmic scoring logic of the Main Camera Resolution section (§4.3), using its own front-specific constants (`Camera_Front_Resolution_MP_Max` and `Camera_Front_Resolution_MP_Min`).
 
 ### 🔹 4.14 Front Camera Focus System
 *Description:* Ability of the front-facing camera to maintain sharp focus across different subject distances.
 *   **Measurement:** Focus mechanism and optical configuration.
 *   **Unit:** Focus System Tier
-*   **Significance:** Autofocus ensures sharp selfies and vlogs regardless of arm length or group distance.
+*   **Significance:** Autofocus(AF) ensures sharp selfies and vlogs regardless of arm length or group distance.
 
-| Score    | Focus System Tier                         | Objective Criteria                                   |
-| :------- | :---------------------------------------- | :--------------------------------------------------- |
-| **10.0** | **Autofocus (PDAF / Dual Pixel / Laser)** | Any active AF mechanism                              |
-| **6.0**  | **Fixed Focus (Modern Wide-DOF)**         | Fixed focus AND (Aperture ≥ f/2.0 OR Sensor ≤ 1/3")  |
-| **3.0**  | **Fixed Focus (Legacy Narrow-DOF)**       | Fixed focus AND (Aperture < f/2.0 AND Sensor > 1/3") |
-| **0.0**  | **No Front Camera**                       | Feature phone                                        |
+| Score    | Focus System Tier                                            | Objective Criteria                                         |
+| :------- | :----------------------------------------------------------- | :--------------------------------------------------------- |
+| **10.0** | **Autofocus (AF) (PDAF / Dual Pixel / Laser AF)**            | Any active Focus mechanism                                 |
+| **6.0**  | **Fixed Focus (FF) (Modern Wide-DOF)**                       | Fixed focus AND (Aperture f-number ≥ 2.0 OR Sensor ≤ 1/3") |
+| **3.0**  | **Fixed Focus (FF) (Legacy Narrow-DOF)**                     | Fixed focus AND (Aperture f-number < 2.0 AND Sensor > 1/3")|
+| **0.0**  | **No Front Camera**                                          | Feature phone                                              |
 
 > [!NOTE]
-> **Why this distinction?** Fixed-focus cameras rely on depth of field (DOF). Older or poorly designed selfie cameras with large sensors and fast apertures (low f-numbers) produce shallow DOF, causing frequent misfocus. Modern designs either add AF or intentionally limit DOF to maintain usability.
+> **A Beginner's Guide to Focus Systems:**
+> *   **Autofocus (AF):** A smart mechanical system where the camera lens physically moves to find the sharpest point. It ensures your face is crisp whether the phone is 10 centimeters away or 1 meter away.
+>     *   **PDAF (Phase Detection Auto Focus):** A fast, modern technology that uses special "paired" pixels on the sensor to instantly calculate exactly how much the lens needs to move.
+>     *   **Dual Pixel:** An elite version of PDAF where *every single pixel* participates in focusing. This makes it incredibly fast, especially in dim light.
+>     *   **Laser AF (Laser Auto Focus):** The phone fires a tiny, invisible laser beam to measure the exact distance to your face. It's the fastest way to focus in total darkness.
+> *   **Fixed Focus (FF):** A simple lens with no moving parts. The focus is permanently "locked" at a factory-set distance (usually arm's length).
+> *   **Depth of Field (DOF):** This is the "focus zone"—the range of distance within which objects appear sharp.
+>     *   **Wide DOF (Score 6):** A large focus zone where everything from your nose to the background is reasonably sharp. Brands achieve this by using smaller apertures (higher f-numbers like f/2.2).
+>     *   **Narrow DOF (Score 3):** A tiny focus zone. If you move the phone slightly closer or further, your face becomes blurry. This happens with larger lenses (low f-numbers like f/1.8) that lack an AF motor to adjust themselves.
+
+> [!IMPORTANT]
+> **Scoring Guidelines & Mathematical Interpretation:**
+> *   **Aperture (f-number):** In optics, the aperture is written as a fraction where the **f-number** is the denominator ($f/2.2$, $f/2.4$). **Because it's a fraction, a larger f-number actually means a smaller physical opening.**
+>     *   **f-number ≥ 2.0:** Smaller openings like **f/2.2** or **f/2.4** (which widen the focus zone).
+>     *   **f-number < 2.0:** Larger openings like **f/1.8** or **f/1.9** (which narrow the focus zone).
+> *   **Sensor Size:** Optical formats are also fractions of an inch (e.g., 1/3"). A larger denominator means a smaller sensor.
+>     *   **Sensor ≤ 1/3":** Smaller sizes like **1/3.6"** or **1/4"** (which widen the focus zone).
+>     *   **Sensor > 1/3":** Larger sizes like **1/2.8"** or **1/2.0"** (which narrow the focus zone).
+> *   **Missing Data Fallback:** If the sensor format is missing from public specifications but the aperture is known, classify the phone based entirely on its f-number.
 
 ### 🔹 4.15 Front Camera Video Performance
-*Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, and dynamic range.
-*   **Measurement:** Max resolution, FPS, and HDR capability.
+*Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, dynamic range, and professional recording profiles.
+*   **Measurement:** Max resolution, Frames per Second (FPS), High Dynamic Range (HDR), and Professional Recording (Codecs and Log).
 *   **Unit:** Composite Score (0-10)
 *   **Significance:** Critical for vlogging, video calls, and content creation.
-*Formula:* `Score = (0.4 * ResScore) + (0.35 * FPSScore) + (0.25 * DRScore)`
+*Formula:* `Score = (0.35 * ResScore) + (0.25 * FPSScore) + (0.20 * HDRScore) + (0.20 * ProRecordScore)`
+    *   *Where:* `ProRecordScore = (0.50 * PCS_Score) + (0.50 * LCPS_Score)`
 
 **4.15.1 Video Resolution Score**
 *What it measures:* The maximum spatial resolution (pixel count) the front camera can record.
-*   **Measurement:** Maximum supported front video resolution (long edge in pixels).
+*   **Measurement:** Maximum supported front video resolution.
 *   **Why it matters:** Higher resolution provides more detail for cropping, digital stabilization, and future-proofing. 4K allows for 1080p crops without quality loss, while 720p limits editing flexibility.
-*   *Formula:* `ResScore = 10 * (log(px) - log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) - log(Camera_Front_Video_Res_Width_Min))` (Clamped 0-10)
-    *   **Variables:**
-        *   `px` = Long edge resolution in pixels (e.g., 3840 for 4K, 1920 for 1080p, 1280 for 720p)
-    *   **Max Score (10.0):** ≥ Camera_Front_Video_Res_Width_Max
-    *   **Min Score (0.0):** ≤ Camera_Front_Video_Res_Width_Min
+
+| Score  | Max Front Video Resolution |
+| :----- | :------------------------- |
+| **10** | **≥ 4K (Ultra HD) or 8K**  |
+| **8**  | **1440p / QHD (2.5K)**     |
+| **6**  | **1080p (Full HD)**        |
+| **3**  | **720p (HD)**              |
+| **0**  | **≤ 480p**                 |
+
 > [!NOTE]
-> **Why Logarithmic?** The perceptual benefit of resolution follows a diminishing return curve. The +1MP upgrade from 720p (~1MP) to 1080p (~2MP) is dramatic for clarity. However, An identical +1MP increase from 4K (~8MP) to roughly 9MP is imperceptible on a small screen.
+> **Homogenization with Rear Camera (Section 4.8):**
+> This scoring table perfectly mirrors the rear camera's Video Resolution section (§4.8), as the principles of perceptual resolution and the 4K standard ceiling apply equally to both modules.
+>
+> **Why are 8K and 4K scored identically?** Just as with rear cameras, 8K video on smartphones provides a negligible mathematical resolution increase mapped to the human eye on small screens, often at the detriment of storage limits and low-light performance. 4K remains the industry standard ceiling for practical mobile content creation, meaning there is currently no tangible incentive to reward 8K recording over 4K recording.
 
 **4.15.2 Video Frame Rate Score**
-*What it measures:* The maximum frame rate the front camera can sustain at its highest resolution.
-*   **Measurement:** Maximum FPS at the highest supported resolution.
-*   **Why it matters:** Higher frame rates (60fps) create smoother motion for vlogs and video calls, reducing motion blur and improving the perception of fluidity. 24fps is cinematic but can appear choppy for fast movement.
+*What it measures:* Maximum frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.15.1), capped at 4K.
+*   **Measurement:** Maximum Frames per second (FPS) at Max Resolution capped at 4K.
+*   **Why it matters:* Higher frame rates (e.g., 60 FPS) provide smoother motion and better clarity for vlogs and video calls, reducing motion blur and improving the perception of fluidity.
 *   *Formula:* `FPSScore = 10 * (log(FPS) - log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) - log(Camera_Front_Video_FPS_Min))` (Clamped 0-10)
     *   **Variables:**
         *   `FPS` = Maximum sustained frame rate (e.g., 60, 30, 24)
     *   **Max Score (10.0):** ≥ Camera_Front_Video_FPS_Max
     *   **Min Score (0.0):** ≤ Camera_Front_Video_FPS_Min
 > [!NOTE]
-> **Why Logarithmic?** Frame rate perception is non-linear. The +30fps jump from 30fps to 60fps is a significant smoothness upgrade for motion-heavy content. However, an identical +30fps increase from 60fps to 90fps is much harder to casually perceive on selfie video.
+> **Why Logarithmic?** Frame rate perception is non-linear. The +30fps jump from 30fps to 60fps is a dramatic, transformative upgrade for smoothness. However, an identical +30fps increase beyond 60fps is barely noticeable for standard social media and video call consumption.
+>
+> **Homogenization with Rear Camera (Section 4.9):**
+> This section perfectly mirrors the scoring process and logarithmic formula of the rear camera's Video Frame Rate section (§4.9). It evaluates the maximum frame rate at the highest resolution (capped at 4K) using its own specific constants (`Camera_Front_Video_FPS_Max` and `Camera_Front_Video_FPS_Min`).
 
-**4.15.3 Dynamic Range & Codec Score (DRScore)**
+> [!NOTE]
+> **Why cap the search at 4K and link it to Section 4.15.1?** To prevent 'double-dipping', a device must prove its frame rate performance under the load of its maximum claimed resolution (from Section 4.15.1). If a device supports 4K at only 30fps, it cannot submit its 1080p@60fps mode for a higher score here. However, to protect high-resolution sensors from processing limits at extreme resolutions (like 8K), the evaluation is strictly capped at 4K. An 8K-capable front camera is evaluated on its 4K frame rate. This ensures mathematical consistency since 8K and 4K receive the same maximum score in Section 4.15.1.
 
-*Description:* Measures the front camera’s support for high dynamic range and professional video recording profiles. Focuses on officially supported video standards, not subjective video quality.
+**4.15.3 Front Video Color & Dynamic Range (HDRScore)**
 
-**Measurement:** Manufacturer camera specs and system camera settings
-**Unit:** Video Profile Tier (0–10)
-**Significance:** Determines highlight retention, color grading potential, and post-processing flexibility for selfie video.
+*Description:* Measures which High Dynamic Range (HDR) video formats the front camera can record in to optimize brightness, contrast, and color.
+*   **Measurement:** Supported **HDR** (High Dynamic Range) video recording standards.
+*   **Unit:** Additive Point System (0–10)
+*   **Significance:** Determines highlight retention and dynamic range for selfie video, especially in difficult backlit vlogging scenarios.
 
-| Score    | Video Capability                                                                                  |
-| :------- | :-------------------------------------------------------------------------------------------------|
-| **10.0** | **Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)** |
-| **9.0**  | **Dolby Vision HDR recording**                                                                    |
-| **7.0**  | **HDR10 or HDR10+ recording**                                                                     |
-| **4.0**  | **HLG HDR or manufacturer-labeled “HDR video”**                                                   |
-| **1.0**  | **SDR only (8-bit, Rec.709)**                                                                     |
-| **0.0**  | **No front camera**                                                                               |
+| Supported Format            | Point Value |
+| :-------------------------- | :---------- |
+| **Base HDR (HDR10 or HLG)** | **+ 5.0**   |
+| **Dolby Vision**            | **+ 3.0**   |
+| **HDR10+**                  | **+ 2.0**   |
+
+*Formula:* `HDRScore = sum(points_for_detected_formats)` (Clamped 0–10)
+
+> [!NOTE]
+> **Homogenization with Rear Camera (Section 4.10):**
+> This additive scoring logic perfectly mirrors the rear camera's Video HDR section (4.10). Scoring is additive because supporting dynamic metadata formats (Dolby Vision, HDR10+) on top of base HDR provides cumulative benefits for both optimal device playback and social media ecosystem compatibility.
+
+**4.15.4 Front Professional Recording (ProRecordScore)**
+
+*Description:* Support for professional codecs and logarithmic recording profiles on the front camera. This section is fully homogenized with the Rear Camera (§4.11) but simplifies the front module by omitting Bit Depth.
+*   **Measurement:** Composite index of Codecs and Log profiles.
+*   **Unit:** Recording Index (0–10)
+*   **Significance:** Enables high-end vlogging workflows with professional grading flexibility.
+*   **Formula:** `Score = (0.50 * PCS) + (0.50 * LCPS)`
+
+#### 4.15.4.1 Professional Codec Support (PCS) — 50%
+*What it measures:* Whether the camera records in RAW or Mezzanine (intermediate) formats.
+> **Homogenization Note:** This sub-section mirrors the rear camera's **Section 4.11.1** exactly.
+
+| Condition                                                   | Score    |
+| :---------------------------------------------------------- | :------- |
+| **Supports true RAW video (CinemaDNG, ProRes RAW, BRAW)**   | **10.0** |
+| **Supports Mezzanine format (ProRes, APV, DNxHR/HD)**       | **8.0**  |
+| **Does not support professional recording formats**         | **0.0**  |
+
+#### 4.15.4.2 Log Color Profile Support (LCPS) — 50%
+*What it measures:* Support for Logarithmic gamma curves or Flat profiles.
+> **Homogenization Note:** This sub-section mirrors the rear camera's **Section 4.11.2** exactly, including all marketing names.
+
+| Score    | Supported Color Profile                               |
+| :------- | :---------------------------------------------------- |
+| **10.0** | **Apple Log (True Log)**                              |
+| **10.0** | **Samsung / Galaxy Log (True Log)**                   |
+| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**                |
+| **10.0** | **V-Log (True Log)**                                  |
+| **10.0** | **D-Log / D-Log M (True Log)**                        |
+| **10.0** | **F-Log (True Log)**                                  |
+| **10.0** | **OPPO Log (True Log)**                               |
+| **10.0** | **Vivo Log (True Log)**                               |
+| **10.0** | **Xiaomi Log (True Log)**                             |
+| **5.0**  | **S-Cinetone for mobile (Sony Flat)**                 |
+| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**                    |
+| **5.0**  | **D-Cinelike (Flat)**                                 |
+| **0.0**  | **None (Standard contrast only)**                     |
 
 
 ### D. Computational Photography & AI
@@ -1173,17 +1251,45 @@ To determine the correct tier, check the device's official specifications, marke
 
 ### 🔹 4.16 Multi-Frame Computational Photography (MFCP)
 *Description:* Measures whether the camera system performs automatic multi-frame capture and stacking for still photos to improve noise, dynamic range, and sharpness.
-*   **Measurement:** Official camera documentation and published feature lists.
-*   **Unit:** Processing Tier (0–10)
-*   **Significance:** Multi-frame pipelines significantly improve low-light performance and highlight retention in still images without relying on hardware changes.
+*   **Measurement:** Processing pipeline capability and presence of semantic segmentation.
+*   **Unit:** Processing Tier
+*   **Significance:** Primary method for smartphones to achieve high dynamic range (HDR) and low noise on small sensors.
 
-**Why it matters:** Multi-frame processing captures multiple exposures in rapid succession and computationally merges them. This reduces noise (by averaging), expands dynamic range (by combining different exposures), and improves sharpness (by aligning and selecting the sharpest pixels). Always-on systems apply this benefit to every photo automatically, while conditional systems require manual mode activation.
+| Tier       | Score    | Capability Summary                                   |
+| :--------- | :------- | :----------------------------------------------------|
+| **Tier 1** | **10.0** | Advanced Semantic & Neural Stacking (Always-on ZSL)  |
+| **Tier 2** | **7.5**  | Standard Always-on Multi-Frame HDR                   |
+| **Tier 3** | **5.0**  | Conditional / Manual Multi-Frame                     |
+| **Tier 4** | **0.0**  | Basic / Single Frame (Legacy)                        |
 
-| Score    | Publicly Documented Capability                                                                    |
-| :------- | :------------------------------------------------------------------------------------------------ |
-| **10.0** | **Always-on multi-frame HDR + Night stacking** (automatic frame fusion in daylight and low light) |
-| **6.0**  | **Conditional multi-frame processing** (HDR or Night mode must be manually enabled)               |
-| **0.0**  | **Single-frame capture only**                                                                     |
+**Tier Justifications & Rationale:**
+*   **Tier 1 (Elite Understanding):** Superior because it *understands* the scene via semantic segmentation (faces, skies, objects). Neural engine integration eliminates shutter lag through continuous background buffering (Zero Shutter Lag (ZSL)).
+*   **Tier 2 (Reliable Baseline):** Superior to Tier 3 by guaranteeing highlight retention in every shot without user intervention. Lacks Tier 1's semantic depth, which can occasionally lead to unnatural halos.
+*   **Tier 3 (Reactive Processing):** Lack of "always-on" buffering leads to shutter lag or missed highlights if the scene isn't automatically categorized as high-contrast.
+*   **Tier 4 (Legacy Capture):** Baseline performance floor. High risk of blown-out highlights and sensor noise due to reliance on traditional single-exposure methods.
+
+#### **MFCP Marketing Name Reference Table**
+*Use this list to identify the correct tier based on official marketing names or review descriptions.*
+
+*   **Tier 1 (10.0):**
+    *   **Apple:** Photonic Engine, Deep Fusion, Smart HDR 4/5.
+    *   **Google:** HDR+ with Bracketing (Tensor-based), Super Res Zoom.
+    *   **Samsung:** Enhanced Processing (S23 and later), Expert RAW Stacking.
+    *   **Vivo:** V3/V4 Imaging Chip, BlueImage, Neural HDR.
+    *   **Oppo:** MariSilicon X/Y Processing, Ultra HDR.
+    *   **Terms:** Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL).
+
+*   **Tier 2 (7.5):**
+    *   **Apple:** Smart HDR 2/3.
+    *   **Google:** Standard HDR+ (Pixel 1 through Pixel 5).
+    *   **Samsung:** Scene Optimizer (Multi-frame mode).
+    *   **Others:** Always-on HDR, Automatic Multi-frame Fusion.
+
+*   **Tier 3 (5.0):**
+    *   **Terms:** Generic "Auto-HDR," Manual HDR Mode, Night Mode Stacking (non-standard).
+
+> [!NOTE]
+> **Why it Matters:** Computational photography has effectively decoupled image quality from sensor size. A Tier 1 pipeline on a smaller sensor (e.g., Pixel) often outperforms a Tier 3 pipeline on a much larger sensor.
 
 ### 🔹 4.17 Semantic / Scene AI Processing
 *Description:* Ability of the camera software to understand and segment scenes and subjects.

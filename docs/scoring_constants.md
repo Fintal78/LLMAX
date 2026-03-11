@@ -88,7 +88,6 @@
 *   `Camera_Front_Resolution_MP_Min` = 5 (Score 0), `Camera_Front_Resolution_MP_Max` = 32 (Score 10)
 
 ### 4.15 Front Camera Video Performance
-*   `Camera_Front_Video_Res_Width_Min` = 1280 (Score 0), `Camera_Front_Video_Res_Width_Max` = 3840 (Score 10)
 *   `Camera_Front_Video_FPS_Min` = 24 (Score 0), `Camera_Front_Video_FPS_Max` = 60 (Score 10)
 
 

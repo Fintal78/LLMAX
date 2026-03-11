@@ -1161,13 +1161,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_9_rear_video_frame_rate": {
-        // SCORING GOAL: Scores the maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K (2160p).
+        // SCORING GOAL: Scores the maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K.
         "maximum_frames_per_second": {
           "value": 120,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the exact maximum FPS supported at the resolution evaluated in Section 4.8 capped at 4K. If the device scored 8K in 4.8, evaluate its 4K FPS instead. If the device scored 1080p in 4.8, evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
+          // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits maximum_frames_per_second.subscore.
@@ -1191,8 +1191,8 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
           //   • "HDR10" or "HLG"           → adds +5.00 to the subscore
-          //   • "Dolby Vision"             → adds +3.00 to the subscore.
-          //   • "HDR10+"                   → adds +2.00 to the subscore.
+          //   • "Dolby Vision"             → adds +3.00 to the subscore
+          //   • "HDR10+"                   → adds +2.00 to the subscore
           // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
         },
         "predicted_score": 8.00,
@@ -1225,28 +1225,23 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "log_color_profile_support": {
           "value": [
-            "Apple Log (True Log)"
+            "Apple Log"
           ],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify all supported color profiles. Use the exact terms below for the "value" array. The subscore is the highest point value among detected profiles:
-          //   • "Apple Log (True Log)"               → 10.00
-          //   • "S-Log / S-Log2 / S-Log3 (True Log)" → 10.00
-          //   • "V-Log (True Log)"                   → 10.00
-          //   • "D-Log / D-Log M (True Log)"         → 10.00
-          //   • "F-Log (True Log)"                   → 10.00
-          //   • "Samsung Log (True Log)"             → 10.00
-          //   • "Xiaomi Log (True Log)"              → 10.00
-          //   • "Cinelike-D / Cinelike-V (Flat)"     → 5.00
-          // If no flat/log profile is supported (Standard contrast only), leave the array empty [] and set subscore to 0.00.
+          // SCORING GUIDELINE: Identify all supported color profiles based on Section 4.11.2. Add them to the "value" array. The subscore is the highest point value among detected profiles:
+          //   • True Log (10.00 points): Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log.
+          //   • Flat Profile (5.00 points): S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike.
+          //   • Standard (0.00 points): None (Standard contrast only).
+          // If no flat/log profile is supported, leave the array empty [] and set subscore to 0.00.
         },
         "color_bit_depth": {
           "value": "10-bit color",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 5.00
-          // SCORING GUIDELINE: Use "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
+          // SCORING GUIDELINE: Use the following exact same terms for "value" with related scores for "subscore": "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
         },
         "predicted_score": 7.95,
         // SCORING GUIDELINE: predicted_score = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
@@ -1293,7 +1288,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",    
         },
         "predicted_score": 4.72,
-        // SCORING GUIDELINE: Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 4.72,
@@ -1304,16 +1299,29 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       },
       "4_14_front_camera_focus": {
         // SCORING GOAL: Scores the ability of the front-facing camera to maintain sharp focus.
+        "aperture_f_number": {
+          "value": 2.2,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // DATA GUIDELINE: Identify the Aperture f-number of the front camera. This is the numerical part of the fraction (e.g., 2.2 for f/2.2).
+        },
+        "sensor_size": {
+          "value": "1/3",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // DATA GUIDELINE: Identify the sensor size fraction (e.g., "1/3", "1/3.1", "1/4").
+        },
         "focus_system_tier": {
-          "value": "Autofocus (PDAF / Dual Pixel / Laser)",
+          "value": "Autofocus",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Autofocus (PDAF / Dual Pixel / Laser)" → 10.00
-          //   • "Fixed Focus (Modern Wide-DOF)" → 6.00
-          //   • "Fixed Focus (Legacy Narrow-DOF)" → 3.00
-          //   • "No Front Camera" → 0.00
+          // SCORING GUIDELINE: Identify the front camera's focus type using the following exact terms for "value" with related scores as subscore:
+          //   • "Autofocus"                        → 10.00 (Common types: Phase Detection Auto Focus (PDAF), Dual Pixel, Laser AF.)
+          //   • "Fixed Focus (Modern Wide-DOF)"    → 6.00  (Identified by aperture_f_number ≥ 2.0 OR sensor_size ≤ 1/3".)
+          //   • "Fixed Focus (Legacy Narrow-DOF)"  → 3.00  (Identified by aperture_f_number < 2.0 AND sensor_size > 1/3".)
+          //   • "No Front Camera"                  → 0.00
+          // MISSING DATA FALLBACK: If sensor size is missing from specs but aperture (f-number) is known, classify based solely on the aperture.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
@@ -1326,14 +1334,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         }
       },
       "4_15_front_camera_video": {
-        // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, and HDR capability) of the front camera as a composite score.
+        // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, High Dynamic Range (HDR), and Professional Recording) of the front camera as a composite score.
         "4_15_1_video_resolution": {
-          "long_edge_resolution_pixels": {
-            "value": 3840,
+          "maximum_resolution": {
+            "value": "4K (Ultra HD)",
             "source": "TBD",
             "exact_extract": "Proof pending",
-            "subscore": 8.00
-            // SCORING GUIDELINE: The maximum front video resolution width in pixels (e.g., 3840 for 4K). Apply the Section 4.15.1 logarithmic formula: ResScore = 10 × (log(long_edge_resolution_pixels) − log(Camera_Front_Video_Res_Width_Min)) / (log(Camera_Front_Video_Res_Width_Max) − log(Camera_Front_Video_Res_Width_Min)), clamped 0–10.
+            "subscore": 10.00
+            // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact terms for "value" with related scores as subscore:
+            //     "8K"                      10.00
+            //     "4K (Ultra HD)"           10.00
+            //     "1440p / QHD (2.5K)"      8.00
+            //     "1080p (Full HD)"         6.00
+            //     "720p (HD)"               3.00
+            //     "≤480p"                   0.00
           }
         },
         "4_15_2_video_frame_rate": {
@@ -1342,29 +1356,65 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 × (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
+            // SCORING GUIDELINE: Mirroring Section 4.9 (Rear Video Frame Rate). Identify the maximum Frames per second (FPS) specifically at the resolution listed in "4_15_1_video_resolution.maximum_resolution", capped at 4K. For example, if the device scored 8K in "4_15_1_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_15_1_video_resolution", evaluate its 1080p FPS. Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 × (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
           }
         },
-        "4_15_3_dynamic_range_codec": {
-          "video_capability": {
-            "value": "Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)",
+        "4_15_3_video_hdr": {
+          "supported_formats": {
+            "value": [
+              "HDR10",
+              "Dolby Vision",
+              "HDR10+"
+            ],
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Lookup value in Section 4.15.3 table. Exact terms:
-            //   • "Pro video format OR Log profile (Apple ProRes, Android LOG, or equivalent flat gamma profile)" → 10.00
-            //   • "Dolby Vision HDR recording" → 9.00
-            //   • "HDR10 or HDR10+ recording" → 7.00
-            //   • "HLG HDR or manufacturer-labeled “HDR video”" → 4.00
-            //   • "SDR only (8-bit, Rec.709)" → 1.00
-            //   • "No front camera" → 0.00
+            // SCORING GUIDELINE: Mirroring Section 4.10 (Rear Video HDR). Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
+            //   • "HDR10" or "HLG"           → adds +5.00 to the subscore
+            //   • "Dolby Vision"             → adds +3.00 to the subscore
+            //   • "HDR10+"                   → adds +2.00 to the subscore
+            // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
           }
         },
-        "predicted_score": 9.20,
-        // SCORING GUIDELINE: predicted_score = (0.40 × 4_15_1_video_resolution.long_edge_resolution_pixels.subscore) + (0.35 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.25 × 4_15_3_dynamic_range_codec.video_capability.subscore).
+        "4_15_4_1_professional_codec_support": {
+          "supported_codecs": {
+            "value": [
+              "ProRes (Mezzanine)"
+            ],
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 8.00
+            // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify all supported professional recording codecs. Use the exact terms for the "value" array. The subscore is the highest point value among detected codecs:
+            //   • "CinemaDNG (True RAW)"         → 10.00
+            //   • "ProRes RAW (True RAW)"        → 10.00
+            //   • "BRAW (True RAW)"              → 10.00
+            //   • "ProRes (Mezzanine)"           → 8.00
+            //   • "APV (Mezzanine)"              → 8.00
+            //   • "DNxHR/HD (Mezzanine)"         → 8.00
+            // If none supported, leave array empty [] and set subscore to 0.00.
+          }
+        },
+        "4_15_4_2_log_color_profile_support": {
+          "supported_profiles": {
+            "value": [
+              "Apple Log (True Log)"
+            ],
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 10.00
+            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCPS). Identify all supported color profiles. Add them to the "value" array with the mention (True Log) or (Flat Profile). For example: S-Log3 (True Log), Cinelike-D (Flat Profile). The subscore is the highest point value among detected profiles:
+            //   • True Log (10.00 points): Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log.
+            //   • Flat Profile (5.00 points): S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike.
+            //   • Standard (0.00 points): None (Standard contrast only).
+            // If no flat/log profile is supported, leave the array empty [] and set subscore to 0.00.
+          }
+        },
+        "predicted_score": 9.80,
+        // SCORING GUIDELINE: calculated_professional_score = (0.50 * 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.50 * 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
+        // final_composite_predicted_score = (0.35 × 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 × 4_15_3_video_hdr.supported_formats.subscore) + (0.20 × calculated_professional_score).
         "final_score": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 9.20,
+          "value": 9.80,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
@@ -1373,14 +1423,19 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
       "4_16_multiframe_photo": {
         // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
         "processing_tier": {
-          "value": "Always-on multi-frame HDR + Night stacking",
+          "value": "Advanced Semantic & Neural Stacking",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Always-on multi-frame HDR + Night stacking" → 10.00
-          //   • "Conditional multi-frame processing" → 6.00
-          //   • "Single-frame capture only" → 0.00
+          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore (Reference Section 4.16 for full details):
+          //   • "Advanced Semantic & Neural Stacking" → 10.00
+          //     Terms: Apple (Photonic Engine, Deep Fusion, Smart HDR 4/5), Google (HDR+ with Bracketing (Tensor-based), Super Res Zoom), Samsung (Enhanced Processing [S23+], Expert RAW Stacking), Vivo (V3/V4 Imaging Chip, BlueImage, Neural HDR), Oppo (MariSilicon X/Y, Ultra HDR), Common (Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL)).
+          //   • "Standard Always-on Multi-Frame HDR"  → 7.50
+          //     Terms: Apple (Smart HDR 2/3), Google (Standard HDR+ [Pixel 1-5]), Samsung (Scene Optimizer [Multi-frame mode]), Common (Always-on HDR, Automatic Multi-frame Fusion).
+          //   • "Conditional / Manual Multi-Frame"    → 5.00
+          //     Terms: Generic "Auto-HDR", Manual HDR Mode, Night Mode Stacking (if only in dedicated mode).
+          //   • "Basic / Single Frame (Legacy)"       → 0.00
+          //     Terms: No multi-frame stacking, standard single exposure.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
@@ -1388,7 +1443,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
           "method_used": "Predictor",
-          "booster": "Yes: 11_1_dxomark_24mp_texture_rendering (+5%)",
+          "booster": "No",
           "confidence": "N/A"
         }
       },
