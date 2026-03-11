@@ -1451,19 +1451,25 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "confidence": "N/A"
         }
       },
-      "4_17_semantic_ai": {
-        // SCORING GOAL: Scores the ability of the camera software to understand and segment scenes and subjects.
+      "4_17_pipeline_semantic_ai": {
+        // SCORING GOAL: Automatic Capture-Time AI. Scores the ability of the software to segment scenes and subjects using Artificial Intelligence (AI).
         "capability_tier": {
-          "value": "Full semantic segmentation (faces, sky, objects)",
-          "value_details": ["Scene Optimizer"],
+          "value": "Neural Semantic Segmentation",
+          "value_details": ["AI ProVisual Engine", "Object-aware engine"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Full semantic segmentation (faces, sky, objects)" → 10.00
-          //   • "Basic portrait / scene detection" → 6.00
-          //   • "None" → 0.00
-          // VALUE_DETAILS GUIDELINE: Record the exact OEM feature names (e.g., ["Scene Optimizer"], ["Visual Intelligence", "Photographic Styles"], ["Google Lens integration"]).
+          //   • "Neural Semantic Segmentation" → 10.00
+          //     Look for: Apple (Semantic Rendering, Segmentation-based noise reduction, Photonic Engine, Photographic Styles, Deep Fusion), Google (Real Tone, Face Unblur, Pixel Visual/Neural Core processing), Samsung (AI ProVisual Engine, Object-aware engine), Vivo/Xiaomi/Oppo/Honor (BlueImage, Xiaomi Imaging Engine 3.0, MariSilicon-based segmentation, V3/V4 chip segmentation, Harcourt Portrait engine).
+          //   • "Object-Based Optimization"    → 7.50
+          //     Look for: Samsung (Scene Optimizer), Xiaomi (AI Camera), Honor (Super Visual Engine), Motorola (Moto AI), Generic (AI Scene Recognition, AI Photography, Smart Scene).
+          //   • "Basic Metadata AI"            → 4.00
+          //     Look for: Face Detection, Eye-tracking (basic), Smile Shutter, AI Action Shot (basic).
+          //   • "None"                         → 0.00
+          //     Look for: Legacy pipeline with no scene interpretation.
+          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names. Be exhaustive.
+          //   • Examples: ["Real Tone"], ["Photonic Engine"], ["Deep Fusion"], ["BlueImage"], ["Xiaomi Imaging Engine 3.0"], ["Harcourt Portrait"].
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
@@ -1471,23 +1477,28 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
           "method_used": "Predictor",
-          "booster": "Yes: 11_3_dxomark_portrait_skin_tone_rendering (+5%)",
+          "booster": "No",
           "confidence": "N/A"
         }
       },
-      "4_18_generative_ai_tools": {
-        // SCORING GOAL: Scores the ability to modify images after capture using AI.
+      "4_18_post_capture_generative_ai": {
+        // SCORING GOAL: User-Initiated Gallery-Time Artificial Intelligence (AI). Scores the ability to modify images after capture using AI tools.
         "feature_tier": {
-          "value": "Generative erase / expand / relight",
-          "value_details": ["Magic Eraser", "Best Take"],
+          "value": "Generative Content Transformation",
+          "value_details": ["Magic Editor", "Best Take"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Generative erase / expand / relight" → 10.00
-          //   • "Non-generative AI edits" → 6.00
-          //   • "None" → 0.00
-          // VALUE_DETAILS GUIDELINE: List the exact OEM AI tool names (e.g., ["Magic Eraser", "Best Take"], ["Clean Up", "Image Playground"], ["AI Expand", "Generative Fill"]).
+          //   • "Generative Content Transformation" → 10.00
+          //     Look for: Apple Intelligence (Clean Up (Generative), Image Wand, Image Playground), Google (Magic Editor, Reimagine, Generative Expand, Add Me), Samsung (Generative Edit, Generative Background, Sketch to Image), Xiaomi/Vivo/Oppo/Honor (AI Image Expansion, Magic Removal (Generative), AI Eraser (Generative), AI Frame Expansion).
+          //   • "Advanced Semantic Edits"           → 7.50
+          //     Look for: Google (Magic Eraser (Standard), Best Take, Photo Unblur), Samsung (Edit Suggestion (Shadow/Reflection removal), Portrait Studio, Object Eraser), Xiaomi/Honor (Pro Cut, Harcourt Portrait Engine, AI Super Zoom, Stage Mode), Vivo/Oppo (AI Erase 2.0 (Smart Circle), Manual Smudge, AI Bokeh).
+          //   • "Basic Algorithmic Fixes"           → 4.00
+          //     Look for: AI Beauty, Auto-fix, Smart Photo, Scene Suggestion (Post-capture), Red-eye Removal (AI-driven).
+          //   • "None"                              → 0.00
+          //     Look for: No AI-driven editing suite beyond standard crop/filters.
+          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names (e.g., ["Generative Edit"], ["Magic Editor"], ["Clean Up"], ["AI Eraser 2.0"]). Be exhaustive.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.

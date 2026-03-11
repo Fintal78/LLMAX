@@ -1291,29 +1291,65 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why it Matters:** Computational photography has effectively decoupled image quality from sensor size. A Tier 1 pipeline on a smaller sensor (e.g., Pixel) often outperforms a Tier 3 pipeline on a much larger sensor.
 
-### 🔹 4.17 Semantic / Scene AI Processing
-*Description:* Ability of the camera software to understand and segment scenes and subjects.
+### 🔹 4.17 Pipeline Semantic Artificial Intelligence (AI) Processing
+*Description:* Automatic, capture-time software logic that understands and segments scenes/subjects **before** the final image file is saved. Enables better portraits, sky processing, skin tones, and subject isolation.
 *   **Measurement:** Presence of semantic segmentation features.
 *   **Unit:** AI Capability Tier
-*   **Significance:** Enables better portraits, sky processing, skin tones, and subject isolation.
+*   **Significance:** Enables localized High Dynamic Range (HDR) and noise reduction tailored to specific image regions (e.g., skin vs. sky).
 
-| Score    | Semantic AI                                          |
-| :------- | :--------------------------------------------------- |
-| **10.0** | **Full semantic segmentation (faces, sky, objects)** |
-| **6.0**  | **Basic portrait / scene detection**                 |
-| **0.0**  | **None**                                             |
+> [!NOTE]
+> **Capture-Time vs. Gallery-Time AI**
+> - **4.17 (Pipeline AI):** Happens **automatically** when you press the shutter (e.g., Apple Photonic Engine). It is invisible to the user and part of the "core" image quality.
+> - **4.18 (Post-Capture AI):** Happens **manually** in the gallery/editor (e.g., Samsung Generative Edit). It requires user interaction after the photo is already taken.
 
-### 🔹 4.18 Generative & Post-Capture AI Tools
-*Description:* Ability to modify images after capture using AI.
-*   **Measurement:** Presence of generative AI tools.
+#### 4.17.A Scoring Table
+
+| Tier       | Score    | Rationale Snippet                                                                |
+| :--------- | :------- | :--------------------------------------------------------------------------------|
+| **Tier 1** | **10.0** | **Neural Semantic Segmentation:** Pixel-level multi-layer classification.        |
+| **Tier 2** | **7.5**  | **Object-Based Optimization:** Subject-aware global/local enhancements.          |
+| **Tier 3** | **4.0**  | **Basic Metadata AI:** Single-subject face/eye tracking and exposure.            |
+| **Tier 4** | **0.0**  | **None:** Legacy pipeline with no scene interpretation.                          |
+
+#### 4.17.B Detailed Justifications & Terms
+- **Tier 1:** Performs deep pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth, background, and foreground) within the multi-frame pipeline. Enables "Localized Image Processing" where noise reduction and tone-mapping are independently applied per segment. Often requires a dedicated Neural Processing Unit (NPU) for real-time segmentation maps.
+    - **Apple:** Semantic Rendering, Segmentation-based noise reduction, Photonic Engine, Photographic Styles, Deep Fusion.
+    - **Google:** Real Tone, Face Unblur, Pixel Visual/Neural Core processing.
+    - **Samsung:** AI ProVisual Engine, Object-aware engine.
+    - **Vivo/Xiaomi/Oppo/Honor:** BlueImage, Xiaomi Imaging Engine 3.0, MariSilicon-based segmentation, V3/V4 chip segmentation, Harcourt Portrait engine.
+- **Tier 2:** Recognizes the high-level subject or "motive" and applies preset global/local enhancements. Effective for visual "pop" (e.g., greener grass, bluer sky) but lacks sub-processing granularity.
+    - **Terms:** Samsung (Scene Optimizer), Xiaomi (AI Camera), Honor (Super Visual Engine), Motorola (Moto AI), Generic (AI Scene Recognition, AI Photography, Smart Scene).
+- **Tier 3:** Basic focus/exposure priority for human subjects or recognized moving objects. No content-aware color science or segmentation maps are used.
+    - **Terms:** Face Detection, Eye-tracking (basic), Smile Shutter, AI Action Shot (basic).
+
+### 🔹 4.18 Post-Capture & Generative AI Tools
+*Description:* User-initiated editing tools within the gallery/photos app that modify images **after** they have been captured and saved.
+*   **Measurement:** Presence of generative and semantic editing tools.
 *   **Unit:** Feature Tier
-*   **Significance:** Extends usability and creative flexibility beyond capture time.
+*   **Significance:** Extends creative flexibility by allowing retroactive modifications (erasing objects, expanding backgrounds, relighting).
 
-| Score    | AI Editing Tools                        |
-| :------- | :-------------------------------------- |
-| **10.0** | **Generative erase / expand / relight** |
-| **6.0**  | **Non-generative AI edits**             |
-| **0.0**  | **None**                                |
+#### 4.18.A Scoring Table
+
+| Tier       | Score    | Rationale Snippet                                                                 |
+| :--------- | :------- | :---------------------------------------------------------------------------------|
+| **Tier 1** | **10.0** | **Generative Content Transformation:** Scene-aware creation and outpainting.      |
+| **Tier 2** | **7.5**  | **Advanced Semantic Edits:** Content-aware removal and specific-element fixing.   |
+| **Tier 3** | **4.0**  | **Basic Algorithmic Fixes:** Standard noise reduction and auto-enhancements.      |
+| **Tier 4** | **0.0**  | **None:** No AI-driven editing suite beyond standard crop/filters.                |
+
+#### 4.18.B Detailed Justifications & Terms
+- **Tier 1:** Utilizes Large Language Models (LLM) or Diffusion-based generative networks to create new pixel data. Can expand canvases beyond original borders (Outpainting), move/resize objects while reconstructing hidden backgrounds, or "reimagine" the scene via text prompts.
+    - **Apple Intelligence:** Clean Up (Generative version), Image Wand (Sketch-to-Image in Notes), Image Playground.
+    - **Google:** Magic Editor, Reimagine, Generative Expand, Add Me.
+    - **Samsung:** Generative Edit, Generative Background, Sketch to Image.
+    - **Xiaomi/Vivo/Oppo/Honor:** AI Image Expansion, Magic Removal (Generative), AI Eraser (Generative versions), AI Frame Expansion.
+- **Tier 2:** Focuses on sophisticated non-generative or "lite" generative fixing. Effectively masks objects using texture patches or re-synthesizes specific elements (like facial expressions) from a burst of shots.
+    - **Google:** Magic Eraser (Standard), Best Take, Photo Unblur.
+    - **Samsung:** Edit Suggestion (Object/Shadow/Reflection removal), Portrait Studio, Object Eraser.
+    - **Xiaomi/Honor:** Pro Cut (AI Framing), Harcourt Portrait Engine (lighting reconstruction), AI Super Zoom (Upscaling), Stage Mode.
+    - **Vivo/Oppo:** AI Erase 2.0 (Smart Circle), Manual Smudge, AI Bokeh.
+- **Tier 3:** Standard algorithmic fixes that don't use deep generative networks for content creation.
+    - **Terms:** AI Beauty, Auto-fix, Smart Photo, Scene Suggestion (Post-capture), Red-eye Removal (AI-driven).
 
 
 ## 🟣 5. Software & Longevity
