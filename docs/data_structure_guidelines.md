@@ -568,3 +568,16 @@ Every subsection must contain the following "recipe":
            > ### 🚨 SCORING BLOCKER: UNLISTED FEATURE DETECTED
            > **Subsection [X.Y] ([Name])**: A feature was found (`[Feature Name]`) but is not scorable using the provided options in the guidelines. This feature needs to be evaluated and added to the scoring guidelines.
     - **Research Guideline**: Before resorting to "Not found", attempt to derive the value from other confirmed specs (e.g., calculating PPI from resolution and diagonal size).
+
+11. **Definition-First Tier Classification (Categorical Tiers):** When a subsection uses categorical tiers (e.g., "True Log" / "Flat Profile" / "Standard"), the inline `SCORING GUIDELINE` must provide a **technical definition** of each tier — what the feature **does** or **is**, not a list of brand-specific marketing names it maps to.
+    *   **Rationale:** Marketing names are incomplete (never cover all brands), time-sensitive (change every product cycle), and bloat the file with data that AI agents do not need for classification. An AI agent must reason about **what a feature does**, not what it is **called**.
+    *   **Where marketing names go:**
+        *   **`value_details`:** The AI agent records all Original Equipment Manufacturer (OEM) feature names found in specs/reviews as proof and traceability (e.g., `["Photonic Engine", "Deep Fusion"]`). This is the authoritative per-phone record of brand terminology.
+        *   **`scoring_rules.md`:** May contain **2-3 representative examples** per tier for human onboarding and auditing — but these are NOT exhaustive and NOT the classification input.
+        *   **The scored-phone database:** Over time, querying `value_details` across all scored phones yields the real-world marketing term corpus — always current, zero maintenance.
+    *   **Format for tier definitions:**
+        ```
+        //   • "Tier Name" → score
+        //     Definition: [2-4 line technical description of what qualifies]
+        ```
+    *   **Self-containment principle:** `proposed_data_structure.md` must be fully self-contained. An AI agent must be able to perform ALL categorization and scoring using ONLY this file and `scoring_constants.md`. `scoring_rules.md` is a reference document and must NOT be required for the scoring process.

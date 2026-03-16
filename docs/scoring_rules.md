@@ -119,34 +119,26 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Unit:** Glass Protection Tier (0–10)
 *   **Significance:** Indicates expected resistance to cracking and surface damage from drops and daily handling.
 
-| Score    | Declared Glass Type                            | Example Models                              |
+| Score    | Glass Protection Tier                          | Representative Examples                     |
 | :------- | :--------------------------------------------- | :------------------------------------------ |
-| **10.0** | **Gorilla Glass Armor**                        | Galaxy S24 Ultra                            |
-| **9.5**  | **Ceramic Shield (current gen)**               | iPhone 15 / 16 series                       |
-| **9.0**  | **Gorilla Glass Victus 2**                     | OnePlus 12, S23 Ultra                       |
-| **8.0**  | **Gorilla Glass Victus or Victus+**            | Pixel 7 Pro, Xiaomi 12S Ultra               |
-| **8.0**  | **Dragontrail Star or Dragontrail Pro**        | Sony Xperia 1 VI, Sharp AQUOS R9            |
-| **7.0**  | **Gorilla Glass 5 or 6**                       | Galaxy A54, Nothing Phone (1)               |
-| **7.0**  | **Dragontrail X**                              | Sony Xperia 10 VI                           |
-| **5.0**  | **Gorilla Glass 3**                            | Budget mid-range                            |
-| **5.0**  | **Panda Glass**                                | Motorola budget models                      |
-| **5.0**  | **Dragontrail (standard)**                     | Sharp AQUOS (budget)                        |
-| **3.0**  | **Tempered Glass**                             | Low-end devices                             |
-| **2.0**  | **Glass (Unspecified)**                        | Entry-level                                 |
-| **0.0**  | **Plastic or No Glass**                        | Feature phones                              |
+| **10.0** | **Armor-Class**                                | Gorilla Glass Armor                         |
+| **9.5**  | **Shield-Class**                               | Ceramic Shield, Kunlun Glass                |
+| **9.0**  | **Ultra-Reinforced**                           | Gorilla Glass Victus 2                      |
+| **8.0**  | **Premium Reinforced**                         | Gorilla Glass Victus / Victus+, Star 2      |
+| **7.0**  | **Standard Reinforced**                        | Gorilla Glass 5 / 6, Dragontrail Pro / Star |
+| **5.0**  | **Entry-Level Reinforced**                     | Gorilla Glass 3, Panda Glass, Dragontrail   |
+| **3.0**  | **Tempered Glass**                             | Basic chemically strengthened glass         |
+| **2.0**  | **Glass (Unspecified)**                        | Generic glass                               |
+| **0.0**  | **Plastic or No Glass**                        | Polymer display covers                      |
 
-**Gorilla Glass Armor**: Flagship reinforced glass with anti-reflective coating (≥2.0m-class drop certification)\
-**Ceramic Shield (current gen)**: Ceramic-infused glass with ≥2.0m-class drop certification\
-**Gorilla Glass Victus 2**: Advanced reinforced glass rated for drops on rough surfaces (~2.0m class)\
-**Gorilla Glass Victus or Victus+**: High-end drop protection (~2.0m class)\
-**Dragontrail Star or Pro**: High-end Japanese reinforced glass (~2.0m class)\
-**Gorilla Glass 5 or 6**: Standard mid-to-high end drop protection (~1.6m class)\
-**Dragontrail X**: Mid-range Japanese reinforced glass (~1.6m class)\
-**Gorilla Glass 3**: Legacy reinforced glass (~1.2m class)\
-**Panda Glass or Dragontrail (standard)**: Entry-level reinforced glass (~1.2m class)\
-**Tempered Glass**: Basic chemically strengthened glass (no certified drop class)\
-**Glass (Unspecified)**: Manufacturer does not disclose protection class\
-**Plastic or No Glass**: Polymer display cover
+### Technical Category Definitions
+*   **Armor-Class**: Anti-reflective (AR) coating + ≥2.0m rough-surface drop certification.
+*   **Shield-Class**: Ceramic-infused matrix + ≥2.0m drop certification.
+*   **Ultra-Reinforced**: Advanced glass optimized for rough-surface drops (≥2.0m class).
+*   **Premium Reinforced**: High-end standard chemical tempering with ≥2.0m drop certification.
+*   **Standard Reinforced**: Regular flagship-grade chemical tempering with ≥1.6m drop certification.
+*   **Entry-Level Reinforced**: Basic chemical tempering with ~1.2m drop certification.
+
 
 ### 🔹 1.4 Thickness
 *Description:* Device thickness excluding camera bump. Thinner phones are easier to hold and fit better in pockets.
@@ -223,88 +215,33 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 
 #### Scoring Table
 
-| Score    | Canonical Panel Type | Hardware Basis                                                 | Example Models                            |
-| :------- | :------------------- | :------------------------------------------------------------- | :---------------------------------------- |
-| **10.0** | **Tandem OLED**      | Dual-stack emissive OLED (two light-emitting layers)           | iPad Pro M4, OnePlus 12                   |
-| **9.0**  | **LTPO OLED**        | True variable refresh rate down to 1 Hz (LTPO backplane)       | S24 Ultra, iPhone 15/16 Pro, Pixel 8 Pro  |
-| **8.0**  | **AMOLED or OLED**   | Self-emissive, fixed or limited-range refresh (LTPS backplane) | Galaxy A55, Pixel 8, Xiaomi 13, iPhone 14 |
-| **6.0**  | **IPS LCD**          | LED-backlit LCD with in-plane switching                        | iPhone 11, Poco X4 GT                     |
-| **2.0**  | **TFT or PLS LCD**   | Non-IPS LCD, budget (incl. Samsung PLS)                        | Budget devices                            |
-| **0.0**  | **TN LCD or Legacy** | Twisted nematic LCD and obsolete technologies                  | Galaxy J1 (Legacy)                        |
+| Score    | Canonical Panel Type               Hardware Basis                                                | Example Models              |
+| :------- | :-------------------------------| :--------------------------------------------------------------| :---------------------------|
+| **10.0** | **Tandem OLED**                 | Dual-stack emissive OLED (two light-emitting layers)           | iPad Pro M4, OnePlus 12     |
+| **9.0**  | **LTPO OLED**                   | True variable refresh rate down to 1 Hz (LTPO backplane)       | S24 Ultra, iPhone 15/16 Pro |
+| **8.0**  | **Standard OLED/AMOLED (LTPS)** | Self-emissive, fixed or limited-range refresh (LTPS backplane) | Galaxy A55, iPhone 14       |
+| **6.0**  | **IPS LCD**                     | LED-backlit LCD with in-plane switching                        | iPhone 11, Poco X4 GT       |
+| **2.0**  | **TFT or PLS LCD**              | Non-IPS LCD, budget (incl. Samsung PLS)                        | Budget devices              |
+| **0.0**  | **TN LCD or Legacy**            | Twisted nematic LCD and obsolete technologies                  | Galaxy J1 (Legacy)          |
 
-#### Marketing Name → Canonical Tier Lookup
-
-> When recording a phone's panel type, find its exact spec-sheet denomination in the table below to determine the correct canonical tier and score.
-
-**Tier 10.0 — Tandem OLED**
-
-| Marketing Name (spec sheet)  | Brand / Device               |
-| :--------------------------- | :----------------------------|
-| "Tandem OLED"                | OnePlus 12; generic          |
-| "Dual-Layer OLED"            | Generic / press descriptions |
-
-**Tier 9.0 — LTPO OLED**
-
-| Marketing Name (spec sheet)                   | Brand / Device                                              |
-| :-------------------------------------------- | :---------------------------------------------------------- |
-| "Dynamic AMOLED 2X"                           | Samsung (S21 Ultra onwards; all Ultra / Fold / Flip)        |
-| "OLED ProMotion"                              | Apple — iPhone 16 Pro, 16 Pro Max                           |
-| "Super Retina XDR with ProMotion"             | Apple — iPhone 13 Pro, 13 Pro Max, 14 Pro, 14 Pro Max       |
-| "Super Retina XDR ProMotion"                  | Apple — same devices (alternative spec wording)             |
-| "ProMotion" (combined with any OLED label)    | Apple — always LTPO when ProMotion is mentioned             |
-| "ProXDR Display"                              | OnePlus (e.g. OnePlus 12)                                   |
-| "LTPO OLED"                                   | Google Pixel 8 Pro, generic high-end Android                |
-| "LTPO4" / "LTPO 4.0"                          | Generic high-end OLED (Xiaomi Ultra, etc.)                  |
-
-**Tier 8.0 — AMOLED or OLED**
-
-| Marketing Name (spec sheet)                | Brand / Device                                                    |
-| :----------------------------------------- | :-----------------------------------------------------------------|
-| "Super AMOLED"                             | Samsung (Galaxy S-series pre-S21 Ultra, Galaxy A-series)          |
-| "Dynamic AMOLED" (without "2X")            | Samsung 1st-gen (Galaxy S20, Note 20, etc.)                       |
-| "AMOLED"                                   | Generic Samsung, OnePlus (older), Xiaomi, Realme                  |
-| "Super Retina XDR" (without ProMotion)     | Apple — iPhone 12, 12 Pro, 13, 13 Mini, 14, 14 Plus, 15, 15 Plus  |
-| "Super Retina HD"                          | Apple — iPhone X, XS, XS Max (OLED, no ProMotion)                 |
-| "P-OLED" / "pOLED"                         | Motorola Edge series; LG (G Flex era)                             |
-| "Flexible OLED"                            | Generic, Sony (some models)                                       |
-| "OLED" (no further LTPO qualifier)         | Google Pixel 8, various mid-range OLED                            |
-
-**Tier 6.0 — IPS LCD**
-
-| Marketing Name (spec sheet) | Brand / Device                                              |
-| :--------------------------- | :----------------------------------------------------------|
-| "Liquid Retina HD"           | Apple — iPhone XR, iPhone 11                               |
-| "Liquid Retina"              | Apple — various (always IPS LCD when used by Apple)        |
-| "Retina LCD"                 | Apple — older iPhones (iPhone 6 through SE 2nd gen)        |
-| "Retina HD"                  | Apple — iPhone 6 Plus through iPhone 8 Plus                |
-| "IPS LCD"                    | Generic (any spec sheet stating IPS LCD)                   |
-| "IPS NEO"                    | Some Xiaomi / Samsung mid-range labelling                  |
-| "In-Cell Touch IPS"          | Generic / budget-flagship                                  |
-
-**Tier 2.0 — TFT or PLS LCD**
-
-| Marketing Name (spec sheet) | Brand / Device                                   |
-| :--------------------------- | :---------------------------------------------- |
-| "PLS TFT"                    | Samsung (budget Galaxy A / M series)            |
-| "PLS"                        | Samsung (Plane-to-Line Switching, non-IPS)      |
-| "TFT LCD" / plain "TFT"      | Generic budget (any TFT without IPS qualifier)  |
-
-**Tier 0.0 — TN LCD or Legacy**
-
-| Marketing Name (spec sheet)  | Brand / Device                            |
-| :---------------------------- | :--------------------------------------- |
-| "TFT (TN)"                    | Very old budget devices; old spec sheets |
-| Any explicitly TN-type label  | Legacy and feature phones                |
+#### Marketing Name → Canonical Tier Representative Examples
+*Use these examples to identify the correct tier.
+*   **Tier 10.0 — Tandem OLED:** "Tandem OLED" (OnePlus 12), "Dual-Layer OLED" (iPad Pro M4).
+*   **Tier 9.0 — LTPO OLED:** "Dynamic AMOLED 2X" (Samsung Ultra/Fold), "OLED ProMotion" (iPhone Pro), "LTPO OLED" (Pixel Pro).
+*   **Tier 8.0 — Standard OLED/AMOLED (LTPS):** "Super AMOLED" (Samsung A-series), "Super Retina XDR" (iPhone 16 non-Pro), "AMOLED" (Generic).
+*   **Tier 6.0 — IPS LCD:** "Liquid Retina HD" (iPhone 11), "IPS LCD" (Generic).
+*   **Tier 2.0 — TFT or PLS LCD:** "PLS TFT" (Samsung budget), "TFT LCD" (Generic).
+*   **Tier 0.0 — TN LCD or Legacy:** "TFT (TN)".
 
 > [!IMPORTANT]
-> **Decision rule when the spec sheet is ambiguous:** If a phone is listed as plain "OLED" or "AMOLED" with no LTPO qualifier, default to **AMOLED or OLED (8.0)**. Only assign **LTPO OLED (9.0)** when the LTPO backplane or a marketing name from the Tier 9.0 table above is explicitly confirmed.
+> **Decision rule when the spec sheet is ambiguous:** If a phone is listed as plain "OLED" or "AMOLED" with no LTPO qualifier, default to **Standard OLED/AMOLED (LTPS) (8.0)**. Only assign **LTPO OLED (9.0)** when the LTPO backplane or a marketing name from the Tier 9.0 table above is explicitly confirmed.
 
-**Tandem OLED**: Two stacked emissive OLED layers. Higher peak brightness and better power efficiency than single-stack OLED. Currently limited to premium tablets and select flagships.\
-**LTPO OLED**: Single-stack OLED with an LTPO (Low Temperature Polycrystalline Oxide) backplane. True variable refresh rate to **1 Hz**; always adaptive.\
-**AMOLED or OLED**: Single-stack OLED with an LTPS (Low Temperature Polycrystalline Silicon) backplane. Self-emissive, but refresh is fixed or limited-range — cannot reach 1 Hz.\
-**IPS LCD**: LED-backlit LCD with in-plane switching. Good viewing angles; no true black.\
-**TFT or PLS LCD**: Budget thin-film transistor LCD (non-IPS). Narrower viewing angles and lower colour accuracy.\
-**TN LCD or Legacy**: Twisted nematic (TN) LCD and any obsolete display technology.
+**Tandem OLED**: Dual-Stack Organic Light-Emitting Diode (OLED) consisting of two stacked light-emitting layers. This achieves higher peak brightness and superior power efficiency/longevity compared to single-stack designs.\
+**LTPO OLED**: Single-stack Organic Light-Emitting Diode (OLED) utilizing a Low-Temperature Polycrystalline Oxide (LTPO) backplane, enabling true variable refresh rate down to **1 Hz** for optimized battery performance, smoother UI transitions, better frame-rate matching with video and less judder.\
+**Standard OLED/AMOLED (LTPS)**: Standard Active-Matrix Organic Light-Emitting Diode (AMOLED) or OLED panel with a Low-Temperature Polycrystalline Silicon (LTPS) backplane. While offering true blacks and infinite contrast, the refresh rate is either fixed or limited to a narrower range (cannot reach 1 Hz).\
+**IPS LCD**: In-Plane Switching Liquid-Crystal Display (IPS LCD) combined with an LED backlight. Provides wide viewing angles and accurate colors but lacks true black levels because the backlight remains active.\
+**TFT or PLS LCD**: Budget Thin-Film Transistor (TFT) or Plane-to-Line Switching (PLS) Liquid-Crystal Display (LCD). These typically feature narrower viewing angles and lower color accuracy than high-end IPS panels.\
+**TN LCD or Legacy**: Twisted Nematic (TN) LCD and other obsolete technologies. These suffer from severe color distortion and inversion beyond narrow viewing angles.
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all display panel scores. Battery efficiency scoring references this table.
@@ -631,8 +568,14 @@ PAPI is a weighted composite of two subsections:
 *   **Unit:** Wired Audio Capability Score (0-10)
 *   **Significance:** Determines whether users can use wired headphones directly, with minimal friction and without extra hardware.
 
-**Why 3.5mm is superior:**
-The 3.5mm jack provides universal compatibility (works with all wired headphones), true zero-latency analog output, requires no adapters or dongles, and adds no points of failure. USB-C audio requires either rare analog support or digital conversion through a dongle, adding cost, fragility, and potential latency issues.
+**Why 3.5mm is superior to USB-C Analog:**
+Even though both the 10.0 and 6.0 tiers provide analog audio originating from the phone's internal DAC, the 3.5mm jack is structurally and functionally superior:
+*   **Universal Protocol Compatibility:** The 3.5mm TRS (Tip-Ring-Sleeve) connector is the global analog standard for billions of legacy headphones, speakers, and AUX inputs. USB-C always requires a physical adapter to bridge to this ecosystem.
+*   **Mechanical Reliability:** 3.5mm ports are specifically designed for audio; they allow the connector to rotate freely without signal loss and are generally more robust for frequent "blind" insertions than the high-density pins of a USB-C port. Relying on a USB-C adapter introduces an additional mechanical point of failure (cable fraying or connection looseness).
+*   **Simultaneous Charging & Listening:** Devices with a dedicated 3.5mm jack allow the user to charge the battery while listening to audio natively. USB-C implementations require a multiplexed splitter (dongle) to achieve both, which can introduce electrical interference or limit charging speed.
+*   **Signal Isolation:** The 3.5mm jack is a dedicated audio circuit. USB-C multiplexes audio signals across the same pins used for high-speed data and Power Delivery (PD), which can occasionally result in detectable background hiss or "digital noise" if not perfectly shielded.
+*   **True Zero-Latency Response:** The 3.5mm path is a direct, hard-wired analog circuit. While USB-C analog is also low-latency, the USB-C ecosystem frequently forces users toward digital-to-analog dongles (due to poor analog pass-through support on many cables), which can introduce signal processing latency and buffering delays.
+*   **Zero-Friction UX:** A native jack removes the "dongle tax"—the mental and physical burden of carrying, losing, or forgetting an external accessory to perform a basic core function.
 
 | Score    | Wired Audio Support                              | Example Models               |
 | :------- | :----------------------------------------------- | :--------------------------- |
@@ -777,15 +720,15 @@ To determine the correct tier, check the device's official specifications, marke
 ---
 
 **10.0 — Multi-Axis Mechanical Stabilization (Gimbal)**
-*   **Recognized Keywords:** "Gimbal stabilization", "Gimbal-grade OIS", "Micro-gimbal", "Multi-axis gimbal", "6-axis stabilization", "Super Steady OIS" (hardware variant), "Gimbal 2.0", "Gimbal 3.0"
+*   **Representative Keywords:** "Gimbal stabilization", "6-axis gimbal", "Micro-gimbal".
 *   **Verification Rule:** Manufacturer **explicitly names** a multi-axis mechanical gimbal system. A simple "OIS" label is NOT sufficient.
 
 **9.0 — Sensor-Shift Optical Image Stabilization**
-*   **Recognized Keywords:** "Sensor-shift OIS", "Sensor-shift optical image stabilization", "IBIS" (In-Body Image Stabilization), "Sensor-based OIS"
+*   **Representative Keywords:** "Sensor-shift OIS", "Sensor-shift optical image stabilization".
 *   **Verification Rule:** Manufacturer **explicitly states** the **sensor** (not the lens) moves. Currently primarily found on Apple iPhones (12 Pro Max and newer).
 
 **8.0 — Lens-Based Optical Image Stabilization**
-*   **Recognized Keywords:** "OIS", "Optical Image Stabilization", "Lens-shift OIS", "Lens-based OIS", "Prism Tilt OIS"
+*   **Representative Keywords:** "OIS", "Optical Image Stabilization", "Prism Tilt OIS".
 *   **Verification Rule:** **Default tier** for any unspecified "OIS" (Optical Image Stabilization). The vast majority of Optical Image Stabilization systems in smartphones use lens-shifting.
 
 **5.0 — Software-Only Stabilization**
@@ -1040,21 +983,11 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Measurement:** Camera feature list, video mode specifications.
 *   **Why it matters:** In standard recording, a bright sky or a dark shadow might become pure white or solid black (clipping). Log profiles capture this lost information, giving editors much more flexibility during "color grading" (the process of adjusting colors and contrast) to achieve a cinematic look without the image becoming "noisy" or "distorted."
 
-| Score    | Supported Color Profile                               |
-| :------- | :---------------------------------------------------- |
-| **10.0** | **Apple Log (True Log)**                              |
-| **10.0** | **Samsung / Galaxy Log (True Log)**                   |
-| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**                |
-| **10.0** | **V-Log (True Log)**                                  |
-| **10.0** | **D-Log / D-Log M (True Log)**                        |
-| **10.0** | **F-Log (True Log)**                                  |
-| **10.0** | **OPPO Log (True Log)**                               |
-| **10.0** | **Vivo Log (True Log)**                               |
-| **10.0** | **Xiaomi Log (True Log)**                             |
-| **5.0**  | **S-Cinetone for mobile (Sony Flat)**                 |
-| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**                    |
-| **5.0**  | **D-Cinelike (Flat)**                                 |
-| **0.0**  | **None (Standard contrast only)**                     |
+| Score    | Supported Color Profile                                            |
+| :------- | :----------------------------------------------------------------- |
+| **10.0** | **True Log: Apple Log / Samsung Log / S-Log3 / V-Log / D-Log....** |
+| **5.0**  | **Flat / Cine: S-Cinetone / Cinelike-D / D-Cinelike....**          |
+| **0.0**  | **None (Standard contrast only)**                                  |
 
 *Formula:* `Score = max(points_for_detected_profiles)`
 
@@ -1229,21 +1162,11 @@ To determine the correct tier, check the device's official specifications, marke
 *What it measures:* Support for Logarithmic gamma curves or Flat profiles.
 > **Homogenization Note:** This sub-section mirrors the rear camera's **Section 4.11.2** exactly, including all marketing names.
 
-| Score    | Supported Color Profile                               |
-| :------- | :---------------------------------------------------- |
-| **10.0** | **Apple Log (True Log)**                              |
-| **10.0** | **Samsung / Galaxy Log (True Log)**                   |
-| **10.0** | **S-Log / S-Log2 / S-Log3 (True Log)**                |
-| **10.0** | **V-Log (True Log)**                                  |
-| **10.0** | **D-Log / D-Log M (True Log)**                        |
-| **10.0** | **F-Log (True Log)**                                  |
-| **10.0** | **OPPO Log (True Log)**                               |
-| **10.0** | **Vivo Log (True Log)**                               |
-| **10.0** | **Xiaomi Log (True Log)**                             |
-| **5.0**  | **S-Cinetone for mobile (Sony Flat)**                 |
-| **5.0**  | **Cinelike-D / Cinelike-V (Flat)**                    |
-| **5.0**  | **D-Cinelike (Flat)**                                 |
-| **0.0**  | **None (Standard contrast only)**                     |
+| Score    | Supported Color Profile                                            |
+| :------- | :----------------------------------------------------------------- |
+| **10.0** | **True Log: Apple Log / Samsung Log / S-Log3 / V-Log / D-Log....** |
+| **5.0**  | **Flat / Cine: S-Cinetone / Cinelike-D / D-Cinelike....**          |
+| **0.0**  | **None (Standard contrast only)**                                  |
 
 
 ### D. Computational Photography & AI
@@ -1268,28 +1191,8 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Tier 3 (Reactive Processing):** Lack of "always-on" buffering leads to shutter lag or missed highlights if the scene isn't automatically categorized as high-contrast.
 *   **Tier 4 (Legacy Capture):** Baseline performance floor. High risk of blown-out highlights and sensor noise due to reliance on traditional single-exposure methods.
 
-#### **MFCP Marketing Name Reference Table**
-*Use this list to identify the correct tier based on official marketing names or review descriptions.*
-
-*   **Tier 1 (10.0):**
-    *   **Apple:** Photonic Engine, Deep Fusion, Smart HDR 4/5.
-    *   **Google:** HDR+ with Bracketing (Tensor-based), Super Res Zoom.
-    *   **Samsung:** Enhanced Processing (S23 and later), Expert RAW Stacking.
-    *   **Vivo:** V3/V4 Imaging Chip, BlueImage, Neural HDR.
-    *   **Oppo:** MariSilicon X/Y Processing, Ultra HDR.
-    *   **Terms:** Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL).
-
-*   **Tier 2 (7.5):**
-    *   **Apple:** Smart HDR 2/3.
-    *   **Google:** Standard HDR+ (Pixel 1 through Pixel 5).
-    *   **Samsung:** Scene Optimizer (Multi-frame mode).
-    *   **Others:** Always-on HDR, Automatic Multi-frame Fusion.
-
-*   **Tier 3 (5.0):**
-    *   **Terms:** Generic "Auto-HDR," Manual HDR Mode, Night Mode Stacking (non-standard).
-
 > [!NOTE]
-> **Why it Matters:** Computational photography has effectively decoupled image quality from sensor size. A Tier 1 pipeline on a smaller sensor (e.g., Pixel) often outperforms a Tier 3 pipeline on a much larger sensor.
+> **Why it Matters:** Computational photography allows smaller sensors to perform like larger ones via software-driven stacking. Tier 1 represents the industry ceiling where segmentation is used to treat different parts of the image independently.
 
 ### 🔹 4.17 Pipeline Semantic Artificial Intelligence (AI) Processing
 *Description:* Automatic, capture-time software logic that understands and segments scenes/subjects **before** the final image file is saved. Enables better portraits, sky processing, skin tones, and subject isolation.
@@ -1302,25 +1205,18 @@ To determine the correct tier, check the device's official specifications, marke
 > - **4.17 (Pipeline AI):** Happens **automatically** when you press the shutter (e.g., Apple Photonic Engine). It is invisible to the user and part of the "core" image quality.
 > - **4.18 (Post-Capture AI):** Happens **manually** in the gallery/editor (e.g., Samsung Generative Edit). It requires user interaction after the photo is already taken.
 
-#### 4.17.A Scoring Table
-
-| Tier       | Score    | Rationale Snippet                                                                |
+| Tier       | Score    | Technical Core                                                                   |
 | :--------- | :------- | :--------------------------------------------------------------------------------|
 | **Tier 1** | **10.0** | **Neural Semantic Segmentation:** Pixel-level multi-layer classification.        |
 | **Tier 2** | **7.5**  | **Object-Based Optimization:** Subject-aware global/local enhancements.          |
 | **Tier 3** | **4.0**  | **Basic Metadata AI:** Single-subject face/eye tracking and exposure.            |
 | **Tier 4** | **0.0**  | **None:** Legacy pipeline with no scene interpretation.                          |
 
-#### 4.17.B Detailed Justifications & Terms
+#### Detailed Justifications & Terms
 - **Tier 1:** Performs deep pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth, background, and foreground) within the multi-frame pipeline. Enables "Localized Image Processing" where noise reduction and tone-mapping are independently applied per segment. Often requires a dedicated Neural Processing Unit (NPU) for real-time segmentation maps.
-    - **Apple:** Semantic Rendering, Segmentation-based noise reduction, Photonic Engine, Photographic Styles, Deep Fusion.
-    - **Google:** Real Tone, Face Unblur, Pixel Visual/Neural Core processing.
-    - **Samsung:** AI ProVisual Engine, Object-aware engine.
-    - **Vivo/Xiaomi/Oppo/Honor:** BlueImage, Xiaomi Imaging Engine 3.0, MariSilicon-based segmentation, V3/V4 chip segmentation, Harcourt Portrait engine.
 - **Tier 2:** Recognizes the high-level subject or "motive" and applies preset global/local enhancements. Effective for visual "pop" (e.g., greener grass, bluer sky) but lacks sub-processing granularity.
-    - **Terms:** Samsung (Scene Optimizer), Xiaomi (AI Camera), Honor (Super Visual Engine), Motorola (Moto AI), Generic (AI Scene Recognition, AI Photography, Smart Scene).
 - **Tier 3:** Basic focus/exposure priority for human subjects or recognized moving objects. No content-aware color science or segmentation maps are used.
-    - **Terms:** Face Detection, Eye-tracking (basic), Smile Shutter, AI Action Shot (basic).
+
 
 ### 🔹 4.18 Post-Capture & Generative AI Tools
 *Description:* User-initiated editing tools within the gallery/photos app that modify images **after** they have been captured and saved.
@@ -1328,28 +1224,17 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Unit:** Feature Tier
 *   **Significance:** Extends creative flexibility by allowing retroactive modifications (erasing objects, expanding backgrounds, relighting).
 
-#### 4.18.A Scoring Table
-
-| Tier       | Score    | Rationale Snippet                                                                 |
+| Tier       | Score    | Technical Core                                                                    |
 | :--------- | :------- | :---------------------------------------------------------------------------------|
 | **Tier 1** | **10.0** | **Generative Content Transformation:** Scene-aware creation and outpainting.      |
 | **Tier 2** | **7.5**  | **Advanced Semantic Edits:** Content-aware removal and specific-element fixing.   |
 | **Tier 3** | **4.0**  | **Basic Algorithmic Fixes:** Standard noise reduction and auto-enhancements.      |
 | **Tier 4** | **0.0**  | **None:** No AI-driven editing suite beyond standard crop/filters.                |
 
-#### 4.18.B Detailed Justifications & Terms
+#### Detailed Justifications & Terms
 - **Tier 1:** Utilizes Large Language Models (LLM) or Diffusion-based generative networks to create new pixel data. Can expand canvases beyond original borders (Outpainting), move/resize objects while reconstructing hidden backgrounds, or "reimagine" the scene via text prompts.
-    - **Apple Intelligence:** Clean Up (Generative version), Image Wand (Sketch-to-Image in Notes), Image Playground.
-    - **Google:** Magic Editor, Reimagine, Generative Expand, Add Me.
-    - **Samsung:** Generative Edit, Generative Background, Sketch to Image.
-    - **Xiaomi/Vivo/Oppo/Honor:** AI Image Expansion, Magic Removal (Generative), AI Eraser (Generative versions), AI Frame Expansion.
-- **Tier 2:** Focuses on sophisticated non-generative or "lite" generative fixing. Effectively masks objects using texture patches or re-synthesizes specific elements (like facial expressions) from a burst of shots.
-    - **Google:** Magic Eraser (Standard), Best Take, Photo Unblur.
-    - **Samsung:** Edit Suggestion (Object/Shadow/Reflection removal), Portrait Studio, Object Eraser.
-    - **Xiaomi/Honor:** Pro Cut (AI Framing), Harcourt Portrait Engine (lighting reconstruction), AI Super Zoom (Upscaling), Stage Mode.
-    - **Vivo/Oppo:** AI Erase 2.0 (Smart Circle), Manual Smudge, AI Bokeh.
+- **Tier 2:** Focuses on sophisticated non-generative fixing. Effectively masks objects using texture patches or re-synthesizes specific elements (like facial expressions) from a burst of shots.
 - **Tier 3:** Standard algorithmic fixes that don't use deep generative networks for content creation.
-    - **Terms:** AI Beauty, Auto-fix, Smart Photo, Scene Suggestion (Post-capture), Red-eye Removal (AI-driven).
 
 
 ## 🟣 5. Software & Longevity
@@ -1986,7 +1871,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Unit:** Memory Generation
 *   **Significance:** Affects data transfer speeds and power consumption.
 
-| Score    | Technology    | Example Models                 |
+| Score    | Technology    | Representative Examples        |
 | :------- | :------------ | :----------------------------- |
 | **10.0** | **LPDDR5X**   | S24 Ultra, OnePlus 12          |
 | **9.0**  | **LPDDR5**    | S22 Ultra, Pixel 7 Pro         |
@@ -2013,7 +1898,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Unit:** Storage Generation, internal storage only.
 *   **Significance:** Affects boot time, app load time, and file transfer speed.
 
-| Score    | Technology   | Example Models             |
+| Score    | Technology   | Representative Examples    |
 | :------- | :----------- | :------------------------- |
 | **10.0** | **UFS 4.0**  | S24 Ultra, Xiaomi 14       |
 | **8.0**  | **UFS 3.1**  | Pixel 7, S21 Ultra         |

@@ -1,6 +1,6 @@
 # Ultimate Smartphone Data Structure Proposal (v5.1)
 
-This schema is strictly aligned with the `scoring_rules.md` v8.0.
+This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
 > [!IMPORTANT]
 > ### 🚨 Handling Missing Data, Unlisted Features & Scoring Blockers
@@ -19,6 +19,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
 
 ```json
 {
+  // GUIDELINE: All scoring logic, tiers, and technical definitions are provided inline within this document to ensure self-containment for AI agents. `scoring_rules.md` and `scoring_constants.md` serve as baseline references and external constant repositories, respectively.
   // GUIDELINE: All scoring formulas and lookup tables referenced as "Section X.X" or "§X.X" throughout this document are defined in scoring_rules.md. All numeric constants (e.g. _Min / _Max thresholds) are from scoring_constants.md. There is no need to repeat these file names in individual Source comments below.
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -50,7 +51,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-11"
+    "last_updated": "2026-03-13"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -139,13 +140,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the frame material in the Section 1.1.A table. Use the following terms exclusively for "value" with related scores as subscore:
-        //   • Titanium Alloy       → 10.00
-        //   • Stainless Steel      → 8.50
-        //   • Aluminum Alloy       → 7.00
-        //   • Polymer Composite    → 4.00
-        //   • Not Disclosed        → 0.00
-        // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for the frame material (e.g., ["Grade 5 Titanium"], ["Armor Aluminum"], ["Stainless Steel 316L"]).
+          // SCORING GUIDELINE: Identify the frame material. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Titanium Alloy"     → 10.00
+          //     Definition: High-strength, aerospace-grade alloy (e.g., Grade 5 Titanium).
+          //   • "Stainless Steel"    → 8.50
+          //     Definition: Corrosion-resistant surgical-grade steel (e.g., SS 316L).
+          //   • "Aluminum Alloy"     → 7.00
+          //     Definition: Standard lightweight structural alloy (e.g., 6000/7000 series).
+          //   • "Polymer Composite"  → 4.00
+          //     Definition: Reinforced plastic or resin-based materials (e.g., Polycarbonate).
+          //   • "Not Disclosed"      → 0.00
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name (e.g. ["Grade 5 Titanium"], ["Armor Aluminum"]).
       },
       "back_material": {
         "value": "Strengthened Glass",
@@ -153,13 +158,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
-        // SCORING GUIDELINE: Look up the back panel material in the Section 1.1.B table. Use the following terms exclusively for "value" with related scores as subscore:
-        //   • Ceramic              → 10.00
-        //   • Strengthened Glass   → 8.00
-        //   • Standard Glass       → 6.00
-        //   • Polymer              → 4.00
-        //   • Not Disclosed        → 0.00
-        // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for the back material (e.g., ["Gorilla Glass Victus 2"], ["Ceramic Shield"], ["Glastic"]).
+          // SCORING GUIDELINE: Identify the back panel material. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Ceramic"            → 10.00
+          //     Definition: Inorganic, non-metallic solid offering superior scratch resistance and heat dissipation.
+          //   • "Strengthened Glass" → 8.00
+          //     Definition: Chemically tempered or ion-exchange glass (e.g., Victus 2, Ceramic Shield).
+          //   • "Standard Glass"     → 6.00
+          //     Definition: Basic tempered glass without advanced reinforcement.
+          //   • "Polymer"            → 4.00
+          //     Definition: Plastic-based resin or composite materials.
+          //   • "Not Disclosed"      → 0.00
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name (e.g. ["Gorilla Glass Victus 2"], ["Ceramic Shield"]).
       },
       "predicted_score": 9.20,
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
@@ -183,26 +192,26 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the Ingress Protection (IP) rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores as subscore:
-        //   • Digit 6    → 10.00
-        //   • Digit 5    → 8.00
-        //   • Digit 4    → 6.00
-        //   • Digit 3    → 4.00
-        //   • Digit 2    → 2.00
-        //   • Digit 0–1  → 0.00
+          // SCORING GUIDELINE: Identify the first digit of the IP rating via "ingress_protection_rating". Use the following exact terms for "value" with related scores as subscore:
+          //   • "Digit 6"    → 10.00
+          //   • "Digit 5"    → 8.00
+          //   • "Digit 4"    → 6.00
+          //   • "Digit 3"    → 4.00
+          //   • "Digit 2"    → 2.00
+          //   • "Digit 0–1"  → 0.00
       },
       "water_protection_digit": {
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Digit 8",
         "subscore": 9.00
-        // SCORING GUIDELINE: Look up the second digit of the Ingress Protection (IP) rating in the Section 1.2.B table. Use the following terms exclusively for "value" with related scores as subscore:
-        //   • Digit 9    → 10.00
-        //   • Digit 8    → 9.00
-        //   • Digit 7    → 8.00
-        //   • Digit 6    → 6.00
-        //   • Digit 5    → 4.00
-        //   • Digit 4    → 2.00
-        //   • Digit 0–3  → 0.00
+          // SCORING GUIDELINE: Identify the second digit of the IP rating via "ingress_protection_rating". Use the following exact terms for "value" with related scores as subscore:
+          //   • "Digit 9"    → 10.00
+          //   • "Digit 8"    → 9.00
+          //   • "Digit 7"    → 8.00
+          //   • "Digit 6"    → 6.00
+          //   • "Digit 5"    → 4.00
+          //   • "Digit 4"    → 2.00
+          //   • "Digit 0–3"  → 0.00
       },
       "predicted_score": 9.50,
       // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
@@ -217,22 +226,29 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
     "1_3_glass_protection": {
       // SCORING GOAL: Scores the protective glass type on the display, known as Display Glass Protection (DGP), based on the manufacturer-declared glass generation's certified drop and scratch resistance class. Source: Section 1.3 Display Glass Protection table.
       "glass_generation": {
-        "value": "Gorilla Glass Armor",
+        "value": "Armor-Class",
+        "value_details": ["Gorilla Glass Armor"],
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Identify the declared glass type. Use the following exact terms for "value" with related scores as subscore:
-        //   • "Gorilla Glass Armor"                                       → 10.00
-        //   • "Ceramic Shield (current gen)"                              → 9.50
-        //   • "Gorilla Glass Victus 2"                                    → 9.00
-        //   • "Gorilla Glass Victus or Victus+"                           → 8.00
-        //   • "Dragontrail Star or Dragontrail Pro"                       → 8.00
-        //   • "Gorilla Glass 5 or 6"                                      → 7.00
-        //   • "Dragontrail X"                                             → 7.00
-        //   • "Gorilla Glass 3 / Panda Glass / Dragontrail (standard)"    → 5.00
-        //   • "Tempered Glass"                                            → 3.00 (Strengthened / Reinforced glass)
-        //   • "Glass (Unspecified)"                                       → 2.00 (Generic 'Glass front')
-        //   • "Plastic or No Glass"                                       → 0.00 (Polymer)
+        // SCORING GUIDELINE: Identify the highest glass tier based on manufacturer drop/scratch claims. Use the following exact terms for "value" with related scores as subscore:
+        //   • "Armor-Class"           → 10.00
+        //     Definition: Anti-reflective (AR) coating + ≥2.0m rough-surface drop certification (e.g., Gorilla Glass Armor).
+        //   • "Shield-Class"          → 9.50
+        //     Definition: Ceramic-infused matrix + ≥2.0m drop certification (e.g., Ceramic Shield, Kunlun Glass).
+        //   • "Ultra-Reinforced"      → 9.00
+        //     Definition: Advanced alumina-silicate glass optimized for rough-surface drops (≥2.0m class) (e.g., Gorilla Glass Victus 2).
+        //   • "Premium Reinforced"    → 8.00
+        //     Definition: High-end chemical tempering with ≥2.0m standard drop certification (e.g., Victus, Victus+, Star 2).
+        //   • "Standard Reinforced"   → 7.00
+        //     Definition: Regular flagship-grade chemical tempering with ≥1.6m drop certification (e.g., Gorilla Glass 5/6, Dragontrail Pro / Star).
+        //   • "Entry-Level Reinforced" → 5.00
+        //     Definition: Basic chemical tempering with ~1.2m drop certification (e.g., Gorilla Glass 3, Panda Glass, Dragontrail).
+        //   • "Tempered Glass"        → 3.00
+        //     Definition: Basic chemically strengthened glass with no certified drop class.
+        //   • "Glass (Unspecified)"   → 2.00
+        //   • "Plastic or No Glass"   → 0.00
+        // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name (e.g., ["Gorilla Glass Armor"], ["Kunlun Glass"]).
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
@@ -317,15 +333,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
-        // SCORING GUIDELINE: Identify the panel type. Use the following exact terms for "value" with related scores as subscore (Note: terms indicated AFTER the scores are alternative marketing names, i.e. "Dual-Layer OLED" can be found in spec sheets as an equivalent to "Tandem OLED"):
-        //   • "Tandem OLED"      → 10.00 (Dual-Layer OLED)
-        //   • "LTPO OLED"        → 9.00  (LTPO backplane, OLED ProMotion, Super Retina XDR ProMotion, Dynamic AMOLED 2X, ProXDR, LTPO4)
-        //   • "AMOLED or OLED"   → 8.00  (Super AMOLED, Dynamic AMOLED" (without "2X"), P-OLED, Super Retina XDR/HD (without ProMotion))
-        //   • "IPS LCD"          → 6.00  (Liquid Retina, Retina LCD/HD, IPS LCD/NEO)
-        //   • "TFT or PLS LCD"   → 2.00  
-        //   • "TN LCD or Legacy" → 0.00  (Twisted Nematic)
-        // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "AMOLED or OLED" (8.00).
-        // In case of doubt consult #### Marketing Name → Canonical Tier Lookup
+        // SCORING GUIDELINE: Identify the panel type. Use the following exact terms for "value" with related scores as subscore:
+        //   • "Tandem OLED"                   → 10.00
+        //     Definition: Dual-stack Organic Light-Emitting Diode (OLED) with two vertical light-emitting layers.
+        //   • "LTPO OLED"                     → 9.00
+        //     Definition: Organic Light-Emitting Diode (OLED) with Low-Temperature Polycrystalline Oxide (LTPO) backplane. Supports variable refresh rate down to 1 Hz.
+        //   • "Standard OLED/AMOLED (LTPS)"   → 8.00
+        //     Definition: Organic Light-Emitting Diode (OLED) with Low-Temperature Polycrystalline Silicon (LTPS) backplane. Self-emissive pixels; lacks variable refresh rate down to 1 Hz.
+        //   • "IPS LCD"                       → 6.00
+        //     Definition: In-Plane Switching Liquid-Crystal Display (IPS LCD). Utilizes a backlight with in-plane liquid crystal alignment.
+        //   • "TFT or PLS LCD"                → 2.00
+        //     Definition: Standard active-matrix Liquid-Crystal Display (LCD) including Plane-to-Line Switching (PLS) and non-IPS Thin-Film Transistor (TFT) variants. 
+        //   • "TN LCD or Legacy"              → 0.00
+        //     Definition: Twisted Nematic Liquid-Crystal Display (TN LCD) or legacy technologies. Liquid crystals twist to control light; characterized by color inversion or contrast shift at off-axis viewing angles.
+        // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "Standard OLED/AMOLED (LTPS)" (8.00).
         // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name found in specs (e.g., ["Dynamic AMOLED 2X"], ["Super Retina XDR ProMotion"], ["LTPO4 AMOLED"]).
       },
       "predicted_score": 9.00,
@@ -399,7 +420,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         ],
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 8.00
+        "subscore": 7.00
         // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. For each supported format, use the exact term below for the "value" array:
         //   • "Dolby Vision"  → adds +3.00 to the subscore
         //   • "HDR10+"        → adds +2.00 to the subscore
@@ -662,10 +683,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-          // SCORING GUIDELINE: Identify the physical speaker setup using spec sheets or teardowns. Use the following exact terms for "value" with related scores as subscore:
-          //   • "Balanced / Symmetrical Stereo" → 10.00 (Must explicitly state "Symmetrical speakers" or "Balanced stereo")
-          //   • "Standard Hybrid Stereo"        → 7.00  (Typically listed as 'Stereo Speakers' without symmetry claims)
-          //   • "Mono Speaker"                  → 3.00  (Single active loudspeaker)
+            // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Balanced / Symmetrical Stereo" → 10.00
+          //     Definition: Two identical or near-identical dedicated speaker units (top/bottom or left/right) offering matched frequency response and volume. Must explicitly state "Symmetrical speakers" or "Balanced stereo".
+          //   • "Standard Hybrid Stereo"        → 7.00
+          //     Definition: Typically uses the earpiece as a second channel, lacking the bass response and volume of the primary speaker. Typically listed as 'Stereo Speakers' without symmetry claims.
+          //   • "Mono Speaker"                  → 3.00
+          //     Definition: Single active loudspeaker for media playback.
           //   • "No Usable Speaker"             → 0.00
         },
         "predicted_score": 7.00,
@@ -757,14 +781,19 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
         },
         "recording_channels_modes": {
           "value": "Stereo",
+          "value_details": ["Stereo recording"],
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following terms exclusively for "value" with related scores as subscore:
-          //   • Multi-channel / spatial audio   → 10.00
-          //   • Stereo                          → 8.00
-          //   • Mono                            → 5.00
-          //   • Voice-only / unclear            → 0.00
+          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Multi-channel / spatial audio" → 10.00
+          //     Definition: Captures audio with directional data (e.g., 5.1, 7.1, or OZO Audio).
+          //   • "Stereo"                        → 8.00
+          //     Definition: Standard two-channel (Left/Right) audio recording.
+          //   • "Mono"                          → 5.00
+          //     Definition: Single-channel audio recording.
+          //   • "Voice-only / unclear"          → 0.00
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for the recording mode or technology (e.g., ["3D Audio Recording"], ["OZO Audio"], ["Stereo Recording"]).
         },
         "advanced_capture_features": {
           "value": [
@@ -974,13 +1003,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact terms for "value" with related scores as subscore:
-          //   • "Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00 (Must contain Multi-axis mechanical and/or Gimbal)
-          //   • "Sensor-Shift Optical Image Stabilization"              → 9.00  (Must explicitly state the sensor moves, e.g. IBIS)
-          //   • "Lens-Based Optical Image Stabilization"                → 8.00  (Default for generic "OIS")
-          //   • "Software-Only Stabilization (Electronic, no hardware)" → 5.00  (EIS/AIS only. No physical/hardware stabilization is mentioned.)
+          //   • "Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
+          //     Definition: The entire camera module floats on a multi-axis mechanical suspension or gimbal (e.g., vivo, ASUS ROG/Zenfone).
+          //   • "Sensor-Shift Optical Image Stabilization"              → 9.00
+          //     Definition: The image sensor itself physically moves (IBIS) instead of the lens (primarily found on Apple iPhones 12 Pro Max and newer).
+          //   • "Lens-Based Optical Image Stabilization"                → 8.00
+          //     Definition: Individual optical lens elements move to counteract shake. This is the default tier for generic "OIS" listings.
+          //   • "Software-Only Stabilization (Electronic, no hardware)" → 5.00
+          //     Definition: Purely algorithmic stabilization (EIS/AIS) via digital cropping; requires no moving physical parts.
           //   • "None"                                                  → 0.00
-          // AMBIGUITY RULE: If the spec sheet lists generic "Optical Image Stabilization (OIS)" without further qualification, default to 8.00.
-          // VALUE_DETAILS GUIDELINE: Record the exact OEM stabilization term (e.g., ["OIS"], ["Sensor-Shift OIS"], ["SteadyShot with Active Mode"], ["Super Steady OIS + EIS"]).
+          //     Definition: No hardware or software stabilization is detected or documented.
+          // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to 8.00.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name(s) for the stabilization technology (e.g., ["Sensor-Shift OIS"], ["SteadyShot with Active Mode"], ["Super Steady OIS + EIS"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1013,7 +1047,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "predicted_score": 8.67,
         // SCORING GUIDELINE: predicted_score = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true, source: UCC Formula of Section 4.5; otherwise predicted_score = 0.00.
@@ -1224,10 +1258,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact terms for "value" with related scores as subscore:
-          //   • "True RAW"    → 10.00 (Codecs: CinemaDNG, ProRes RAW, Blackmagic RAW (BRAW))
-          //   • "Mezzanine"   → 8.00  (Codecs: ProRes, Advanced Professional Video (APV), DNxHR/HD)
-          //   • "None"        → 0.00  (Standard H.264/H.265 only)
-          // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]).
+          //   • "True RAW"    → 10.00
+          //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
+          //   • "Mezzanine"   → 8.00
+          //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
+          //   • "Standard"    → 0.00
+          //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
+          // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "log_color_profile_support": {
           "value": "True Log",
@@ -1235,11 +1272,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the highest supported color profile tier based on Section 4.11.2. Use the following exact terms for "value" with related scores as subscore:
-          //   • "True Log"      → 10.00 (Profiles: Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log)
-          //   • "Flat Profile"  → 5.00  (Profiles: S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike)
-          //   • "Standard"      → 0.00  (None / Standard contrast only)
-          // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]).
+          // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact terms for "value" with related scores as subscore:
+          //   • "True Log"       → 10.00
+          //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
+          //   • "Flat / Cine"    → 5.00
+          //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, D-Cinelike).
+          //   • "Standard only"  → 0.00
+          //     Definition: No professional gamma profiles; only standard rec.709 or rec.2020 curves.
+          // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "color_bit_depth": {
           "value": "10-bit color",
@@ -1322,10 +1362,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the front camera's focus type using the following exact terms for "value" with related scores as subscore:
-          //   • "Autofocus"                        → 10.00 (Common types: Phase Detection Auto Focus (PDAF), Dual Pixel, Laser AF.)
-          //   • "Fixed Focus (Modern Wide-DOF)"    → 6.00  (Identified by aperture_f_number ≥ 2.0 OR sensor_size ≤ 1/3".)
-          //   • "Fixed Focus (Legacy Narrow-DOF)"  → 3.00  (Identified by aperture_f_number < 2.0 AND sensor_size > 1/3".)
+          // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Autofocus"                        → 10.00
+          //     Definition: An active mechanical system where the lens moves to find focus (e.g., Phase Detection Auto Focus (PDAF), Dual Pixel, or Laser Auto Focus).
+          //   • "Fixed Focus (Modern Wide-DOF)"    → 6.00
+          //     Definition: A lens with no moving hardware parts configured for a wide Depth of Field (DOF) focus zone. Identified by (aperture_f_number ≥ 2.0) OR (sensor_size ≤ 1/3").
+          //   • "Fixed Focus (Legacy Narrow-DOF)"  → 3.00
+          //     Definition: A lens with no moving hardware parts featuring a narrow Depth of Field (DOF) focus zone. Identified by (aperture_f_number < 2.0) AND (sensor_size > 1/3").
           //   • "No Front Camera"                  → 0.00
           // MISSING DATA FALLBACK: If sensor size is missing from specs but aperture (f-number) is known, classify based solely on the aperture.
           // VALUE_DETAILS GUIDELINE: Record the exact technology (e.g., ["Phase Detection Auto Focus (PDAF)"], ["Dual Pixel PDAF"], ["Laser AF"]).
@@ -1390,11 +1433,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 8.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact terms for "value" with related scores as subscore:
-            //   • "True RAW"    → 10.00 (Codecs: CinemaDNG, ProRes RAW, Blackmagic RAW (BRAW))
-            //   • "Mezzanine"   → 8.00  (Codecs: ProRes, Advanced Professional Video (APV), DNxHR/HD)
-            //   • "None"        → 0.00  (Standard H.264/H.265 only)
-            // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]).
+          // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "True RAW"    → 10.00
+          //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
+          //   • "Mezzanine"   → 8.00
+          //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
+          //   • "Standard"    → 0.00
+          //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
+          // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs (e.g., ["ProRes"], ["ProRes", "APV"], ["CinemaDNG", "ProRes RAW"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
           }
         },
         "4_15_4_2_log_color_profile_support": {
@@ -1404,11 +1450,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCPS). Identify the highest supported color profile tier. Use the following exact terms for "value" with related scores as subscore:
-            //   • "True Log"      → 10.00 (Profiles: Apple Log, Samsung / Galaxy Log, S-Log / S-Log2 / S-Log3, V-Log, D-Log / D-Log M, F-Log, OPPO Log, Vivo Log, Xiaomi Log)
-            //   • "Flat Profile"  → 5.00  (Profiles: S-Cinetone for mobile (Sony Flat), Cinelike-D / Cinelike-V, D-Cinelike)
-            //   • "Standard"      → 0.00  (None / Standard contrast only)
-            // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]).
+            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact terms for "value" with related scores as subscore:
+            //   • "True Log"       → 10.00
+            //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
+            //   • "Flat / Cine"    → 5.00
+            //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, Cinelike-D).
+            //   • "Standard only"  → 0.00
+            //     Definition: No professional gamma profiles. only standard rec.709 or rec.2020 curves.
+            // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs (e.g., ["Apple Log"], ["S-Log3", "S-Cinetone"], ["D-Log M"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
           }
         },
         "predicted_score": 9.80,
@@ -1430,16 +1479,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore (Reference Section 4.16 for full details):
-          //   • "Advanced Semantic & Neural Stacking" → 10.00
-          //     Look for: Apple (Photonic Engine, Deep Fusion, Smart HDR 4/5), Google (HDR+ with Bracketing (Tensor-based), Super Res Zoom), Samsung (Enhanced Processing [S23+], Expert RAW Stacking), Vivo (V3/V4 Imaging Chip, BlueImage, Neural HDR), Oppo (MariSilicon X/Y, Ultra HDR), Common (Neural/AI Stacking, Semantic Segmentation, Zero Shutter Lag (ZSL)).
-          //   • "Standard Always-on Multi-Frame HDR"  → 7.50
-          //     Look for: Apple (Smart HDR 2/3), Google (Standard HDR+ [Pixel 1-5]), Samsung (Scene Optimizer [Multi-frame mode]), Common (Always-on HDR, Automatic Multi-frame Fusion).
-          //   • "Conditional / Manual Multi-Frame"    → 5.00
-          //     Look for: Generic "Auto-HDR", Manual HDR Mode, Night Mode Stacking (if only in dedicated mode).
-          //   • "Basic / Single Frame (Legacy)"       → 0.00
-          //     Look for: No multi-frame stacking, standard single exposure.
-          // VALUE_DETAILS GUIDELINE: List the exact OEM feature names that justify the tier (e.g., ["Deep Fusion", "Smart HDR 5"], ["Neural HDR", "BlueImage"], ["HDR+ with Bracketing"]).
+          // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Advanced Semantic & Neural Stacking" → 10.0
+          //     Definition: Advanced pipeline that uses semantic segmentation (understanding sky, faces, skin) within a Zero Shutter Lag (ZSL) multi-frame buffer.
+          //   • "Standard Always-on Multi-Frame HDR"  → 7.5
+          //     Definition: Always-on multi-frame HDR capture (e.g., Smart HDR) without advanced per-pixel semantic segmentation.
+          //   • "Conditional / Manual Multi-Frame"    → 5.0
+          //     Definition: Multi-frame processing only activates in specific modes (e.g., Night Mode) or requires manual activation (HDR toggle).
+          //   • "Basic / Single Frame (Legacy)"       → 0.0
+          //     Definition: No multi-frame stacking; reliance on single-frame exposure.
+          // VALUE_DETAILS GUIDELINE: Record all the exact OEM marketing name(s) (e.g., ["Photonic Engine"], ["Neural HDR", "BlueImage"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
@@ -1459,17 +1508,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Neural Semantic Segmentation" → 10.00
-          //     Look for: Apple (Semantic Rendering, Segmentation-based noise reduction, Photonic Engine, Photographic Styles, Deep Fusion), Google (Real Tone, Face Unblur, Pixel Visual/Neural Core processing), Samsung (AI ProVisual Engine, Object-aware engine), Vivo/Xiaomi/Oppo/Honor (BlueImage, Xiaomi Imaging Engine 3.0, MariSilicon-based segmentation, V3/V4 chip segmentation, Harcourt Portrait engine).
-          //   • "Object-Based Optimization"    → 7.50
-          //     Look for: Samsung (Scene Optimizer), Xiaomi (AI Camera), Honor (Super Visual Engine), Motorola (Moto AI), Generic (AI Scene Recognition, AI Photography, Smart Scene).
-          //   • "Basic Metadata AI"            → 4.00
-          //     Look for: Face Detection, Eye-tracking (basic), Smile Shutter, AI Action Shot (basic).
-          //   • "None"                         → 0.00
-          //     Look for: Legacy pipeline with no scene interpretation.
-          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names. Be exhaustive.
-          //   • Examples: ["Real Tone"], ["Photonic Engine"], ["Deep Fusion"], ["BlueImage"], ["Xiaomi Imaging Engine 3.0"], ["Harcourt Portrait"].
+          // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Neural Semantic Segmentation" → 10.0
+          //     Definition: Real-time, pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth) during captured multi-frame pipeline.
+          //   • "Object-Based Optimization"   → 7.5
+          //     Definition: Recognizes high-level subjects (dog, flower, sunset) to apply preset global/local enhancements ("Scene Optimizer").
+          //   • "Basic Metadata AI"           → 4.0
+          //     Definition: Basic subject prioritization for focus and exposure (Face/Eye detection). No content-aware color science.
+          //   • "None"                        → 0.0
+          //     Definition: No scene or subject interpretation in the processing pipeline.
+          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names. Examples: ["Real Tone"], ["Photonic Engine"], ["Deep Fusion"], ["BlueImage"], ["Xiaomi Imaging Engine 3.0"], ["Harcourt Portrait"]. IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
@@ -1489,16 +1537,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Use the following exact terms for "value" with related scores as subscore:
-          //   • "Generative Content Transformation" → 10.00
-          //     Look for: Apple Intelligence (Clean Up (Generative), Image Wand, Image Playground), Google (Magic Editor, Reimagine, Generative Expand, Add Me), Samsung (Generative Edit, Generative Background, Sketch to Image), Xiaomi/Vivo/Oppo/Honor (AI Image Expansion, Magic Removal (Generative), AI Eraser (Generative), AI Frame Expansion).
+          // SCORING GUIDELINE: Identify the Generative AI tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Generative Content Transformation" → 10.0
+          //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
           //   • "Advanced Semantic Edits"           → 7.50
-          //     Look for: Google (Magic Eraser (Standard), Best Take, Photo Unblur), Samsung (Edit Suggestion (Shadow/Reflection removal), Portrait Studio, Object Eraser), Xiaomi/Honor (Pro Cut, Harcourt Portrait Engine, AI Super Zoom, Stage Mode), Vivo/Oppo (AI Erase 2.0 (Smart Circle), Manual Smudge, AI Bokeh).
+          //     Definition: Rule-based or shallow-learning tools for localized adjustments (shadow/reflection removal, face unblur, object erasure without generative fill).
           //   • "Basic Algorithmic Fixes"           → 4.00
-          //     Look for: AI Beauty, Auto-fix, Smart Photo, Scene Suggestion (Post-capture), Red-eye Removal (AI-driven).
-          //   • "None"                              → 0.00
-          //     Look for: No AI-driven editing suite beyond standard crop/filters.
-          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names (e.g., ["Generative Edit"], ["Magic Editor"], ["Clean Up"], ["AI Eraser 2.0"]). Be exhaustive.
+          //     Definition: Standard beauty filters, color-aware auto-fixing, or basic object prioritization for cropping.
+          //   • "None"                              → 0.0
+          //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
+          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) feature names (e.g., ["Generative Edit"], ["Magic Editor"], ["Clean Up"], ["AI Eraser 2.0"]). IMPORTANT: Be exhaustive and include all that apply. If names belong to a different tier, then list them in descending tier order.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
@@ -1555,7 +1603,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "N/A",
           "exact_extract": "N/A",
           "subscore": 6.00
-          // SCORING GUIDELINE: Direct lookup from the `skin` field above via the Section 5.2 Platform Cleanliness table. Do not derive this value from any formula. Known platforms: iOS -> 10.0, Pixel UI / Stock Android -> 9.0, Samsung One UI -> 6.0, HyperOS -> 4.0, etc. If unlisted, score = N/A.
+          // SCORING GUIDELINE: Identify the software platform tier. Use the following exact terms for "platform_score.value" with related scores as subscore:
+          //   • "Tier 1: Clean / Premium" → 10.0
+          //     Definition: Minimalist experience with no third-party bloatware or ads (e.g., iOS, Pixel UI, Nothing OS).
+          //   • "Tier 2: Controlled"       → 8.0
+          //     Definition: Light skin with minimal, removable bloatware (e.g., Motorola, OxygenOS).
+          //   • "Tier 3: Moderate"         → 6.0
+          //     Definition: Notable bloatware and removable third-party apps (e.g., One UI).
+          //   • "Tier 4: Heavy / Bloated"  → 4.0
+          //     Definition: Significant bloatware and system-level advertisements (e.g., HyperOS, ColorOS).
+          //   • "Tier 5: Restrictive"      → 0.0
+          //     Definition: Extreme bloatware and non-optional system ads (e.g., HiOS, XOS).
+          // In case of doubt consult Section 5.2 Platform Cleanliness table.
         },
         "predicted_score": 6.00,
         // SCORING GUIDELINE: predicted_score directly inherits platform_score.subscore.
@@ -1575,6 +1634,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.50
           // SCORING GUIDELINE: If value = true, subscore = 2.50. If value = false, subscore = 0.00.
+          // Definition: A system-level visual search tool activated by circling, highlighting, or long-pressing any on-screen content (text, image, product). The phone identifies the item and returns relevant search results, shopping links, or translations without leaving the current app.
         },
         "live_speech_translation": {
           "value": true,
@@ -1582,6 +1642,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If value = true, subscore = 2.00. If value = false, subscore = 0.00.
+          // Definition: Real-time voice or text translation during phone calls, video calls, or in-person conversations. Must operate as a native system service (not a standalone third-party app download).
         },
         "content_summarization": {
           "value": true,
@@ -1589,6 +1650,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 1.50
           // SCORING GUIDELINE: If value = true, subscore = 1.50. If value = false, subscore = 0.00.
+          // Definition: A system-integrated Artificial Intelligence (AI) feature that condenses long-form content (web pages, articles, recorded voice memos, notification threads) into a short summary. Must be built into the operating system or first-party apps, not a third-party add-on.
         },
         "writing_tools": {
           "value": true,
@@ -1596,6 +1658,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 1.00
           // SCORING GUIDELINE: If value = true, subscore = 1.00. If value = false, subscore = 0.00.
+          // Definition: System-wide AI text rewriting, tone adjustment, grammar correction, or proofreading available in any text input field. Must be an operating-system-level feature accessible across all apps.
         },
         "on_device_processing": {
           "value": true,
@@ -1603,6 +1666,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 3.00
           // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
+          // Definition: The device can run its core AI features (at least summarisation and writing tools) locally on the Neural Processing Unit (NPU) without requiring a cloud/internet connection. Provides privacy, lower latency, and offline reliability.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
@@ -1684,6 +1748,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
               "value": 3.4,
               "source": "TBD",
               "exact_extract": "Proof pending"
+              // SCORING GUIDELINE: Identify the core performance tier based on the strongest core. Use the following exact terms for "value" with related scores as subscore:
+              //   • "Ultra Performance" → 10.00
+              //     Definition: Cutting-edge microarchitecture with peak instruction-per-clock (IPC) performance (e.g., Apple A18 Pro, Cortex-X925).
+              //   • "High Performance"  → 8.50
+              //     Definition: Flagship-class performance cores from recent generations (e.g., Cortex-X4, Apple A17).
+              //   • "Mid-tier"          → 6.00
+              //     Definition: Balanced efficiency/performance cores (e.g., Cortex-A720, Apple A15).
+              //   • "Basic"             → 3.00
+              //     Definition: Efficiency-focused cores for standard tasks (e.g., Cortex-A520).
+              //   • "Legacy / Ultra Low"→ 1.00
+              //     Definition: Outdated or ultra-low power cores (e.g., Cortex-A55).
             }
           }
         },
@@ -1764,7 +1839,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up the value in Section 6.5 memory technology table. E.g., LPDDR5X -> 10.0, LPDDR5 -> 8.0, LPDDR4X -> 5.0, LPDDR4 -> 3.0, older -> 0.0.
+          // SCORING GUIDELINE: Identify the RAM technology. Use the following exact terms for "value" with related scores as subscore:
+          //   • "LPDDR5X"      → 10.00
+          //     Definition: Highest speed tier (e.g., LPDDR5X).
+          //   • "LPDDR5 / 4X"  → 7.00
+          //     Definition: Standard modern memory (e.g., LPDDR5, LPDDR4X).
+          //   • "Legacy"       → 0.00
+          //     Definition: LPDDR3 or older technology.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for memory (e.g., ["LPDDR5X"], ["Low-power DDR5X"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits technology_generation.subscore.
@@ -1782,7 +1864,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "value_path": "identity.hardware_configuration.ram_gb.value",
           "value": 12,
           "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula based on RAM Capacity. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))
+          // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)).
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
@@ -1801,7 +1883,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up the value in Section 6.7 storage technology table. NVMe / UFS 4.0 -> 10.0, UFS 3.1 -> 8.0, UFS 3.0 -> 6.0, UFS 2.2 -> 4.0, UFS 2.1 -> 3.0, eMMC 5.1 -> 0.0.
+          // SCORING GUIDELINE: Identify the internal storage technology. Use the following exact terms for "value" with related scores as subscore:
+          //   • "UFS 4.0 / NVMe" → 10.00
+          //     Definition: Highest speed tier (e.g., UFS 4.0, Apple NVMe).
+          //   • "UFS 3.1"        → 8.00
+          //     Definition: High-speed standard (e.g., UFS 3.1).
+          //   • "UFS 2.2 / eMMC" → 0.00
+          //     Definition: Legacy or budget storage (e.g., UFS 2.2, eMMC 5.1).
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for storage (e.g., ["UFS 4.0"], ["NVMe Storage"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits storage_format.subscore.
@@ -1819,7 +1908,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "value_path": "identity.hardware_configuration.storage_gb.value",
           "value": 512,
           "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula based on Storage Capacity. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))
+          // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min)).
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
@@ -1838,7 +1927,16 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Look up the value in Section 6.9 storage expandability table. Dedicated MicroSD Slot -> 10.0, Shared SIM slot -> 7.0, NM Card -> 5.0, None -> 0.0.
+          // SCORING GUIDELINE: Identify the expandability support. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Dedicated Slot" → 10.00
+          //     Definition: Separate tray or contact specifically for a removable memory card (MicroSD) that does not interfere with SIM card usage.
+          //   • "Hybrid Slot"    → 7.00
+          //     Definition: Shared slot where the user must choose between a second SIM card or a memory card (e.g., MicroSD, Nano Memory).
+          //   • "Proprietary"    → 5.00
+          //     Definition: Support for branded/exclusive removable storage formats (e.g., Huawei NM Card).
+          //   • "None"           → 0.00
+          //     Definition: No physical slot for internal storage expansion.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name or type (e.g., ["microSDXC (dedicated slot)"], ["microSDXC (uses shared SIM slot)"]).
         },
         "predicted_score": 0.00,
         // SCORING GUIDELINE: predicted_score directly inherits expandability_support.subscore.
@@ -1858,8 +1956,20 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Look up the value in Section 6.10 Part B table. Active Cooling (Fan) -> 10.0, Large VC -> 8.0, Vapor Chamber -> 7.0, Multi-layer Graphite -> 5.0, Single Heat Spreader -> 3.0, None -> 0.0.
-          // VALUE_DETAILS GUIDELINE: Record the exact OEM cooling marketing term (e.g., ["IceLoop Thermal System"], ["Cryo-Velocity Vapor Chamber"], ["LiquidCool Technology"]).
+          // SCORING GUIDELINE: Identify the cooling mechanism class. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Active Cooling (Fan)"              → 10.00
+          //     Definition: Internal motorized fan pushing air through the chassis for heat dissipation.
+          //   • "Extreme Passive (VC ≥4000 mm²)"    → 8.00
+          //     Definition: Vapor Chamber cooling with a verified surface area of 4000 square millimeters or more.
+          //   • "Standard Passive (VC <4000 mm²)"   → 7.00
+          //     Definition: Presence of a Vapor Chamber (VC) cooling system that is smaller or of unspecified area.
+          //   • "Basic Passive (Multi-layer Graphite)" → 5.00
+          //     Definition: Use of graphite sheets or copper foil for heat spreading without a phase-change vapor chamber.
+          //   • "Legacy (Metal Shielding only)"     → 3.00
+          //     Definition: Reliance on standard chassis metal and shielding for heat.
+          //   • "None / Air-only"                   → 0.00
+          //     Definition: No dedicated internal thermal dissipation materials or structures mentioned.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM cooling marketing term (e.g., ["Cryo-Velocity Vapor Chamber"], ["LiquidCool Technology"]).
         },
         "part_c_process_node_size_nm": {
           "value": 4,
@@ -1894,7 +2004,19 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up the value in Section 7.1 table.
+          // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact terms for "value" with related scores as subscore:
+          //   • "5G mmWave + Sub-6 (Global band coverage)" → 10.00
+          //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
+          //   • "5G Sub-6 (Global band coverage)"          → 8.50
+          //     Definition: Supports 5G on Sub-6GHz frequencies with extensive band coverage for global roaming.
+          //   • "5G Sub-6 (Regional band coverage)"        → 7.50
+          //     Definition: Supports 5G on Sub-6GHz but with band coverage limited to specific markets.
+          //   • "4G LTE-A (Cat 24+)"                       → 5.00
+          //     Definition: 4G LTE Advanced with support for high-order carrier aggregation and 4x4 MIMO.
+          //   • "4G LTE"                                   → 2.50
+          //     Definition: Standard 4G Long-Term Evolution without advanced carrier aggregation.
+          //   • "3G / Legacy"                              → 0.00
+          //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits network_technology.subscore.
@@ -1913,7 +2035,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up the value in Section 7.2 table.
+          // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00
+          //     Definition: Supports two or more active eSIM profiles/integrated SIM alongside a physical Nano-SIM slot.
+          //   • "Tier 2: eSIM + Physical Slot"              → 8.00
+          //     Definition: Supports one active eSIM profile alongside a physical Nano-SIM slot.
+          //   • "Tier 3: Dual Physical Nano-SIM Only"       → 6.00
+          //     Definition: Two physical Nano-SIM slots; no electronic/programmable SIM support.
+          //   • "Tier 4: Single Physical Nano-SIM Only"     → 4.00
+          //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
+          //   • "None"                                      → 0.00
+          //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits sim_configuration.subscore.
@@ -1932,7 +2065,18 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up the value in Section 7.3 table.
+          // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Wi-Fi 7"   → 10.00
+          //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
+          //   • "Wi-Fi 6E"  → 8.00
+          //     Definition: 802.11ax standard adding support for the 6GHz spectrum, reducing congestion.
+          //   • "Wi-Fi 6"   → 6.00
+          //     Definition: 802.11ax standard on 2.4/5GHz. Improved efficiency and performance in dense environments.
+          //   • "Wi-Fi 5"   → 3.00
+          //     Definition: 802.11ac standard.
+          //   • "Legacy"    → 0.00
+          //     Definition: 802.11n (Wi-Fi 4) or older technology.
+          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name (e.g., ["Wi-Fi 7"], ["Wi-Fi 802.11 a/b/g/n/ac/6e/7"]).
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits standard.subscore.
@@ -1951,7 +2095,19 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.50
-          // SCORING GUIDELINE: Look up Bluetooth version score in Section 7.4 Part 1 table.
+          // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact terms for "value" with related scores as subscore:
+          //   • 5.4      → 5.00
+          //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
+          //   • 5.3      → 4.50
+          //     Definition: Improved encryption, connection reliability, and efficiency.
+          //   • 5.2      → 3.50
+          //     Definition: Introduces LE Audio and Enhanced Attribute Protocol (EATT).
+          //   • 5.1 / 5.0 → 2.50
+          //     Definition: Basic Bluetooth 5 standards.
+          //   • 4.2      → 1.00
+          //     Definition: Legacy Bluetooth 4 standards.
+          //   • < 4.2    → 0.00
+          //     Definition: Obsolete Bluetooth standards.
         },
         "highest_codec_supported": {
           "value": "aptX HD / LDAC",
@@ -1959,8 +2115,14 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.00
-          // SCORING GUIDELINE: Look up highest codec tier in Section 7.4 Part 2 table. Lossless -> 5.0, High-Res -> 4.0, Standard -> 1.5.
-          // VALUE_DETAILS GUIDELINE: List all specific Bluetooth audio codecs supported by the device (e.g., ["LDAC", "aptX HD", "AAC", "SBC"], ["aptX Lossless", "LDAC", "aptX Adaptive"]).
+          // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Lossless"   → 5.00
+          //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
+          //   • "High-Res"   → 4.00
+          //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
+          //   • "Standard"   → 1.50
+          //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
+          // VALUE_DETAILS GUIDELINE: List all specific Bluetooth audio codecs supported by the device (e.g., ["LDAC", "aptX HD", "AAC", "SBC"]).
         },
         "predicted_score": 8.50,
         // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
@@ -1980,7 +2142,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Look up best available biometric method in Section 7.5 table.
+          // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact terms for "value" with related scores as subscore:
+          //   • "3D Face / Sonic Gen 2"  → 10.00
+          //     Definition: Secure 3D facial recognition (e.g., Face ID) or 2nd-gen Ultrasonic fingerprint sensors (large area, fast).
+          //   • "Ultrasonic FP"          → 8.00
+          //     Definition: Standard ultrasonic fingerprint sensors (3D mapping of the finger via sound waves).
+          //   • "Optical FP / 2D Face"  → 6.00
+          //     Definition: Standard optical fingerprint sensors (2D photograph of the finger) or basic 2D webcam-style face unlock (non-secure for payments).
+          //   • "Capacitive FP"          → 4.00
+          //     Definition: Physical button-integrated fingerprint sensors (side-mounted or rear-mounted).
+          //   • "None / Pin Only"        → 0.00
+          //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
           // VALUE_DETAILS GUIDELINE: Record the exact OEM biometric sensor model or marketing name (e.g., ["Qualcomm 3D Sonic Gen 2"], ["Face ID"], ["Optical in-display fingerprint"]).
         },
         "predicted_score": 8.00,
@@ -2072,7 +2244,13 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up value in Section 7.7 table.
+          // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact terms for "value" with related scores as subscore:
+          //   • "NFC + UWB" → 10.00
+          //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
+          //   • "NFC Only"   → 5.00
+          //     Definition: Near Field Communication support only; no directional UWB tracking.
+          //   • "None"       → 0.00
+          //     Definition: No short-range wireless connectivity.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits configuration.subscore.
@@ -2092,6 +2270,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // Definition: High-speed peer-to-peer file sharing protocol over Wi-Fi/Bluetooth (e.g., Quick Share, AirDrop).
         },
         "cross_device_clipboard": {
           "value": true,
@@ -2099,6 +2278,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // Definition: Unified clipboard allowing copy-paste across different devices logged into the same account.
         },
         "task_handoff": {
           "value": true,
@@ -2106,6 +2286,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // Definition: Seamlessly resuming an active task (e.g., email draft, webpage) on a different device.
         },
         "communication_integration": {
           "value": true,
@@ -2113,6 +2294,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // Definition: Ability to pick up phone calls or reply to SMS from other connected devices (tablet/laptop).
         },
         "camera_virtualization": {
           "value": true,
@@ -2120,6 +2302,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "exact_extract": "Proof pending",
           "subscore": 2.00
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+          // Definition: Using the smartphone's camera as a high-quality webcam for a connected tablet or laptop.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score is sum of all subscores above (Max 10.0).
@@ -2138,7 +2321,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Look up value in Section 7.9 table.
+          // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact terms for "value" with related scores as subscore:
+          //   • "USB 3.2 Gen 2x2 (20Gbps)" → 10.00
+          //     Definition: SuperSpeed USB 20Gbps.
+          //   • "USB 3.2 Gen 2 (10Gbps)"   → 9.00
+          //     Definition: SuperSpeed USB 10Gbps.
+          //   • "USB 3.2 Gen 1 (5Gbps)"    → 7.50
+          //     Definition: SuperSpeed USB 5Gbps (formerly USB 3.0/3.1 Gen 1).
+          //   • "USB 2.0 (480Mbps)"        → 2.00
+          //     Definition: High Speed USB 2.0.
+          //   • "Proprietary / Legacy"     → 0.00
+          //     Definition: Non-standard or obsolete physical/logical interface.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits version_speed.subscore.
@@ -2170,7 +2363,7 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min))
+          // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min)).
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
@@ -2246,7 +2439,17 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Section 8.6 scoring based on included charger wattage: >= 60W -> 10.0, 30W-59W -> 7.0, 15W-29W -> 4.0, <15W -> 2.0, None -> 0.0.
+          // SCORING GUIDELINE: Identify the included charger wattage. Use the following thresholds for "value" with related scores as subscore:
+          //   • >= 60W    → 10.00
+          //     Definition: Ultra-high speed charger included in the box.
+          //   • 30W - 59W → 7.00
+          //     Definition: High speed charger included.
+          //   • 15W - 29W → 4.00
+          //     Definition: Standard speed charger included.
+          //   • < 15W     → 2.00
+          //     Definition: Low speed / basic charger included.
+          //   • None      → 0.00
+          //     Definition: No charger included in the retail box.
         },
         "predicted_score": 0.00,
         // SCORING GUIDELINE: predicted_score directly inherits included_watts.subscore.
@@ -2286,7 +2489,11 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-          // SCORING GUIDELINE: Section 9.2 table: 36+ Months -> 10.0, 24 Months -> 7.0, 12 Months -> 3.0.
+          // SCORING GUIDELINE: Map months to scores using the following thresholds:
+          //   • ">= 36 Months" → 10.00
+          //   • "24 Months"    → 7.00
+          //   • "12 Months"    → 3.00
+          //   • "< 12 Months"  → 0.00
         },
         "predicted_score": 3.00,
         // SCORING GUIDELINE: predicted_score directly inherits months.subscore.
@@ -2327,7 +2534,15 @@ This schema is strictly aligned with the `scoring_rules.md` v8.0.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Section 10.1 table: Integrated Active -> 10.0, Active (No Silo) -> 7.0, Passive/Basic -> 3.0, None -> 0.0.
+          // SCORING GUIDELINE: Identify the stylus support level. Use the following exact terms for "value" with related scores as subscore:
+          //   • "Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
+          //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
+          //   • "Active stylus support (dedicated digitizer, no silo)"              → 7.00
+          //     Definition: Device has a dedicated digitizer layer for high-precision active pens (e.g., Apple Pencil, S Pen) but no internal storage for the pen.
+          //   • "Passive stylus or basic touch pen"                                  → 3.00
+          //     Definition: No dedicated digitizer; works with generic capacitive pens that mimic finger touch.
+          //   • "None"                                                               → 0.00
+          //     Definition: No official stylus support or secondary digitizer layer.
           // VALUE_DETAILS GUIDELINE: Record the exact OEM stylus product name (e.g., ["S Pen"], ["Apple Pencil Pro"], ["Xiaomi Smart Pen"]).
         },
         "predicted_score": 10.00,
