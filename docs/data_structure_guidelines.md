@@ -338,29 +338,41 @@ Every field must fall into one of these strict categories.
 ### Type A: Raw External Data
 **Definition:** Hard facts scraped or extracted from an external source, paired with their evaluated mathematical constraint. The `value` field MUST be one of 5 strict data shapes: Continuous Numeric, Discrete Integer, Categorical String, String Array, or Pure Boolean. Artificial "logic" keys (e.g., `is_supported`) are strictly forbidden; the component key must be the name of the specification itself.
 
-| Field           | Description                                                                              |
-| :-------------- | :--------------------------------------------------------------------------------------- |
-| `value`         | Raw hardware specification (must match one of the 5 allowed Data Shapes).                |
-| `value_details` | **[OPTIONAL]** Brand marketing names or identifiers justifying the `value`. See below.   |
-| `source`        | **MUST be a valid URL** to the exact page containing the data.                           |
-| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                        |
-| `subscore`      | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.           |
+| Field           | Description                                                                                                      |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------- |
+| `value`         | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                        |
+| `value_details` | **[OPTIONAL]** Dictionary mapping scoring tiers to comma-separated marketing names or feature lists. See below.  |
+| `source`        | **MUST be a valid URL** to the exact page containing the data.                                                   |
+| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                                                |
+| `subscore`      | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.                                   |
 
 #### `value` vs. `value_details` — When to Use Each
 
 | Aspect         | `value`                                | `value_details`                                               |
 | :------------- | :------------------------------------- | :------------------------------------------------------------ |
-| **Role**       | **Canonical tier** used for scoring.   | **Brand-specific names** for traceability.                    |
-| **Mandatory?** | Yes — always required.                 | No — only when mapping marketing terms or for additional info |
-| **Data shape** | Standard (numeric, string, bool, etc.) | Always a **string array** (e.g. `["Apple Log"]`).             |
+| **Role**       | **Canonical tier** used for scoring.   | **Tier-to-Marketing mapping** for traceability.               |
+| **Mandatory?** | Yes — always required.                 | No — only when mapping marketing terms to scorable tiers.     |
+| **Data shape** | Standard (numeric, string, bool, etc.) | **Object/Dictionary** with tier keys and string array values. |
 
-**When to add `value_details`:** Only when the canonical `value` is a **categorical tier** that maps from multiple possible real-world marketing names. If `value` is already a precise number (e.g., `120` Hz), a boolean (e.g., `true`), or the exact marketing name itself (e.g., `"Gorilla Glass Armor"`), then `value_details` is NOT needed.
+**When to add `value_details`:** Use `value_details` strictly for categorical tier classification to justify the choice of `value`. It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of strings** containing marketing terms belonging to that tier.
 
-**Example (Categorical with details):**
+### Rules for value_details (Traceability & Efficiency)
+1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score.
+2. **Official Tier Names**: Keys MUST exactly match the official tier strings defined in the `SCORING GUIDELINE` comments within the same file (e.g., [proposed_data_structure.md]). AI must never invent names or use external files as the primary key source.
+3. **Multi-Tier Support**: If the device supports features belonging to lower tiers, those tiers **MUST** also be included as keys.
+4. **Array Format (Mandatory)**: Data for each tier key must be an **array of strings**. If multiple names belong to the same tier, list them as separate elements in the array: `["Name 1", "Name 2"]`. Even a single value must be in an array: `["Name 1"]`. Use an empty array `[]` if no names are applicable.
+5. **Template Pre-population**: In `proposed_data_structure.md` (the template), ALL valid tiers for a field SHOULD be pre-populated as keys to prevent AI mapping errors.
+
+**Example (Tiered Dictionary):**
 ```json
 "processing_tier": {
   "value": "Advanced Semantic & Neural Stacking",
-  "value_details": ["Deep Fusion", "Smart HDR 5"],
+  "value_details": {
+    "Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"],
+    "Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
+    "Conditional / Manual Multi-Frame": [],
+    "Basic / Single Frame (Legacy)": []
+  },
   "source": "https://www.apple.com/iphone-16-pro/specs/",
   "exact_extract": "Photonic Engine [...] Deep Fusion [...] Smart HDR 5",
   "subscore": 10.00
@@ -532,8 +544,8 @@ Every subsection must contain the following "recipe":
     *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final_score` object to document which method was selected and why.
 5.  **LLM Semantic Matching & Robust Aliasing:** When parsing spec sheets, the AI agent will use natural language semantic matching to identify the appropriate tier.
     *   **Keyword Definition Standard:** Strings inside `recognized_keywords` arrays should be properly capitalized and human-readable (e.g., use `"Gorilla Glass Victus 2"`, `"Ceramic Shield"`). Do not overly strip symbols or lowercase everything.
-    *   **Precise Aliasing:** Provide several intuitive aliases per tier to help the LLM recognize valid notations (e.g., including `"Victus 2"` alongside `"Corning Gorilla Glass Victus 2"`).
     *   **No Generic Overlaps:** Broad keywords that could trigger false positive matches across multiple tiers (e.g., `"Gorilla Glass"` alone) are strictly forbidden.
+    *   **Marketing Name Mapping**: In `value_details`, each marketing name must be its own string entry in the array (e.g., `["Marketing Name 1", "Marketing Name 2"]`).
 6.  **Ambiguity Resolution:** Any other explanation necessary to completely fill in the subsection without ambiguity, specifically handling fallback logic or edge cases.
 7.  **NO UNEXPLAINED ABBREVIATIONS:** This is a zero-tolerance rule. If an abbreviation is used in the explanation, it must be explicitly defined (e.g., "Direct Current (DC)") or it will be rejected.
 8.  **Meta Block Update (Mandatory at Every Run):** Every time `proposed_data_structure.md` is modified, the `meta` block at the top of the file **MUST** be updated before the task is declared complete:
@@ -552,7 +564,7 @@ Every subsection must contain the following "recipe":
     If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1), OR if a feature is found but is not scorable using the provided options (e.g., a newly released codec not yet listed):
     - **Value Entry**: Set the `value` field strictly to `"Not found"` (if missing data) or the raw unlisted feature name (if unlisted feature). Do NOT use `null`, `0`, or empty strings. For missing data, set `source` and `exact_extract` fields to `"N/A"`.
     - **Scoring Resilience (Fallbacks & Benchmarks)**: A `"Not found"` or unlisted value does NOT automatically mean the subsection is unscorable:
-        - **Fallback Path**: If `scoring_rules.md` provides an alternate calculation path (e.g., estimating HBM from Peak brightness), use it.
+        - **Fallback Path**: If there is an alternate calculation path provided in the guidelines (e.g., estimating HBM from Peak brightness), use it.
         - **Benchmark Override**: If a direct benchmark (Method A) is available, the subsection is scored normally using that method, regardless of the missing raw spec.
     - **Neighbor Interpolation (Method B) Blocked**: Unlike direct benchmarks, Method B **cannot** be used as a fallback for missing specs. Because Method B requires the Predictor (Method C) to identify similar neighbors, if a raw spec is missing and has no fallback, the Predictor cannot be calculated, which in turn blocks the possibility of using Neighbor Interpolation.
     - **Scoring Blocker & Unlisted Feature Procedure**: If the missing data is mandatory for the formula and NO fallback or benchmark override is possible, OR if an unlisted feature is encountered that likely should be scored:
@@ -572,9 +584,9 @@ Every subsection must contain the following "recipe":
 11. **Definition-First Tier Classification (Categorical Tiers):** When a subsection uses categorical tiers (e.g., "True Log" / "Flat Profile" / "Standard"), the inline `SCORING GUIDELINE` must provide a **technical definition** of each tier — what the feature **does** or **is**, not a list of brand-specific marketing names it maps to.
     *   **Rationale:** Marketing names are incomplete (never cover all brands), time-sensitive (change every product cycle), and bloat the file with data that AI agents do not need for classification. An AI agent must reason about **what a feature does**, not what it is **called**.
     *   **Where marketing names go:**
-        *   **`value_details`:** The AI agent records all Original Equipment Manufacturer (OEM) feature names found in specs/reviews as proof and traceability (e.g., `["Photonic Engine", "Deep Fusion"]`). This is the authoritative per-phone record of brand terminology.
+        *   **`value_details`:** The AI agent records all Original Equipment Manufacturer (OEM) feature names found in specs/reviews as proof and traceability, mapped to their respective tiers (e.g., `{"Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"]}`). This is the authoritative per-phone record of brand terminology.
         *   **`scoring_rules.md`:** May contain **2-3 representative examples** per tier for human onboarding and auditing — but these are NOT exhaustive and NOT the classification input.
-        *   **The scored-phone database:** Over time, querying `value_details` across all scored phones yields the real-world marketing term corpus — always current, zero maintenance.
+        *   **The scored-phone database:** Over time, querying `value_details` across all scored phones yields the real-world marketing term corpus — always current, zero maintenance, and fully categorized by tier.
     *   **Format for tier definitions:**
         ```
         //   • "Tier Name" → score
