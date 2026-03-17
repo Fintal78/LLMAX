@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "5.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-16"
+    "last_updated": "2026-03-17"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -135,51 +135,51 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     "1_1_materials": {
       // SCORING GOAL: Scores the structural frame and back panel materials to evaluate build premium and durability class.
       "frame_material": {
-        "value": "Titanium Alloy",
+        "value": "Tier 1: Titanium Alloy",
         "value_details": {
-          "Titanium Alloy": ["Grade 5 Titanium"],
-          "Stainless Steel": [],
-          "Aluminum Alloy": [],
-          "Polymer Composite": [],
-          "Not Disclosed": []
+          "Tier 1: Titanium Alloy": ["Grade 5 Titanium"],
+          "Tier 2: Stainless Steel": [],
+          "Tier 3: Aluminum Alloy": [],
+          "Tier 4: Polymer Composite": [],
+          "Tier 5: Not Disclosed": []
         },
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
           // SCORING GUIDELINE: Identify the frame material. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Titanium Alloy"     → 10.00
+          //   • "Tier 1: Titanium Alloy"     → 10.00
           //     Definition: High-strength, aerospace-grade alloy (e.g., Grade 5 Titanium).
-          //   • "Stainless Steel"    → 8.50
+          //   • "Tier 2: Stainless Steel"    → 8.50
           //     Definition: Corrosion-resistant surgical-grade steel (e.g., SS 316L).
-          //   • "Aluminum Alloy"     → 7.00
+          //   • "Tier 3: Aluminum Alloy"     → 7.00
           //     Definition: Standard lightweight structural alloy (e.g., 6000/7000 series).
-          //   • "Polymer Composite"  → 4.00
+          //   • "Tier 4: Polymer Composite"  → 4.00
           //     Definition: Reinforced plastic or resin-based materials (e.g., Polycarbonate).
-          //   • "Not Disclosed"      → 0.00
+          //   • "Tier 5: Not Disclosed"      → 0.00
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "back_material": {
-        "value": "Strengthened Glass",
+        "value": "Tier 2: Strengthened Glass",
         "value_details": {
-          "Ceramic": [],
-          "Strengthened Glass": ["Gorilla Glass Victus 2"],
-          "Standard Glass": [],
-          "Polymer": [],
-          "Not Disclosed": []
+          "Tier 1: Ceramic": [],
+          "Tier 2: Strengthened Glass": ["Gorilla Glass Victus 2"],
+          "Tier 3: Standard Glass": [],
+          "Tier 4: Polymer": [],
+          "Tier 5: Not Disclosed": []
         },
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.00
           // SCORING GUIDELINE: Identify the back panel material. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Ceramic"            → 10.00
+          //   • "Tier 1: Ceramic"            → 10.00
           //     Definition: Inorganic, non-metallic solid offering superior scratch resistance and heat dissipation.
-          //   • "Strengthened Glass" → 8.00
+          //   • "Tier 2: Strengthened Glass" → 8.00
           //     Definition: Chemically tempered or ion-exchange glass (e.g., Victus 2, Ceramic Shield).
-          //   • "Standard Glass"     → 6.00
+          //   • "Tier 3: Standard Glass"     → 6.00
           //     Definition: Basic tempered glass without advanced reinforcement.
-          //   • "Polymer"            → 4.00
+          //   • "Tier 4: Polymer"            → 4.00
           //     Definition: Plastic-based resin or composite materials.
-          //   • "Not Disclosed"      → 0.00
+          //   • "Tier 5: Not Disclosed"      → 0.00
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 9.20,
@@ -202,28 +202,28 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the Ingress Protection (IP) rating defined by International Electrotechnical Commission (IEC) standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
       "dust_protection_digit": {
         "value_path": "1_2_durability.ingress_protection_rating.value",
-        "value": "Digit 6",
+        "value": "Tier 1: Digit 6",
         "subscore": 10.00
           // SCORING GUIDELINE: Identify the first digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Digit 6"    → 10.00
-          //   • "Digit 5"    → 8.00
-          //   • "Digit 4"    → 6.00
-          //   • "Digit 3"    → 4.00
-          //   • "Digit 2"    → 2.00
-          //   • "Digit 0–1"  → 0.00
+          //   • "Tier 1: Digit 6"    → 10.00
+          //   • "Tier 2: Digit 5"    → 8.00
+          //   • "Tier 3: Digit 4"    → 6.00
+          //   • "Tier 4: Digit 3"    → 4.00
+          //   • "Tier 5: Digit 2"    → 2.00
+          //   • "Tier 6: Digit 0–1"  → 0.00
       },
       "water_protection_digit": {
         "value_path": "1_2_durability.ingress_protection_rating.value",
-        "value": "Digit 8",
+        "value": "Tier 2: Digit 8",
         "subscore": 9.00
           // SCORING GUIDELINE: Identify the second digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Digit 9"    → 10.00
-          //   • "Digit 8"    → 9.00
-          //   • "Digit 7"    → 8.00
-          //   • "Digit 6"    → 6.00
-          //   • "Digit 5"    → 4.00
-          //   • "Digit 4"    → 2.00
-          //   • "Digit 0–3"  → 0.00
+          //   • "Tier 1: Digit 9"    → 10.00
+          //   • "Tier 2: Digit 8"    → 9.00
+          //   • "Tier 3: Digit 7"    → 8.00
+          //   • "Tier 4: Digit 6"    → 6.00
+          //   • "Tier 5: Digit 5"    → 4.00
+          //   • "Tier 6: Digit 4"    → 2.00
+          //   • "Tier 7: Digit 0–3"  → 0.00
       },
       "predicted_score": 9.50,
       // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
@@ -238,38 +238,38 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     "1_3_glass_protection": {
       // SCORING GOAL: Scores the protective glass type on the display, known as Display Glass Protection (DGP), based on the manufacturer-declared glass generation's certified drop and scratch resistance class. Source: Section 1.3 Display Glass Protection table.
       "glass_generation": {
-        "value": "Armor-Class",
+        "value": "Tier 1: Armor-Class",
         "value_details": {
-          "Armor-Class": ["Gorilla Glass Armor"],
-          "Shield-Class": [],
-          "Ultra-Reinforced": [],
-          "Premium Reinforced": [],
-          "Standard Reinforced": [],
-          "Entry-Level Reinforced": [],
-          "Tempered Glass": [],
-          "Glass (Unspecified)": [],
-          "Plastic or No Glass": []
+          "Tier 1: Armor-Class": ["Gorilla Glass Armor"],
+          "Tier 2: Shield-Class": [],
+          "Tier 3: Ultra-Reinforced": [],
+          "Tier 4: Premium Reinforced": [],
+          "Tier 5: Standard Reinforced": [],
+          "Tier 6: Entry-Level Reinforced": [],
+          "Tier 7: Tempered Glass": [],
+          "Tier 8: Glass (Unspecified)": [],
+          "Tier 9: Plastic or No Glass": []
         },
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
         // SCORING GUIDELINE: Identify the highest glass tier based on manufacturer drop/scratch claims. Use the following exact Tier Names for "value" with related scores as subscore:
-        //   • "Armor-Class"           → 10.00
+        //   • "Tier 1: Armor-Class"            → 10.00
         //     Definition: Anti-reflective (AR) coating + ≥2.0m rough-surface drop certification (e.g., Gorilla Glass Armor).
-        //   • "Shield-Class"          → 9.50
+        //   • "Tier 2: Shield-Class"           → 9.50
         //     Definition: Ceramic-infused matrix + ≥2.0m drop certification (e.g., Ceramic Shield, Kunlun Glass).
-        //   • "Ultra-Reinforced"      → 9.00
+        //   • "Tier 3: Ultra-Reinforced"       → 9.00
         //     Definition: Advanced alumina-silicate glass optimized for rough-surface drops (≥2.0m class) (e.g., Gorilla Glass Victus 2).
-        //   • "Premium Reinforced"    → 8.00
+        //   • "Tier 4: Premium Reinforced"     → 8.00
         //     Definition: High-end chemical tempering with ≥2.0m standard drop certification (e.g., Victus, Victus+, Star 2).
-        //   • "Standard Reinforced"   → 7.00
+        //   • "Tier 5: Standard Reinforced"    → 7.00
         //     Definition: Regular flagship-grade chemical tempering with ≥1.6m drop certification (e.g., Gorilla Glass 5/6, Dragontrail Pro / Star).
-        //   • "Entry-Level Reinforced" → 5.00
+        //   • "Tier 6: Entry-Level Reinforced" → 5.00
         //     Definition: Basic chemical tempering with ~1.2m drop certification (e.g., Gorilla Glass 3, Panda Glass, Dragontrail).
-        //   • "Tempered Glass"        → 3.00
+        //   • "Tier 7: Tempered Glass"         → 3.00
         //     Definition: Basic chemically strengthened glass with no certified drop class.
-        //   • "Glass (Unspecified)"   → 2.00
-        //   • "Plastic or No Glass"   → 0.00
+        //   • "Tier 8: Glass (Unspecified)"    → 2.00
+        //   • "Tier 9: Plastic or No Glass"    → 0.00
         // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 10.00,
@@ -350,32 +350,32 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     "2_1_panel_architecture": {
       // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour. Source: Section 2.1 Display Panel Architecture.
       "panel_type": {
-        "value": "LTPO OLED",
+        "value": "Tier 2: LTPO OLED",
         "value_details": {
-          "Tandem OLED": [],
-          "LTPO OLED": ["Dynamic AMOLED 2X"],
-          "Standard OLED/AMOLED (LTPS)": [],
-          "IPS LCD": [],
-          "TFT or PLS LCD": [],
-          "TN LCD or Legacy": []
+          "Tier 1: Tandem OLED": [],
+          "Tier 2: LTPO OLED": ["Dynamic AMOLED 2X"],
+          "Tier 3: Standard OLED/AMOLED (LTPS)": [],
+          "Tier 4: IPS LCD": [],
+          "Tier 5: TFT or PLS LCD": [],
+          "Tier 6: TN LCD or Legacy": []
         },
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 9.00
         // SCORING GUIDELINE: Identify the panel type. Use the following exact Tier Names for "value" with related scores as subscore:
-        //   • "Tandem OLED"                   → 10.00
+        //   • "Tier 1: Tandem OLED"                   → 10.00
         //     Definition: Dual-stack Organic Light-Emitting Diode (OLED) with two vertical light-emitting layers.
-        //   • "LTPO OLED"                     → 9.00
+        //   • "Tier 2: LTPO OLED"                     → 9.00
         //     Definition: Organic Light-Emitting Diode (OLED) with Low-Temperature Polycrystalline Oxide (LTPO) backplane. Supports variable refresh rate down to 1 Hz.
-        //   • "Standard OLED/AMOLED (LTPS)"   → 8.00
+        //   • "Tier 3: Standard OLED/AMOLED (LTPS)"   → 8.00
         //     Definition: Organic Light-Emitting Diode (OLED) with Low-Temperature Polycrystalline Silicon (LTPS) backplane. Self-emissive pixels; lacks variable refresh rate down to 1 Hz.
-        //   • "IPS LCD"                       → 6.00
+        //   • "Tier 4: IPS LCD"                       → 6.00
         //     Definition: In-Plane Switching Liquid-Crystal Display (IPS LCD). Utilizes a backlight with in-plane liquid crystal alignment.
-        //   • "TFT or PLS LCD"                → 2.00
+        //   • "Tier 5: TFT or PLS LCD"                → 2.00
         //     Definition: Standard active-matrix Liquid-Crystal Display (LCD) including Plane-to-Line Switching (PLS) and non-IPS Thin-Film Transistor (TFT) variants. 
-        //   • "TN LCD or Legacy"              → 0.00
+        //   • "Tier 6: TN LCD or Legacy"              → 0.00
         //     Definition: Twisted Nematic Liquid-Crystal Display (TN LCD) or legacy technologies. Liquid crystals twist to control light; characterized by color inversion or contrast shift at off-axis viewing angles.
-        // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "Standard OLED/AMOLED (LTPS)" (8.00).
+        // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "Tier 3: Standard OLED/AMOLED (LTPS)" (8.00).
         // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 9.00,
@@ -708,24 +708,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "3_1_speaker_system_capability": {
         // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry. Source: Section 3.1 Speaker System Capability.
         "speaker_configuration": {
-          "value": "Standard Hybrid Stereo",
+          "value": "Tier 2: Standard Hybrid Stereo",
           "value_details": {
-            "Balanced / Symmetrical Stereo": [],
-            "Standard Hybrid Stereo": ["Stereo Speakers"],
-            "Mono Speaker": [],
-            "No Usable Speaker": []
+            "Tier 1: Balanced / Symmetrical Stereo": [],
+            "Tier 2: Standard Hybrid Stereo": ["Stereo Speakers"],
+            "Tier 3: Mono Speaker": [],
+            "Tier 4: No Usable Speaker": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
           // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Balanced / Symmetrical Stereo" → 10.00
+          //   • "Tier 1: Balanced / Symmetrical Stereo" → 10.00
           //     Definition: Two identical or near-identical dedicated speaker units (top/bottom or left/right) offering matched frequency response and volume. Must explicitly state "Symmetrical speakers" or "Balanced stereo".
-          //   • "Standard Hybrid Stereo"        → 7.00
+          //   • "Tier 2: Standard Hybrid Stereo"        → 7.00
           //     Definition: Typically uses the earpiece as a second channel, lacking the bass response and volume of the primary speaker. Typically listed as 'Stereo Speakers' without symmetry claims.
-          //   • "Mono Speaker"                  → 3.00
+          //   • "Tier 3: Mono Speaker"                  → 3.00
           //     Definition: Single active loudspeaker for media playback.
-          //   • "No Usable Speaker"             → 0.00
+          //   • "Tier 4: No Usable Speaker"             → 0.00
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 7.00,
@@ -757,19 +757,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), leave the array empty [] and set subscore to 0.00.
         },
         "spatial_audio_rendering": {
-          "value": "Static spatial audio (no head tracking)",
+          "value": "Tier 2: Static spatial audio (no head tracking)",
           "value_details": {
-            "Spatial audio with Dynamic Head Tracking": [],
-            "Static spatial audio (no head tracking)": ["360 Audio"],
-            "No spatial rendering": []
+            "Tier 1: Spatial audio with Dynamic Head Tracking": [],
+            "Tier 2: Static spatial audio (no head tracking)": ["360 Audio"],
+            "Tier 3: No spatial rendering": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.00
-          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following terms exclusively for "value" with related scores as subscore:
-          //   • "Spatial audio with Dynamic Head Tracking"      → 10.00
-          //   • "Static spatial audio (no head tracking)"       → 7.00
-          //   • "No spatial rendering"                          → 0.00
+          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Spatial audio with Dynamic Head Tracking"      → 10.00
+          //   • "Tier 2: Static spatial audio (no head tracking)"       → 7.00
+          //   • "Tier 3: No spatial rendering"                          → 0.00
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 7.50,
@@ -785,15 +785,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "3_3_wired_audio_capability": {
         // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored. Source: §3.3 Wired Audio Capability.
         "wired_audio_tier": {
-          "value": "USB-C digital audio only (dongle required)",
+          "value": "Tier 3: USB-C digital audio only (dongle required)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
           // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "3.5mm headphone jack (native analog output)"  → 10.00
-          //   • "USB-C with documented analog audio output"    → 6.00
-          //   • "USB-C digital audio only (dongle required)"   → 3.00
-          //   • "No wired audio support"                       → 0.00
+          //   • "Tier 1: 3.5mm headphone jack (native analog output)"  → 10.00
+          //   • "Tier 2: USB-C with documented analog audio output"    → 6.00
+          //   • "Tier 3: USB-C digital audio only (dongle required)"   → 3.00
+          //   • "Tier 4: No wired audio support"                       → 0.00
         },
         "predicted_score": 3.00,
         // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
@@ -808,36 +808,36 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "3_4_microphone_audio_recording": {
         // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%). Source: Section 3.4 Microphone & Audio Recording (MAR).
         "microphone_hardware_count": {
-          "value": "3",
+          "value": "Tier 2: 3",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Record the physical microphone count. Use the following terms exclusively for "value" with related scores as subscore:
-          //   • ≥4 microphones   → 10.00
-          //   • 3                → 8.00
-          //   • 2                → 5.00
-          //   • 1                → 2.00
-          //   • None             → 0.00
+          // SCORING GUIDELINE: Record the physical microphone count. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: ≥4 microphones" → 10.00
+          //   • "Tier 2: 3"              → 8.00
+          //   • "Tier 3: 2"              → 5.00
+          //   • "Tier 4: 1"              → 2.00
+          //   • "Tier 5: None"           → 0.00
         },
         "recording_channels_modes": {
-          "value": "Stereo",
+          "value": "Tier 2: Stereo",
           "value_details": {
-            "Multi-channel / spatial audio": [],
-            "Stereo": ["Stereo recording"],
-            "Mono": [],
-            "Voice-only / unclear": []
+            "Tier 1: Multi-channel / spatial audio": [],
+            "Tier 2: Stereo": ["Stereo recording"],
+            "Tier 3: Mono": [],
+            "Tier 4: Voice-only / unclear": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Multi-channel / spatial audio" → 10.00
+          //   • "Tier 1: Multi-channel / spatial audio" → 10.00
           //     Definition: Captures audio with directional data (e.g., 5.1, 7.1, or OZO Audio).
-          //   • "Stereo"                        → 8.00
+          //   • "Tier 2: Stereo"                        → 8.00
           //     Definition: Standard two-channel (Left/Right) audio recording.
-          //   • "Mono"                          → 5.00
+          //   • "Tier 3: Mono"                          → 5.00
           //     Definition: Single-channel audio recording.
-          //   • "Voice-only / unclear"          → 0.00
+          //   • "Tier 4: Voice-only / unclear"          → 0.00
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "advanced_capture_features": {
@@ -1042,29 +1042,29 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_4_image_stabilization": {
         // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture. Source: Section 4.4 Image Stabilization.
         "stabilization_type": {
-          "value": "Lens-Based Optical Image Stabilization",
+          "value": "Tier 3: Lens-Based Optical Image Stabilization",
           "value_details": {
-            "Multi-Axis Mechanical Stabilization (Gimbal)": [],
-            "Sensor-Shift Optical Image Stabilization": [],
-            "Lens-Based Optical Image Stabilization": ["OIS"],
-            "Software-Only Stabilization (Electronic, no hardware)": [],
-            "None": []
+            "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)": [],
+            "Tier 2: Sensor-Shift Optical Image Stabilization": [],
+            "Tier 3: Lens-Based Optical Image Stabilization": ["OIS"],
+            "Tier 4: Software-Only Stabilization (Electronic, no hardware)": [],
+            "Tier 5: None": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
+          //   • "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
           //     Definition: The entire camera module floats on a multi-axis mechanical suspension or gimbal (e.g., vivo, ASUS ROG/Zenfone).
-          //   • "Sensor-Shift Optical Image Stabilization"              → 9.00
+          //   • "Tier 2: Sensor-Shift Optical Image Stabilization"              → 9.00
           //     Definition: The image sensor itself physically moves (IBIS) instead of the lens (primarily found on Apple iPhones 12 Pro Max and newer).
-          //   • "Lens-Based Optical Image Stabilization"                → 8.00
+          //   • "Tier 3: Lens-Based Optical Image Stabilization"                → 8.00
           //     Definition: Individual optical lens elements move to counteract shake. This is the default tier for generic "OIS" listings.
-          //   • "Software-Only Stabilization (Electronic, no hardware)" → 5.00
+          //   • "Tier 4: Software-Only Stabilization (Electronic, no hardware)" → 5.00
           //     Definition: Purely algorithmic stabilization (EIS/AIS) via digital cropping; requires no moving physical parts.
-          //   • "None"                                                  → 0.00
+          //   • "Tier 5: None"                                                  → 0.00
           //     Definition: No hardware or software stabilization is detected or documented.
-          // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to 8.00.
+          // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to "Tier 3: Lens-Based Optical Image Stabilization" (8.00).
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.00,
@@ -1134,13 +1134,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "4_7_1_ultrawide_path": {
           // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
           "ultrawide_autofocus": {
-            "value": "Autofocus",
+            "value": "Tier 1: Autofocus",
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following terms exclusively for "value" with related scores as subscore:
-            //   • Autofocus    → 10.00
-            //   • Fixed Focus  → 3.00
+            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore:
+            //   • "Tier 1: Autofocus"   → 10.00
+            //   • "Tier 2: Fixed Focus" → 3.00
             //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be set to "N/A", and "subscore" MUST be 0.00.
           },
           "min_focus_distance_cm": {
@@ -1233,17 +1233,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_8_rear_video_resolution": {
         // SCORING GOAL: Scores the maximum spatial resolution supported for rear-camera video recording.
         "maximum_resolution": {
-          "value": "4K (Ultra HD)",
+          "value": "Tier 2: 4K (Ultra HD)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "8K"                    → 10.00
-          //   • "4K (Ultra HD)"         → 10.00
-          //   • "1440p / QHD (2.5K)"    → 8.00
-          //   • "1080p (Full HD)"       → 6.00
-          //   • "720p (HD)"             → 3.00
-          //   • "≤ 480p"                → 0.00
+          //   • "Tier 1: 8K"                    → 10.00
+          //   • "Tier 2: 4K (Ultra HD)"         → 10.00
+          //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
+          //   • "Tier 4: 1080p (Full HD)"       → 6.00
+          //   • "Tier 5: 720p (HD)"             → 3.00
+          //   • "Tier 6: ≤ 480p"                → 0.00
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits maximum_resolution.subscore.
@@ -1303,50 +1303,52 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_11_video_encoding": {
         // SCORING GOAL: Scores support for professional codecs and recording profiles as a composite index.
         "professional_codec_support": {
-          "value": "Mezzanine",
+          "value": "Tier 2: Mezzanine",
           "value_details": {
-            "True RAW": [],
-            "Mezzanine": ["ProRes"],
-            "Standard": []
+            "Tier 1: True RAW": [],
+            "Tier 2: Mezzanine": ["ProRes"],
+            "Tier 3: Standard": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "True RAW"    → 10.00
+          //   • "Tier 1: True RAW"    → 10.00
           //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
-          //   • "Mezzanine"   → 8.00
+          //   • "Tier 2: Mezzanine"   → 8.00
           //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
-          //   • "Standard"    → 0.00
+          //   • "Tier 3: Standard"    → 0.00
           //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "log_color_profile_support": {
-          "value": "True Log",
+          "value": "Tier 1: True Log",
           "value_details": {
-            "True Log": ["Apple Log"],
-            "Flat / Cine": [],
-            "Standard only": []
+            "Tier 1: True Log": ["Apple Log"],
+            "Tier 2: Flat / Cine": [],
+            "Tier 3: Standard only": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "True Log"       → 10.00
+          //   • "Tier 1: True Log"       → 10.00
           //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
-          //   • "Flat / Cine"    → 5.00
+          //   • "Tier 2: Flat / Cine"    → 5.00
           //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, D-Cinelike).
-          //   • "Standard only"  → 0.00
+          //   • "Tier 3: Standard only"  → 0.00
           //     Definition: No professional gamma profiles; only standard rec.709 or rec.2020 curves.
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "color_bit_depth": {
-          "value": "10-bit color",
+          "value": "Tier 2: 10-bit color",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 5.00
-          // SCORING GUIDELINE: Use the following exact same terms for "value" with related scores for "subscore": "12-bit color" (score 10.00), "10-bit color" (score 5.00), or "8-bit color" (score 0.00).
-        },
+          // SCORING GUIDELINE: Use the following exact same Tier Names for "value" with related scores as subscore: 
+          //   • "Tier 1: 12-bit color" → 10.00
+          //   • "Tier 2: 10-bit color" → 5.00
+          //   • "Tier 3: 8-bit color"  → 0.00
         "predicted_score": 7.95,
         // SCORING GUIDELINE: predicted_score = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
         "final_score": {
@@ -1416,24 +1418,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // DATA GUIDELINE: Identify the sensor size fraction (e.g., "1/3", "1/3.1", "1/4").
         },
         "focus_system_tier": {
-          "value": "Autofocus",
+          "value": "Tier 1: Autofocus",
           "value_details": {
-            "Autofocus": ["Phase Detection Auto Focus (PDAF)"],
-            "Fixed Focus (Modern Wide-DOF)": [],
-            "Fixed Focus (Legacy Narrow-DOF)": [],
-            "No Front Camera": []
+            "Tier 1: Autofocus": ["Phase Detection Auto Focus (PDAF)"],
+            "Tier 2: Fixed Focus (Modern Wide-DOF)": [],
+            "Tier 3: Fixed Focus (Legacy Narrow-DOF)": [],
+            "Tier 4: No Front Camera": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Autofocus"                        → 10.00
+          //   • "Tier 1: Autofocus"                        → 10.00
           //     Definition: An active mechanical system where the lens moves to find focus (e.g., Phase Detection Auto Focus (PDAF), Dual Pixel, or Laser Auto Focus).
-          //   • "Fixed Focus (Modern Wide-DOF)"    → 6.00
+          //   • "Tier 2: Fixed Focus (Modern Wide-DOF)"    → 6.00
           //     Definition: A lens with no moving hardware parts configured for a wide Depth of Field (DOF) focus zone. Identified by (aperture_f_number ≥ 2.0) OR (sensor_size ≤ 1/3").
-          //   • "Fixed Focus (Legacy Narrow-DOF)"  → 3.00
+          //   • "Tier 3: Fixed Focus (Legacy Narrow-DOF)"  → 3.00
           //     Definition: A lens with no moving hardware parts featuring a narrow Depth of Field (DOF) focus zone. Identified by (aperture_f_number < 2.0) AND (sensor_size > 1/3").
-          //   • "No Front Camera"                  → 0.00
+          //   • "Tier 4: No Front Camera"                  → 0.00
           //     Definition: Device lacks a front-facing selfie camera module.
           // AMBIGUITY RESOLUTION: Focus Zone width is determined by Depth of Field (DOF). If sensor size data is missing, classify based solely on the aperture (f-number) if it is known.
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
@@ -1452,17 +1454,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, High Dynamic Range (HDR), and Professional Recording) of the front camera as a composite score.
         "4_15_1_video_resolution": {
           "maximum_resolution": {
-            "value": "4K (Ultra HD)",
+            "value": "Tier 2: 4K (Ultra HD)",
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
             // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact Tier Names for "value" with related scores as subscore:
-            //     "8K"                      10.00
-            //     "4K (Ultra HD)"           10.00
-            //     "1440p / QHD (2.5K)"      8.00
-            //     "1080p (Full HD)"         6.00
-            //     "720p (HD)"               3.00
-            //     "≤480p"                   0.00
+            //   • "Tier 1: 8K"                    → 10.00
+            //   • "Tier 2: 4K (Ultra HD)"         → 10.00
+            //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
+            //   • "Tier 4: 1080p (Full HD)"       → 6.00
+            //   • "Tier 5: 720p (HD)"             → 3.00
+            //   • "Tier 6: ≤480p"                 → 0.00
           }
         },
         "4_15_2_video_frame_rate": {
@@ -1493,42 +1495,42 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "4_15_4_1_professional_codec_support": {
           "supported_codecs": {
-            "value": "Mezzanine",
+            "value": "Tier 2: Mezzanine",
             "value_details": {
-              "True RAW": [],
-              "Mezzanine": ["ProRes"],
-              "Standard": []
+              "Tier 1: True RAW": [],
+              "Tier 2: Mezzanine": ["ProRes"],
+              "Tier 3: Standard": []
             },
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 8.00
           // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "True RAW"    → 10.00
+          //   • "Tier 1: True RAW"    → 10.00
           //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
-          //   • "Mezzanine"   → 8.00
+          //   • "Tier 2: Mezzanine"   → 8.00
           //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
-          //   • "Standard"    → 0.00
+          //   • "Tier 3: Standard"    → 0.00
           //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
           // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs. Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           }
         },
         "4_15_4_2_log_color_profile_support": {
           "supported_profiles": {
-            "value": "True Log",
+            "value": "Tier 1: True Log",
             "value_details": {
-              "True Log": ["Apple Log"],
-              "Flat / Cine": [],
-              "Standard only": []
+              "Tier 1: True Log": ["Apple Log"],
+              "Tier 2: Flat / Cine": [],
+              "Tier 3: Standard only": []
             },
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
             // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
-            //   • "True Log"       → 10.00
+            //   • "Tier 1: True Log"       → 10.00
             //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
-            //   • "Flat / Cine"    → 5.00
+            //   • "Tier 2: Flat / Cine"    → 5.00
             //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, Cinelike-D).
-            //   • "Standard only"  → 0.00
+            //   • "Tier 3: Standard only"  → 0.00
             //     Definition: No professional gamma profiles. only standard rec.709 or rec.2020 curves.
             // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs. Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           }
@@ -1547,26 +1549,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_16_multiframe_photo": {
         // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
         "processing_tier": {
-          "value": "Advanced Semantic & Neural Stacking",
+          "value": "Tier 1: Advanced Semantic & Neural Stacking",
           "value_details": {
-            "Advanced Semantic & Neural Stacking": ["Deep Fusion", "Photonic Engine"],
-            "Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
-            "Conditional / Manual Multi-Frame": [],
-            "Basic / Single Frame (Legacy)": []
+            "Tier 1: Advanced Semantic & Neural Stacking": ["Deep Fusion", "Photonic Engine"],
+            "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
+            "Tier 3: Conditional / Manual Multi-Frame": [],
+            "Tier 4: Basic / Single Frame (Legacy)": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Advanced Semantic & Neural Stacking" → 10.0
+          //   • "Tier 1: Advanced Semantic & Neural Stacking" → 10.0
           //     Definition: Advanced pipeline that uses semantic segmentation (understanding sky, faces, skin) within a Zero Shutter Lag (ZSL) multi-frame buffer.
-          //   • "Standard Always-on Multi-Frame HDR"  → 7.5
+          //   • "Tier 2: Standard Always-on Multi-Frame HDR"  → 7.5
           //     Definition: Always-on multi-frame HDR capture (e.g., Smart HDR) without advanced per-pixel semantic segmentation.
-          //   • "Conditional / Manual Multi-Frame"    → 5.0
+          //   • "Tier 3: Conditional / Manual Multi-Frame"    → 5.0
           //     Definition: Multi-frame processing only activates in specific modes (e.g., Night Mode) or requires manual activation (HDR toggle).
-          //   • "Basic / Single Frame (Legacy)"       → 0.0
+          //   • "Tier 4: Basic / Single Frame (Legacy)"       → 0.0
           //     Definition: No multi-frame stacking; reliance on single-frame exposure.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"], "Standard Always-on Multi-Frame HDR": ["Smart HDR 5"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"], "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
@@ -1581,24 +1583,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_17_pipeline_semantic_ai": {
         // SCORING GOAL: Automatic Capture-Time AI. Scores the ability of the software to segment scenes and subjects using Artificial Intelligence (AI).
         "capability_tier": {
-          "value": "Neural Semantic Segmentation",
+          "value": "Tier 1: Neural Semantic Segmentation",
           "value_details": {
-            "Neural Semantic Segmentation": ["AI ProVisual Engine", "Object-aware engine"],
-            "Object-Based Optimization": [],
-            "Basic Metadata AI": [],
-            "None": []
+            "Tier 1: Neural Semantic Segmentation": ["AI ProVisual Engine", "Object-aware engine"],
+            "Tier 2: Object-Based Optimization": [],
+            "Tier 3: Basic Metadata AI": [],
+            "Tier 4: None": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Neural Semantic Segmentation" → 10.0
+          //   • "Tier 1: Neural Semantic Segmentation" → 10.0
           //     Definition: Real-time, pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth) during captured multi-frame pipeline.
-          //   • "Object-Based Optimization"   → 7.5
+          //   • "Tier 2: Object-Based Optimization"    → 7.5
           //     Definition: Recognizes high-level subjects (dog, flower, sunset) to apply preset global/local enhancements ("Scene Optimizer").
-          //   • "Basic Metadata AI"           → 4.0
+          //   • "Tier 3: Basic Metadata AI"            → 4.0
           //     Definition: Basic subject prioritization for focus and exposure (Face/Eye detection). No content-aware color science.
-          //   • "None"                        → 0.0
+          //   • "Tier 4: None"                         → 0.0
           //     Definition: No scene or subject interpretation in the processing pipeline.    
           // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
@@ -1615,26 +1617,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "4_18_post_capture_generative_ai": {
         // SCORING GOAL: User-Initiated Gallery-Time Artificial Intelligence (AI). Scores the ability to modify images after capture using AI tools.
         "feature_tier": {
-          "value": "Generative Content Transformation",
+          "value": "Tier 1: Generative Content Transformation",
           "value_details": {
-            "Generative Content Transformation": ["Magic Editor", "Best Take"],
-            "Advanced Semantic Edits": [],
-            "Basic Algorithmic Fixes": [],
-            "None": []
+            "Tier 1: Generative Content Transformation": ["Magic Editor", "Best Take"],
+            "Tier 2: Advanced Semantic Edits": [],
+            "Tier 3: Basic Algorithmic Fixes": [],
+            "Tier 4: None": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the Generative AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Generative Content Transformation" → 10.0
+          //   • "Tier 1: Generative Content Transformation" → 10.0
           //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
-          //   • "Advanced Semantic Edits"           → 7.50
+          //   • "Tier 2: Advanced Semantic Edits"           → 7.50
           //     Definition: Rule-based or shallow-learning tools for localized adjustments (shadow/reflection removal, face unblur, object erasure without generative fill).
-          //   • "Basic Algorithmic Fixes"           → 4.00
+          //   • "Tier 3: Basic Algorithmic Fixes"           → 4.00
           //     Definition: Standard beauty filters, color-aware auto-fixing, or basic object prioritization for cropping.
-          //   • "None"                              → 0.0
+          //   • "Tier 4: None"                              → 0.0
           //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Generative Content Transformation": ["Generative Edit", "Magic Editor"], "Advanced Semantic Edits": ["Clean Up", "AI Eraser 2.0"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Generative Content Transformation": ["Generative Edit", "Magic Editor"], "Tier 2: Advanced Semantic Edits": ["Clean Up", "AI Eraser 2.0"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
@@ -1973,16 +1975,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "6_7_storage_technology": {
         // SCORING GOAL: Evaluates internal storage format efficiency and read/write speeds.
         "storage_format": {
-          "value": "UFS 4.0",
+          "value": "Tier 1: UFS 4.0 / NVMe",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the internal storage technology. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "UFS 4.0 / NVMe" → 10.00
+          //   • "Tier 1: UFS 4.0 / NVMe" → 10.00
           //     Definition: Highest speed tier (e.g., UFS 4.0, Apple NVMe).
-          //   • "UFS 3.1"        → 8.00
+          //   • "Tier 2: UFS 3.1"        → 8.00
           //     Definition: High-speed standard (e.g., UFS 3.1).
-          //   • "UFS 2.2 / eMMC" → 0.00
+          //   • "Tier 3: UFS 2.2 / eMMC" → 0.00
           //     Definition: Legacy or budget storage (e.g., UFS 2.2, eMMC 5.1).
         },
         "predicted_score": 10.00,
@@ -2016,18 +2018,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "6_9_storage_expandability": {
         // SCORING GOAL: Evaluates if SD Card expansion is supported.
         "expandability_support": {
-          "value": "No SD Card slot",
+          "value": "Tier 4: None",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
           // SCORING GUIDELINE: Identify the expandability support. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Dedicated Slot" → 10.00
+          //   • "Tier 1: Dedicated Slot" → 10.00
           //     Definition: Separate tray or contact specifically for a removable memory card (MicroSD) that does not interfere with SIM card usage.
-          //   • "Hybrid Slot"    → 7.00
+          //   • "Tier 2: Hybrid Slot"    → 7.00
           //     Definition: Shared slot where the user must choose between a second SIM card or a memory card (e.g., MicroSD, Nano Memory).
-          //   • "Proprietary"    → 5.00
+          //   • "Tier 3: Proprietary"    → 5.00
           //     Definition: Support for branded/exclusive removable storage formats (e.g., Huawei NM Card).
-          //   • "None"           → 0.00
+          //   • "Tier 4: None"           → 0.00
           //     Definition: No physical slot for internal storage expansion.
         },
         "predicted_score": 0.00,
@@ -2043,22 +2045,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "6_10_thermal_dissipation_stability": {
         // SCORING GOAL: Evaluates thermal cooling capability based on frame architecture, weight, surface area, and active/passive cooling system.
         "part_b_cooling_system_class": {
-          "value": "Large Vapor Chamber (≥4000 mm²)",
+          "value": "Tier 2: Extreme Passive (VC ≥4000 mm²)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the cooling mechanism class. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Active Cooling (Fan)"              → 10.00
+          //   • "Tier 1: Active Cooling (Fan)"              → 10.00
           //     Definition: Internal motorized fan pushing air through the chassis for heat dissipation.
-          //   • "Extreme Passive (VC ≥4000 mm²)"    → 8.00
+          //   • "Tier 2: Extreme Passive (VC ≥4000 mm²)"    → 8.00
           //     Definition: Vapor Chamber cooling with a verified surface area of 4000 square millimeters or more.
-          //   • "Standard Passive (VC <4000 mm²)"   → 7.00
+          //   • "Tier 3: Standard Passive (VC <4000 mm²)"   → 7.00
           //     Definition: Presence of a Vapor Chamber (VC) cooling system that is smaller or of unspecified area.
-          //   • "Basic Passive (Multi-layer Graphite)" → 5.00
+          //   • "Tier 4: Basic Passive (Multi-layer Graphite)" → 5.00
           //     Definition: Use of graphite sheets or copper foil for heat spreading without a phase-change vapor chamber.
-          //   • "Legacy (Metal Shielding only)"     → 3.00
+          //   • "Tier 5: Legacy (Metal Shielding only)"     → 3.00
           //     Definition: Reliance on standard chassis metal and shielding for heat.
-          //   • "None / Air-only"                   → 0.00
+          //   • "Tier 6: None / Air-only"                   → 0.00
           //     Definition: No dedicated internal thermal dissipation materials or structures mentioned.
         },
         "part_c_process_node_size_nm": {
@@ -2069,11 +2071,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Process Node Score calculated via Section 6.10 Part C Node Score formula.
         },
         "part_c_foundry": {
-          "value": "TSMC",
+          "value": "Tier 1: TSMC",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table (TSMC=10, Samsung=5, Others=0).
+          // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table. Use the following exact Tier Names for "value":
+          //   • "Tier 1: TSMC"    → 10.00
+          //   • "Tier 2: Samsung" → 5.00
+          //   • "Tier 3: Others"  → 0.00
         },
         "predicted_score": 9.50,
         // SCORING GUIDELINE: predicted_score calculated using Physical Score and Peak Thermal Demand Compensation from Section 6.10.
@@ -2090,22 +2095,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_1_cellular_capabilities": {
         // SCORING GOAL: Evaluates max cellular network standards.
         "network_technology": {
-          "value": "5G mmWave + Sub-6 (Global band coverage)",
+          "value": "Tier 1: 5G mmWave + Sub-6 (Global band coverage)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "5G mmWave + Sub-6 (Global band coverage)" → 10.00
+          //   • "Tier 1: 5G mmWave + Sub-6 (Global band coverage)" → 10.00
           //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
-          //   • "5G Sub-6 (Global band coverage)"          → 8.50
+          //   • "Tier 2: 5G Sub-6 (Global band coverage)"          → 8.50
           //     Definition: Supports 5G on Sub-6GHz frequencies with extensive band coverage for global roaming.
-          //   • "5G Sub-6 (Regional band coverage)"        → 7.50
+          //   • "Tier 3: 5G Sub-6 (Regional band coverage)"        → 7.50
           //     Definition: Supports 5G on Sub-6GHz but with band coverage limited to specific markets.
-          //   • "4G LTE-A (Cat 24+)"                       → 5.00
+          //   • "Tier 4: 4G LTE-A (Cat 24+)"                       → 5.00
           //     Definition: 4G LTE Advanced with support for high-order carrier aggregation and 4x4 MIMO.
-          //   • "4G LTE"                                   → 2.50
+          //   • "Tier 5: 4G LTE"                                   → 2.50
           //     Definition: Standard 4G Long-Term Evolution without advanced carrier aggregation.
-          //   • "3G / Legacy"                              → 0.00
+          //   • "Tier 6: 3G / Legacy"                              → 0.00
           //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
         },
         "predicted_score": 10.00,
@@ -2121,7 +2126,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_2_sim_capabilities": {
         // SCORING GOAL: Evaluates subscriber identity module format support.
         "sim_configuration": {
-          "value": "Dual eSIM / iSIM + Physical Nano-SIM Slot",
+          "value": "Tier 1: Dual eSIM / iSIM + Physical Slot",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
@@ -2134,7 +2139,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Two physical Nano-SIM slots; no electronic/programmable SIM support.
           //   • "Tier 4: Single Physical Nano-SIM Only"     → 4.00
           //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
-          //   • "None"                                      → 0.00
+          //   • "Tier 5: None"                              → 0.00
           //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
           // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
         },
@@ -2151,20 +2156,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_3_wifi_standard": {
         // SCORING GOAL: Evaluates Wi-Fi network standards.
         "standard": {
-          "value": "Wi-Fi 7",
+          "value": "Tier 1: Wi-Fi 7",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Wi-Fi 7"   → 10.00
+          //   • "Tier 1: Wi-Fi 7"   → 10.00
           //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
-          //   • "Wi-Fi 6E"  → 8.00
+          //   • "Tier 2: Wi-Fi 6E"  → 8.00
           //     Definition: 802.11ax standard adding support for the 6GHz spectrum, reducing congestion.
-          //   • "Wi-Fi 6"   → 6.00
+          //   • "Tier 3: Wi-Fi 6"   → 6.00
           //     Definition: 802.11ax standard on 2.4/5GHz. Improved efficiency and performance in dense environments.
-          //   • "Wi-Fi 5"   → 3.00
+          //   • "Tier 4: Wi-Fi 5"   → 3.00
           //     Definition: 802.11ac standard.
-          //   • "Legacy"    → 0.00
+          //   • "Tier 5: Legacy"    → 0.00
           //     Definition: 802.11n (Wi-Fi 4) or older technology.
         },
         "predicted_score": 10.00,
@@ -2180,42 +2185,42 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_4_bluetooth_and_audio_codecs": {
         // SCORING GOAL: Evaluates Bluetooth version and high-fidelity audio codec support.
         "bluetooth_version": {
-          "value": 5.3,
+          "value": "Tier 2: 5.3",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.50
           // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • 5.4      → 5.00
+          //   • "Tier 1: 5.4"      → 5.00
           //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
-          //   • 5.3      → 4.50
+          //   • "Tier 2: 5.3"      → 4.50
           //     Definition: Improved encryption, connection reliability, and efficiency.
-          //   • 5.2      → 3.50
+          //   • "Tier 3: 5.2"      → 3.50
           //     Definition: Introduces LE Audio and Enhanced Attribute Protocol (EATT).
-          //   • 5.1 / 5.0 → 2.50
+          //   • "Tier 4: 5.1 / 5.0" → 2.50
           //     Definition: Basic Bluetooth 5 standards.
-          //   • 4.2      → 1.00
+          //   • "Tier 5: 4.2"      → 1.00
           //     Definition: Legacy Bluetooth 4 standards.
-          //   • < 4.2    → 0.00
+          //   • "Tier 6: < 4.2"    → 0.00
           //     Definition: Obsolete Bluetooth standards.
         },
         "highest_codec_supported": {
-          "value": "High-Res",
+          "value": "Tier 2: High-Res",
           "value_details": {
-            "Lossless": [],
-            "High-Res": ["LDAC", "aptX HD"],
-            "Standard": ["AAC", "SBC"]
+            "Tier 1: Lossless": [],
+            "Tier 2: High-Res": ["LDAC", "aptX HD"],
+            "Tier 3: Standard": ["AAC", "SBC"]
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.00
           // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Lossless"   → 5.00
+          //   • "Tier 1: Lossless"   → 5.00
           //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
-          //   • "High-Res"   → 4.00
+          //   • "Tier 2: High-Res"   → 4.00
           //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
-          //   • "Standard"   → 1.50
+          //   • "Tier 3: Standard"   → 1.50
           //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Lossless": ["aptX Lossless"], "High-Res": ["LDAC", "aptX HD"], "Standard": ["AAC", "SBC"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Lossless": ["aptX Lossless"], "Tier 2: High-Res": ["LDAC", "aptX HD"], "Tier 3: Standard": ["AAC", "SBC"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.50,
         // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
@@ -2230,29 +2235,29 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_5_biometrics": {
         // SCORING GOAL: Evaluates secure unlock mechanisms.
         "best_technology": {
-          "value": "Ultrasonic FP",
+          "value": "Tier 2: Ultrasonic FP",
           "value_details": {
-            "3D Face / Sonic Gen 2": [],
-            "Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"],
-            "Optical FP / 2D Face": [],
-            "Capacitive FP": [],
-            "None / Pin Only": []
+            "Tier 1: 3D Face / Sonic Gen 2": [],
+            "Tier 2: Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"],
+            "Tier 3: Optical FP / 2D Face": [],
+            "Tier 4: Capacitive FP": [],
+            "Tier 5: None / Pin Only": []
           },
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "3D Face / Sonic Gen 2"  → 10.00
+          //   • "Tier 1: 3D Face / Sonic Gen 2"  → 10.00
           //     Definition: Secure 3D facial recognition (e.g., Face ID) or 2nd-gen Ultrasonic fingerprint sensors (large area, fast).
-          //   • "Ultrasonic FP"          → 8.00
+          //   • "Tier 2: Ultrasonic FP"          → 8.00
           //     Definition: Standard ultrasonic fingerprint sensors (3D mapping of the finger via sound waves).
-          //   • "Optical FP / 2D Face"  → 6.00
+          //   • "Tier 3: Optical FP / 2D Face"  → 6.00
           //     Definition: Standard optical fingerprint sensors (2D photograph of the finger) or basic 2D webcam-style face unlock (non-secure for payments).
-          //   • "Capacitive FP"          → 4.00
+          //   • "Tier 4: Capacitive FP"          → 4.00
           //     Definition: Physical button-integrated fingerprint sensors (side-mounted or rear-mounted).
-          //   • "None / Pin Only"        → 0.00
+          //   • "Tier 5: None / Pin Only"        → 0.00
           //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"3D Face / Sonic Gen 2": ["Face ID"], "Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: 3D Face / Sonic Gen 2": ["Face ID"], "Tier 2: Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.
@@ -2339,16 +2344,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_7_nfc_and_uwb": {
         // SCORING GOAL: Evaluates short-range wireless connectivity technologies.
         "configuration": {
-          "value": "NFC + UWB",
+          "value": "Tier 1: NFC + UWB",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "NFC + UWB" → 10.00
+          //   • "Tier 1: NFC + UWB" → 10.00
           //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
-          //   • "NFC Only"   → 5.00
+          //   • "Tier 2: NFC Only"   → 5.00
           //     Definition: Near Field Communication support only; no directional UWB tracking.
-          //   • "None"       → 0.00
+          //   • "Tier 3: None"       → 0.00
           //     Definition: No short-range wireless connectivity.
         },
         "predicted_score": 10.00,
@@ -2416,20 +2421,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "7_9_usb_port_speed": {
         // SCORING GOAL: Evaluates wired transfer speed.
         "version_speed": {
-          "value": "USB 3.2 Gen 2 (10Gbps)",
+          "value": "Tier 2: USB 3.2 Gen 2 (10Gbps)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 9.00
           // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "USB 3.2 Gen 2x2 (20Gbps)" → 10.00
+          //   • "Tier 1: USB 3.2 Gen 2x2 (20Gbps)" → 10.00
           //     Definition: SuperSpeed USB 20Gbps.
-          //   • "USB 3.2 Gen 2 (10Gbps)"   → 9.00
+          //   • "Tier 2: USB 3.2 Gen 2 (10Gbps)"   → 9.00
           //     Definition: SuperSpeed USB 10Gbps.
-          //   • "USB 3.2 Gen 1 (5Gbps)"    → 7.50
+          //   • "Tier 3: USB 3.2 Gen 1 (5Gbps)"    → 7.50
           //     Definition: SuperSpeed USB 5Gbps (formerly USB 3.0/3.1 Gen 1).
-          //   • "USB 2.0 (480Mbps)"        → 2.00
+          //   • "Tier 4: USB 2.0 (480Mbps)"        → 2.00
           //     Definition: High Speed USB 2.0.
-          //   • "Proprietary / Legacy"     → 0.00
+          //   • "Tier 5: Proprietary / Legacy"     → 0.00
           //     Definition: Non-standard or obsolete physical/logical interface.
         },
         "predicted_score": 10.00,
@@ -2534,20 +2539,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "8_6_charger_in_box": {
         // SCORING GOAL: Rewards devices that include a high-speed charger in the box.
         "included_watts": {
-          "value": 0,
+          "value": "Tier 5: None",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Identify the included charger wattage. Use the following thresholds for "value" with related scores as subscore:
-          //   • >= 60W    → 10.00
+          // SCORING GUIDELINE: Identify the included charger wattage. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: >= 60W"    → 10.00
           //     Definition: Ultra-high speed charger included in the box.
-          //   • 30W - 59W → 7.00
+          //   • "Tier 2: 30W - 59W" → 7.00
           //     Definition: High speed charger included.
-          //   • 15W - 29W → 4.00
+          //   • "Tier 3: 15W - 29W" → 4.00
           //     Definition: Standard speed charger included.
-          //   • < 15W     → 2.00
+          //   • "Tier 4: < 15W"     → 2.00
           //     Definition: Low speed / basic charger included.
-          //   • None      → 0.00
+          //   • "Tier 5: None"      → 0.00
           //     Definition: No charger included in the retail box.
         },
         "predicted_score": 0.00,
@@ -2584,15 +2589,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "9_2_manufacturer_warranty_commitment": {
         // SCORING GOAL: Evaluates standard included warranty length.
         "months": {
-          "value": 12,
+          "value": "Tier 3: 12 Months",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-          // SCORING GUIDELINE: Map months to scores using the following thresholds:
-          //   • ">= 36 Months" → 10.00
-          //   • "24 Months"    → 7.00
-          //   • "12 Months"    → 3.00
-          //   • "< 12 Months"  → 0.00
+          // SCORING GUIDELINE: Map months to scores using the following exact Tier Names for "value":
+          //   • "Tier 1: >= 36 Months" → 10.00
+          //   • "Tier 2: 24 Months"    → 7.00
+          //   • "Tier 3: 12 Months"    → 3.00
+          //   • "Tier 4: < 12 Months"  → 0.00
         },
         "predicted_score": 3.00,
         // SCORING GUIDELINE: predicted_score directly inherits months.subscore.
@@ -2628,18 +2633,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "10_1_stylus_hardware_system_support": {
         // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
         "support_tier": {
-          "value": "Integrated active stylus + dedicated digitizer + Bluetooth features",
+          "value": "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
+          //   • "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
           //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
-          //   • "Active stylus support (dedicated digitizer, no silo)"              → 7.00
+          //   • "Tier 2: Active stylus support (dedicated digitizer, no silo)"              → 7.00
           //     Definition: Device has a dedicated digitizer layer for high-precision active pens (e.g., Apple Pencil, S Pen) but no internal storage for the pen.
-          //   • "Passive stylus or basic touch pen"                                  → 3.00
+          //   • "Tier 3: Passive stylus or basic touch pen"                                  → 3.00
           //     Definition: No dedicated digitizer; works with generic capacitive pens that mimic finger touch.
-          //   • "None"                                                               → 0.00
+          //   • "Tier 4: None"                                                               → 0.00
           //     Definition: No official stylus support or secondary digitizer layer.
         },
         "predicted_score": 10.00,

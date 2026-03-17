@@ -338,6 +338,12 @@ Every field must fall into one of these strict categories.
 ### Type A: Raw External Data
 **Definition:** Hard facts scraped or extracted from an external source, paired with their evaluated mathematical constraint. The `value` field MUST be one of 5 strict data shapes: Continuous Numeric, Discrete Integer, Categorical String, String Array, or Pure Boolean. Artificial "logic" keys (e.g., `is_supported`) are strictly forbidden; the component key must be the name of the specification itself.
 
+> [!NOTE]
+> ### 📊 The Tiered System (Discrete Scoring)
+> Subsections utilizing **discrete scoring formulas** (Categorical Strings) follow a structured **Tiered System**. In these cases, all scorable levels MUST be prefixed with `Tier N:` (e.g., `"Tier 1: Premium"`, `"Tier 2: Standard"`).
+>
+> **Rationale:** Prefixing ensures absolute clarity in the hierarchy and prevents ambiguity when marketing names or technical terms are similar. It also allows the AI agent to explicitly identify the discrete levels defined in the guidelines. This prefix MUST be applied consistently across the `SCORING GUIDELINE` comments, the `value` field, and the `value_details` keys. Sections using continuous/linear formulas are exempt.
+
 | Field           | Description                                                                                                      |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------- |
 | `value`         | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                        |
@@ -358,7 +364,7 @@ Every field must fall into one of these strict categories.
 
 ### Rules for value_details (Traceability & Efficiency)
 1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score.
-2. **Official Tier Names**: Keys MUST exactly match the official tier strings defined in the `SCORING GUIDELINE` comments within the same file (e.g., [proposed_data_structure.md]). AI must never invent names or use external files as the primary key source.
+2. **Official Tier Names**: Keys MUST exactly match the official tier strings (including the `Tier N:` prefix for discrete systems) defined in the `SCORING GUIDELINE` comments within the same file (e.g., [proposed_data_structure.md]). AI must never invent names or use external files as the primary key source.
 3. **Multi-Tier Support**: If the device supports features belonging to lower tiers, those tiers **MUST** also be included as keys.
 4. **Array Format (Mandatory)**: Data for each tier key must be an **array of strings**. If multiple names belong to the same tier, list them as separate elements in the array: `["Name 1", "Name 2"]`. Even a single value must be in an array: `["Name 1"]`. Use an empty array `[]` if no names are applicable.
 5. **Template Pre-population**: In `proposed_data_structure.md` (the template), ALL valid tiers for a field SHOULD be pre-populated as keys to prevent AI mapping errors.
@@ -366,12 +372,12 @@ Every field must fall into one of these strict categories.
 **Example (Tiered Dictionary):**
 ```json
 "processing_tier": {
-  "value": "Advanced Semantic & Neural Stacking",
+  "value": "Tier 1: Advanced Semantic & Neural Stacking",
   "value_details": {
-    "Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"],
-    "Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
-    "Conditional / Manual Multi-Frame": [],
-    "Basic / Single Frame (Legacy)": []
+    "Tier 1: Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"],
+    "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
+    "Tier 3: Conditional / Manual Multi-Frame": [],
+    "Tier 4: Basic / Single Frame (Legacy)": []
   },
   "source": "https://www.apple.com/iphone-16-pro/specs/",
   "exact_extract": "Photonic Engine [...] Deep Fusion [...] Smart HDR 5",
@@ -382,7 +388,7 @@ Every field must fall into one of these strict categories.
 **Example (Scored Value — no details needed):**
 ```json
 "bluetooth_version": {
-  "value": 5.3,
+  "value": "Tier 2: 5.3",
   "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
   "exact_extract": "Comms [...] Bluetooth 5.3, A2DP, LE",
   "subscore": 4.5
@@ -466,15 +472,15 @@ In this particular case the fields are optional to enable flexibility. Use only 
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the IP (Ingress Protection) rating defined by IEC standard 60529.
       "dust_protection_digit": {
         "value_path": "1_2_durability.ingress_protection_rating.value",
-        "value": "Digit 6",
+        "value": "Tier 1: Digit 6",
         "subscore": 10.00
-        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following terms exclusively for "value" with related scores:
-        //   • Digit 6    → 10.00
-        //   • Digit 5    → 8.00
-        //   • Digit 4    → 6.00
-        //   • Digit 3    → 4.00
-        //   • Digit 2    → 2.00
-        //   • Digit 0–1  → 0.00
+        // SCORING GUIDELINE: Look up the first digit of the IP rating in the Section 1.2.A table. Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: Digit 6"    → 10.00
+        //   • "Tier 2: Digit 5"    → 8.00
+        //   • "Tier 3: Digit 4"    → 6.00
+        //   • "Tier 4: Digit 3"    → 4.00
+        //   • "Tier 5: Digit 2"    → 2.00
+        //   • "Tier 6: Digit 0–1"  → 0.00
       },
     },
 ```
