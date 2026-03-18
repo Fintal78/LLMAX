@@ -137,14 +137,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "frame_material": {
         "value": "Tier 1: Titanium Alloy",
         "value_details": {
-          "Tier 1: Titanium Alloy": ["Grade 5 Titanium"],
+          "Tier 1: Titanium Alloy": [
+            { "name": "Grade 5 Titanium", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
           "Tier 2: Stainless Steel": [],
           "Tier 3: Aluminum Alloy": [],
           "Tier 4: Polymer Composite": [],
           "Tier 5: Not Disclosed": []
         },
-        "source": "TBD",
-        "exact_extract": "Proof pending",
         "subscore": 10.00
           // SCORING GUIDELINE: Identify the frame material. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Titanium Alloy"     → 10.00
@@ -156,19 +156,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: Polymer Composite"  → 4.00
           //     Definition: Reinforced plastic or resin-based materials (e.g., Polycarbonate).
           //   • "Tier 5: Not Disclosed"      → 0.00
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "back_material": {
         "value": "Tier 2: Strengthened Glass",
         "value_details": {
           "Tier 1: Ceramic": [],
-          "Tier 2: Strengthened Glass": ["Gorilla Glass Victus 2"],
+          "Tier 2: Strengthened Glass": [{ "name": "Gorilla Glass Victus 2", "source": "TBD", "exact_extract": "Proof pending" }],
           "Tier 3: Standard Glass": [],
           "Tier 4: Polymer": [],
           "Tier 5: Not Disclosed": []
         },
-        "source": "TBD",
-        "exact_extract": "Proof pending",
         "subscore": 8.00
           // SCORING GUIDELINE: Identify the back panel material. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Ceramic"            → 10.00
@@ -180,7 +178,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: Polymer"            → 4.00
           //     Definition: Plastic-based resin or composite materials.
           //   • "Tier 5: Not Disclosed"      → 0.00
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 9.20,
       // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
@@ -240,7 +238,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "glass_generation": {
         "value": "Tier 1: Armor-Class",
         "value_details": {
-          "Tier 1: Armor-Class": ["Gorilla Glass Armor"],
+          "Tier 1: Armor-Class": [
+            { "name": "Gorilla Glass Armor", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
           "Tier 2: Shield-Class": [],
           "Tier 3: Ultra-Reinforced": [],
           "Tier 4: Premium Reinforced": [],
@@ -250,8 +250,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "Tier 8: Glass (Unspecified)": [],
           "Tier 9: Plastic or No Glass": []
         },
-        "source": "TBD",
-        "exact_extract": "Proof pending",
         "subscore": 10.00
         // SCORING GUIDELINE: Identify the highest glass tier based on manufacturer drop/scratch claims. Use the following exact Tier Names for "value" with related scores as subscore:
         //   • "Tier 1: Armor-Class"            → 10.00
@@ -270,7 +268,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //     Definition: Basic chemically strengthened glass with no certified drop class.
         //   • "Tier 8: Glass (Unspecified)"    → 2.00
         //   • "Tier 9: Plastic or No Glass"    → 0.00
-        // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 10.00,
       // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
@@ -353,14 +351,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "value": "Tier 2: LTPO OLED",
         "value_details": {
           "Tier 1: Tandem OLED": [],
-          "Tier 2: LTPO OLED": ["Dynamic AMOLED 2X"],
+          "Tier 2: LTPO OLED": [
+            { "name": "Dynamic AMOLED 2X", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
           "Tier 3: Standard OLED/AMOLED (LTPS)": [],
           "Tier 4: IPS LCD": [],
           "Tier 5: TFT or PLS LCD": [],
           "Tier 6: TN LCD or Legacy": []
         },
-        "source": "TBD",
-        "exact_extract": "Proof pending",
         "subscore": 9.00
         // SCORING GUIDELINE: Identify the panel type. Use the following exact Tier Names for "value" with related scores as subscore:
         //   • "Tier 1: Tandem OLED"                   → 10.00
@@ -376,7 +374,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 6: TN LCD or Legacy"              → 0.00
         //     Definition: Twisted Nematic Liquid-Crystal Display (TN LCD) or legacy technologies. Liquid crystals twist to control light; characterized by color inversion or contrast shift at off-axis viewing angles.
         // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "Tier 3: Standard OLED/AMOLED (LTPS)" (8.00).
-        // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 9.00,
       // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
@@ -447,15 +445,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "HDR10+",
           "HDR10"
         ],
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 7.00
-        // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. For each supported format, use the exact term below for the "value" array:
-        //   • "Dolby Vision"  → adds +3.00 to the subscore
-        //   • "HDR10+"        → adds +2.00 to the subscore
-        //   • "HDR10"         → adds +5.00 to the subscore
+        "value_details": {
+          "Dolby Vision": [],
+          "HDR10+": [
+            { "name": "HDR10+", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "HDR10": [
+            { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "HLG": []
+        },
+        "subscore": 7.00,
+        // SCORING GUIDELINE: Identify the presence of officially supported HDR formats. Be exhaustive and add all that apply. For each supported format, use the exact term below for the "value" array:
+        //   • "Dolby Vision"             → adds +3.00 to the subscore
+        //   • "HDR10+"                   → adds +2.00 to the subscore
+        //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
         // The subscore is the sum of these points (Clamped 0–10). Example: ["HDR10+", "HDR10"] = 5.00 + 2.00 = 7.00.
         // If the device does not list support for any HDR formats (or explicitly only supports Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are arrays of objects. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
       "predicted_score": 7.00,
       // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
@@ -711,12 +718,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "Tier 2: Standard Hybrid Stereo",
           "value_details": {
             "Tier 1: Balanced / Symmetrical Stereo": [],
-            "Tier 2: Standard Hybrid Stereo": ["Stereo Speakers"],
+            "Tier 2: Standard Hybrid Stereo": [
+              { "name": "Stereo Speakers", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: Mono Speaker": [],
             "Tier 4: No Usable Speaker": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 7.00
           // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Balanced / Symmetrical Stereo" → 10.00
@@ -726,7 +733,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: Mono Speaker"                  → 3.00
           //     Definition: Single active loudspeaker for media playback.
           //   • "Tier 4: No Usable Speaker"             → 0.00
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 7.00,
         // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
@@ -745,32 +752,41 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Dolby Atmos",
             "Dolby Digital / Dolby Audio"
           ],
-          "source": "TBD",
-          "exact_extract": "Proof pending",
+          "value_details": {
+            "Dolby Atmos": [
+              { "name": "Dolby Atmos", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "DTS:X": [],
+            "Dolby Digital / Dolby Audio": [
+              { "name": "Dolby Digital", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "DTS / DTS-HD": []
+          },
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
           //   • "Dolby Atmos"                 → adds +5.00 to the subscore
-          //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
           //   • "DTS:X"                       → adds +1.00 to the subscore
+          //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
           //   • "DTS / DTS-HD"                → adds +1.00 to the subscore
           // The subscore is the sum of these points (Clamped 0–10). Example: ["Dolby Atmos", "Dolby Digital / Dolby Audio"] = 5.00 + 3.00 = 8.00.
           // If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), leave the array empty [] and set subscore to 0.00.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported audio formats/codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
         },
         "spatial_audio_rendering": {
           "value": "Tier 2: Static spatial audio (no head tracking)",
           "value_details": {
             "Tier 1: Spatial audio with Dynamic Head Tracking": [],
-            "Tier 2: Static spatial audio (no head tracking)": ["360 Audio"],
+            "Tier 2: Static spatial audio (no head tracking)": [
+              { "name": "360 Audio", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: No spatial rendering": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 7.00
           // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Spatial audio with Dynamic Head Tracking"      → 10.00
           //   • "Tier 2: Static spatial audio (no head tracking)"       → 7.00
           //   • "Tier 3: No spatial rendering"                          → 0.00
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported spatial rendering technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 7.50,
         // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
@@ -823,12 +839,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "Tier 2: Stereo",
           "value_details": {
             "Tier 1: Multi-channel / spatial audio": [],
-            "Tier 2: Stereo": ["Stereo recording"],
+            "Tier 2: Stereo": [
+              { "name": "Stereo recording", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: Mono": [],
             "Tier 4: Voice-only / unclear": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Multi-channel / spatial audio" → 10.00
@@ -838,15 +854,23 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: Mono"                          → 5.00
           //     Definition: Single-channel audio recording.
           //   • "Tier 4: Voice-only / unclear"          → 0.00
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific recording technologies found in specs (e.g., OZO Audio, Audio Zoom). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "advanced_capture_features": {
           "value": [
             "Directional / Audio Zoom",
             "Wind Noise Reduction"
           ],
-          "source": "TBD",
-          "exact_extract": "Proof pending",
+          "value_details": {
+            "Directional / Audio Zoom": [
+              { "name": "Audio Zoom", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Wind Noise Reduction": [
+              { "name": "Wind Noise Reduction", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Voice Focus / Isolation": [],
+            "Pro Mic Support": []
+          },
           "subscore": 5.00
           // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features × 2.50 = 5.00.
           //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
@@ -854,6 +878,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
           //   • Pro Mic Support: Accepts an external mic for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing for example "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording
           // Always populate the full list of detected features in "value". Do not selectively omit. Source: §3.4.3 Advanced Capture Features.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
         },
         "predicted_score": 6.80,
         // SCORING GUIDELINE: predicted_score = (0.30 × microphone_hardware_count.subscore) + (0.30 × recording_channels_modes.subscore) + (0.40 × advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
@@ -1046,12 +1071,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value_details": {
             "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)": [],
             "Tier 2: Sensor-Shift Optical Image Stabilization": [],
-            "Tier 3: Lens-Based Optical Image Stabilization": ["OIS"],
+            "Tier 3: Lens-Based Optical Image Stabilization": [
+              { "name": "OIS", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 4: Software-Only Stabilization (Electronic, no hardware)": [],
             "Tier 5: None": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
@@ -1065,7 +1090,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: None"                                                  → 0.00
           //     Definition: No hardware or software stabilization is detected or documented.
           // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to "Tier 3: Lens-Based Optical Image Stabilization" (8.00).
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
@@ -1281,14 +1306,23 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Dolby Vision",
             "HDR10"
           ],
-          "source": "TBD",
-          "exact_extract": "Proof pending",
+          "value_details": {
+            "Dolby Vision": [
+              { "name": "Dolby Vision", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "HDR10+": [],
+            "HDR10": [
+              { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "HLG": []
+          },
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
-          //   • "HDR10" or "HLG"           → adds +5.00 to the subscore
           //   • "Dolby Vision"             → adds +3.00 to the subscore
           //   • "HDR10+"                   → adds +2.00 to the subscore
+          //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
           // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply. 
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
@@ -1306,11 +1340,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "Tier 2: Mezzanine",
           "value_details": {
             "Tier 1: True RAW": [],
-            "Tier 2: Mezzanine": ["ProRes"],
+            "Tier 2: Mezzanine": [
+              { "name": "ProRes", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: Standard": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: True RAW"    → 10.00
@@ -1319,17 +1353,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
           //   • "Tier 3: Standard"    → 0.00
           //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "log_color_profile_support": {
           "value": "Tier 1: True Log",
           "value_details": {
-            "Tier 1: True Log": ["Apple Log"],
+            "Tier 1: True Log": [
+              { "name": "Apple Log", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 2: Flat / Cine": [],
             "Tier 3: Standard only": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: True Log"       → 10.00
@@ -1338,7 +1372,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, D-Cinelike).
           //   • "Tier 3: Standard only"  → 0.00
           //     Definition: No professional gamma profiles; only standard rec.709 or rec.2020 curves.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "color_bit_depth": {
           "value": "Tier 2: 10-bit color",
@@ -1420,13 +1454,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "focus_system_tier": {
           "value": "Tier 1: Autofocus",
           "value_details": {
-            "Tier 1: Autofocus": ["Phase Detection Auto Focus (PDAF)"],
+            "Tier 1: Autofocus": [
+              { "name": "Phase Detection Auto Focus (PDAF)", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 2: Fixed Focus (Modern Wide-DOF)": [],
             "Tier 3: Fixed Focus (Legacy Narrow-DOF)": [],
             "Tier 4: No Front Camera": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Autofocus"                        → 10.00
@@ -1438,7 +1472,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: No Front Camera"                  → 0.00
           //     Definition: Device lacks a front-facing selfie camera module.
           // AMBIGUITY RESOLUTION: Focus Zone width is determined by Depth of Field (DOF). If sensor size data is missing, classify based solely on the aperture (f-number) if it is known.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
@@ -1479,18 +1513,29 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "4_15_3_video_hdr": {
           "supported_formats": {
             "value": [
-              "HDR10",
               "Dolby Vision",
-              "HDR10+"
+              "HDR10+",
+              "HDR10"
             ],
-            "source": "TBD",
-            "exact_extract": "Proof pending",
+            "value_details": {
+              "Dolby Vision": [
+                { "name": "Dolby Vision", "source": "TBD", "exact_extract": "Proof pending" }
+              ],
+              "HDR10+": [
+                { "name": "HDR10+", "source": "TBD", "exact_extract": "Proof pending" }
+              ],
+              "HDR10": [
+                { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
+              ],
+              "HLG": []
+            },
             "subscore": 10.00
             // SCORING GUIDELINE: Mirroring Section 4.10 (Rear Video HDR). Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
-            //   • "HDR10" or "HLG"           → adds +5.00 to the subscore
             //   • "Dolby Vision"             → adds +3.00 to the subscore
             //   • "HDR10+"                   → adds +2.00 to the subscore
+            //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
             // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
+            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
           }
         },
         "4_15_4_1_professional_codec_support": {
@@ -1498,11 +1543,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "value": "Tier 2: Mezzanine",
             "value_details": {
               "Tier 1: True RAW": [],
-              "Tier 2: Mezzanine": ["ProRes"],
+              "Tier 2: Mezzanine": [
+                { "name": "ProRes", "source": "TBD", "exact_extract": "Proof pending" }
+              ],
               "Tier 3: Standard": []
             },
-            "source": "TBD",
-            "exact_extract": "Proof pending",
             "subscore": 8.00
           // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: True RAW"    → 10.00
@@ -1511,19 +1556,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
           //   • "Tier 3: Standard"    → 0.00
           //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
-          // VALUE_DETAILS GUIDELINE: List all specific supported professional codecs found in specs. Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           }
         },
         "4_15_4_2_log_color_profile_support": {
           "supported_profiles": {
             "value": "Tier 1: True Log",
             "value_details": {
-              "Tier 1: True Log": ["Apple Log"],
+              "Tier 1: True Log": [
+                { "name": "Apple Log", "source": "TBD", "exact_extract": "Proof pending" }
+              ],
               "Tier 2: Flat / Cine": [],
               "Tier 3: Standard only": []
             },
-            "source": "TBD",
-            "exact_extract": "Proof pending",
             "subscore": 10.00
             // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
             //   • "Tier 1: True Log"       → 10.00
@@ -1532,7 +1577,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, Cinelike-D).
             //   • "Tier 3: Standard only"  → 0.00
             //     Definition: No professional gamma profiles. only standard rec.709 or rec.2020 curves.
-            // VALUE_DETAILS GUIDELINE: List all specific supported log/flat profiles found in specs. Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           }
         },
         "predicted_score": 9.80,
@@ -1551,13 +1596,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "processing_tier": {
           "value": "Tier 1: Advanced Semantic & Neural Stacking",
           "value_details": {
-            "Tier 1: Advanced Semantic & Neural Stacking": ["Deep Fusion", "Photonic Engine"],
-            "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
+            "Tier 1: Advanced Semantic & Neural Stacking": [
+              { "name": "Deep Fusion", "source": "TBD", "exact_extract": "Proof pending" },
+              { "name": "Photonic Engine", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Tier 2: Standard Always-on Multi-Frame HDR": [
+              { "name": "Smart HDR 5", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: Conditional / Manual Multi-Frame": [],
             "Tier 4: Basic / Single Frame (Legacy)": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Advanced Semantic & Neural Stacking" → 10.0
@@ -1568,7 +1616,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Multi-frame processing only activates in specific modes (e.g., Night Mode) or requires manual activation (HDR toggle).
           //   • "Tier 4: Basic / Single Frame (Legacy)"       → 0.0
           //     Definition: No multi-frame stacking; reliance on single-frame exposure.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"], "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported multi-frame features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
@@ -1585,13 +1633,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "capability_tier": {
           "value": "Tier 1: Neural Semantic Segmentation",
           "value_details": {
-            "Tier 1: Neural Semantic Segmentation": ["AI ProVisual Engine", "Object-aware engine"],
+            "Tier 1: Neural Semantic Segmentation": [
+              { "name": "AI ProVisual Engine", "source": "TBD", "exact_extract": "Proof pending" },
+              { "name": "Object-aware engine", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 2: Object-Based Optimization": [],
             "Tier 3: Basic Metadata AI": [],
             "Tier 4: None": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Neural Semantic Segmentation" → 10.0
@@ -1599,10 +1648,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 2: Object-Based Optimization"    → 7.5
           //     Definition: Recognizes high-level subjects (dog, flower, sunset) to apply preset global/local enhancements ("Scene Optimizer").
           //   • "Tier 3: Basic Metadata AI"            → 4.0
-          //     Definition: Basic subject prioritization for focus and exposure (Face/Eye detection). No content-aware color science.
+          //     Definition: Simple EXIF-level scene recognition (e.g., "Food", "Text") without intelligent segmentation or pixel-level relighting.
           //   • "Tier 4: None"                         → 0.0
-          //     Definition: No scene or subject interpretation in the processing pipeline.    
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier Name": ["Marketing Name 1", "Marketing Name 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI pipeline features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
@@ -1614,20 +1662,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "confidence": "N/A"
         }
       },
-      "4_18_post_capture_generative_ai": {
+      "4_18_post_capture_ai_tools": {
         // SCORING GOAL: User-Initiated Gallery-Time Artificial Intelligence (AI). Scores the ability to modify images after capture using AI tools.
         "feature_tier": {
           "value": "Tier 1: Generative Content Transformation",
           "value_details": {
-            "Tier 1: Generative Content Transformation": ["Magic Editor", "Best Take"],
+            "Tier 1: Generative Content Transformation": [
+              { "name": "Magic Editor", "source": "TBD", "exact_extract": "Proof pending" },
+              { "name": "Best Take", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 2: Advanced Semantic Edits": [],
             "Tier 3: Basic Algorithmic Fixes": [],
             "Tier 4: None": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Generative AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the Post-Capture AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Generative Content Transformation" → 10.0
           //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
           //   • "Tier 2: Advanced Semantic Edits"           → 7.50
@@ -1636,7 +1685,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Standard beauty filters, color-aware auto-fixing, or basic object prioritization for cropping.
           //   • "Tier 4: None"                              → 0.0
           //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Generative Content Transformation": ["Generative Edit", "Magic Editor"], "Tier 2: Advanced Semantic Edits": ["Clean Up", "AI Eraser 2.0"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 10.00,
         // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
@@ -1693,12 +1742,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value_details": {
             "Tier 1: Clean / Premium": [],
             "Tier 2: Controlled": [],
-            "Tier 3: Moderate": ["One UI"],
+            "Tier 3: Moderate": [
+              { "name": "One UI", "source": "N/A", "exact_extract": "N/A" }
+            ],
             "Tier 4: Heavy / Bloated": [],
             "Tier 5: Restrictive": []
           },
-          "source": "N/A",
-          "exact_extract": "N/A",
           "subscore": 6.00
           // SCORING GUIDELINE: Identify the software platform tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Clean / Premium" → 10.0
@@ -1711,7 +1760,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Significant bloatware and system-level advertisements (e.g., HyperOS, ColorOS).
           //   • "Tier 5: Restrictive"      → 0.0
           //     Definition: Extreme bloatware and non-optional system ads (e.g., HiOS, XOS).
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Clean / Premium": ["iOS"], "Tier 3: Moderate": ["One UI"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Identify the specific platform or skin. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 6.00,
         // SCORING GUIDELINE: predicted_score directly inherits platform_score.subscore.
@@ -2207,11 +2256,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "Tier 2: High-Res",
           "value_details": {
             "Tier 1: Lossless": [],
-            "Tier 2: High-Res": ["LDAC", "aptX HD"],
-            "Tier 3: Standard": ["AAC", "SBC"]
+            "Tier 2: High-Res": [
+              { "name": "LDAC", "source": "TBD", "exact_extract": "Proof pending" },
+              { "name": "aptX HD", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Tier 3: Standard": [
+              { "name": "AAC", "source": "TBD", "exact_extract": "Proof pending" },
+              { "name": "SBC", "source": "TBD", "exact_extract": "Proof pending" }
+            ]
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 4.00
           // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Lossless"   → 5.00
@@ -2220,7 +2273,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
           //   • "Tier 3: Standard"   → 1.50
           //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: Lossless": ["aptX Lossless"], "Tier 2: High-Res": ["LDAC", "aptX HD"], "Tier 3: Standard": ["AAC", "SBC"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.50,
         // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
@@ -2238,13 +2291,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "Tier 2: Ultrasonic FP",
           "value_details": {
             "Tier 1: 3D Face / Sonic Gen 2": [],
-            "Tier 2: Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"],
+            "Tier 2: Ultrasonic FP": [
+              { "name": "Qualcomm 3D Sonic Gen 2", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "Tier 3: Optical FP / 2D Face": [],
             "Tier 4: Capacitive FP": [],
             "Tier 5: None / Pin Only": []
           },
-          "source": "TBD",
-          "exact_extract": "Proof pending",
           "subscore": 8.00
           // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: 3D Face / Sonic Gen 2"  → 10.00
@@ -2257,7 +2310,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Physical button-integrated fingerprint sensors (side-mounted or rear-mounted).
           //   • "Tier 5: None / Pin Only"        → 0.00
           //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
-          // VALUE_DETAILS GUIDELINE: Dictionary where keys are Tier Names and values are arrays of strings (e.g., {"Tier 1: 3D Face / Sonic Gen 2": ["Face ID"], "Tier 2: Ultrasonic FP": ["Qualcomm 3D Sonic Gen 2"]}). IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific biometric technologies found in specs (e.g., FaceID, specific sensor models). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
         "predicted_score": 8.00,
         // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.

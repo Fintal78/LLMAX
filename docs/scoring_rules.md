@@ -304,11 +304,11 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 **Scoring Structure (Additive):**
 The HDR score is calculated by adding points for each supported format. A device can earn points across multiple formats, up to a maximum of 10.0.
 
-| Supported Format | Point Value |
-| :--------------- | :---------- |
-| **HDR10**        | **+ 5.0**   |
-| **Dolby Vision** | **+ 3.0**   |
-| **HDR10+**       | **+ 2.0**   |
+| Supported Format            | Point Value |
+| :-------------------------- | :---------- |
+| **Base HDR (HDR10 or HLG)** | **+ 5.0**   |
+| **Dolby Vision**            | **+ 3.0**   |
+| **HDR10+**                  | **+ 2.0**   |
 
 *Formula:* `Score = sum(points_for_detected_formats)` (Clamped 0–10)
 
@@ -317,7 +317,7 @@ The HDR score is calculated by adding points for each supported format. A device
 >
 > Higher scores are awarded to devices that support dynamic metadata formats (which optimize brightness/color frame-by-frame) and have wide compatibility with premium streaming services. The additive scoring ensures each capability is accurately and independently rewarded.
 >
-> *   **HDR10 (+5.0):** The baseline open standard. While technically the most "basic" format, it is awarded the highest point value (5.0) because it is the **universal foundation** of HDR content. It is the most broadly used standard; without it, the HDR experience is broken across almost all streaming and playback platforms. It represents the "Floor" of a modern premium experience.
+> *   **Base HDR (+5.0):** The universal foundation of High Dynamic Range. It includes **HDR10** (static metadata) and **HLG** (Hybrid Log-Gamma, broadcast-standard). Supporting either represents the most critical quality leap over 8-bit **SDR** (Standard Dynamic Range), as it establishes the necessary 10-bit color pipeline. Without this "floor," a device cannot be considered HDR-capable.
 > *   **Dolby Vision (+3.0):** The highest-tier licensed dynamic format featuring 12-bit color depth and end-to-end studio calibration. This is the dominant standard used by Netflix, Apple TV, and Disney+. It carries a higher weight than HDR10+ because of its massive premium content library.
 > *   **HDR10+ (+2.0):** Samsung's royalty-free dynamic metadata standard. While functionally similar to Dolby Vision, it scores slightly lower due to its significantly smaller premium library (primarily Amazon Prime). 
 >
@@ -1218,7 +1218,7 @@ To determine the correct tier, check the device's official specifications, marke
 - **Tier 3:** Basic focus/exposure priority for human subjects or recognized moving objects. No content-aware color science or segmentation maps are used.
 
 
-### 🔹 4.18 Post-Capture & Generative AI Tools
+### 🔹 4.18 Post-Capture AI Tools
 *Description:* User-initiated editing tools within the gallery/photos app that modify images **after** they have been captured and saved.
 *   **Measurement:** Presence of generative and semantic editing tools.
 *   **Unit:** Feature Tier
@@ -1322,7 +1322,7 @@ SCC = Platform_Cleanliness_Score (direct lookup from skin field)
 **Structure:** 5 binary features with weighted scoring.
 
 > [!NOTE]
-> **Generative image editing** (object removal, fill, etc.) is scored in **Section 4.18** and is excluded here to avoid double-scoring.
+> **Post-capture AI editing** (object removal, fill, etc.) is scored in **Section 4.18** and is excluded here to avoid double-scoring.
 
 #### AI Capability Features
 

@@ -360,13 +360,22 @@ Every field must fall into one of these strict categories.
 | **Mandatory?** | Yes — always required.                 | No — only when mapping marketing terms to scorable tiers.     |
 | **Data shape** | Standard (numeric, string, bool, etc.) | **Object/Dictionary** with tier keys and string array values. |
 
-**When to add `value_details`:** Use `value_details` strictly for categorical tier classification to justify the choice of `value`. It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of strings** containing marketing terms belonging to that tier.
+**When to add `value_details`:** Use `value_details` strictly for categorical tier classification to justify the choice of `value`. It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of objects** containing marketing terms and their associated proof belonging to that tier.
 
 ### Rules for value_details (Traceability & Efficiency)
 1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score.
 2. **Official Tier Names**: Keys MUST exactly match the official tier strings (including the `Tier N:` prefix for discrete systems) defined in the `SCORING GUIDELINE` comments within the same file (e.g., [proposed_data_structure.md]). AI must never invent names or use external files as the primary key source.
 3. **Multi-Tier Support**: If the device supports features belonging to lower tiers, those tiers **MUST** also be included as keys.
-4. **Array Format (Mandatory)**: Data for each tier key must be an **array of strings**. If multiple names belong to the same tier, list them as separate elements in the array: `["Name 1", "Name 2"]`. Even a single value must be in an array: `["Name 1"]`. Use an empty array `[]` if no names are applicable.
+4. **Array and Traceability Format (Mandatory)**: To ensure every marketing term or feature is verifiable, the `value_details` array MUST strictly use the **Advanced Traceability** format (Array of Objects). Each item in the array MUST be an object:
+     ```json
+     {
+       "name": "Marketing Name",
+       "source": "URL specifically proving this item",
+       "exact_extract": "Verbatim proof for this item"
+     }
+     ```
+     > [!IMPORTANT]
+     > When Advanced Traceability is used (Mandatory for all multi-value entries or any field using `value_details`), the root-level `source` and `exact_extract` fields of the component **MUST NOT** be included. They are replaced by the per-item metadata inside `value_details` to avoid redundancy and ensure that every claim is individually sourced.
 5. **Template Pre-population**: In `proposed_data_structure.md` (the template), ALL valid tiers for a field SHOULD be pre-populated as keys to prevent AI mapping errors.
 
 **Example (Tiered Dictionary):**
@@ -374,13 +383,16 @@ Every field must fall into one of these strict categories.
 "processing_tier": {
   "value": "Tier 1: Advanced Semantic & Neural Stacking",
   "value_details": {
-    "Tier 1: Advanced Semantic & Neural Stacking": ["Photonic Engine", "Deep Fusion"],
-    "Tier 2: Standard Always-on Multi-Frame HDR": ["Smart HDR 5"],
+    "Tier 1: Advanced Semantic & Neural Stacking": [
+      { "name": "Photonic Engine", "source": "https://www.apple.com/iphone-16-pro/", "exact_extract": "Photonic Engine" },
+      { "name": "Deep Fusion", "source": "https://www.apple.com/iphone-16-pro/", "exact_extract": "Deep Fusion" }
+    ],
+    "Tier 2: Standard Always-on Multi-Frame HDR": [
+      { "name": "Smart HDR 5", "source": "https://www.apple.com/iphone-16-pro/", "exact_extract": "Smart HDR 5" }
+    ],
     "Tier 3: Conditional / Manual Multi-Frame": [],
     "Tier 4: Basic / Single Frame (Legacy)": []
   },
-  "source": "https://www.apple.com/iphone-16-pro/specs/",
-  "exact_extract": "Photonic Engine [...] Deep Fusion [...] Smart HDR 5",
   "subscore": 10.00
 }
 ```
