@@ -1240,15 +1240,74 @@ To determine the correct tier, check the device's official specifications, marke
 ## 🟣 5. Software & Longevity
 
 ### 🔹 5.1 Support Longevity
-*Description:* How long the manufacturer promises updates. Longer support means your phone stays secure and gets new features for years.
-*   **Measurement:** Manufacturer update policy commitment.
-*   **Unit:** Years
-*   **Significance:** Device longevity, security, and resale value.
-*Formula:* `Score = 10 * (log(Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min))` (Clamped 0-10)
+*Description:* The duration of officially promised software support. To ensure relevance for buyers, this score is dynamic and decays as the device ages, focusing on the software life remaining from the current date.
+*   **Measurement:** Manufacturer update policy commitment vs. time elapsed since launch.
+*   **Unit:** Years (Remaining)
+*   **Significance:** Determines the remaining window of security, app compatibility, and feature updates.
+
+#### Scientific Scoring Model (Dynamic Decay)
+The longevity score is calculated based on **Remaining Support Years** at the time of evaluation. 
+
+**1. Calculate Remaining Years:**
+`Remaining_Years = End_of_Support_Date - Current_Date`
+*   **End_of_Support_Date:** The date when official manufacturer support ends (calculated precisely step by step below).
+*   **Current_Date:** The present date (dynamic).
+
+**2. Calculate Dynamic Score:**
+`Score = 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Support_Years_Max
 *   **Min Score (0.0):** ≤ Support_Years_Min
 > [!NOTE]
 > **Why Logarithmic?** The value of support diminishes over time as hardware ages. The difference between 1 and 3 years is critical for security. The difference between 5 and 7 years is less impactful as many users upgrade before then.
+> **Why Dynamic?** Software support isn't static. A flagship with "7 years of updates" is a 10/10 on day one, but if you buy it 6 years later, it only has 1 year of support left. This model ensures the score accurately reflects the value to a buyer *today*.
+
+#### 🔹 Search & Categorization Recipe (A to Z)
+Follow these steps strictly to determine the **End of Support Date** value:
+
+**Step A: Launch Date Identification**
+*   Find the **Global Commercial Launch Date** (e.g., January 2024).
+
+**Step B: Search for Raw Manufacturer Terms**
+Search for the official commitment for the specific model. Record the verbatim phrases needed to determine:
+1.  **OS End Date** (e.g., "4 generations of Operating System (OS) updates").
+2.  **Security End Date** (e.g., "Security updates until Jan 2029").
+
+**Step C: Translate Raw Terms to Potential End Dates**
+Translate the raw terms from Step B into specific calendar dates:
+*   **"X Generations of OS updates"** => **OS End Date** = `Launch Date + X Years` (Note: **1 Gen = 1 Year**, see Justification #1 below).
+    *   *Example:* Launch Jan 2024 + "4 generations" = Jan 2028 (**OS End Date**).
+*   **"Security updates until [Date]"** => **Security End Date** = `[Date]`.
+    *   *Example:* "Until Jan 2029" = Jan 2029 (**Security End Date**).
+*   **"X Years of Security Updates"** => **Security End Date** = `Launch Date + X Years`.
+
+**Step D: Apply the "Enterprise Extension" (If applicable)**
+If the device is an **Enterprise Edition** or **Business Edition**:
+1.  Take the **Security End Date** calculated in Step C.
+2.  Add the official **Enterprise Extension (Years)** (usually +1 or +2 years) to that date.
+    *   `Final Security End Date = Security End Date + Extension (Years)`.
+
+**Step E: Determine the Final "End of Support Date" Anchor**
+Find the **End of Support Date** used in the dynamic formula:
+1.  **End of Support Date** = `Max(OS End Date, Final Security End Date)`.
+    *   *Note:* Use the standard **Security End Date** if no Enterprise Extension applies.
+
+#### 💡 Justification of Rules & Assumptions
+The conversion from marketing terms to numerical years is based on a decade of documented industry data:
+
+1.  **The "1 Generation = 1 Year" Rule:**
+    - **Observed Data:** Since 2014, both Google (Android) and Apple (iOS) have released exactly **one major version per year** without exception.
+    - **Android Cadence:** 11 (2020), 12 (2021), 13 (2022), 14 (2023), 15 (2024).
+    - **iOS Cadence:** 14 (2020), 15 (2021), 16 (2022), 17 (2023), 18 (2024).
+    - **Conclusion:** A promise of "4 Generations" is functionally equivalent to a 4-year software shelf-life.
+
+2.  **The "Security-First" Anchor (Why Max(OS End Date, Final Security End Date)?):**
+    - **Scoring Rationale:** Using the "earliest" date (**OS End Date**) would be overly conservative and factually misleading. A device that stops receiving OS updates (e.g., stuck on Android 13) but continues to receive security patches is still a **fully functional and safe device** for 99% of use cases.
+    - **Hard EOL (End of Life) Definition:** A smartphone's true longevity limit is reached only when it becomes a security liability. At that point, it can no longer be safely used for banking, health data, or work. 
+    - **The App Lifecycle:** Major apps stay compatible with older OS versions for several years. For example, Google Play Services often supports Android versions that are 4-5 years old. This means the device remains a "smart" phone as long as it is secure.
+    - **Conclusion:** By using the **latest** (most future) date between the OS and Security lifespans, our score accurately reflects the device's **Safe Utility Lifespan**, which is the most critical metric for long-term ownership.
+
+3.  **Enterprise Extension Baseline:**
+    - **Standard practice:** Manufacturers like Samsung explicitly market Enterprise Edition extensions as a time-based bonus (e.g., "+1 year of security patches") over the standard consumer model.
 
 ### 🔹 5.2 System Cleanliness & Control (SCC)
 *Description:* Evaluates the out-of-box software experience in terms of preinstalled bloatware, user control, and presence of system ads.

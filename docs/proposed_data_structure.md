@@ -1712,27 +1712,59 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "exact_extract": "Proof pending"
       },
       "5_1_support_longevity": {
-        // SCORING GOAL: Scores the manufacturer's update policy commitment length.
-        "years_operating_system": {
-          "value": 7,
+        // SCORING GOAL: Scores the manufacturer's software update commitment. The score is dynamic and decays as the device ages relative to its end_of_support_date.
+        //   • Goal: Measure "Safe Utility Lifespan" (Longevity).
+        //   • Anchor: The latest (most future) date between Operating System (OS) and Security support.
+        "launch_date_ref": {
+          "value_path": "identity.release_date.value",
+          "value": "2024-01-24"
+          // ### Type B: Internal Reference. Use the global launch date (identity.release_date) as the baseline for all calculations below.
+        },
+        "os_end_date": {
+          "value": "2031-01-24",
           "source": "TBD",
           "exact_extract": "Proof pending"
+          // GUIDELINE: Record the verbatim phrase for Operating System (OS) updates (e.g., "4 generations of OS updates"). Translate to a date:
+          //   • os_end_date.value = launch_date_ref.value + X Years (Rule: 1 Generation = 1 Year).
+          //   • Result must be an ISO 8601 date (YYYY-MM-DD).
         },
-        "years_security": {
-          "value": 7,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 5.1 logarithmic formula: Score = 10 × (log(years) − log(Support_Years_Min)) / (log(Support_Years_Max) − log(Support_Years_Min)), clamped 0–10. Use the maximum committed years (OS or security) as the "years" variable.
+        "security_end_date": {
+          "base_security_end_date": {
+            "value": "2030-01-24",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+            // GUIDELINE: Record the verbatim phrase for standard Security updates (e.g., "Security updates until Jan 2029" or "5 years of security updates"). Translate to a date:
+            //   • If "Until [Date]": base_security_end_date.value = [Date].
+            //   • If "X Years": base_security_end_date.value = launch_date_ref.value + X Years.
+          },
+          "enterprise_extension_years": {
+            "value": 1,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+            // GUIDELINE: Record the additional years of security support for Enterprise/Business editions (e.g., "+1" or "+2 years"). If not applicable, set value to 0.
+          },
+          "value": "2031-01-24"
+          // GUIDELINE: security_end_date.value = (security_end_date.base_security_end_date.value extended by security_end_date.enterprise_extension_years.value).
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits years_security.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "end_of_support_date": {
+          "value": "2031-01-24",
+          "subscore": "[DYNAMIC_CALCULATION: Formula_Section_5_1]"
+          // GUIDELINE: end_of_support_date.value = Max(os_end_date.value, security_end_date.value).
+          // SCORING RECIPE: 
+          //   1. Determine Remaining_Years: (end_of_support_date.value - Current_Date).
+          //   2. Calculate subscore: 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min)).
+          //   3. Clamping: Minimum 0, Maximum 10.
+        },
+        "scores": {
+          "predicted": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
+          // SCORING GUIDELINE: predicted_score directly inherits end_of_support_date.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "5_2_system_cleanliness_control": {
