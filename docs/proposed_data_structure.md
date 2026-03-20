@@ -7,7 +7,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 > If a required parameter's value cannot be found after an exhaustive search, OR if a feature is found but is not scorable using the provided options (e.g., a newly released codec not yet listed):
 > - **Value Entry**: Set the `value` field strictly to `"Not found"` (if missing data) or the raw unlisted feature name (if unlisted feature). Do NOT use `null`, `0`, or empty strings. For missing data, set `source` and `exact_extract` fields to `"N/A"`.
 > - **Scoring Procedure**: If the missing data or unlisted feature blocks the formula and NO fallback or benchmark override is possible:
->     1. Set `subscore`, `predicted_score`, `final_score.value`, `final_score.method_used`, `final_score.booster`, and `final_score.confidence` to `"N/A"`.
+>     1. Set `subscore`, `scores.predicted`, `scores.final.value`, `scores.final.method_used`, `scores.final.booster`, and `scores.final.confidence` to `"N/A"`.
 >     2. **Top-Level Alert**: You MUST place a GFM alert at the very top of the generated file (above the JSON block) following one of these exact templates:
 >        <br>`> [!CAUTION]`
 >        <br>`> ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP`
@@ -24,23 +24,23 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 
   // ─────────────────────────────────────────────────────────────────────────────
   // FINAL_SCORE_PREDICTOR_TEMPLATE — applies to ALL subsections that use the "Predictor" method.
-  // This template defines the structure and rules for every "final_score" object in Predictor-only subsections.
-  // Each "final_score" block that references this template MUST follow it exactly.
-  // Do NOT add per-field scoring guidelines inside those final_score blocks.
+  // This template defines the structure and rules for every final score object (scores.final) in Predictor-only subsections.
+  // Each scores.final block that references this template MUST follow it exactly.
+  // Do NOT add per-field scoring guidelines inside those blocks.
   //
-  //   "final_score": {
+  //   "final": {
   //     "value": <number>,         → The definitive score for this subsection.
   //                                  Calculation: 
-  //                                  If no booster is applied, value = predicted_score (i.e., multiplier is 1.0).
+  //                                  If no booster is applied, value = predicted score, i.e. scores.predicted (multiplier is 1.0).
   //                                  If there is one booster:
-  //                                  value = predicted_score × booster_multiplier
+  //                                  value = scores.predicted × booster_multiplier
   //                                  If there are several boosters:
-  //                                  value = predicted_score × booster_multiplier_1 × booster_multiplier_2 × ... 
+  //                                  value = scores.predicted × booster_multiplier_1 × booster_multiplier_2 × ... 
   //                                  Each booster multiplier comes from the corresponding Section 11 entry.
   //                                  CLAMPING: The result of this calculation is ALWAYS clamped to [0.00, 10.00].
   //     "method_used": "Predictor" → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
   //     "booster": "No"            → Which Section 11 adjustment(s) are applied to the predicted score:
-  //                                  • "No"                    = No booster applied (value = predicted_score).
+  //                                  • "No"                    = No booster applied (value = scores.predicted).
   //                                  • "Section #"             = Single booster (e.g., "11.1").
   //                                  • "Section # + Section #" = Multiple boosters applied in sequence (e.g., "11.1 + 11.2").
   //     "confidence": "N/A"        → Always "N/A" for Predictor methods.
@@ -180,14 +180,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: Not Disclosed"      → 0.00
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "predicted_score": 9.20,
-      // SCORING GUIDELINE: predicted_score = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 9.20,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 9.20,
+        // SCORING GUIDELINE: scores.predicted = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.20,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "1_2_durability": {
@@ -223,14 +225,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 6: Digit 4"    → 2.00
           //   • "Tier 7: Digit 0–3"  → 0.00
       },
-      "predicted_score": 9.50,
-      // SCORING GUIDELINE: predicted_score = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 9.50,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 9.50,
+        // SCORING GUIDELINE: scores.predicted = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "1_3_glass_protection": {
@@ -270,14 +274,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 9: Plastic or No Glass"    → 0.00
         // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "predicted_score": 10.00,
-      // SCORING GUIDELINE: predicted_score directly inherits glass_generation.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 10.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits glass_generation.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "1_4_thickness": {
@@ -289,14 +295,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 3.50
         // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
       },
-      "predicted_score": 3.50,
-      // SCORING GUIDELINE: predicted_score directly inherits thickness_mm.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 3.50,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 3.50,
+        // SCORING GUIDELINE: scores.predicted directly inherits thickness_mm.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 3.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "1_5_weight": {
@@ -308,14 +316,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 1.64
         // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
       },
-      "predicted_score": 1.64,
-      // SCORING GUIDELINE: predicted_score directly inherits weight_g.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 1.64,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 1.64,
+        // SCORING GUIDELINE: scores.predicted directly inherits weight_g.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 1.64,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "1_6_ergonomics": {
@@ -327,14 +337,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 0.00
         // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
       },
-      "predicted_score": 0.00,
-      // SCORING GUIDELINE: predicted_score directly inherits width_mm.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 0.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 0.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits width_mm.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     }
   },
@@ -376,14 +388,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // AMBIGUITY RULE: Plain "OLED" or "AMOLED" with NO "LTPO" qualifier must default to "Tier 3: Standard OLED/AMOLED (LTPS)" (8.00).
         // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "predicted_score": 9.00,
-      // SCORING GUIDELINE: predicted_score directly inherits panel_type.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 9.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 9.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits panel_type.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_2_brightness": {
@@ -402,14 +416,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 7.21
         // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, then set "value" to "Not found" and use the formula with the fallback value hbm_nits = peak_nits / 1.5.
       },
-      "predicted_score": 7.37,
-      // SCORING GUIDELINE: predicted_score = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.37,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 7.37,
+        // SCORING GUIDELINE: scores.predicted = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.37,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_3_color_gamut_coverage": {
@@ -428,14 +444,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": "N/A"
         // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
       },
-      "predicted_score": 10.00,
-      // SCORING GUIDELINE: predicted_score directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 10.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits dci_p3_percent.subscore or srgb_percent.subscore, whichever is not "N/A".
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_4_hdr_format_support": {
@@ -464,14 +482,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // If the device does not list support for any HDR formats (or explicitly only supports Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
         // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are arrays of objects. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "predicted_score": 7.00,
-      // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 7.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits supported_formats.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_5_resolution_density": {
@@ -497,14 +517,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ONLY if pixels_per_inch is NOT available derive PPI: pixels_per_inch = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
-      "predicted_score": 8.43,
-      // SCORING GUIDELINE: predicted_score directly inherits pixels_per_inch.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.43,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 8.43,
+        // SCORING GUIDELINE: scores.predicted directly inherits pixels_per_inch.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.43,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_6_motion_smoothness": {
@@ -516,14 +538,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 7.55
         // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
       },
-      "predicted_score": 7.55,
-      // SCORING GUIDELINE: predicted_score directly inherits maximum_refresh_rate_hz.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 7.55,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 7.55,
+        // SCORING GUIDELINE: scores.predicted directly inherits maximum_refresh_rate_hz.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.55,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_7_touch_responsiveness": {
@@ -535,14 +559,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 5.00,
         // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
-      "predicted_score": 5.00,
-      // SCORING GUIDELINE: predicted_score directly inherits touch_sampling_rate_hz.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 5.00,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 5.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits touch_sampling_rate_hz.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 5.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_8_screen_to_body_ratio": {
@@ -555,14 +581,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
         // FALLBACK: If "screen_to_body_ratio_percent" is NOT available from primary sources, derive it using: (Active Display Area / Total Frontal Area) * 100. That should be well documented and justified via "source" and "exact_extract", if needed by providing multiple sources and extracts (stored in "source" and "exact_extract" and separated via commas). 
       },
-      "predicted_score": 8.64,
-      // SCORING GUIDELINE: predicted_score directly inherits screen_to_body_ratio_percent.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 8.64,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 8.64,
+        // SCORING GUIDELINE: scores.predicted directly inherits screen_to_body_ratio_percent.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.64,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_9_screen_size": {
@@ -574,14 +602,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 6.93
         // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
       },
-      "predicted_score": 6.93,
-      // SCORING GUIDELINE: predicted_score directly inherits diagonal_inches.subscore.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 6.93,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 6.93,
+        // SCORING GUIDELINE: scores.predicted directly inherits diagonal_inches.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.93,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_10_eye_comfort": {
@@ -602,14 +632,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 4.07
         // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", all fields MUST be "N/A".
       },
-      "predicted_score": 4.07,
-      // SCORING GUIDELINE: The predicted score directly inherits whichever subscore is NOT "N/A" between flicker_presence and pulse_width_modulation_dimming_hertz.
-      "final_score": {
-        // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-        "value": 4.07,
-        "method_used": "Predictor",
-        "booster": "No",
-        "confidence": "N/A"
+      "scores": {
+        "predicted": 4.07,
+        // SCORING GUIDELINE: scores.predicted directly inherits whichever subscore is NOT "N/A" between flicker_presence and pulse_width_modulation_dimming_hertz.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 4.07,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
       }
     },
     "2_11_display_benchmark_final_scoring": {
@@ -618,28 +650,28 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // ═══════════════════════════════════════════════════════════════════════════
       // METHOD A — Direct Benchmark (Primary)
       // ═══════════════════════════════════════════════════════════════════════════
-      "dxomark_display_score": {
+      "dxomark_display_benchmark": {
         "value": 150,
         "source": "https://www.dxomark.com/smartphones/#display", // if the score is available for the device you MUST put the exact url here
         "exact_extract": "Proof pending",
         "subscore": 9.34
-        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_score) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and exact_extract and subscore to "N/A".
+        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and exact_extract and subscore to "N/A".
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
       // METHOD C — Predicted Calculation (Tertiary / baseline for Method B)
       // ═══════════════════════════════════════════════════════════════════════════
       
-      "method_c_predicted_score": {
+      "method_c_prediction_model": {
         // SCORING GUIDELINE (Section 2.11 Method C), these are the 8 perceptual sub-section predicted scores and their weights:
-        "subscore_2_1":  { "subscore_path": "2_1_panel_architecture.predicted_score",   "weight_2_1": 0.15 },
-        "subscore_2_2":  { "subscore_path": "2_2_brightness.predicted_score",            "weight_2_2": 0.20 },
-        "subscore_2_3":  { "subscore_path": "2_3_color_gamut_coverage.predicted_score",  "weight_2_3": 0.10 },
-        "subscore_2_4":  { "subscore_path": "2_4_hdr_format_support.predicted_score",    "weight_2_4": 0.10 },
-        "subscore_2_5":  { "subscore_path": "2_5_resolution_density.predicted_score",    "weight_2_5": 0.10 },
-        "subscore_2_6":  { "subscore_path": "2_6_motion_smoothness.predicted_score",     "weight_2_6": 0.15 },
-        "subscore_2_7":  { "subscore_path": "2_7_touch_responsiveness.predicted_score",  "weight_2_7": 0.10 },
-        "subscore_2_10": { "subscore_path": "2_10_eye_comfort.predicted_score",          "weight_2_10": 0.10 },
+        "subscore_2_1":  { "subscore_path": "2_1_panel_architecture.scores.predicted",   "weight_2_1": 0.15 },
+        "subscore_2_2":  { "subscore_path": "2_2_brightness.scores.predicted",            "weight_2_2": 0.20 },
+        "subscore_2_3":  { "subscore_path": "2_3_color_gamut_coverage.scores.predicted",  "weight_2_3": 0.10 },
+        "subscore_2_4":  { "subscore_path": "2_4_hdr_format_support.scores.predicted",    "weight_2_4": 0.10 },
+        "subscore_2_5":  { "subscore_path": "2_5_resolution_density.scores.predicted",    "weight_2_5": 0.10 },
+        "subscore_2_6":  { "subscore_path": "2_6_motion_smoothness.scores.predicted",     "weight_2_6": 0.15 },
+        "subscore_2_7":  { "subscore_path": "2_7_touch_responsiveness.scores.predicted",  "weight_2_7": 0.10 },
+        "subscore_2_10": { "subscore_path": "2_10_eye_comfort.scores.predicted",          "weight_2_10": 0.10 },
 
         // These inputs are used to calculate the overall predicted_score (Method C):
         "predicted_score": 7.51,
@@ -655,9 +687,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       
       "method_b_neighbor_interpolation": {
         // SCORING GUIDELINE (Section 2.11 Method B): Only populated when Method A is NOT available but at least 3 devices with DXOMARK Display scores exist in the database. If Method A is available for the device then Method B can be skipped completely, all fields must be set to "N/A".
-        // Step 1 (Section 2.11 Method B.1): Find the 3 devices with the smallest weighted Euclidean distance using the method_c_predicted_score weights and sub-section predicted scores.
+        // Step 1 (Section 2.11 Method B.1): Find the 3 devices with the smallest weighted Euclidean distance using the method_c_prediction_model weights and sub-section predicted scores.
         //         Distance = √( Sum( weight_i × (SubScore_Target_i − SubScore_Neighbor_i)² ) )
-        //         Where 'i' iterates over each of the 8 method_c_predicted_score entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
+        //         Where 'i' iterates over each of the 8 method_c_prediction_model entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
         //         Search space: all phones that have a known DXOMARK Display score (Method A).
         // Step 2 (Section 2.11 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
         "neighbors": [
@@ -670,7 +702,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "predicted_score_1": "N/A",
             // GUIDELINE: The neighbor's own Method C predicted_score (overall display).
             "benchmark_score_1": "N/A"
-            // GUIDELINE: The neighbor's Method A dxomark_display_score.subscore.
+            // GUIDELINE: The neighbor's Method A dxomark_display_benchmark.subscore.
           },
           {
             // Neighbor2
@@ -692,23 +724,27 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "avg_benchmark_neighbors": "N/A",
         // SCORING GUIDELINE (Section 2.11 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
         "correction_ratio": "N/A",
-        // SCORING GUIDELINE (Section 2.11 Method B Step 2): method_c_predicted_score.predicted_score / avg_predicted_neighbors.
+        // SCORING GUIDELINE (Section 2.11 Method B Step 2): method_c_prediction_model.predicted_score / avg_predicted_neighbors.
         "interpolated_score": "N/A"
         // SCORING GUIDELINE (Section 2.11 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score, used only if Method A is unavailable.
       },
 
-      "final_score": {
-        "value": 9.34,
-        // SCORING GUIDELINE (Section 2.11): Use Method A if dxomark_display_score is available (dxomark_display_score.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_predicted_score.predicted_score). 
-        "method_used": "Benchmark (DXOMARK)",
-        // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-        //   • Benchmark (DXOMARK)    → Method A (documented DXOMARK score)
-        //   • Neighbor Interpolation → Method B (similar device benchmarks)
-        //   • Predictor              → Method C (weighted spec calculation)
-        "booster": "No",
-        // SCORING GUIDELINE: Must always be set to "No".
-        "confidence": "N/A"
-        // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor. "High", "Medium", or "Low" only when 2 independent benchmarks are cross-referenced.
+      "scores": {
+        "predicted": 7.51,
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model.predicted_score.
+        "final": {
+          "value": 9.34,
+          // SCORING GUIDELINE (Section 2.11): Use Method A if dxomark_display_benchmark is available (dxomark_display_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_prediction_model.predicted_score). 
+          "method_used": "Benchmark (DXOMARK)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • Benchmark (DXOMARK)    → Method A (documented DXOMARK score)
+          //   • Neighbor Interpolation → Method B (similar device benchmarks)
+          //   • Predictor              → Method C (weighted spec calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
       }
     },
     "3_audio": {
@@ -735,14 +771,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: No Usable Speaker"             → 0.00
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 7.00,
-        // SCORING GUIDELINE: predicted_score directly inherits speaker_configuration.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 7.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits speaker_configuration.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 7.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "3_2_playback_audio_processing_immersion": {
@@ -788,14 +826,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: No spatial rendering"                          → 0.00
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported spatial rendering technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 7.50,
-        // SCORING GUIDELINE: predicted_score = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.50,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 7.50,
+          // SCORING GUIDELINE: scores.predicted = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 7.50,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "3_3_wired_audio_capability": {
@@ -811,14 +851,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: USB-C digital audio only (dongle required)"   → 3.00
           //   • "Tier 4: No wired audio support"                       → 0.00
         },
-        "predicted_score": 3.00,
-        // SCORING GUIDELINE: predicted_score (Wired Audio Score) directly inherits wired_audio_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 3.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 3.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits wired_audio_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 3.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "3_4_microphone_audio_recording": {
@@ -880,14 +922,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // Always populate the full list of detected features in "value". Do not selectively omit. Source: §3.4.3 Advanced Capture Features.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
         },
-        "predicted_score": 6.80,
-        // SCORING GUIDELINE: predicted_score = (0.30 × microphone_hardware_count.subscore) + (0.30 × recording_channels_modes.subscore) + (0.40 × advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.80,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 6.80,
+          // SCORING GUIDELINE: scores.predicted = (0.30 × microphone_hardware_count.subscore) + (0.30 × recording_channels_modes.subscore) + (0.40 × advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 6.80,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -1016,14 +1060,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 8.11
           // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
         },
-        "predicted_score": 8.11,
-        // SCORING GUIDELINE: predicted_score directly inherits optical_format.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.11,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.11,
+          // SCORING GUIDELINE: scores.predicted directly inherits optical_format.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.11,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_2_main_camera_aperture": {
@@ -1035,14 +1081,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 6.40
           // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
         },
-        "predicted_score": 6.40,
-        // SCORING GUIDELINE: predicted_score directly inherits aperture_f_stop.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.40,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 6.40,
+          // SCORING GUIDELINE: scores.predicted directly inherits aperture_f_stop.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 6.40,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_3_main_camera_resolution": {
@@ -1054,14 +1102,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 10.00
           // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits megapixels.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits megapixels.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_4_image_stabilization": {
@@ -1092,14 +1142,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to "Tier 3: Lens-Based Optical Image Stabilization" (8.00).
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits stabilization_type.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits stabilization_type.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_5_ultrawide_capability": {
@@ -1125,14 +1177,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 10.00
           // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
-        "predicted_score": 8.67,
-        // SCORING GUIDELINE: predicted_score = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true; otherwise predicted_score = 0.00. Source: UCC Formula of Section 4.5.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.67,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.67,
+          // SCORING GUIDELINE: scores.predicted = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true; otherwise scores.predicted = 0.00. Source: UCC Formula of Section 4.5.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.67,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_6_zoom_capability": {
@@ -1144,14 +1198,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 6.99
           // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
         },
-        "predicted_score": 6.99,
-        // SCORING GUIDELINE: predicted_score directly inherits optical_zoom_x.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.99,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 6.99,
+          // SCORING GUIDELINE: scores.predicted directly inherits optical_zoom_x.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 6.99,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_7_macro_capability": {
@@ -1166,7 +1222,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore:
             //   • "Tier 1: Autofocus"   → 10.00
             //   • "Tier 2: Fixed Focus" → 3.00
-            //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be set to "N/A", and "subscore" MUST be 0.00.
+            //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be "N/A", and "subscore" MUST be 0.00.
           },
           "min_focus_distance_cm": {
             "value": 2.5,
@@ -1175,14 +1231,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "subscore": 7.31
             // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
           },
-          "predicted_score": 8.39,
-          // SCORING GUIDELINE: predicted_score (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
-          "final_score": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.39,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
+          "scores": {
+            "predicted": 8.39,
+            // SCORING GUIDELINE: scores.predicted (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
+            "final": {
+              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+              "value": 8.39,
+              "method_used": "Predictor",
+              "booster": "No",
+              "confidence": "N/A"
+            }
           }
         },
         "4_7_2_telemacro_path": {
@@ -1216,14 +1274,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // CALCULATION: MFD_Score = 10 × (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
             // If telemacro_presence = false, then all fields of this block must be "N/A".
           },
-          "predicted_score": 0.00,
-          // SCORING GUIDELINE: predicted_score (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
-          "final_score": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
+          "scores": {
+            "predicted": 0.00,
+            // SCORING GUIDELINE: scores.predicted (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
+            "final": {
+              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+              "value": 0.00,
+              "method_used": "Predictor",
+              "booster": "No",
+              "confidence": "N/A"
+            }
           }
         },
         "4_7_3_dedicated_path": {
@@ -1235,24 +1295,28 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "subscore": 0.00
             // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
-          "predicted_score": 0.00,
-          // SCORING GUIDELINE: predicted_score (Score_4.7.3) directly inherits dedicated_macro_megapixels.subscore.
-          "final_score": {
+          "scores": {
+            "predicted": 0.00,
+            // SCORING GUIDELINE: scores.predicted directly inherits dedicated_macro_megapixels.subscore.
+            "final": {
+              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+              "value": 0.00,
+              "method_used": "Predictor",
+              "booster": "No",
+              "confidence": "N/A"
+            }
+          }
+        },
+        "scores": {
+          "predicted": 8.39,
+          // SCORING GUIDELINE: scores.predicted (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
+          "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.00,
+            "value": 8.39,
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"
           }
-        },
-        "predicted_score": 8.39,
-        // SCORING GUIDELINE: predicted_score (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.39,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
         }
       },
       "4_8_rear_video_resolution": {
@@ -1270,14 +1334,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: 720p (HD)"             → 3.00
           //   • "Tier 6: ≤ 480p"                → 0.00
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits maximum_resolution.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits maximum_resolution.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_9_rear_video_frame_rate": {
@@ -1289,14 +1355,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 10.00
           // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits maximum_frames_per_second.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits maximum_frames_per_second.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_10_video_hdr": {
@@ -1324,14 +1392,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply. 
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits supported_formats.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits supported_formats.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_11_video_encoding": {
@@ -1383,14 +1453,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 1: 12-bit color" → 10.00
           //   • "Tier 2: 10-bit color" → 5.00
           //   • "Tier 3: 8-bit color"  → 0.00
-        "predicted_score": 7.95,
-        // SCORING GUIDELINE: predicted_score = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.95,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        },
+        "scores": {
+          "predicted": 7.95,
+          // SCORING GUIDELINE: scores.predicted = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 7.95,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_12_slow_motion": {
@@ -1410,14 +1483,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "exact_extract": "Proof pending"
           // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution × FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
         },
-        "predicted_score": 8.55,
-        // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels × frames_per_second. Apply the Section 4.12 logarithmic formula: predicted_score = 10 × (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set predicted_score to 0.00.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.55,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.55,
+          // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels × frames_per_second. Apply the Section 4.12 logarithmic formula: scores.predicted = 10 × (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set scores.predicted to 0.00.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.55,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_13_front_camera_resolution": {
@@ -1427,14 +1502,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending"
         },
-        "predicted_score": 4.72,
-        // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 4.72,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 4.72,
+          // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 4.72,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_14_front_camera_focus": {
@@ -1474,14 +1551,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // AMBIGUITY RESOLUTION: Focus Zone width is determined by Depth of Field (DOF). If sensor size data is missing, classify based solely on the aperture (f-number) if it is known.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits focus_system_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits focus_system_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_15_front_camera_video": {
@@ -1580,15 +1659,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           }
         },
-        "predicted_score": 9.80,
-        // SCORING GUIDELINE: calculated_professional_score = (0.50 * 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.50 * 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
-        // final_composite_predicted_score = (0.35 × 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 × 4_15_3_video_hdr.supported_formats.subscore) + (0.20 × calculated_professional_score).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 9.80,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 9.80,
+          // SCORING GUIDELINE: scores.predicted = (0.35 × 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 × 4_15_3_video_hdr.supported_formats.subscore) + (0.10 × 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.10 × 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 9.80,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_16_multiframe_photo": {
@@ -1618,14 +1698,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: No multi-frame stacking; reliance on single-frame exposure.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported multi-frame features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits processing_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits processing_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_17_pipeline_semantic_ai": {
@@ -1652,14 +1734,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: None"                         → 0.0
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI pipeline features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits capability_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits capability_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "4_18_post_capture_ai_tools": {
@@ -1687,14 +1771,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits feature_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits feature_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -1757,7 +1843,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
-          // SCORING GUIDELINE: predicted_score directly inherits end_of_support_date.subscore.
+          // SCORING GUIDELINE: scores.predicted directly inherits end_of_support_date.subscore.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
@@ -1794,14 +1880,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Extreme bloatware and non-optional system ads (e.g., HiOS, XOS).
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): Identify the specific platform or skin. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 6.00,
-        // SCORING GUIDELINE: predicted_score directly inherits platform_score.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 6.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits platform_score.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 6.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "5_3_ai_feature_suite": {
@@ -1846,14 +1934,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
           // Definition: The device can run its core AI features (at least summarisation and writing tools) locally on the Neural Processing Unit (NPU) without requiring a cloud/internet connection. Provides privacy, lower latency, and offline reliability.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -1905,8 +1995,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           ]
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "scores": {
+          "predicted": 0.00,
+          "final": {
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        }
       },
       "6_2_cpu_architecture_single_core": {
         "geekbench_6_single_score": {
@@ -1940,8 +2037,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           }
         },
-        "predicted_score": 0.00,
-        "final_score": 0.00
+        "scores": {
+          "predicted": 0.00,
+          "final": {
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        }
       },
       "6_3_0_graphics_processing_unit_architecture_reference": {
         "graphics_processing_unit_model": {
@@ -1981,14 +2085,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 10.00
           // SCORING GUIDELINE: Apply the Section 6.3 Part 1 formula: SGS_Bench = 10 × (log(Score) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min))
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score = (SGS × 0.9) + (RTS × 0.1). SGS is derived either from Benchmark (Method A) or 6.3.0 table (Method C). RTS is unconditionally derived from 6.3.0 table.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted = (SGS × 0.9) + (RTS × 0.1). SGS is derived either from Benchmark (Method A) or 6.3.0 table (Method C). RTS is unconditionally derived from 6.3.0 table.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_4_ai_hardware_performance": {
@@ -2000,14 +2106,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 10.00
           // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits geekbench_ai_quantized_score.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits geekbench_ai_quantized_score.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_5_ram_technology": {
@@ -2025,14 +2133,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Legacy"       → 0.00
           //     Definition: LPDDR3 or older technology.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits technology_generation.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits technology_generation.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_6_ram_capacity": {
@@ -2043,14 +2153,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 8.00
           // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)).
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_7_storage_technology": {
@@ -2068,14 +2180,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: UFS 2.2 / eMMC" → 0.00
           //     Definition: Legacy or budget storage (e.g., UFS 2.2, eMMC 5.1).
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits storage_format.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits storage_format.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_8_storage_capacity": {
@@ -2086,14 +2200,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 8.00
           // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min)).
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits capacity_gb.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_9_storage_expandability": {
@@ -2113,14 +2229,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: None"           → 0.00
           //     Definition: No physical slot for internal storage expansion.
         },
-        "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score directly inherits expandability_support.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 0.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits expandability_support.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "6_10_thermal_dissipation_stability": {
@@ -2161,14 +2279,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 2: Samsung" → 5.00
           //   • "Tier 3: Others"  → 0.00
         },
-        "predicted_score": 9.50,
-        // SCORING GUIDELINE: predicted_score calculated using Physical Score and Peak Thermal Demand Compensation from Section 6.10.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 9.50,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 9.50,
+          // SCORING GUIDELINE: scores.predicted calculated using Physical Score and Peak Thermal Demand Compensation from Section 6.10.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 9.50,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -2194,14 +2314,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 6: 3G / Legacy"                              → 0.00
           //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits network_technology.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits network_technology.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_2_sim_capabilities": {
@@ -2224,14 +2346,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
           // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits sim_configuration.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits sim_configuration.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_3_wifi_standard": {
@@ -2253,14 +2377,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: Legacy"    → 0.00
           //     Definition: 802.11n (Wi-Fi 4) or older technology.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits standard.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits standard.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_4_bluetooth_and_audio_codecs": {
@@ -2307,14 +2433,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 8.50,
-        // SCORING GUIDELINE: predicted_score = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.50,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.50,
+          // SCORING GUIDELINE: scores.predicted = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.50,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_5_biometrics": {
@@ -2344,14 +2472,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific biometric technologies found in specs (e.g., FaceID, specific sensor models). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits best_technology.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits best_technology.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_6_sensors": {
@@ -2416,14 +2546,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: If true, 1.50; false, 0.00.
           }
         },
-        "predicted_score": 6.50,
-        // SCORING GUIDELINE: predicted_score is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.50,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 6.50,
+          // SCORING GUIDELINE: scores.predicted is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 6.50,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_7_nfc_and_uwb": {
@@ -2441,14 +2573,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: None"       → 0.00
           //     Definition: No short-range wireless connectivity.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits configuration.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits configuration.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_8_connectivity_and_cdc_index": {
@@ -2493,14 +2627,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: If true, 2.00; false, 0.00.
           // Definition: Using the smartphone's camera as a high-quality webcam for a connected tablet or laptop.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score is sum of all subscores above (Max 10.0).
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted is sum of all subscores above (Max 10.0).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "7_9_usb_port_speed": {
@@ -2522,27 +2658,31 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: Proprietary / Legacy"     → 0.00
           //     Definition: Non-standard or obsolete physical/logical interface.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits version_speed.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 9.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits version_speed.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 9.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
     "8_battery_and_charging": {
       "8_1_battery_endurance_score": {
         // SCORING GOAL: Evaluates real-world battery life.
-        "predicted_score": 7.90,
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.33,
-          "method_used": "Benchmark (GSMArena + PhoneArena)",
-          "booster": "No",
-          "confidence": "High"
+        "scores": {
+          "predicted": 7.90,
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 7.33,
+            "method_used": "Benchmark (GSMArena + PhoneArena)",
+            "booster": "No",
+            "confidence": "High"
+          }
         }
       },
       "8_2_wired_charging_speed": {
@@ -2554,14 +2694,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 8.00
           // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min)).
         },
-        "predicted_score": 8.00,
-        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 8.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 8.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "8_3_wireless_charging_speed": {
@@ -2573,14 +2715,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 5.00
           // SCORING GUIDELINE: Apply Section 8.3 logarithmic formula. Score = 10 * (log(W) - log(Wireless_W_Min)) / (log(Wireless_W_Max) - log(Wireless_W_Min)). Set to 0 if unsupported.
         },
-        "predicted_score": 5.00,
-        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 5.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 5.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 5.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "8_4_reverse_wired": {
@@ -2592,14 +2736,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 0.00
           // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
         },
-        "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 0.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "8_5_reverse_wireless": {
@@ -2611,14 +2757,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 5.00
           // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
         },
-        "predicted_score": 5.00,
-        // SCORING GUIDELINE: predicted_score directly inherits watts.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 5.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 5.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 5.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "8_6_charger_in_box": {
@@ -2640,14 +2788,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 5: None"      → 0.00
           //     Definition: No charger included in the retail box.
         },
-        "predicted_score": 0.00,
-        // SCORING GUIDELINE: predicted_score directly inherits included_watts.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 0.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits included_watts.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -2661,14 +2811,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 0.80
           // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 × (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
         },
-        "predicted_score": 0.80,
-        // SCORING GUIDELINE: predicted_score directly inherits usd.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.80,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 0.80,
+          // SCORING GUIDELINE: scores.predicted directly inherits usd.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.80,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "9_2_manufacturer_warranty_commitment": {
@@ -2684,14 +2836,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 3: 12 Months"    → 3.00
           //   • "Tier 4: < 12 Months"  → 0.00
         },
-        "predicted_score": 3.00,
-        // SCORING GUIDELINE: predicted_score directly inherits months.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 3.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 3.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits months.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 3.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       },
       "9_3_repairability": {
@@ -2703,14 +2857,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 7.50
           // SCORING GUIDELINE: Direct inheritance. Max 10.00.
         },
-        "predicted_score": 7.50,
-        // SCORING GUIDELINE: predicted_score directly inherits european_union_repairability_index.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.50,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 7.50,
+          // SCORING GUIDELINE: scores.predicted directly inherits european_union_repairability_index.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 7.50,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },
@@ -2732,14 +2888,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 4: None"                                                               → 0.00
           //     Definition: No official stylus support or secondary digitizer layer.
         },
-        "predicted_score": 10.00,
-        // SCORING GUIDELINE: predicted_score directly inherits support_tier.subscore.
-        "final_score": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
+        "scores": {
+          "predicted": 10.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits support_tier.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 10.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
         }
       }
     },

@@ -557,9 +557,9 @@ To ensure the JSON data structure is entirely self-contained, every scoring subs
 Every subsection must contain the following "recipe":
 1.  **Subsection Goal:** An explanation at the very top of the subsection block detailing what the scoring goal is.
 2.  **Subscore Extraction:** For every `subscore` field included in the structure (noting it is optional for raw data), provide an explicit explanation of how it is derived, including the formula and its specific references from `scoring_rules.md` (or the exact conditions under which it evaluates to `"N/A"`).
-3.  **Predicted Score Logic:** For each `predicted_score` field, provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it.
-4.  **Final Score Compliance:** The `final_score` object MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template governs their logic (Booster application, clamping, etc.).
-    *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final_score` object to document which method was selected and why.
+3.  **Predicted Score Logic:** For each `predicted` score field (scores.predicted), provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it.
+4.  **Final Score Compliance:** The `final` score object (scores.final) MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template governs their logic (Booster application, clamping, etc.).
+    *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final` score object (scores.final) to document which method was selected and why.
 5.  **LLM Semantic Matching & Robust Aliasing:** When parsing spec sheets, the AI agent will use natural language semantic matching to identify the appropriate tier.
     *   **Keyword Definition Standard:** Strings inside `recognized_keywords` arrays should be properly capitalized and human-readable (e.g., use `"Gorilla Glass Victus 2"`, `"Ceramic Shield"`). Do not overly strip symbols or lowercase everything.
     *   **No Generic Overlaps:** Broad keywords that could trigger false positive matches across multiple tiers (e.g., `"Gorilla Glass"` alone) are strictly forbidden.
@@ -576,7 +576,7 @@ Every subsection must contain the following "recipe":
     Leaving `last_updated` stale is a data integrity violation — it breaks the file's change-tracking guarantee.
 9.  **Numerical Precision:** Apply consistent decimal precision depending on the role of the number:
     - **Intermediate calculation values** (e.g. correction ratios, normalisation factors, raw benchmark inputs): **4 decimal places** (e.g. `9.5478`, `1.0312`). This preserves enough precision so downstream calculations do not accumulate rounding errors.
-    - **Scores** (`subscore`, `predicted_score`, `final_score.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
+    - **Scores** (`subscore`, `scores.predicted`, `scores.final.value`): **2 decimal places** (e.g. `6.73`, `8.50`). Scores are human-facing outputs — excess precision is noise.
     - **Integers** (e.g. raw Megapixel (MP) counts, Hertz (Hz) values, pixel counts): store as plain integers with no decimal point (e.g. `200`, `120`).
 10. **Handling Missing Data, Unlisted Features & Scoring Blockers**: 
     If a required parameter's value cannot be found after an exhaustive cross-reference search (strictly satisfying the **Omni-Scan Rule** in Section 3.1), OR if a feature is found but is not scorable using the provided options (e.g., a newly released codec not yet listed):
@@ -586,7 +586,7 @@ Every subsection must contain the following "recipe":
         - **Benchmark Override**: If a direct benchmark (Method A) is available, the subsection is scored normally using that method, regardless of the missing raw spec.
     - **Neighbor Interpolation (Method B) Blocked**: Unlike direct benchmarks, Method B **cannot** be used as a fallback for missing specs. Because Method B requires the Predictor (Method C) to identify similar neighbors, if a raw spec is missing and has no fallback, the Predictor cannot be calculated, which in turn blocks the possibility of using Neighbor Interpolation.
     - **Scoring Blocker & Unlisted Feature Procedure**: If the missing data is mandatory for the formula and NO fallback or benchmark override is possible, OR if an unlisted feature is encountered that likely should be scored:
-        1. Set `subscore`, `predicted_score`, `final_score.value`, `final_score.method_used`, `final_score.booster`, and `final_score.confidence` to `"N/A"`.
+        1. Set `subscore`, `scores.predicted`, `scores.final.value`, `scores.final.method_used`, `scores.final.booster`, and `scores.final.confidence` to `"N/A"`.
         2. **Top-Level Alert**: You MUST place a GitHub Flavored Markdown (GFM) alert at the very top of `proposed_data_structure.md` (above the JSON block) following one of these exact templates to flag the record for review:
            > [!CAUTION]
            > ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP
