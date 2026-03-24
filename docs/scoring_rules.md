@@ -1448,26 +1448,99 @@ Heavy preloads: Palm Store, AHA Games, Hola/Phoenix Browser, Visha Player, YoPar
 
 **Guiding Question:** *"What useful AI features does the user have access to, and how independently can the phone run them?"*
 
-**Structure:** 5 binary features with weighted scoring.
+**Structure:** 6 binary features with weighted scoring.
 
 > [!NOTE]
 > **Post-capture AI editing** (object removal, fill, etc.) is scored in **Section 4.18** and is excluded here to avoid double-scoring.
 
 #### AI Capability Features
 
-| Feature                     | Weight   |Justification                                                                                 |
-| :---------------------------| :------- | :------------------------------------------------------------------------------------------- |
-| **Visual Screen Search**    | **25%**  | Highest usage frequency (Circle to Search). Immediate utility with minimal friction.         |
-| **Live Speech Translation** | **20%**  | High user value for travel/business. Real-time voice translation in calls/conversations.     |
-| **Content Summarization**   | **15%**  | Time-saving productivity. Summarizes documents, web pages, or recordings.                    |
-| **Writing Tools**           | **10%**  | System-wide text rewrite/proofread. Lower daily frequency but still valuable.                |
-| **On-Device Processing**    | **30%**  | Privacy (58% user concern), offline reliability, lower latency. Enables AI without internet. |
+| Feature                          | Weight   | Justification                                                                                |
+| :------------------------------- | :------- | :------------------------------------------------------------------------------------------- |
+| **Visual Screen Search**         | **20%**  | **#1 Usage:** Identified as the most frequently used AI tool (e.g., Circle to Search).       |
+| **Meeting/Call Transcription**   | **20%**  | **Killer App:** Primary driver for professional/student users; high impact for productivity. |
+| **Content Summarization**        | **20%**  | **Daily Utility:** Core pillar for triaging information (Mail, Web, Notes). High retention.  |
+| **On-Device Reliability**        | **20%**  | **Foundation:** Essential for privacy/offline speed; 75% of users prioritize local AI.       |
+| **Live Translation**             | **15%**  | **Value/Frequency:** High perceived value but lower recurring daily usage than search.       |
+| **Writing Tools**                | **5%**   | **Utility:** System-wide assistance; lowest recurring necessity among the six features.      |
+
+**Weighting Rationale:**
+The weights are calibrated based on 2024 usage studies (e.g., Samsung Galaxy AI survey) and reviewer benchmarks (e.g., Pixel 9 Call Notes). Visual Search and Transcription are prioritized as the most "tangible" and frequently used AI tools, while On-Device reliability serves as the necessary privacy foundation for all data-sensitive operations.
 
 **Formula:**
 ```
-AUCI = (2.5 × VisualSearch) + (2.0 × Translation) + (1.5 × Summarization) + (1.0 × Writing) + (3.0 × OnDevice)
+Score_5.3 = (2.0 × VisualSearch) + (2.0 × Transcription) + (2.0 × Summarization) + (2.0 × OnDevice) + (1.5 × Translation) + (0.5 × Writing)
 ```
 Where each feature = 1 if present, 0 if absent. Max score = 10.0.
+
+#### Master AI Marketing Name Reference
+
+Use this reference to map brand-specific terms to the 6 core AI features. 
+
+**1. Visual Screen Search (20%)**
+*Definition: Identifying on-screen items without leaving the current app.*
+- Circle to Search (Google, Samsung, Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, Motorola, Asus, Nothing)
+- Visual Intelligence / Visual Look Up (Apple)
+- Magic Portal (Honor)
+- AI Screen Recognition (ZTE, Nubia, Redmagic, Tecno, Infinix)
+- AI Search (Nothing, Itel)
+
+**2. Live Speech Translation (15%)**
+*Definition: Real-time voice translation during calls or in-person audio.*
+- Live Translate (Samsung, Google)
+- Interpreter / Interpreter Mode (Samsung, Google, Xiaomi, Oppo, OnePlus, Vivo, Realme, iQOO)
+- Translate App: Auto-Translate / Conversation Mode (Apple)
+- AI Call Translator / Assistant (Asus, ROG, Vivo)
+- AI Call Translation (Honor, ZTE, Tecno, Infinix)
+- AI Real-time Subtitles / Live Subtitles (Xiaomi, Oppo, Vivo)
+- AI Real-time Translation (Nubia, Redmagic)
+- Moto AI Translate (Motorola)
+- Ella Translate (Tecno, Infinix)
+
+**3. Content Summarization (20%)**
+*Definition: Distilling key points from articles, notes, or long-form documents.*
+- Note Assist / Browsing Assist (Samsung)
+- Recorder Summarize (Google)
+- Writing Tools: Summarize / Notification Summaries (Apple)
+- AI Summary / AI Web Page Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix, Asus, ROG)
+- Catch Me Up (Motorola)
+
+**4. AI Writing Tools (5%)**
+*Definition: System-wide text rewriting, tone adjustment, or proofreading.*
+- Chat Assist / Keyboard AI (Samsung)
+- Magic Compose / Help me write (Google, Gboard)
+- Writing Tools: Rewrite / Proofread (Apple)
+- AI Writing Assistant / AI Writer (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Tecno, Infinix, Asus, ROG)
+- AI Creative Writing (Nubia, Redmagic)
+- Magic Text (Honor)
+- Style Sync (Motorola)
+
+**5. Meeting / Call Transcription (20%)**
+*Definition: Converting recorded or live speech into text logs with speaker ID.*
+- Transcript Assist (Samsung)
+- Recorder: AI Transcription (Google)
+- Call Notes / Instant Transcript (Google)
+- Call Transcription / Audio Transcription (Apple)
+- AI Recorder / AI Recording Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix)
+- AI Voice Scribe (Oppo, OnePlus)
+- AI Transcript / AI Voice Recording (Asus, ROG, Vivo)
+- Pay Attention (Motorola)
+
+**6. On-Device Reliability (20%)**
+*Definition: Ability to process core AI features offline via local NPU/Models.*
+- "Process data only on device" toggle (Samsung, Google, Xiaomi, Apple)
+- Gemini Nano (Google, Samsung, Motorola, Realme)
+- Private Cloud Compute / Secure Enclave (Apple)
+- MagicLM On-Device (Honor)
+- BlueLM (Vivo, iQOO)
+- HyperMind / HyperAI (Xiaomi)
+- Breeno / AndesBrain (Oppo)
+- Nebula AI Model (ZTE, Nubia, Redmagic)
+- Moto AI On-Device (Motorola)
+- Ella AI (Tecno, Infinix)
+
+**Unlisted Manufacturers (Sony, Nothing, etc.)**
+- Sony Xperia / Nothing Phone: These brands standardly rely on **Google (Circle to Search, Gemini Nano)**. Only score features explicitly confirmed to be active via the Google app suite.
 
 
 ## 🟣 6. Processing Power & Performance

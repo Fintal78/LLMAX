@@ -1935,49 +1935,64 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
       "5_3_ai_feature_suite": {
         // SCORING GOAL: Evaluates the specific AI software features available. Score is calculated using weighted binary features. Max score is 10.00.
+        // EXTRACTION GUIDELINE: Identify the specific Marketing Name found in official specs or reviewer evidence. If the phone has the capability under any name (Circle to Search, Magic Portal, etc.), set "value" to that name. If the feature is missing, set "value" to "None".
         "visual_screen_search": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.50
-          // SCORING GUIDELINE: If value = true, subscore = 2.50. If value = false, subscore = 0.00.
-          // Definition: A system-level visual search tool activated by circling, highlighting, or long-pressing any on-screen content (text, image, product). The phone identifies the item and returns relevant search results, shopping links, or translations without leaving the current app.
-        },
-        "live_speech_translation": {
-          "value": true,
+          "value": "Circle to Search",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 2.00
-          // SCORING GUIDELINE: If value = true, subscore = 2.00. If value = false, subscore = 0.00.
-          // Definition: Real-time voice or text translation during phone calls, video calls, or in-person conversations. Must operate as a native system service (not a standalone third-party app download).
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+          // Definition: A system-level visual search tool. The phone identifies an item and returns search results without leaving the app.
+          // Marketing Names: Circle to Search (Google, Samsung, Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, Motorola, Asus, Nothing), Visual Intelligence / Visual Look Up (Apple), Magic Portal (Honor), AI Screen Recognition (ZTE, Nubia, Redmagic, Tecno, Infinix), AI Search (Nothing, Itel).
         },
-        "content_summarization": {
-          "value": true,
+        "live_speech_translation": {
+          "value": "Live Translate",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 1.50
-          // SCORING GUIDELINE: If value = true, subscore = 1.50. If value = false, subscore = 0.00.
-          // Definition: A system-integrated Artificial Intelligence (AI) feature that condenses long-form content (web pages, articles, recorded voice memos, notification threads) into a short summary. Must be built into the operating system or first-party apps, not a third-party add-on.
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 1.50.
+          // Definition: Real-time voice or text translation during calls or in-person conversations natively embedded in the system.
+          // Marketing Names: Live Translate (Samsung, Google), Interpreter (Samsung, Google, Xiaomi, Oppo, OnePlus, Vivo, Realme, iQOO), Translate App: Auto-Translate (Apple), AI Call Translator / Assistant (Asus, ROG, Vivo), AI Call Translation (Honor, ZTE, Tecno, Infinix), AI Real-time Subtitles / Live Subtitles (Xiaomi, Oppo, Vivo), AI Real-time Translation (Nubia, Redmagic), Moto AI Translate (Motorola), Ella Translate (Tecno, Infinix).
+        },
+        "content_summarization": {
+          "value": "Note Assist",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+          // Definition: Condenses long-form content (web pages, articles, notes) into a short summary.
+          // Marketing Names: Note Assist / Browsing Assist (Samsung), Recorder Summarize (Google), Writing Tools: Summarize / Notification Summaries (Apple), AI Summary / AI Web Page Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix, Asus, ROG), Catch Me Up (Motorola).
         },
         "writing_tools": {
-          "value": true,
+          "value": "Chat Assist",
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 1.00
-          // SCORING GUIDELINE: If value = true, subscore = 1.00. If value = false, subscore = 0.00.
-          // Definition: System-wide AI text rewriting, tone adjustment, grammar correction, or proofreading available in any text input field. Must be an operating-system-level feature accessible across all apps.
+          "subscore": 0.50
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 0.50.
+          // Definition: System-wide AI text rewriting, tone adjustment, or proofreading available in any text field.
+          // Marketing Names: Chat Assist / Keyboard AI (Samsung), Magic Compose / Help me write (Google, Gboard), Writing Tools: Rewrite / Proofread (Apple), AI Writing Assistant / AI Writer (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Tecno, Infinix, Asus, ROG), AI Creative Writing (Nubia, Redmagic), Magic Text (Honor), Style Sync (Motorola).
         },
-        "on_device_processing": {
-          "value": true,
+        "meeting_call_transcription": {
+          "value": "Transcribe Assist",
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 3.00
-          // SCORING GUIDELINE: If value = true, subscore = 3.00. If value = false, subscore = 0.00.
-          // Definition: The device can run its core AI features (at least summarisation and writing tools) locally on the Neural Processing Unit (NPU) without requiring a cloud/internet connection. Provides privacy, lower latency, and offline reliability.
+          "subscore": 2.00
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+          // Definition: Auto-generates text from recordings or live calls into meeting minutes or transcripts.
+          // Marketing Names: Transcript Assist (Samsung), Recorder: AI Transcription (Google), Call Notes (Google), Call Transcription / Audio Transcription (Apple), AI Recorder / AI Recording Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix), AI Voice Scribe (Oppo, OnePlus), AI Transcript / AI Voice Recording (Asus, ROG, Vivo), Pay Attention (Motorola).
+        },
+        "on_device_reliability": {
+          "value": "Gemini Nano",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 2.00
+          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+          // Definition: The device can run its core generative AI features locally (via NPU/TPU) without requiring a persistent cloud/internet connection.
+          // Marketing Names: "Process data only on device" (Samsung, Google, Xiaomi, Apple), Gemini Nano (Google, Samsung, Motorola, Realme), Private Cloud Compute / Secure Enclave (Apple), MagicLM On-Device (Honor), BlueLM (Vivo, iQOO), HyperMind / HyperAI (Xiaomi), Breeno / AndesBrain (Oppo), Nebula AI Model (ZTE, Nubia, Redmagic), Moto AI On-Device (Motorola), Ella AI (Tecno, Infinix).
         },
         "scores": {
           "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + on_device_processing).
+          // SCORING GUIDELINE: scores.predicted is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + meeting_call_transcription + on_device_reliability).
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 10.00,
