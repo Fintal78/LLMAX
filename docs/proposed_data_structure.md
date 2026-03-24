@@ -1791,12 +1791,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending"
       },
-      "skin": {
-        // SCORING GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer. Section 5.2 uses this for scoring. Known platforms include iOS, Pixel UI / Stock Android, Samsung One UI, HyperOS (Xiaomi), etc.
-        "value": "One UI 6.1",
-        "source": "TBD",
-        "exact_extract": "Proof pending"
-      },
       "5_1_support_longevity": {
         // SCORING GOAL: Scores the manufacturer's software update commitment. The score is dynamic and decays as the device ages relative to its end_of_support_date.
         //   • Goal: Measure "Safe Utility Lifespan" (Longevity).
@@ -1854,38 +1848,85 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "5_2_system_cleanliness_control": {
-        // SCORING GOAL: Evaluates the out-of-box software experience (bloatware, user control, ads) derived from the platform/skin.
-        "platform_score": {
-          "value": "Tier 3: Moderate",
-          "value_details": {
-            "Tier 1: Clean / Premium": [],
-            "Tier 2: Controlled": [],
-            "Tier 3: Moderate": [
-              { "name": "One UI", "source": "N/A", "exact_extract": "N/A" }
-            ],
-            "Tier 4: Heavy / Bloated": [],
-            "Tier 5: Restrictive": []
-          },
-          "subscore": 6.00
-          // SCORING GUIDELINE: Identify the software platform tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Tier 1: Clean / Premium" → 10.0
-          //     Definition: Minimalist experience with no third-party bloatware or ads (e.g., iOS, Pixel UI, Nothing OS).
-          //   • "Tier 2: Controlled"       → 8.0
-          //     Definition: Light skin with minimal, removable bloatware (e.g., Motorola, OxygenOS).
-          //   • "Tier 3: Moderate"         → 6.0
-          //     Definition: Notable bloatware and removable third-party apps (e.g., One UI).
-          //   • "Tier 4: Heavy / Bloated"  → 4.0
-          //     Definition: Significant bloatware and system-level advertisements (e.g., HyperOS, ColorOS).
-          //   • "Tier 5: Restrictive"      → 0.0
-          //     Definition: Extreme bloatware and non-optional system ads (e.g., HiOS, XOS).
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Identify the specific platform or skin. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        // SCORING GOAL: Evaluates the out-of-box software experience by analyzing Preinstalled App Load (PAL), User Control (UC), and System Ads (SA).
+        "skin": {
+          "value": "One UI 6.1",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // DATA GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
+          // SCORING GUIDELINE: ALL subscores below (PAL, UC, SA) MUST be extracted directly from this Master Skin Lookup Table based on the `skin` value.
+          //
+          // MASTER SKIN LOOKUP TABLE:
+          // | Platform / Skin                           | PAL Score (40%) | UC Score (30%) | SA Score (30%) | *Composite* |
+          // | :---------------------------------------- | :-------------: | :------------: | :------------: | :---------: |
+          // | **iOS**                                   | **10.0**        | **10.0**       | **10.0**       | *10.00*     |
+          // | **Pixel UI / Stock Android**              | **10.0**        | **10.0**       | **10.0**       | *10.00*     |
+          // | **AOSP / Fairphone OS / Nothing OS**      | **10.0**        | **10.0**       | **10.0**       | *10.00*     |
+          // | **Motorola MyUX / Hello UI**              | **6.0**         | **10.0**       | **10.0**       | *8.40*      |
+          // | **Sony Xperia UI / Sharp AQUOS / Nokia**  | **6.0**         | **10.0**       | **10.0**       | *8.40*      |
+          // | **ASUS ZenUI / ROG UI**                   | **6.0**         | **10.0**       | **10.0**       | *8.40*      |
+          // | **Redmagic OS**                           | **3.0**         | **10.0**       | **10.0**       | *7.20*      |
+          // | **Funtouch OS (Vivo)**                    | **6.0**         | **5.0**        | **10.0**       | *6.90*      |
+          // | **LG UX / HTC Sense (Legacy)**            | **6.0**         | **5.0**        | **5.0**        | *5.40*      |
+          // | **OxygenOS (OnePlus)**                    | **3.0**         | **5.0**        | **5.0**        | *4.20*      |
+          // | **Samsung One UI**                        | **3.0**         | **5.0**        | **5.0**        | *4.20*      |
+          // | **ColorOS / Realme UI / OriginOS / Vivo** | **3.0**         | **5.0**        | **5.0**        | *4.20*      |
+          // | **Honor MagicOS**                         | **3.0**         | **5.0**        | **5.0**        | *4.20*      |
+          // | **ZTE MiFavor UI / MyOS**                 | **3.0**         | **5.0**        | **5.0**        | *4.20*      |
+          // | **HyperOS (Xiaomi) / Huawei EMUI**        | **0.0**         | **5.0**        | **0.0**        | *1.50*      |
+          // | **MIUI (Legacy Xiaomi)**                  | **0.0**         | **0.0**        | **0.0**        | *0.00*      |
+          // | **Tecno HiOS / Infinix XOS / Itel OS**    | **0.0**         | **0.0**        | **0.0**        | *0.00*      |
+        },
+        "5_2_1_preinstalled_app_load": {
+          "value": "Tier 3: Significant Bloat",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 3.00
+          // SCORING GUIDELINE: Identify the app load tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Minimal / Core Only"        → 10.00
+          //     Definition: No third-party applications or redundant first-party duplicates.
+          //   • "Tier 2: Moderate Proprietary"        →  6.00
+          //     Definition: First-party duplicates present (e.g., two browsers), rare third-party.
+          //   • "Tier 3: Significant Bloat"          →  3.00
+          //     Definition: Multiple pre-loaded social media apps, games, and partner software.
+          //   • "Tier 4: Extreme Bloat"              →  0.00
+          //     Definition: Dozens of third-party apps and promotional "Hot Apps" folders out-of-box.
+          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
+        },
+        "5_2_2_user_control": {
+          "value": "Tier 2: Disabling Only",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Identify the user control tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Fully Uninstallable"        → 10.00
+          //     Definition: Almost all non-essential apps can be completely deleted.
+          //   • "Tier 2: Disabling Only"             →  5.00
+          //     Definition: Many apps cannot be deleted but can be natively hidden and "disabled".
+          //   • "Tier 3: Highly Restrictive"         →  0.00
+          //     Definition: Core bloatware runs in the background and cannot be turned off normally.
+          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
+        },
+        "5_2_3_system_ads": {
+          "value": "Tier 2: Opt-Out / Occasional",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 5.00
+          // SCORING GUIDELINE: Identify the system ads tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Ad-Free"                    → 10.00
+          //     Definition: Zero system-level advertisements or promotional pushes.
+          //   • "Tier 2: Opt-Out / Occasional"       →  5.00
+          //     Definition: Native app promotions exist but can be permanently deactivated.
+          //   • "Tier 3: Intrusive / Persistent"     →  0.00
+          //     Definition: Mandatory UI ads and lock screen promotions that cannot be disabled.
+          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
         },
         "scores": {
-          "predicted": 6.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits platform_score.subscore.
+          "predicted": 4.20,
+          // SCORING GUIDELINE: scores.predicted = (0.40 × 5_2_1_preinstalled_app_load.subscore) + (0.30 × 5_2_2_user_control.subscore) + (0.30 × 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Master Skin Lookup Table directly.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 6.00,
+            "value": 4.20,
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"

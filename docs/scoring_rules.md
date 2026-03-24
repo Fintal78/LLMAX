@@ -1312,63 +1312,133 @@ The conversion from marketing terms to numerical years is based on a decade of d
 ### 🔹 5.2 System Cleanliness & Control (SCC)
 *Description:* Evaluates the out-of-box software experience in terms of preinstalled bloatware, user control, and presence of system ads.
 
-#### Design Rationale
+#### Design Rationale & Methodology
+Traditional SCC metrics require subjective hands-on testing that cannot be automated from public data. However, since bloatware and ad policies are defined universally at the **platform/skin level** (e.g., all Samsung One UI phones share the identical core app bundle and ad policy), we evaluate the **three distinct cleanliness dimensions** natively for each known skin. 
 
-> [!IMPORTANT]
-> **Why Platform-Based Scoring?**
-> 
-> Traditional SCC metrics (app counts, removability percentages) require hands-on testing that cannot be automated from public data. However, bloatware policies are defined at the **platform/skin level**, not per-model:
-> - All Samsung One UI phones share the same preinstalled app policies
-> - All iPhones share the same Apple app bundle
-> - Regional/carrier variations exist but are secondary to platform defaults
->
-> This approach enables **neutral, automated scoring** using only the publicly available `skin` field.
+**Final Composite Formula:** 
+`SCC = (0.40 × PAL) + (0.30 × UC) + (0.30 × SA)`
 
-*   **Data Source:** `6_software_and_longevity.skin`
-*   **Unit:** Platform Cleanliness Score (0-10)
+---
 
-#### Scoring Criteria
+#### 5.2.1 Preinstalled App Load (PAL) — 40%
+*Description:* Measures the absolute volume of non-core applications present at first boot.
+*   **Measurement:** Volume of preinstalled first-party duplicates and third-party apps.
+*   **Unit:** Tier Score (0-10)
+*   **Significance:** Determines the initial storage overhead and system resource consumption by non-essential background processes.
 
-Each platform is evaluated on three dimensions (from public documentation and verified reviews):
-1. **Preinstalled App Load:** Volume of non-essential apps at first boot
-2. **User Control:** Ability to remove or disable preinstalled apps
-3. **System Ads:** Presence of advertisements in system UI/notifications
+| Tier       | Score    | Definition                                                                                        |
+| :--------- | :------- | :------------------------------------------------------------------------------------------------ |
+| **Tier 1** | **10.0** | **Minimal / Core Only:** No third-party applications or redundant first-party duplicates.         |
+| **Tier 2** | **6.0**  | **Moderate Proprietary:** First-party duplicates present (e.g., two browsers), rare third-party.  |
+| **Tier 3** | **3.0**  | **Significant Bloat:** Multiple pre-loaded social media apps, games, and partner software.        |
+| **Tier 4** | **0.0**  | **Extreme Bloat:** Dozens of third-party apps and promotional "Hot Apps" folders out-of-box.      |
 
-> **Note on Unlisted Platforms:** If a phone runs a platform/skin not explicitly listed below, it receives **No Score (N/A)**. The database must be manually updated to include the new platform with a justified score before a SCC rating can be provided.
+#### 5.2.2 User Control (UC) — 30%
+*Description:* Measures the user's ability to natively rid the system of unwanted apps without developer tools (ADB).
+*   **Measurement:** System-level uninstallation permissions.
+*   **Unit:** Tier Score (0-10)
+*   **Significance:** Empowers the user to reclaim storage and privacy by removing or silencing unwanted manufacturer software.
 
-#### Platform Cleanliness Table
+| Tier       | Score    | Definition                                                                                        |
+| :--------- | :------- | :------------------------------------------------------------------------------------------------ |
+| **Tier 1** | **10.0** | **Fully Uninstallable:** Almost all non-essential apps can be completely deleted.                 |
+| **Tier 2** | **5.0**  | **Disabling Only:** Many apps cannot be deleted but can be natively hidden and "disabled".        |
+| **Tier 3** | **0.0**  | **Highly Restrictive:** Core bloatware runs in the background and cannot be turned off normally.  |
 
-| Platform / Skin                        | Score    | Justification                                                             |
-| :------------------------------------- | :------- | :------------------------------------------------------------------------ |
-| **iOS**                                | **10.0** | No third-party bloatware, no ads, all non-core apps fully deletable       |
-| **Pixel UI / Stock Android**           | **9.0**  | Minimal Google apps, no third-party bloat, no ads, most apps removable    |
-| **AOSP / Generic Stock Android**       | **9.0**  | Pure Android with no OEM skin; identical policy to Pixel UI               |
-| **Fairphone OS**                       | **9.0**  | Near-stock Android, minimal preinstalls, strong update transparency       |
-| **Nothing OS**                         | **9.0**  | Near-stock Android, minimal preinstalls, no ads                           |
-| **Motorola MyUX / Hello UI**           | **8.0**  | Light customization, some carrier bloat possible, no system ads           |
-| **Sony Xperia UI**                     | **8.0**  | Clean experience, minimal preinstalls, no ads                             |
-| **Nokia (Stock Android)**              | **8.0**  | Near-stock Android One, minimal bloatware                                 |
-| **Sharp AQUOS UI**                     | **8.0**  | Clean, near-stock Android for Japan market; minimal preinstalls, no ads   |
-| **ASUS ZenUI / ROG UI**                | **7.0**  | Moderate ASUS apps, gaming features, no system ads                        |
-| **Samsung One UI**                     | **6.0**  | Significant Samsung/Microsoft preinstalls, ads present (can be disabled)  |
-| **OxygenOS (OnePlus)**                 | **6.0**  | Moderate preinstalls, occasional promotions                               |
-| **Redmagic OS**                        | **6.0**  | Gaming-focused, moderate preinstalls, no ads                              |
-| **Honor MagicOS**                      | **5.0**  | Moderate preinstalls, regional apps, some promotions                      |
-| **Vivo FunTouch OS / OriginOS**        | **5.0**  | Moderate preinstalls, regional third-party apps                           |
-| **ColorOS (Oppo)**                     | **5.0**  | More preinstalls, regional third-party apps, some ads                     |
-| **Realme UI**                          | **5.0**  | Based on ColorOS, similar bloatware profile                               |
-| **LG UX (Legacy)**                     | **5.0**  | Moderate LG apps, carrier bloatware varied                                |
-| **HTC Sense (Legacy)**                 | **5.0**  | Moderate HTC apps, historical reference                                   |
-| **ZTE MiFavor UI / MyOS**              | **4.0**  | Moderate preinstalls, regional third-party apps, some promotions          |
-| **HyperOS (Xiaomi)**                   | **4.0**  | Heavy preinstalls, system ads in multiple apps                            |
-| **Huawei EMUI / HarmonyOS**            | **3.0**  | No Google services, significant Huawei apps, regional bloatware           |
-| **MIUI (Legacy Xiaomi)**               | **3.0**  | Significant bloatware, persistent ads difficult to disable                |
-| **Tecno HiOS / Infinix XOS / Itel OS** | **2.0**  | Heavy third-party bloatware, ads present                                  |
+#### 5.2.3 System Advertisements (SA) — 30%
+*Description:* Measures intrusive monetisation within the OS UI (notifications, settings, native apps).
+*   **Measurement:** Presence of advertisements in system-level interfaces.
+*   **Unit:** Tier Score (0-10)
+*   **Significance:** Directly impacts the perceived value and premium nature of the device by preventing intrusive monetization.
 
-**Formula:**
-```
-SCC = Platform_Cleanliness_Score (direct lookup from skin field)
-```
+| Tier       | Score    | Definition                                                                                        |
+| :--------- | :------- | :------------------------------------------------------------------------------------------------ |
+| **Tier 1** | **10.0** | **Ad-Free:** Zero system-level advertisements or promotional pushes.                              |
+| **Tier 2** | **5.0**  | **Opt-Out / Occasional:** Native app promotions exist but can be permanently deactivated.         |
+| **Tier 3** | **0.0**  | **Intrusive / Persistent:** Mandatory UI ads and lock screen promotions that cannot be disabled.  |
+
+---
+
+#### Master Skin Lookup Table
+
+Use this matrix to assign the `subscore` for each of the three dimensions based purely on the `skin` field.
+
+| Platform / Skin                           | PAL Score (40%) | UC Score (30%)  | SA Score (30%)  | *Composite (Info)* |
+| :---------------------------------------- | :-------------: | :-------------: | :-------------: | :----------------: |
+| **iOS**                                   | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
+| **Pixel UI / Stock Android**              | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
+| **AOSP / Fairphone OS / Nothing OS**      | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
+| **Motorola MyUX / Hello UI**              | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
+| **Sony Xperia UI / Sharp AQUOS / Nokia**  | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
+| **ASUS ZenUI / ROG UI**                   | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
+| **Redmagic OS**                           | **3.0**         | **10.0**        | **10.0**        | *7.20*             |
+| **Funtouch OS (Vivo)**                    | **6.0**         | **5.0**         | **10.0**        | *6.90*             |
+| **LG UX / HTC Sense (Legacy)**            | **6.0**         | **5.0**         | **5.0**         | *5.40*             |
+| **OxygenOS (OnePlus)**                    | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
+| **Samsung One UI**                        | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
+| **ColorOS / Realme UI / OriginOS / Vivo** | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
+| **Honor MagicOS**                         | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
+| **ZTE MiFavor UI / MyOS**                 | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
+| **HyperOS (Xiaomi) / Huawei EMUI**        | **0.0**         | **5.0**         | **0.0**         | *1.50*             |
+| **MIUI (Legacy Xiaomi)**                  | **0.0**         | **0.0**         | **0.0**         | *0.00*             |
+| **Tecno HiOS / Infinix XOS / Itel OS**    | **0.0**         | **0.0**         | **0.0**         | *0.00*             |
+
+---
+
+#### Per-Skin Justification
+
+Each entry below explains **why** the specific PAL / UC / SA scores were assigned. All claims are derived from publicly available reviews, manufacturer documentation, and community reports.
+
+**iOS** — PAL 10.0 · UC 10.0 · SA 10.0
+Apple does not pre-install any third-party apps. All first-party apps (Tips, Stocks, Compass, etc.) have been fully deletable since iOS 10. Zero system-level advertisements or promotional notifications.
+
+**Pixel UI / Stock Android** — PAL 10.0 · UC 10.0 · SA 10.0
+Ships with core Google apps only (Gmail, Maps, Photos). No third-party preloads. All apps are uninstallable or disablable via standard settings. No system-level ads.
+
+**AOSP / Fairphone OS / Nothing OS** — PAL 10.0 · UC 10.0 · SA 10.0
+Pure AOSP has minimal apps. Fairphone OS is AOSP-based with no extras. Nothing OS is praised as a "clean, minimal interface" with "lack of carrier bloatware" (GadgetHacks). Nothing reversed Meta preloads after user backlash by making them fully uninstallable. No system ads.
+
+**Motorola MyUX / Hello UI** — PAL 6.0 · UC 10.0 · SA 10.0
+Near-stock Android with Moto-specific gesture tools and Ready For desktop mode. Light first-party additions (Moto app, FM Radio). Carrier variants may add more. Most preinstalled apps are fully uninstallable. No system-level ads reported.
+
+**Sony Xperia UI / Sharp AQUOS / Nokia** — PAL 6.0 · UC 10.0 · SA 10.0
+Near-stock Android. Sony adds Cinema Pro, PS Remote Play, Music app. Nokia (HMD, now operating as HMD Global) adds My Phone. Sharp AQUOS is near-stock for the Japanese market. All first-party extras are fully uninstallable. No system ads.
+
+**ASUS ZenUI / ROG UI** — PAL 6.0 · UC 10.0 · SA 10.0
+Light proprietary additions (MyASUS, Armoury Crate on ROG). Recent ZenUI versions have evolved to a cleaner, more stock-like experience with fewer preinstalls. Most third-party and first-party apps are fully uninstallable via standard settings without needing ADB (confirmed by Droix.net, Cashify). No system-level ads.
+
+**Redmagic OS** — PAL 3.0 · UC 10.0 · SA 10.0
+Ships with Facebook, TikTok, and Booking.com preloaded. However, Redmagic officially confirms users can fully uninstall all preloaded apps (redmagic.gg). Users report a clean experience after initial setup cleanup (Reddit). The OS is considered close to stock Android with no system-level ads.
+
+**Funtouch OS (Vivo)** — PAL 6.0 · UC 5.0 · SA 10.0
+Vivo's global skin, distinct from OriginOS (China market). Ships with Jovi Home, V-AppStore, and light proprietary apps. Global users report "no ads or bloat" (Reddit r/Vivo). Funtouch OS 14 allows uninstalling some bloatware and disabling "hot apps," but core Vivo services cannot be removed without ADB (Android Debug Bridge), hence UC = 5.0. No system-level ads on global variant.
+
+**LG UX / HTC Sense (Legacy)** — PAL 6.0 · UC 5.0 · SA 5.0
+Legacy skins for discontinued brands. LG added SmartWorld, LG Health, Dual App — moderate first-party duplicates. HTC featured BlinkFeed as a default home panel with promotional content. Many apps could be disabled but not fully uninstalled without ADB.
+
+**OxygenOS (OnePlus)** — PAL 3.0 · UC 5.0 · SA 5.0
+Historically stock-like, OxygenOS has significantly increased bloatware since merging its codebase with ColorOS. As of 2024, ships with Meta App Installer/Manager/Services, LinkedIn, games (Candy Crush, Block Blast), Amazon apps, and region-specific apps like Zomato and Swiggy (documented by Android Police, Gadgets360). Meta services can only be disabled, not fully removed. Promotional notifications via a "Push" service have been reported, but can be blocked via settings.
+
+**Samsung One UI** — PAL 3.0 · UC 5.0 · SA 5.0
+Ships with 30+ preinstalled apps including Samsung duplicates (Browser, Email, Notes, Bixby, Samsung Free, SmartThings), Google suite, and Meta apps (Facebook). Confirmed by ZDNet, Android Police. Many Samsung apps (Bixby, Samsung Internet, SmartThings) can be disabled but not uninstalled. Ads appear in Galaxy Store, Samsung Weather, and Samsung Health but can be opted out of via settings. Samsung committed to reducing ads since 2021 (SamMobile).
+
+**ColorOS / Realme UI / OriginOS / Vivo** — PAL 3.0 · UC 5.0 · SA 5.0
+These skins share the same ColorOS codebase (OPPO). Realme devices ship with ~58 apps at boot, including ~12 inessential first-party apps and ~10 third-party apps (UNB.com.bd). "Hot Apps/Games" promotional folders are preloaded. Many apps can be uninstalled, but disabling some core system apps (e.g., Phone Manager) may throttle CPU performance (Reddit). Ads labelled "content recommendations" appear in system apps but can be permanently disabled via settings.
+
+**Honor MagicOS** — PAL 3.0 · UC 5.0 · SA 5.0
+Chinese variants have extensive bloat. Global models are described as having a "slimmer skin" (YouTube reviews). Many apps can be disabled or uninstalled, but core Honor services (Magic Mobile Service, Honor ID) cannot be removed (XDA Forums). Reports of ads appearing in Weather, Clock, and Themes apps on certain regions/models (Reddit), though the Magic 6 Pro review noted "no weird ads" (YouTube).
+
+**ZTE MiFavor UI / MyOS** — PAL 3.0 · UC 5.0 · SA 5.0
+Moderate bloatware with ZTE-specific apps and some third-party preloads. Apps can be disabled via settings but deep removal requires ADB. Occasional promotions in system apps, though not as aggressive as Xiaomi or Tecno.
+
+**HyperOS (Xiaomi) / Huawei EMUI** — PAL 0.0 · UC 5.0 · SA 0.0
+Both ship with extreme bloat. Xiaomi pre-installs GetApps, Mi Video, Mi Browser, Mi Remote, ShareMe, and dozens more. Huawei includes AppGallery, Huawei Browser, Petal Search. Apps can be disabled via settings — Xiaomi's MSA (MIUI System Ads) authorization can be revoked — but deep removal requires ADB. System-wide ads persist in File Manager, Security app, and notification drawer (Gizchina, Android Authority). Huawei EMUI shows ads in AppGallery and Browser.
+
+**MIUI (Legacy Xiaomi)** — PAL 0.0 · UC 0.0 · SA 0.0
+Worst-in-class for older Xiaomi devices pre-HyperOS. Dozens of preinstalled apps plus "Hot Apps" auto-download. Many apps cannot be disabled or uninstalled without ADB or root. Lock screen ads, notification spam, and ads embedded in Settings, File Manager, and Security app (Technastic, XDA Forums, Android Authority).
+
+**Tecno HiOS / Infinix XOS / Itel OS** — PAL 0.0 · UC 0.0 · SA 0.0
+Heavy preloads: Palm Store, AHA Games, Hola/Phoenix Browser, Visha Player, YoParty, Beats Party, plus multiple auto-installing app folders. Core bloatware is deeply integrated and runs in the background; removal without root or ADB typically fails (PhoneWorld.com.pk). Lock screen ads, notification panel ads, and file manager ads are persistent and often mistaken for malware by users (TechPoint Africa, Reddit).
 
 ### 🔹 5.3 AI Feature Suite
 *Description:* Evaluates the *software features* and practical AI tools available to the user. This measures "what you can do" (features), distinct from **Section 6.4** which measures "how fast it runs" (hardware power).
