@@ -122,41 +122,9 @@ This hierarchy defines how the device is scored on its technical merits before a
 - Contain either **non-scoring raw data** (placed at section root per Rule 1 of Chapter 2. Placement Rules) or **Subsections** (scoring units, more details below).
 
 #### 2. Reference Tables (X.Y.0)
-**Definition:** Tables used solely to identify hardware components (e.g., `6_1_0_soc_reference`) so they can be referenced by multiple scoring subsections.
+**Definition:** Tables used solely to identify hardware components (e.g., `6_1_0_system_on_chip_reference`) so they can be referenced by multiple scoring subsections.
 **Naming Convention:** Must be numbered as `X_Y_0` (where `X_Y` is the subsection that uses it) and placed immediately before `X_Y` in the structure.
-**Core Rule:** These tables must contain **ONLY identifiers** (the "What"). All technical data (frequencies, scores) must reside in the relevant scoring subsection (the "How").
-
-**Fields:**
--   **`<identifier_key>`**: Unique ID for the hardware component (e.g., `snapdragon_8_gen_3`) used for referencing in other subsections.
--   **`count`**: Number of instances of this component (e.g., number of cores).
--   **`source`**: URL proof of existence from a trusted source.
--   **`exact_extract`**: Verbatim text verifying the component's identity.
-
-**Schema:**
-```json
-"6_1_0_soc_reference": {
-  "snapdragon_8_gen_3": {
-    "count": 1,              // Number of instances
-    "source": "URL",         // Proof of existence
-    "exact_extract": "Text"  // Verification extract
-  },
-  "cortex_x4": {
-    "count": 1,
-    "source": "URL",
-    "exact_extract": "Text"
-  },
-  "cortex_a720": {
-    "count": 5,
-    "source": "URL",
-    "exact_extract": "Text"
-  },
-  "cortex_a520": {
-    "count": 2,
-    "source": "URL",
-    "exact_extract": "Text"
-  }
-}
-```
+**Core Rule:** These tables contain **identifiers** (the "What"). Technical data (frequencies, scores) should be placed in the relevant scoring subsection (the "How") unless they are being used for multiple subsections in which case they can be placed in the reference table for increased efficiency.
 
 #### 3. Subsections (X.Y)
 The atomic units of evaluation (e.g., `2_1_panel_architecture`).

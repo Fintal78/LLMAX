@@ -263,7 +263,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 *Formulas:* 
 *   `HBM_Score = 10 * (log(HBM_Nits) - log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) - log(Display_HBM_Nits_Min))` (Clamped 0-10)
 *   `Peak_Score = 10 * (log(Peak_Nits) - log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) - log(Display_Brightness_Nits_Min))` (Clamped 0-10)
-*   `Final_Score = (0.7 * HBM_Score) + (0.3 * Peak_Score)`
+*   `Predicted_Score = (0.7 * HBM_Score) + (0.3 * Peak_Score)`
 *   **Max Score (10.0):** ≥ Max Nits limits.
 *   **Min Score (0.0):** ≤ Min Nits limits.
 
@@ -429,18 +429,18 @@ This is the preferred method when a direct DXOMARK Display score is available. I
 > [!NOTE]
 > **Why Logarithmic?** Visual perception quality follows diminishing returns (Weber-Fechner law). An improvement of **10 points** at the low end (e.g., 60 to 70) represents a fundamental fix to usability flaws (e.g., becoming readable in sunlight). The same **10-point** improvement at the high end (e.g., 140 to 150) represents subtle refinements in peak HDR highlights or calibration that are barely perceptible to the human eye. Logarithmic scaling correctly assigns more value to these early, critical gains.
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the specific device has no benchmark, but we have data for other devices:
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
 **1. Identify Neighbors via Feature Distance (Minimum Variance)**
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the display sub-features that dictate perceptual quality.
-*   **Search Space:** All phones with known DXOMARK Display scores (Method A).
+*   **Search Space:** All phones with known DXOMARK Display scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Weighted Euclidean Distance in the 8-dimensional perceptual feature space (Sections 2.1–2.10, explicitly **excluding** 2.8 Screen-to-Body Ratio and 2.9 Screen Size).
     *   `Distance = Sqrt( Sum( Weight_i * (Diff_SubScore_i)^2 ) )`
     *   *Where Diff_SubScore_i = SubScore_Target_i - SubScore_Neighbor_i*
     *   *Where Weight_i represents the DXOMARK alignment weight (see justification below).*
     *   **Important:** Calculation uses **Predicted Scores** (Specs only), not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity, unaffected by whether a review exists for them.
-*   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
+*   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!NOTE]
 > **Why Weight the Euclidean Distance?**
@@ -457,7 +457,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 
 **3. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+*   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
@@ -1550,31 +1550,33 @@ Use this reference to map brand-specific terms to the 6 core AI features.
 **Master Scoring Table** (used across all CPU performance calculations)
 
 This table provides the authoritative CPU core architecture scores used throughout the scoring system, including:
-- Section 6.1 Method C: Multi-Thread Performance (CPS calculation)
-- Section 6.2 Method C: Single-Thread Performance (CAS calculation)
-- Section 8.1 for Battery Endurance Scoring (Battery efficiency - SoC component)
+- Section 6.1 Method C: Multi-Thread Performance
+- Section 6.2 Method C: Single-Thread Performance
+- Section 8.1 for Battery Endurance Scoring
 
 **Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
 
 | CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                                      |
 |------------------------------|:---------:|:--------------:|:----------:|--------------------------------------------|
-| **Apple A18 / A17 Pro / A17**| **10**    | **3.78**       | 2023-2024  | Highest IPC, 3nm process                   |
-| **Cortex-X925**              | **10**    | **3.60**       | 2024       | ARMv9.2, latest flagship                   |
-| **Cortex-X4**                | **10**    | **3.30**       | 2023       | ARMv9, flagship performance                |
-| **Apple A16 Bionic**         | **9**     | **3.46**       | 2022       | iPhone 14 Pro / iPhone 15; ARMv8.6         |
-| **Cortex-X3**                | **9**     | **3.20**       | 2022       | ARMv9 flagship                             |
-| **Apple A15 Bionic**         | **8**     | **3.22**       | 2021       | iPhone 13 / iPhone 14; ARMv8.5             |
-| **Cortex-X2**                | **8**     | **3.00**       | 2021       | ARMv9 early flagship (SD 8 Gen 1)          |
-| **Apple A14 Bionic**         | **7**     | **3.10**       | 2020       | iPhone 12; ARMv8.4, 5nm                    |
-| **Cortex-X1**                | **7**     | **2.84**       | 2020       | ARMv8.4, SD 888 prime core                 |
-| **Cortex-A720 / A715**       | **7**     | **2.80**       | 2023-2024  | ARMv9 modern performance                   |
-| **Cortex-A710**              | **6**     | **2.50**       | 2021       | ARMv9 transitional                         |
-| **Cortex-A78 / A77**         | **6**     | **2.40**       | 2019-2020  | ARMv8.2 legacy flagship                    |
-| **Cortex-A76 / A75**         | **5**     | **2.20**       | 2017-2018  | ARMv8.2 older flagship                     |
-| **Cortex-A73**               | **4**     | **2.00**       | 2016       | ARMv8 budget performance                   |
-| **Cortex-A55**               | **2**     | **1.80**       | 2017       | ARMv8.2 modern efficiency                  |
-| **Cortex-A520 / A510**       | **2**     | **2.00**       | 2021-2023  | ARMv9 efficiency cores                     |
-| **Cortex-A53 / A7**          | **0**     | **1.50**       | 2012-2014  | ARMv8 ancient efficiency                   |
+| **Apple Everest (A18/Pro)**  | **10**    | **4.05**       | 2024-2025  | Highest mobile IPC, 3nm (N3E)              |
+| **Oryon Gen 2 (SD 8 Elite)** | **10**    | **4.32**       | 2024-2025  | Qualcomm custom, massive IPC/Freq leap     |
+| **Cortex-X925 / Lumex Ultra**| **9**     | **3.60**       | 2024-2025  | ARM Blackhawk, desktop-class IPC           |
+| **Apple A17 Pro Cores**      | **9**     | **3.78**       | 2023       | 3nm (N3B), predecessor to Everest          |
+| **Apple A16 Bionic**         | **8**     | **3.46**       | 2022       | iPhone 14 Pro / 15; High efficiency        |
+| **Cortex-X4**                | **8**     | **3.30**       | 2023-2024  | SD 8 Gen 3, Exynos 2400 prime core         |
+| **Apple A15 Bionic**         | **7**     | **3.22**       | 2021       | iPhone 13; High sustained performance      |
+| **Cortex-X3**                | **7**     | **3.20**       | 2022       | SD 8 Gen 2 prime core                      |
+| **Apple A14 Bionic**         | **6**     | **3.10**       | 2020       | iPhone 12; 5nm generation                  |
+| **Cortex-X2**                | **6**     | **3.00**       | 2021       | SD 8 Gen 1 prime core                      |
+| **Cortex-X1**                | **5**     | **2.84**       | 2020       | SD 888 / Tensor G1 prime core              |
+| **Cortex-A725 / A720**       | **5**     | **2.80**       | 2023-2024  | Modern ARMv9.2 mid-range / P-cores         |
+| **Cortex-A715 / A710**       | **4**     | **2.50**       | 2021-2022  | ARMv9.0 mid-range standard (SD 7 Gen 1)    |
+| **Cortex-A78 / A77**         | **3**     | **2.40**       | 2019-2020  | Legacy flagship, now in budget 5G chips    |
+| **Cortex-A76**               | **2**     | **2.20**       | 2018-2019  | Found in older mid-range (Helio G99)       |
+| **Cortex-A75 / A73**         | **1**     | **2.00**       | 2016-2018  | Base performance tier (Unisoc T616)        |
+| **Cortex-A525 / A520 / A510**| **1**     | **2.00**       | 2021-2025  | Modern ARMv9 efficiency cores              |
+| **Cortex-A55 / A53**         | **0**     | **1.80**       | 2014-2017  | Ultra-budget efficiency cores              |
+| **Legacy 32-bit (A7 / A9)**  | **0**     | **1.50**       | <2014      | Obsolete                                   |
 
 > [!IMPORTANT]
 > **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
@@ -1592,11 +1594,11 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 *   **Max Score (10.0):** ≥ CPU_GB6_Multi_Score_Max
 *   **Min Score (0.0):** ≤ CPU_GB6_Multi_Score_Min
 > [!NOTE]
-> **Why Logarithmic?** Performance utility follows diminishing returns. The difference between a laggy 500-point phone and a usable 1500-point phone is transformative. The difference between an 8500-point flagship and a 9500-point gaming beast is noticeable only in extreme niche scenarios.
+> **Why Logarithmic?** Performance utility follows diminishing returns. A 1000-point jump between a baseline 1500-point phone and a capable 2500-point mid-ranger is transformative for daily usability. In contrast, a 1000-point jump between a 10000-point flagship and an 11000-point gaming beast is a marginal improvement noticeable only in extreme multitasking or specialized competitive gaming.
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device:
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
+1.  **Identify Neighbors:** Find **3 distinct Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device, **excluding the target device** itself:
     *   `Distance = abs(Diff_Predicted)`
     *   *Where Diff_Predicted = Predicted_Target - Predicted_Neighbor*
     *   *Note:* Based on **Predicted Score** calculated via Method C.
@@ -1607,7 +1609,7 @@ If the specific device has no benchmark, but we have data for other devices:
         *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+    *   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 > [!NOTE]
 > **Why Simple Proximity vs Euclidean Distance?**
@@ -1617,36 +1619,48 @@ If the specific device has no benchmark, but we have data for other devices:
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
+> [!NOTE]
+> **Understanding Core Clusters (The "Prime, Performance, Efficiency" Split)**
+> Modern smartphone processors (like Snapdragon or Dimensity) do not use identical cores. Instead, they group different types of cores into **Clusters** to balance speed and battery life:
+> *   **Prime Cores:** The most powerful cores (e.g., Cortex-X series). Usually appearing as a single core (1x) dedicated to extreme bursts of speed, like launching a heavy app.
+> *   **Performance Cores (P-Cores):** High-speed "workhorse" cores (e.g., Cortex-A700 series). These handle the daily heavy lifting like web browsing, gaming, and multitasking.
+> *   **Efficiency Cores (E-Cores):** Low-power cores (e.g., Cortex-A500 series). These stay active during background tasks (syncing, standby) to ensure the phone uses as little battery as possible when not in active heavy use.
+>
+> **Method C** calculates performance by scoring every identified cluster found in the device's SOC reference (§6.1.0) individually before summing them up. This structure works for all phones: a single-core phone has one cluster, while a modern flagship has three or more.
+
 **Step 1: Frequency-Adjusted Core Score (FACS)**
 Instead of calculating a raw score and then scaling it globally, we calculate the throughput for **each cluster** individually.
 
-*   **FSF Formula:** `Actual_Freq / Ref_Freq`
+*   **Frequency Scaling Factor (FSF) Formula:** `Actual_Freq / Ref_Freq`
     *   *Significance:* Scales the base architecture score based on whether the specific cluster is overclocked or underclocked.
     *   **Reference:** See **Section 6.1.0** for Reference Frequencies.
-*   **FACS Formula:** `Core_Architecture_Score * Core_Count * FSF`
+*   **Frequency-Adjusted Core Score (FACS) Formula:** `Core_Architecture_Score * Core_Count * FSF`
     *   *Significance:* Represents the total throughput contribution of a specific core cluster, accounting for its architecture, count, and clock speed.
+    *   **Core_Architecture_Score (CAS):** The baseline performance score for the specific core architecture as defined in the **Master Scoring Table (§6.1.0)**.
+    *   **Core_Count:** The number of identical physical cores within the specific processing cluster (e.g., 1 prime, 5 performance).
 
 **Step 2: Calculate Predicted Score**
-1.  **Raw Throughput (PTS):** `Sum(FACS_of_each_cluster)`
+1.  **Raw Performance Throughput Score (PTS):** Sum of `FACS` from all clusters in the SoC configuration.
 2.  **Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
+*   **Max Score (10.0):** ≥ CPU_PTS_Score_Max
+*   **Min Score (0.0):** ≤ CPU_PTS_Score_Min
 
 > **Example: Snapdragon 8 Gen 3**
 > *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 6.1.0)
 > *   **Actual Specs:** 1x X4 @ 3.3GHz, 5x A720 @ 3.2GHz, 2x A520 @ 2.3GHz
 >
-> 1.  **Prime Cluster (X4):**
+> 1.  **Prime Cluster (Cortex-X4):**
 >     *   FSF: `3.3 / 3.3` = 1.0
->     *   FACS: `10 (Score) * 1 (Count) * 1.0 (FSF)` = **10.0**
-> 2.  **Performance Cluster (A720):**
+>     *   FACS: `8 (CAS) * 1 (Count) * 1.0 (FSF)` = **8.0**
+> 2.  **Performance Cluster (Cortex-A720):**
 >     *   FSF: `3.2 / 2.8` = 1.14
->     *   FACS: `7 (Score) * 5 (Count) * 1.14 (FSF)` = **39.9**
-> 3.  **Efficiency Cluster (A520):**
+>     *   FACS: `5 (CAS) * 5 (Count) * 1.14 (FSF)` = **28.5**
+> 3.  **Efficiency Cluster (Cortex-A520):**
 >     *   FSF: `2.3 / 2.0` = 1.15
->     *   FACS: `2 (Score) * 2 (Count) * 1.15 (FSF)` = **4.6**
+>     *   FACS: `1 (CAS) * 2 (Count) * 1.15 (FSF)` = **2.3**
 >
-> *   **Raw (PTS):** `10.0 + 39.9 + 4.6` = **54.5**
-> *   **Predicted Score:** `10 * (log(54.5)-log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max)-log(CPU_PTS_Score_Min))`
-> *   `10 * (log(54.5)-log(5)) / (log(140)-log(5))` = `10 * (4.00 - 1.61) / (4.94 - 1.61)` = `10 * 2.39 / 3.33` ≈ **7.2/10**
+> *   **Raw Performance Throughput Score (PTS):** `8.0 + 28.5 + 2.3` = **38.8**
+> *   **Predicted Score:** `10 * (log(38.8) - log(5)) / (log(80) - log(5))` ≈ **7.4/10**
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
 *Description:* Measures the responsiveness of the CPU for immediate tasks like app launching, web browsing, and UI navigation. This isolates architectural efficiency and single-thread speed.
@@ -1667,11 +1681,11 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 *   **Max Score (10.0):** ≥ CPU_GB6_Single_Score_Max
 *   **Min Score (0.0):** ≤ CPU_GB6_Single_Score_Min
 > [!NOTE]
-> **Why Logarithmic?** Single-core speed has a direct but diminishing impact on UI fluidity. Moving from 300 to 1000 points dramatically reduces UI stutters. Moving from 2000 to 2500 points yields millisecond gains that are harder to perceive.
+> **Why Logarithmic?** Single-core speed has a direct but diminishing impact on UI fluidity. A 500-point jump between a baseline 400-point core and a 900-point mid-range core dramatically reduces UI stutters. In contrast, a 500-point jump between 3000 and 3500 points yields millisecond gains that are harder for the human eye to perceive.
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the specific device has no benchmark, but we have data for other devices:
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device:
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
+1.  **Identify Neighbors:** Find **3 distinct Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device, **excluding the target device** itself:
     *   `Distance = abs(Diff_Predicted)`
     *   *Where Diff_Predicted = Predicted_Target - Predicted_Neighbor*
     *   *Note:* Based on **Predicted Score** calculated via Method C.
@@ -1682,7 +1696,7 @@ If the specific device has no benchmark, but we have data for other devices:
         *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 3.  **Apply to Benchmark:**
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+    *   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 > [!NOTE]
 > **Why Simple Proximity vs Euclidean Distance?**
@@ -1705,14 +1719,15 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 **Step 3: Calculate Predicted Score**
 1.  **Raw Single-Thread (STRS - Single Thread Raw Score):** `CAS * FSF`
 2.  **Predicted Score:** `10 * (log(STRS) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))`
+*   **Max Score (10.0):** ≥ CPU_STRS_Score_Max
+*   **Min Score (0.0):** ≤ CPU_STRS_Score_Min
 
 > **Example: Snapdragon 8 Gen 3 for Galaxy (Overclocked)**
 > *   **Specs:** Prime Core is Cortex-X4 at **3.4GHz**. Reference Frequency for X4 is **3.30GHz**.
-> *   **CAS:** Cortex-X4 = **10**
+> *   **CAS:** Cortex-X4 = **8**
 > *   **FSF:** `3.4 / 3.3` ≈ **1.03**
-> *   **Raw (FACS):** `10 * 1.03` = **10.3**
-> *   **Predicted Score:** `10 * (log(10.3) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))`
-> *   `10 * (log(10.3) - log(5)) / (log(12) - log(5))` = `10 * (2.33 - 1.61) / (2.48 - 1.61)` = `10 * 0.72 / 0.87` ≈ **8.3/10**
+> *   **Raw Single-Thread (STRS):** `8 * 1.03` = **8.24**
+> *   **Predicted Score:** `10 * (log(8.24) - log(5)) / (log(12) - log(5))` ≈ **5.7/10**
 
 #### 6.3.0 GPU Architecture Reference
 
@@ -1828,10 +1843,10 @@ This is the preferred method when real-world benchmark data is available.
 *   **Data Available:** `SGS = SGS_Bench`
 *   **No Data Available:** Proceed to Method B.
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the strict benchmark (Steel Nomad Light) is unavailable, but we have data for other devices:
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
-1.  **Identify Neighbors:** Find **3 Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the smallest **Distance** to the target device:
+1.  **Identify Neighbors:** Find **3 distinct Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the smallest **Distance** to the target device, **excluding the target device** itself:
     *   `Distance = abs(Diff_Predicted_SGS)`
     *   *Where Diff_Predicted_SGS = Predicted_SGS_Target - Predicted_SGS_Neighbor*
     *   *Note:* Based on **Predicted SGS** calculated via Method C.
@@ -1915,7 +1930,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 #### Final Section 6.3 Score Calculation
 Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 
-**Formula:** `Final_Score = (SGS * 0.9) + (RTS * 0.1)`
+**Formula:** `Predicted_Score = (SGS * 0.9) + (RTS * 0.1)`
 
 > [!NOTE]
 > **Why 10% for Ray Tracing?** Ray Tracing (RT) is a technique where the phone's graphics chip simulates how light bounces off real surfaces — creating realistic reflections in mirrors and water, and accurate shadows. While only ~5–10% of current mobile games use it, this **10% weight is intentionally forward-looking**: manufacturers are investing heavily in RT hardware, just as they invested in 5G before streaming services caught up. Phones built today will use RT heavily within 2–3 years. The 90% on classic rendering keeps scores grounded in today's reality.
@@ -2002,19 +2017,19 @@ This is the preferred method when a direct Geekbench AI score is available. It p
 > [!NOTE]
 > **Why Logarithmic?** AI performance utility follows diminishing returns. The difference between a sluggish 500-point device (struggles with basic voice commands) and a capable 1500-point device (handles real-time translation) is transformative. The difference between a 3500-point flagship and a 4500-point ultra-flagship is noticeable only in extreme edge cases like running large LLMs locally.
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-If the specific device has no benchmark, but we have data for other devices:
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
 **1. Identify Neighbors via Feature Distance (Minimum Variance)**
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** AI-relevant hardware components.
-*   **Search Space:** All phones with known Geekbench AI scores (Method A).
+*   **Search Space:** All phones with known Geekbench AI scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Weighted Euclidean Distance.
     *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
         *   `AI` (table above, Sec 6.4), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
     *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
     *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
-*   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
+*   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!TIP]
 > **Why this is robust:** This method ensures we compare apples to apples. A phone with a **High NPU Score + Low RAM Bandwidth** will match with similar devices, rather than matching with a **Low NPU Score + High RAM Bandwidth** device, even if they have the same Overall Predicted Score. This is critical because AI workloads scale differently with compute vs. bandwidth.
@@ -2027,7 +2042,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 
 **3. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+*   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
@@ -2595,17 +2610,15 @@ Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
 
 *   **Condition 1: Both Benchmarks Available**
     *   If the Target Phone has scores from **both** GSMArena and PhoneArena, take the average of the two normalized benchmark scores. The predictive model is ignored.
-    *   **Formula:** `Final_Score = (GSM_Score + PA_Score) / 2`
-    *   *Example:* Galaxy S24 Ultra. GSMArena: 16.75h -> GSM_Score = 5.84. PhoneArena: 10.5h -> PA_Score = 8.82. Final Score: `(5.84 + 8.82) / 2 = 7.33`
+    *   **Formula:** `Score = (GSM_Score + PA_Score) / 2`
 
 *   **Condition 2: Partial Data (One Benchmark Available)**
     *   If the Target Phone has a score from **only one** source (e.g., GSMArena), use the single available normalized benchmark score.
-    *   **Formula:** `Final_Score = Available_Benchmark_Score`
-    *   *Example:* Xiaomi 14 Pro. GSMArena: 14.17h -> GSM_Score = 4.16. PhoneArena: N/A. Final Score: `4.16`
+    *   **Formula:** `Score = Available_Benchmark_Score`
 
 
-#### Method B: Nearest Neighbor Interpolation (Secondary)
-*Description:* Used if the specific device has no benchmark data (e.g., unreleased or niche phone), but we have data for other devices to inform a predicted score.
+#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
 **1. Calculate Sub-Layer Scores**
 Calculate the 3 sub-layer scores for the Target Phone via Method C:
@@ -2614,12 +2627,12 @@ Calculate the 3 sub-layer scores for the Target Phone via Method C:
 *   `Layer C` (Software Optimization Score - SOI)
 
 **2. Identify Neighbors via Feature Distance (Minimum Variance)**
-Find **3 Reference Phones** that have **BOTH** GSMArena and PhoneArena scores (Condition 1 phones) and the smallest **Weighted Euclidean Distance** to the Target Phone:
+Find **3 distinct Reference Phones** that have **BOTH** GSMArena and PhoneArena scores (Condition 1 phones) and the smallest **Weighted Euclidean Distance** to the Target Phone, **excluding the target device** itself:
 *   **Distance Metric:** Weighted Euclidean Distance.
     *   `Distance = Sqrt( 0.45*(Diff_LayerA)^2 + 0.35*(Diff_LayerB)^2 + 0.20*(Diff_LayerC)^2 )`
     *   *Where Diff_LayerX = LayerX_Target - LayerX_Neighbor*
 *   **Scientific Rationale:** Battery life is a complex trade-off between Capacity (Layer A), Efficiency (Layer B), and Optimization (Layer C). A "Huge Battery / Inefficient" phone (A=10, B=2) can have the same Overall Predicted Score as a "Small Battery / Efficient" phone (A=2, B=10). Weighting the sub-layers ensures we compare "apples to apples" by finding neighbors with similar *profiles*, which is scientifically superior for predicting nonlinear behavior (like thermal throttling or standby drain).
-*   **Selection:** Pick the 3 neighbors with the smallest `Distance`.
+*   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 **3. Calculate Correction Ratio:**
 *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
@@ -2629,7 +2642,7 @@ Find **3 Reference Phones** that have **BOTH** GSMArena and PhoneArena scores (C
 
 **4. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Final_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+*   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 > **Example: "FuturePhone 5" (No benchmarks)**
 > *   `Predicted_Target = 8.50` (High capacity, high efficiency). *Profile (Layers A/B/C):* 8.5 / 8.5 / 8.5
@@ -2641,7 +2654,7 @@ Find **3 Reference Phones** that have **BOTH** GSMArena and PhoneArena scores (C
 >     *   `Avg_Predicted_Neighbors = (8.49 + 8.51 + 8.52) / 3 = 8.51`
 >     *   `Avg_Benchmark_Neighbors = (7.20 + 7.40 + 7.00) / 3 = 7.20`
 >     *   `Correction_Ratio = 8.50 / 8.51 = 0.9988` (Target profile is almost identical to neighbors)
->     *   `Final_Score = 0.9988 * 7.20 = 7.19`
+>     *   `Interpolated_Score = 0.9988 * 7.20 = 7.19`
 
 
 #### Method C: Predicted Calculation (Tertiary)

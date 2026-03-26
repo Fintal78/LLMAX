@@ -100,11 +100,11 @@
 **6. Processing Power**
 
 ### 6.1 CPU Multi-Core
-*   `CPU_GB6_Multi_Score_Min` = 1500 (Score 0), `CPU_GB6_Multi_Score_Max` = 7500 (Score 10)
-*   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 140 (Score 10)
+*   `CPU_GB6_Multi_Score_Min` = 500 (Score 0), `CPU_GB6_Multi_Score_Max` = 11000 (Score 10)
+*   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 80 (Score 10)
 
 ### 6.2 CPU Architecture & Single-Core Efficiency
-*   `CPU_GB6_Single_Score_Min` = 400 (Score 0), `CPU_GB6_Single_Score_Max` = 3000 (Score 10)
+*   `CPU_GB6_Single_Score_Min` = 400 (Score 0), `CPU_GB6_Single_Score_Max` = 3500 (Score 10)
 *   `CPU_STRS_Score_Min` = 5 (Score 0), `CPU_STRS_Score_Max` = 12 (Score 10)
 
 ### 6.3 GPU Performance
