@@ -24,7 +24,7 @@ This document lists all the authoritative sources, databases, and standards used
 
 ### 6.1.0 · SoC Reference Table (CPU Architecture) & 6.3.0 · GPU Architecture Reference Table
 - **Source:** Arm / Apple / Qualcomm Official Specifications
-- **Metric:** Base/Boost Clocks, Core Counts, IPC Claims
+- **Metric:** Base/Boost Clocks, Core Counts, IPC (Instructions Per Cycle) Claims
 - **Links:**
   - [Arm Developer Documentation](https://developer.arm.com/Processors)
   - [Apple Platform Architecture (WWDC Sessions)](https://developer.apple.com/videos/)

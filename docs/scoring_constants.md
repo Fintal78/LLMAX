@@ -104,8 +104,8 @@
 *   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 80 (Score 10)
 
 ### 6.2 CPU Architecture & Single-Core Efficiency
-*   `CPU_GB6_Single_Score_Min` = 400 (Score 0), `CPU_GB6_Single_Score_Max` = 3500 (Score 10)
-*   `CPU_STRS_Score_Min` = 5 (Score 0), `CPU_STRS_Score_Max` = 12 (Score 10)
+*   `CPU_GB6_Single_Score_Min` = 150 (Score 0), `CPU_GB6_Single_Score_Max` = 3500 (Score 10)
+*   `CPU_STRS_Score_Min` = 0.4 (Score 0), `CPU_STRS_Score_Max` = 10.0 (Score 10)
 
 ### 6.3 GPU Performance
 *   `GPU_SteelNomad_Score_Min` = 500 (Score 0), `GPU_SteelNomad_Score_Max` = 1800 (Score 10)

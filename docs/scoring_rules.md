@@ -1554,7 +1554,7 @@ This table provides the authoritative CPU core architecture scores used througho
 - Section 6.2 Method C: Single-Thread Performance
 - Section 8.1 for Battery Endurance Scoring
 
-**Scoring Basis:** Based on IPC (Instructions Per Clock) performance and modern architecture capabilities.
+**Scoring Basis:** Based on IPC (Instructions Per Cycle—the number of instructions a processor executes in a single clock cycle) performance and modern architecture capabilities.
 
 | CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                                      |
 |------------------------------|:---------:|:--------------:|:----------:|--------------------------------------------|
@@ -1727,7 +1727,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 > *   **CAS:** Cortex-X4 = **8**
 > *   **FSF:** `3.4 / 3.3` ≈ **1.03**
 > *   **Raw Single-Thread (STRS):** `8 * 1.03` = **8.24**
-> *   **Predicted Score:** `10 * (log(8.24) - log(5)) / (log(12) - log(5))` ≈ **5.7/10**
+> *   **Predicted Score:** `10 * (log(8.24) - log(0.4)) / (log(10) - log(0.4))` ≈ **9.4/10**
 
 #### 6.3.0 GPU Architecture Reference
 

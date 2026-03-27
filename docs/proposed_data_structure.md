@@ -2165,7 +2165,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: Raw Performance Throughput Score (PTS) = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
           },
           "predicted_score": 7.40
-        // SCORING GUIDELINE (Section 6.1 Method C): pts = raw_performance_throughput_score.value. Formula: 10 * (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
+        // SCORING GUIDELINE: pts (Performance Throughput Score—a predicted value measuring the total combined power of all CPU cores) = raw_performance_throughput_score.value. predicted_score = 10 * (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
       },
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
@@ -2182,7 +2182,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "predicted_score_1": 7.40,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall Multi-Core).
               "benchmark_score_1": 8.60
-              // GUIDELINE: The neighbor's Method A geekbench_6_multi_core_benchmark.subscore.
+              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_6_multi_core_benchmark.subscore).
             },
             {
               // Neighbor2
@@ -2226,7 +2226,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_2_cpu_architecture_single_core": {
-        // SCORING GOAL: Evaluates individual core capability and IPC efficiency, representing the snappiness of the interface and single-threaded application speed.
+        // SCORING GOAL: Evaluates individual core capability and IPC (Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick) efficiency, representing the snappiness of the interface and single-threaded application speed.
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2235,7 +2235,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 2200,
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
-          "subscore": 7.86
+          "subscore": 8.53
           // SCORING GUIDELINE: Apply the Section 6.2 Method A logarithmic normalization: Score = 10 * (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10.
         },
 
@@ -2266,61 +2266,55 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: architecture.subscore * actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
             },
           },
-        "single_thread_raw_score": {
-          "value": 8.0000,
-          "description": "Single-Thread Raw Score (STRS = CAS * FSF)"
-          // GUIDELINE: strs = strongest_core.frequency_adjusted_core_score.value.
+          "predicted_score": 9.31
+          // SCORING GUIDELINE: strs (Single-Thread Raw Score—a predicted value measuring the power of the strongest single CPU core) = strongest_core.frequency_adjusted_core_score.value. predicted_score = 10 * (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
         },
-        "predicted_score": 5.36
-        // SCORING GUIDELINE (Section 6.2 Method C): strs = single_thread_raw_score.value. Formula: 10 * (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
-        // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
-      },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation": {
-          // SCORING GUIDELINE (Section 6.2 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Section 6.2 Method B.1): Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
-          // Step 2 (Section 6.2 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "predicted_score_1": 5.36,
+              "predicted_score_1": 9.31,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall Single-Core).
-              "benchmark_score_1": 7.80
-              // GUIDELINE: The neighbor's Method A geekbench_6_single_core_benchmark.subscore.
+              "benchmark_score_1": 8.49
+              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_6_single_core_benchmark.subscore).
             },
             {
               // Neighbor2
               "device_id_2": "oneplus_12",
-              "predicted_score_2": 5.34,
-              "benchmark_score_2": 7.75
+              "predicted_score_2": 9.29,
+              "benchmark_score_2": 8.45
             },
             {
               // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
-              "predicted_score_3": 5.38,
-              "benchmark_score_3": 7.90
+              "predicted_score_3": 9.33,
+              "benchmark_score_3": 8.57
             }
           ],
-          "avg_predicted_neighbors": 5.3600,
-          // SCORING GUIDELINE (Section 6.2 Method B Step 2): (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 7.8167,
-          // SCORING GUIDELINE (Section 6.2 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+          "avg_predicted_neighbors": 9.3100,
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          "avg_benchmark_neighbors": 8.5033,
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0000,
-          // SCORING GUIDELINE (Section 6.2 Method B Step 2): method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 7.82
-          // SCORING GUIDELINE (Section 6.2 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
+          "interpolated_score": 8.50
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
         "scores": {
-          "predicted": 5.36,
+          "predicted": 9.31,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_efficiency_model.predicted_score.
           "final": {
-            "value": 7.86,
-            // SCORING GUIDELINE (Section 6.2): Use Method A if method_a_geekbench_6_single_core_benchmark is available (method_a_geekbench_6_single_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_efficiency_model.predicted_score).
+            "value": 8.53,
+            // SCORING GUIDELINE: Use Method A if method_a_geekbench_6_single_core_benchmark is available (method_a_geekbench_6_single_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_efficiency_model.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
@@ -2390,7 +2384,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "predicted_score_1": 9.30,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall GPU).
               "benchmark_score_1": 10.00
-              // GUIDELINE: The neighbor's Method A 3d_mark_steel_nomad_light_benchmark.subscore.
+              // GUIDELINE: The neighbor's Method A subscore (method_a_3d_mark_steel_nomad_light_benchmark.subscore).
             },
             {
               // Neighbor2
@@ -2479,7 +2473,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "predicted_score_1": 9.75,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall AI).
               "benchmark_score_1": 10.00
-              // GUIDELINE: The neighbor's Method A geekbench_ai_quantized_benchmark.subscore.
+              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_ai_quantized_benchmark.subscore).
             },
             {
               // Neighbor2
