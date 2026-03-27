@@ -316,7 +316,7 @@ Each phone gets a `battery_scores` object:
    ```
 4. **Apply Ratio:**
    ```
-   Final_Score = Ratio × Average_Neighbor_Final
+   Final_Score = Ratio * Average_Neighbor_Final
    ```
 
 This accounts for the gap between predicted and real-world performance.

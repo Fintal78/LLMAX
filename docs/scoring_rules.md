@@ -29,7 +29,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Significance:** Determines structural integrity, premium tactile quality, and physical durability.
 
 **Predicted Score Formula:**
-`Materials Score = (0.6 × Frame Material Score) + (0.4 × Back Material Score)`
+`Materials Score = (0.6 * Frame Material Score) + (0.4 * Back Material Score)`
 
 > [!NOTE]
 > **Why this weighting is explicit:** The frame governs structural rigidity, torsional strength, and thermal conduction pathways more than the back panel, which mainly affects surface durability, radio transparency, and impact shatter behavior.
@@ -79,7 +79,7 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 *   **Significance:** Critical for device longevity and accident protection.
 
 **Predicted Score Formula:**
-`IP Score = (0.5 × Dust Protection Score) + (0.5 × Water Protection Score)`
+`IP Score = (0.5 * Dust Protection Score) + (0.5 * Water Protection Score)`
 
 #### 1.2.A Dust Protection (First Digit of IP Code)
 *   **Measurement:** Manufacturer IP certification.
@@ -284,7 +284,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > **Why Linear?** DCI-P3 is the professional color standard used by cinema and streaming content. Each additional percentage point represents a physically equal slice of extra color the screen can show. Think of it like paint: a painter who can mix 90% of all possible shades has exactly 10% more capability than one at 80%. There are no diminishing returns within the 65–100% range that covers real phones, making a straight linear scale the correct and honest choice.
 >
 > **sRGB Fallback Conversion:**
-> If only sRGB data is available: `DCI-P3_estimate = min(sRGB_percent × 0.75, 100)` as 100% sRGB ≈ 75% DCI-P3
+> If only sRGB data is available: `DCI-P3_estimate = min(sRGB_percent * 0.75, 100)` as 100% sRGB ≈ 75% DCI-P3
 >
 > *Example:* 119% sRGB → 89% DCI-P3 (estimate), Score = 6.9
 >
@@ -514,7 +514,7 @@ PAPI is a weighted composite of two subsections:
 - **3.2.2 Spatial Audio Rendering** — 50% weight
 
 **Predicted Score Formula:**
-`PAPI = (0.5 × Score_3.2.1) + (0.5 × Score_3.2.2)`
+`PAPI = (0.5 * Score_3.2.1) + (0.5 * Score_3.2.2)`
 
 #### 3.2.1 Audio Format Decode Support
 *What it measures:* The range of multichannel or object-based audio formats the device can natively decode.
@@ -597,7 +597,7 @@ MAR is a weighted composite of three subsections:
 - **3.4.3 Advanced Capture Features (ACF)** — 40% weight
 
 **Predicted Score Formula:**
-`MAR = (0.3 × MHC) + (0.3 × RCM) + (0.4 × ACF)`
+`MAR = (0.3 * MHC) + (0.3 * RCM) + (0.4 * ACF)`
 
 #### 3.4.1 Microphone Hardware Count (MHC)
 *What it measures:* Physical microphones available for capture (bottom, top, rear, front).
@@ -782,7 +782,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 **Predicted Score Formula:**
 *   If Presence = No: `UCC = 0.00`
-*   If Presence = Yes: `UCC = (0.6 × FOV_Score) + (0.4 × Sensor_Score)`
+*   If Presence = Yes: `UCC = (0.6 * FOV_Score) + (0.4 * Sensor_Score)`
 
 > [!NOTE]
 > **Why 60/40 (FOV/Sensor)?** The primary purpose of an ultrawide lens is to capture a wider scene, making Field of View (FOV) the dominant factor (60%). Additionally, the Presence Floor Rule (see top of document) can only be applied to the FOV component (where a shared metric exists across the binary gate), not to the sensor size component (where there is no equivalent lower-class value). Giving FOV a higher weight ensures that the floor correction propagates more strongly through the composite score, further rewarding phones that have an ultrawide — even one with a small sensor — over phones with no ultrawide at all. The remaining 40% for sensor size still accounts for low-light performance: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
@@ -869,9 +869,9 @@ To determine the correct tier, check the device's official specifications, marke
 
 *Formula:* 
 *   If Presence = No: `Score_4.7.2 = 0.00`
-*   If Presence = Yes: `Score_4.7.2 = 7.0 + 0.3 × (0.7 × Zoom_Score + 0.3 × MFD_Score)`
-    *   `Zoom_Score` = `10 × (log(Magnification_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min))` — Clamped 0–10
-    *   `MFD_Score`  = `10 × (log(Camera_Telemacro_MFD_cm_Max) − log(Telemacro_MFD_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min))` — Clamped 0–10 *(inverted: shorter distance = higher score)*
+*   If Presence = Yes: `Score_4.7.2 = 7.0 + 0.3 * (0.7 * Zoom_Score + 0.3 * MFD_Score)`
+    *   `Zoom_Score` = `10 * (log(Magnification_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min))` — Clamped 0–10
+    *   `MFD_Score`  = `10 * (log(Camera_Telemacro_MFD_cm_Max) − log(Telemacro_MFD_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min))` — Clamped 0–10 *(inverted: shorter distance = higher score)*
     *   **Max Score (10.0):** Achieved when the telephoto has the highest zoom (Magnification_x ≥ Camera_Telemacro_x_Max) **and** the closest focus (Telemacro_MFD_cm ≤ Camera_Telemacro_MFD_cm_Min). Both sub-scores hit 10.0, giving 7.0 + 3.0 = 10.0.
     *   **Min Score (7.0):** Achieved when both Zoom_Score and MFD_Score are at their lowest (0.0). The 7.0 base is the "Architectural Bonus" (see below).
 
@@ -881,7 +881,7 @@ To determine the correct tier, check the device's official specifications, marke
 **4.7.3 Dedicated Macro Lens (Penalty-aware)**
 *   *Why it matters:* Dedicated lenses can be useful but are often low-quality gimmicks. We cap the score at 3.0 to ensure they are appropriately ranked below higher-quality macro implementations that use more capable primary or ultrawide sensors.
 *   **Measurement:** Sensor Resolution in Megapixels (MP). Dedicated macro lenses typically range from 2 MP (budget) to 5 MP (mid-range), with rare 8 MP outliers.
-*   *Formula:* `Score = clamp(3 × Megapixels / Camera_Dedicated_Macro_MP_Max, 0, 3)`
+*   *Formula:* `Score = clamp(3 * Megapixels / Camera_Dedicated_Macro_MP_Max, 0, 3)`
     *   **Max Score (3.0):** ≥ Camera_Dedicated_Macro_MP_Max
     *   **Min Score (0.0):** 0 Megapixel (No dedicated macro lens)
     *   *Examples:* 2 Megapixels → 0.75, 5 Megapixels → 1.88, 8 Megapixels → 3.0
@@ -964,7 +964,7 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Unit:** Composite Index (0-10)
 *   **Significance:** Professional codecs preserve detail, reduce compression artifacts, and allow color grading.
 
-**Structure:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
+**Structure:** `Score = (0.40 * PCS) + (0.35 * LCPS) + (0.25 * CBD)`
 
 #### 4.11.1 Professional Codec Support (PCS) — 40%
 *What it measures:* Whether the phone can record in a **RAW** (unprocessed sensor data) or **Mezzanine** (high-quality intermediate) format. These are "production-grade" files designed specifically for high-end video editing rather than just watching or sharing on social media.
@@ -1010,14 +1010,14 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why 5.0 for 10-bit?** The raw number of color shades increases exponentially with bit depth ($2^n$), but human perception of these differences follows a **logarithmic scale** (Weber-Fechner law). Because $\log_2(2^{\text{bits}}) = \text{bits}$, the resulting perceived improvement is perfectly linear relative to the bit depth itself. Therefore, the leap from 8 to 10 bits represents the same proportional visual gain as the leap from 10 to 12 bits, cleanly splitting the 10.0 score space in half.
 
-**Final Formula:** `Score = (0.40 × PCS) + (0.35 × LCPS) + (0.25 × CBD)`
+**Final Formula:** `Score = (0.40 * PCS) + (0.35 * LCPS) + (0.25 * CBD)`
 
 ### 🔹 4.12 High Frame Rate (Slow Motion)
 *Description:* The ability to capture video at very high frame rates in a dedicated camera mode, allowing for extreme deceleration of fast motion.
 *   **Measurement:** Maximum slow-motion Frames per Second (FPS) and its corresponding resolution, as explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion", "Slo-mo", "High Speed Video", or "Super Slow-mo" (Do NOT use standard video frame rates from Section 4.9).
 *   **Unit:** Megapixels per Second (MP/s)
 *   **Significance:** Enables creative effects and extreme deceleration of fast-moving subjects.
-*   **Scoring Rule:** Scanners must calculate the mathematical throughput (`Resolution_MP × FPS`) of *all* available slow-motion configurations (e.g., 4K@120fps vs. 1080p@960fps) and score based exclusively on the combination yielding the **Absolute Maximum MP/s**. If a phone has no dedicated slow-motion mode, the score is **0.0**.
+*   **Scoring Rule:** Scanners must calculate the mathematical throughput (`Resolution_MP * FPS`) of *all* available slow-motion configurations (e.g., 4K@120fps vs. 1080p@960fps) and score based exclusively on the combination yielding the **Absolute Maximum MP/s**. If a phone has no dedicated slow-motion mode, the score is **0.0**.
 *Formula:* `Score = 10 * (log(MP_s) - log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) - log(Camera_SlowMo_MPs_Min))` (Clamped 0-10)
     *   `MP_s = Resolution_MP * FPS`
 *   **Max Score (10.0):** ≥ Camera_SlowMo_MPs_Max
@@ -1316,7 +1316,7 @@ The conversion from marketing terms to numerical years is based on a decade of d
 Traditional SCC metrics require subjective hands-on testing that cannot be automated from public data. However, since bloatware and ad policies are defined universally at the **platform/skin level** (e.g., all Samsung One UI phones share the identical core app bundle and ad policy), we evaluate the **three distinct cleanliness dimensions** natively for each known skin. 
 
 **Final Composite Formula:** 
-`SCC = (0.40 × PAL) + (0.30 × UC) + (0.30 × SA)`
+`SCC = (0.40 * PAL) + (0.30 * UC) + (0.30 * SA)`
 
 ---
 
@@ -1469,7 +1469,7 @@ The weights are calibrated based on 2024 usage studies (e.g., Samsung Galaxy AI 
 
 **Formula:**
 ```
-Score_5.3 = (2.0 × VisualSearch) + (2.0 × Transcription) + (2.0 × Summarization) + (2.0 × OnDevice) + (1.5 × Translation) + (0.5 × Writing)
+Score_5.3 = (2.0 * VisualSearch) + (2.0 * Transcription) + (2.0 * Summarization) + (2.0 * OnDevice) + (1.5 * Translation) + (0.5 * Writing)
 ```
 Where each feature = 1 if present, 0 if absent. Max score = 10.0.
 
@@ -2194,7 +2194,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 *   **Unit:** mm²
 *   **Significance:** Bigger phones dissipate heat better through larger surface area.
 
-*Formula:* `Surface = Height_mm × Width_mm`  
+*Formula:* `Surface = Height_mm * Width_mm`  
 *Formula:* `Score = 10 * (Surface - Thermal_Surface_Area_mm2_Min) / (Thermal_Surface_Area_mm2_Max - Thermal_Surface_Area_mm2_Min)` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Thermal_Surface_Area_mm2_Max
 *   **Min Score (0.0):** ≤ Thermal_Surface_Area_mm2_Min
@@ -2212,7 +2212,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 > **Data Structure Mapping:** `1_4_thickness.thickness_mm`
 
 **Part A Score:**  
-`Part_A = (0.40 × A1) + (0.25 × A2) + (0.20 × A3) + (0.15 × A4)`
+`Part_A = (0.40 * A1) + (0.25 * A2) + (0.20 * A3) + (0.15 * A4)`
 
 **Part B: Internal Cooling System Class (50%)**
 *   *What is it?* The engineering sophistication of the internal heat management.
@@ -2238,7 +2238,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
 **Formula:**
 1.  **Node Score:** `10 * (log(SoC_Process_Node_nm_Max) - log(Node)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
 2.  **Foundry Score:** See Foundry Efficiency table below.
-3.  **Process Node Score:** `(0.9 × Node_Score) + (0.1 × Foundry_Score)` (Clamped 0-10)
+3.  **Process Node Score:** `(0.9 * Node_Score) + (0.1 * Foundry_Score)` (Clamped 0-10)
 
 *   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
 *   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
@@ -2269,8 +2269,8 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
     *   **Max Bonus (+4.0):** Low-power peak demand, highly efficient node -> Needs minimal cooling to remain stable.
     *   **Min Bonus (+0.0):** Extreme peak power demand, highly inefficient node -> Requires massive cooling to survive.
 
-1.  **Calculate Baseline Physical Capability:** `Physical_Score = (0.5 × Part_A) + (0.5 × Part_B)`
-2.  **Calculate TDSI Score:** `TDSI = (0.8 × Physical_Score) + Load_Bonus` (Clamped 0-10)
+1.  **Calculate Baseline Physical Capability:** `Physical_Score = (0.5 * Part_A) + (0.5 * Part_B)`
+2.  **Calculate TDSI Score:** `TDSI = (0.8 * Physical_Score) + Load_Bonus` (Clamped 0-10)
 
 > [!NOTE]
 > **Why these weights?** By multiplying the `Physical_Score` by 0.8 (max 8.0 points) and adding a `Load_Bonus` (max 4.0 points, but typically 2.0 for flagships), an ultra-gaming flagship with perfect physical cooling (8.0) and top-tier chip efficiency (2.0) will score a perfect 10.0 without exceeding the clamp limit. This ensures that no premium thermal hardware is "wasted" mathematically when combined with efficient chips.
@@ -2670,7 +2670,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
    - Used in most phones with charging ≤ 100W
    - Lower current, simpler charging circuitry
 
-2. **Dual-Cell (High-Power Charging):** Two cells in series at **7.7V nominal** (2 × 3.85V)
+2. **Dual-Cell (High-Power Charging):** Two cells in series at **7.7V nominal** (2 * 3.85V)
    - Required for ultra-fast charging (≥120W) to reduce current and heat
    - Example: iQOO phones with 120W charging use 3500mAh @ 7.7V (equivalent to 7000mAh @ 3.85V)
    - Manufacturers typically report PER-CELL capacity, not equivalent capacity
@@ -2681,7 +2681,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 3. **High-Power Charging Heuristic:** If wired charging watts ≥ 120W → use **7.7V** (almost all ≥120W phones use dual-cell)
 4. **Default Fallback:** Otherwise → use **3.85V** (single-cell standard)
 
-*   **Formula:** `Wh = (mAh × V) / 1000` (Use explicit Wh if provided, otherwise calculate)
+*   **Formula:** `Wh = (mAh * V) / 1000` (Use explicit Wh if provided, otherwise calculate)
 *   **Formula:** `Energy_Score = 10 * (Wh - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min)` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ Battery_Energy_Wh_Max
     *   **Min Score (0.0):** ≤ Battery_Energy_Wh_Min
@@ -2703,7 +2703,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *   **B.1 SoC Efficiency (40% of Layer B)**
     *   **B.1.1 Process Node (50% of SoC)**
         *   *Why it matters:* Process node (nm) is the biggest determinant of a chip's power efficiency. Smaller transistors require less voltage to switch. Foundry differences are also critical (e.g., TSMC vs Samsung).
-        *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively (i.e., `(0.9 × Node_Score) + (0.1 × Foundry_Score)`). Do **not** use the full TDSI score (which additionally includes the physical body Parts A & B and the Load Bonus).
+        *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively (i.e., `(0.9 * Node_Score) + (0.1 * Foundry_Score)`). Do **not** use the full TDSI score (which additionally includes the physical body Parts A & B and the Load Bonus).
 
     *   **B.1.2 CPU Architecture Class (30% of SoC)**
         *   *Why it matters:* Efficiency cores (e.g., A520) handle 80% of daily tasks. We use the Architecture Efficiency Score (AES) to evaluate the weighted average efficiency of the entire CPU cluster, accurately predicting idle/low-load power.
@@ -2723,7 +2723,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
         
         > [!NOTE]
         > **Avoid Double Counting:** Process node benefits (e.g., 5nm vs 3nm) are handled in the **SoC Efficiency Score (Section 6.10)**, which is used in **Section B.1.1**. This GPU Efficiency Score focuses on the **architectural efficiency** and thermal stability of the GPU implementation itself, regardless of the node. Ideally, an efficient architecture on an efficient node gets high scores in both. A "hot" architecture on an efficient node would get a lower GPU score despite the good node score.
-    *   `SoC_Efficiency = (0.50 × Node) + (0.30 × CPU) + (0.20 × GPU)`
+    *   `SoC_Efficiency = (0.50 * Node) + (0.30 * CPU) + (0.20 * GPU)`
 
 *   **B.2 Display Efficiency (40% of Layer B)**
     *   **B.2.1 Panel Technology (35% of Display)**
@@ -2747,7 +2747,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
         > [!NOTE]
         > **Why Linear?** Power consumption scales roughly linearly with pixel count in the practical phone display range. While GPU and display power don't increase perfectly proportionally with megapixels due to modern optimizations, the relationship is close enough to linear that a simple linear formula provides an accurate approximation for battery efficiency scoring.
 
-    *   `Display_Efficiency = (0.35 × Panel_Tech) + (0.35 × Refresh) + (0.30 × Resolution)`
+    *   `Display_Efficiency = (0.35 * Panel_Tech) + (0.35 * Refresh) + (0.30 * Resolution)`
 
 *   **B.3 Connectivity Efficiency (10% of Layer B)**
     *   **B.3.1 Cellular Generation (70%)**
@@ -2783,7 +2783,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
         > [!NOTE]
         > **Why Inverted Scoring?** Newer WiFi standards (WiFi 6E, 7) use wider channels (160MHz, 320MHz) and higher frequency bands (6GHz) which require more power to maintain. While they provide better performance, they reduce battery efficiency. See **Section 7.3** for feature-based scoring.
 
-    *   `Connectivity_Efficiency = (0.70 × Cellular) + (0.30 × WiFi)`
+    *   `Connectivity_Efficiency = (0.70 * Cellular) + (0.30 * WiFi)`
 
 *   **B.4 Thermal Efficiency (10% of Layer B)**
     *   *Why it matters:* Heat increases internal resistance and leakage currents. Good cooling preserves battery efficiency.
@@ -2792,7 +2792,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
     > [!NOTE]
     > The **same TDSI score** is used in both contexts because thermal management capability is an objective hardware characteristic. The different impact on performance vs. battery efficiency is handled through **weighting**.
 
-*   **Final Layer B Formula:** `HEI = (0.40 × SoC) + (0.40 × Display) + (0.10 × Connectivity) + (0.10 × Thermal)`
+*   **Final Layer B Formula:** `HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal)`
 
 **Step 3: Calculate Layer C (Software Optimization Index - 20%)**
 *Description:* This layer accounts for the efficiency of the operating system and the impact of pre-installed background bloatware.
@@ -2818,10 +2818,10 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
     *   *Why it matters:* Bloatware often runs hidden background processes causing "phantom" standby drain.
     *   *Reference:* Use the System Cleanliness & Control (SCC) score from **Section 5.2**.
 
-*   **Final Layer C Formula:** `SOI = (0.60 × OS_Age) + (0.40 × SCC)`
+*   **Final Layer C Formula:** `SOI = (0.60 * OS_Age) + (0.40 * SCC)`
 
 **Step 4: Calculate Predicted Score**
-*   **Formula:** `Predicted_Score = (0.45 × Energy_Score) + (0.35 × HEI) + (0.20 × SOI)`
+*   **Formula:** `Predicted_Score = (0.45 * Energy_Score) + (0.35 * HEI) + (0.20 * SOI)`
 
 
 ### 🔹 8.2 Wired Charging Speed
@@ -2975,7 +2975,7 @@ Boosters are applied strictly at the **subsection** level. This ensures that a r
     *   *Excluded Subsections:* **3.1** (SoC Performance), **3.2** (CPU Efficiency), **5.1** (Battery Capacity).
 *   **No Overlap:** The justification MUST NOT overlap with any existing subsection evaluations. For example, if a camera's HDR capability is already scored in Subsection 4.16, "HDR performance" cannot be used as a justification for a booster on that same subsection or any other subsection.
 *   **Complete Assessment:** Before applying a booster, verify that the feature is not already scored in another section (e.g., Video Codecs vs. ISP tuning). Double-counting features is strictly prohibited.
-*   **Booster Clamping Rule:** The application of one or more boosters can never result in a `Final Score` higher than **10.0** or lower than **0.0**. If the mathematical calculation (`Predicted Score × Multiplier`) exceeds these boundaries, the result must be clamped to the 0–10 range. This ensures that expert adjustments remain within the same normalized scale as the standard technical metrics.
+*   **Booster Clamping Rule:** The application of one or more boosters can never result in a `Final Score` higher than **10.0** or lower than **0.0**. If the mathematical calculation (`Predicted Score * Multiplier`) exceeds these boundaries, the result must be clamped to the 0–10 range. This ensures that expert adjustments remain within the same normalized scale as the standard technical metrics.
 
 ### 11.B Justification Logic
 A valid booster requires a clear logical chain linking a hidden technical feature to an observed result.

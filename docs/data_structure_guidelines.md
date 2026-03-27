@@ -163,7 +163,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
 -   `"Section #"`: Single booster (e.g., `"11.1"`).
 -   `"Section # + Section #"`: Multiple boosters (e.g., `"11.1 + 11.2"`).
 
-**Consistency Rule:** When a subsection references multiple boosters, all their multipliers are applied in sequence: `scores.final.value = predicted × booster_11.1 × booster_11.2 × ...`
+**Consistency Rule:** When a subsection references multiple boosters, all their multipliers are applied in sequence: `scores.final.value = predicted * booster_11.1 * booster_11.2 * ...`
 - **Clamping Rule:** The final result of any booster-calculated score MUST be clamped at its boundaries: **minimum 0.0 and maximum 10.0**. A booster can never push a score beyond the normalized range for ranking.
 
 **Confidence Levels (`confidence`):**
@@ -230,7 +230,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
   "scores": {
     "predicted": 6.5,              // sum of all subscores
     "final": {
-      "value": 6.83,               // Definitive score (Predicted x Booster multiplier of 1.05)
+      "value": 6.83,               // Definitive score (Predicted * Booster multiplier of 1.05)
       "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
       "booster": "11.5",           // Section reference to the booster, or "No"
       "confidence": "N/A"          // Confidence level, N/A for Predictor; High/Medium/Low for 2 Benchmarks
