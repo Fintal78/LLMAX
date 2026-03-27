@@ -33,9 +33,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   //                                  Calculation: 
   //                                  If no booster is applied, value = predicted score, i.e. scores.predicted (multiplier is 1.0).
   //                                  If there is one booster:
-  //                                  value = scores.predicted × booster_multiplier
+  //                                  value = scores.predicted * booster_multiplier
   //                                  If there are several boosters:
-  //                                  value = scores.predicted × booster_multiplier_1 × booster_multiplier_2 × ... 
+  //                                  value = scores.predicted * booster_multiplier_1 * booster_multiplier_2 * ... 
   //                                  Each booster multiplier comes from the corresponding Section 11 entry.
   //                                  CLAMPING: The result of this calculation is ALWAYS clamped to [0.00, 10.00].
   //     "method_used": "Predictor" → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "5.4",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-25"
+    "last_updated": "2026-03-27"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -182,7 +182,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
       "scores": {
         "predicted": 9.20,
-        // SCORING GUIDELINE: scores.predicted = (0.6 × frame_material.subscore) + (0.4 × back_material.subscore). Source: §1.1 Materials formula for Materials Score.
+        // SCORING GUIDELINE: scores.predicted = (0.6 * frame_material.subscore) + (0.4 * back_material.subscore). Source: §1.1 Materials formula for Materials Score.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 9.20,
@@ -227,7 +227,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
       "scores": {
         "predicted": 9.50,
-        // SCORING GUIDELINE: scores.predicted = (0.5 × dust_protection_digit.subscore) + (0.5 × water_protection_digit.subscore). Source: §1.2 IP Score formula.
+        // SCORING GUIDELINE: scores.predicted = (0.5 * dust_protection_digit.subscore) + (0.5 * water_protection_digit.subscore). Source: §1.2 IP Score formula.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 9.50,
@@ -293,7 +293,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 3.50
-        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 × ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 * ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
       },
       "scores": {
         "predicted": 3.50,
@@ -314,7 +314,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 1.64
-        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 × ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 * ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
       },
       "scores": {
         "predicted": 1.64,
@@ -335,7 +335,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 0.00
-        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 × (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 * (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
       },
       "scores": {
         "predicted": 0.00,
@@ -407,18 +407,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.73
-        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: Peak_Score = 10 × (log(peak_nits) − log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) − log(Display_Brightness_Nits_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: Peak_Score = 10 * (log(peak_nits) − log(Display_Brightness_Nits_Min)) / (log(Display_Brightness_Nits_Max) − log(Display_Brightness_Nits_Min)), clamped 0–10.
       },
       "hbm_nits": {
         "value": 1500,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.21
-        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 × (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, then set "value" to "Not found" and use the formula with the fallback value hbm_nits = peak_nits / 1.5.
+        // SCORING GUIDELINE: Apply the Section 2.2 logarithmic formula: HBM_Score = 10 * (log(hbm_nits) − log(Display_HBM_Nits_Min)) / (log(Display_HBM_Nits_Max) − log(Display_HBM_Nits_Min)), clamped 0–10. Fallback: if hbm_nits is unavailable, then set "value" to "Not found" and use the formula with the fallback value hbm_nits = peak_nits / 1.5.
       },
       "scores": {
         "predicted": 7.37,
-        // SCORING GUIDELINE: scores.predicted = (0.7 × hbm_nits.subscore) + (0.3 × peak_nits.subscore)
+        // SCORING GUIDELINE: scores.predicted = (0.7 * hbm_nits.subscore) + (0.3 * peak_nits.subscore)
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 7.37,
@@ -435,14 +435,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 10.00
-        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 × (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. If dci_p3_percent is not available from any source then set "value" to "Not found" and subscore to "N/A". Then use the "srgb_percent" block below as fallback scoring. 
+        // SCORING GUIDELINE: Apply the Section 2.3 linear formula: Score = 10 * (dci_p3_percent − Display_P3_Coverage_Percent_Min) / (Display_P3_Coverage_Percent_Max − Display_P3_Coverage_Percent_Min), clamped 0–10. If dci_p3_percent is not available from any source then set "value" to "Not found" and subscore to "N/A". Then use the "srgb_percent" block below as fallback scoring. 
       },
       "srgb_percent": {
         "value": 100,
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": "N/A"
-        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent × 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
+        // SCORING GUIDELINE: sRGB coverage is a fallback data source only. ONLY when dci_p3_percent is not available from any source use the formula above with DCI-P3_estimate = min(srgb_percent * 0.75, 100) to calculate the subscore of this block. When dci_p3_percent is available and the subscore was calculated in the previous block then set the subscore of this block to "N/A".
       },
       "scores": {
         "predicted": 10.00,
@@ -513,7 +513,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.43
-        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 × (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
+        // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 * (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
         // ONLY if pixels_per_inch is NOT available derive PPI: pixels_per_inch = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
         // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
@@ -536,7 +536,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 7.55
-        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 × (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.6 logarithmic formula: Score = 10 * (log(maximum_refresh_rate_hz) − log(Display_Refresh_Rate_Hz_Min)) / (log(Display_Refresh_Rate_Hz_Max) − log(Display_Refresh_Rate_Hz_Min)), clamped 0–10.
       },
       "scores": {
         "predicted": 7.55,
@@ -557,7 +557,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 5.00,
-        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 × (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.7 logarithmic formula: Score = 10 * (log(touch_sampling_rate_hz) − log(Display_Touch_Sampling_Hz_Min)) / (log(Display_Touch_Sampling_Hz_Max) − log(Display_Touch_Sampling_Hz_Min)), clamped 0–10.
       },
       "scores": {
         "predicted": 5.00,
@@ -578,7 +578,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 8.64
-        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 × ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.8 linear formula: Score = 10 * ((screen_to_body_ratio_percent − Display_SBR_Percent_Min) / (Display_SBR_Percent_Max − Display_SBR_Percent_Min)), clamped 0–10.
         // FALLBACK: If "screen_to_body_ratio_percent" is NOT available from primary sources, derive it using: (Active Display Area / Total Frontal Area) * 100. That should be well documented and justified via "source" and "exact_extract", if needed by providing multiple sources and extracts (stored in "source" and "exact_extract" and separated via commas). 
       },
       "scores": {
@@ -600,7 +600,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 6.93
-        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 × ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
+        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 * ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
       },
       "scores": {
         "predicted": 6.93,
@@ -630,7 +630,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 4.07
-        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 × (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", all fields MUST be "N/A".
+        // SCORING GUIDELINE: Only evaluated if flicker_presence.value = "Yes". Apply the Section 2.10.2 logarithmic formula: Score = 10 * (log(pulse_width_modulation_dimming_hertz) − log(Display_PWM_Hz_Min)) / (log(Display_PWM_Hz_Max) − log(Display_PWM_Hz_Min)), clamped 0–10. If flicker_presence.value = "No", all fields MUST be "N/A".
       },
       "scores": {
         "predicted": 4.07,
@@ -655,7 +655,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "https://www.dxomark.com/smartphones/#display", // if the score is available for the device you MUST put the exact url here
         "exact_extract": "Proof pending",
         "subscore": 9.34
-        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 × (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 * (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
@@ -675,7 +675,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 
         // These inputs are used to calculate the overall predicted_score (Method C):
         "predicted_score": 7.51,
-        // SCORING GUIDELINE: predicted_score = Sum(subscore_X × weight_X) for all 8 entries above. 
+        // SCORING GUIDELINE: predicted_score = Sum(subscore_X * weight_X) for all 8 entries above. 
 
         // Sections 2.8 (Screen-to-Body Ratio) and 2.9 (Screen Size) are excluded because DXOMARK does not evaluate physical dimensions.
         // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
@@ -688,7 +688,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "method_b_neighbor_interpolation": {
         // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
         // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the method_c_prediction_model weights and sub-section predicted scores, excluding the target device itself.
-        //         Distance = √( Sum( weight_i × (SubScore_Target_i − SubScore_Neighbor_i)² ) )
+        //         Distance = √( Sum( weight_i * (SubScore_Target_i − SubScore_Neighbor_i)² ) )
         //         Where 'i' iterates over each of the 8 method_c_prediction_model entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
         //         Search space: all phones that have a known DXOMARK Display score (Method A), excluding the target device itself.
         // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
@@ -726,7 +726,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "correction_ratio": 0.9991,
         // SCORING GUIDELINE: method_c_prediction_model.predicted_score / avg_predicted_neighbors.
         "interpolated_score": 9.29
-        // SCORING GUIDELINE: correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
       },
 
       "scores": {
@@ -828,7 +828,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 7.50,
-          // SCORING GUIDELINE: scores.predicted = (0.5 × audio_format_decode.subscore) + (0.5 × spatial_audio_rendering.subscore).
+          // SCORING GUIDELINE: scores.predicted = (0.5 * audio_format_decode.subscore) + (0.5 * spatial_audio_rendering.subscore).
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 7.50,
@@ -914,7 +914,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Pro Mic Support": []
           },
           "subscore": 5.00
-          // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features × 2.50 = 5.00.
+          // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features * 2.50 = 5.00.
           //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
           //   • Wind Noise Reduction: Dedicated toggle or feature to filter wind rumble
           //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
@@ -924,7 +924,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 6.80,
-          // SCORING GUIDELINE: scores.predicted = (0.30 × microphone_hardware_count.subscore) + (0.30 × recording_channels_modes.subscore) + (0.40 × advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
+          // SCORING GUIDELINE: scores.predicted = (0.30 * microphone_hardware_count.subscore) + (0.30 * recording_channels_modes.subscore) + (0.40 * advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 6.80,
@@ -1058,7 +1058,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.11
-          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 × (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
+          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 * (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
         },
         "scores": {
           "predicted": 8.11,
@@ -1079,7 +1079,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 6.40
-          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 × (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 * (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
         },
         "scores": {
           "predicted": 6.40,
@@ -1100,7 +1100,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
+          // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
         },
         "scores": {
           "predicted": 10.00,
@@ -1168,18 +1168,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 7.78
-          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 × (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 * (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "ultrawide_sensor_size": {
           "value": "1/2.0",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 × (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 * (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
         },
         "scores": {
           "predicted": 8.67,
-          // SCORING GUIDELINE: scores.predicted = (0.60 × field_of_view_degrees.subscore) + (0.40 × ultrawide_sensor_size.subscore) if presence = true; otherwise scores.predicted = 0.00. Source: UCC Formula of Section 4.5.
+          // SCORING GUIDELINE: scores.predicted = (0.60 * field_of_view_degrees.subscore) + (0.40 * ultrawide_sensor_size.subscore) if presence = true; otherwise scores.predicted = 0.00. Source: UCC Formula of Section 4.5.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 8.67,
@@ -1196,7 +1196,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 6.99
-          // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 × (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
+          // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 * (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
         },
         "scores": {
           "predicted": 6.99,
@@ -1229,11 +1229,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 7.31
-            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 × (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
+            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 * (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
           },
           "scores": {
             "predicted": 8.39,
-            // SCORING GUIDELINE: scores.predicted (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 × ultrawide_autofocus.subscore) + (0.60 × min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
+            // SCORING GUIDELINE: scores.predicted (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 * ultrawide_autofocus.subscore) + (0.60 * min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
             "final": {
               // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
               "value": 8.39,
@@ -1261,7 +1261,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
             // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only millimeters focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
             // IMPORTANT: Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
-            // CALCULATION: Zoom_Score = 10 × (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
+            // CALCULATION: Zoom_Score = 10 * (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
             // If telemacro_presence = false, then all fields of this block must be "N/A".
           },
           "telemacro_min_focus_distance_cm": {
@@ -1271,12 +1271,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "subscore": "N/A"
             // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
             // WHERE TO FIND IT: Look for "minimum focus distance", "closest focus distance" or "macro focus from X cm" specifically for the telephoto lens.
-            // CALCULATION: MFD_Score = 10 × (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
+            // CALCULATION: MFD_Score = 10 * (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
             // If telemacro_presence = false, then all fields of this block must be "N/A".
           },
           "scores": {
             "predicted": 0.00,
-            // SCORING GUIDELINE: scores.predicted (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 × (0.70 × telemacro_optical_x.subscore + 0.30 × telemacro_min_focus_distance_cm.subscore).
+            // SCORING GUIDELINE: scores.predicted (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 * (0.70 * telemacro_optical_x.subscore + 0.30 * telemacro_min_focus_distance_cm.subscore).
             "final": {
               // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
               "value": 0.00,
@@ -1293,7 +1293,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "N/A",
             "exact_extract": "N/A",
             "subscore": 0.00
-            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 × dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
+            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 * dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
           },
           "scores": {
             "predicted": 0.00,
@@ -1353,7 +1353,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 × (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
+          // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 * (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
         },
         "scores": {
           "predicted": 10.00,
@@ -1456,7 +1456,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 7.95,
-          // SCORING GUIDELINE: scores.predicted = (0.40 × professional_codec_support.subscore) + (0.35 × log_color_profile_support.subscore) + (0.25 × color_bit_depth.subscore).
+          // SCORING GUIDELINE: scores.predicted = (0.40 * professional_codec_support.subscore) + (0.35 * log_color_profile_support.subscore) + (0.25 * color_bit_depth.subscore).
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 7.95,
@@ -1481,11 +1481,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           ],
           "source": "TBD",
           "exact_extract": "Proof pending"
-          // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution × FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
+          // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution * FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
         },
         "scores": {
           "predicted": 8.55,
-          // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels × frames_per_second. Apply the Section 4.12 logarithmic formula: scores.predicted = 10 × (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set scores.predicted to 0.00.
+          // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels * frames_per_second. Apply the Section 4.12 logarithmic formula: scores.predicted = 10 * (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set scores.predicted to 0.00.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 8.55,
@@ -1504,7 +1504,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 4.72,
-          // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 × (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
+          // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.72,
@@ -1586,7 +1586,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.9 (Rear Video Frame Rate). Identify the maximum Frames per second (FPS) specifically at the resolution listed in "4_15_1_video_resolution.maximum_resolution", capped at 4K. For example, if the device scored 8K in "4_15_1_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_15_1_video_resolution", evaluate its 1080p FPS. Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 × (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
+            // SCORING GUIDELINE: Mirroring Section 4.9 (Rear Video Frame Rate). Identify the maximum Frames per second (FPS) specifically at the resolution listed in "4_15_1_video_resolution.maximum_resolution", capped at 4K. For example, if the device scored 8K in "4_15_1_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_15_1_video_resolution", evaluate its 1080p FPS. Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 * (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
           }
         },
         "4_15_3_video_hdr": {
@@ -1661,7 +1661,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 9.80,
-          // SCORING GUIDELINE: scores.predicted = (0.35 × 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 × 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 × 4_15_3_video_hdr.supported_formats.subscore) + (0.10 × 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.10 × 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
+          // SCORING GUIDELINE: scores.predicted = (0.35 * 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 * 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 * 4_15_3_video_hdr.supported_formats.subscore) + (0.10 * 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.10 * 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 9.80,
@@ -1923,7 +1923,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "scores": {
           "predicted": 4.20,
-          // SCORING GUIDELINE: scores.predicted = (0.40 × 5_2_1_preinstalled_app_load.subscore) + (0.30 × 5_2_2_user_control.subscore) + (0.30 × 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Master Skin Lookup Table directly.
+          // SCORING GUIDELINE: scores.predicted = (0.40 * 5_2_1_preinstalled_app_load.subscore) + (0.30 * 5_2_2_user_control.subscore) + (0.30 * 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Master Skin Lookup Table directly.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.20,
@@ -2080,7 +2080,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
           "subscore": 8.63
-          // SCORING GUIDELINE: Apply the Section 6.1 Method A logarithmic normalization: Score = 10 × (log(method_a_geekbench_6_multi_core_benchmark.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no Geekbench score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: Apply the Section 6.1 Method A logarithmic normalization: Score = 10 * (log(method_a_geekbench_6_multi_core_benchmark.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no Geekbench score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2165,7 +2165,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: Raw Performance Throughput Score (PTS) = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
           },
           "predicted_score": 7.40
-        // SCORING GUIDELINE (Section 6.1 Method C): pts = raw_performance_throughput_score.value. Formula: 10 × (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
+        // SCORING GUIDELINE (Section 6.1 Method C): pts = raw_performance_throughput_score.value. Formula: 10 * (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
       },
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
@@ -2204,7 +2204,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "correction_ratio": 1.0000,
           // SCORING GUIDELINE: method_c_throughput_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.60
-          // SCORING GUIDELINE: correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
 
         "scores": {
@@ -2263,16 +2263,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             },
             "frequency_adjusted_core_score": {
               "value": 8.0000,
-              // GUIDELINE: architecture.subscore × actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+              // GUIDELINE: architecture.subscore * actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
             },
           },
         "single_thread_raw_score": {
           "value": 8.0000,
-          "description": "Single-Thread Raw Score (STRS = CAS × FSF)"
+          "description": "Single-Thread Raw Score (STRS = CAS * FSF)"
           // GUIDELINE: strs = strongest_core.frequency_adjusted_core_score.value.
         },
         "predicted_score": 5.36
-        // SCORING GUIDELINE (Section 6.2 Method C): strs = single_thread_raw_score.value. Formula: 10 × (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
+        // SCORING GUIDELINE (Section 6.2 Method C): strs = single_thread_raw_score.value. Formula: 10 * (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
         // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
       },
 
@@ -2313,7 +2313,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "correction_ratio": 1.0000,
           // SCORING GUIDELINE (Section 6.2 Method B Step 2): method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 7.82
-          // SCORING GUIDELINE (Section 6.2 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE (Section 6.2 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
         "scores": {
           "predicted": 5.36,
@@ -2353,7 +2353,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://www.3dmark.com/search",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 1850",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 6.3 Method A formula: SGS_Bench = 10 × (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: Apply the Section 6.3 Method A formula: SGS_Bench = 10 * (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2412,7 +2412,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "correction_ratio": 1.0753,
           // SCORING GUIDELINE (Section 6.3 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
-          // SCORING GUIDELINE (Section 6.3 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE (Section 6.3 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
         "scores": {
           "predicted": 10.00,
@@ -2467,7 +2467,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_b_neighbor_interpolation": {
           // SCORING GUIDELINE (Section 6.4 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Section 6.4 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.40 × (AI_Diff)² + 0.25 × (RAM_Tech_Diff)² + 0.15 × (GPU_Diff)² + 0.10 × (RAM_Cap_Diff)² + 0.10 × (Process_Diff)² )
+          //         Distance = √( 0.40 * (AI_Diff)² + 0.25 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (RAM_Cap_Diff)² + 0.10 * (Process_Diff)² )
           // Step 2 (Section 6.4 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -2503,7 +2503,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "correction_ratio": 1.0256,
           // SCORING GUIDELINE (Section 6.4 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
-          // SCORING GUIDELINE (Section 6.4 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE (Section 6.4 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
         "scores": {
           "predicted": 10.00,
@@ -3110,7 +3110,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "layer_b_hardware_efficiency_score": {
             "value": 8.00
-            // SCORING GUIDELINE: SoC efficiency x Display efficiency.
+            // SCORING GUIDELINE: SoC efficiency * Display efficiency.
           },
           "layer_c_software_optimization_score": {
             "value": 9.00
@@ -3127,7 +3127,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_b_neighbor_interpolation": {
           // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Section 8.1 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.45 × (Diff_LayerA)² + 0.35 × (Diff_LayerB)² + 0.20 × (Diff_LayerC)² )
+          //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
           // Step 2 (Section 8.1 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -3162,7 +3162,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "correction_ratio": 1.0030,
           // SCORING GUIDELINE (Section 8.1 Method B Step 2): method_c_technical_predictive_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 9.26
-          // SCORING GUIDELINE (Section 8.1 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE (Section 8.1 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
         },
 
         "scores": {
@@ -3307,7 +3307,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.80
-          // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 × (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
+          // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 * (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
         },
         "scores": {
           "predicted": 0.80,
