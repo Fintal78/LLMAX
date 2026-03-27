@@ -659,7 +659,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
-      // METHOD C — Predicted Calculation (Tertiary / baseline for Method B)
+      // METHOD C — Weighted Prediction Model (Tertiary / baseline for Method B)
       // ═══════════════════════════════════════════════════════════════════════════
       
       "method_c_prediction_model": {
@@ -2165,8 +2165,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: Raw Performance Throughput Score (PTS) = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
           },
           "predicted_score": 7.40
-          // SCORING GUIDELINE (Section 6.1 Method C): pts = raw_performance_throughput_score.value. Formula: 10 × (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
-        },
+        // SCORING GUIDELINE (Section 6.1 Method C): pts = raw_performance_throughput_score.value. Formula: 10 × (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
+      },
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2236,38 +2236,45 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
           "subscore": 7.86
-          // SCORING GUIDELINE: Apply the Section 6.2 Method A logarithmic normalization: Score = 10 × (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10. (Constants: Min=400, Max=3500).
+          // SCORING GUIDELINE: Apply the Section 6.2 Method A logarithmic normalization: Score = 10 * (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Single-Thread Efficiency Model (Tertiary / baseline for Method B)
+        // METHOD C — Single-Thread Efficiency Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_efficiency_model": {
           // GUIDELINE: Evaluation focuses on the strongest core in the SoC (System on Chip) (typically the Prime core, i.e. clusters[0]).
           "strongest_core": {
             "architecture": {
               "value_path": "6_1_0_system_on_chip_reference.clusters[0].architecture",
+              // GUIDELINE: Absolute path to the architecture name in Section 6.1.0.
               "value": "Cortex-X4",
+              // GUIDELINE: Inherits architecture name from the referenced §6.1.0 cluster.
               "subscore": 8.00,
+              // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Master Table by matching architecture.value.
               "reference_frequency_ghz": 3.30
-              // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching the architecture name (value) in the §6.1.0 Master Table.
+              // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Master Table by matching architecture.value.
             },
             "actual_frequency_ghz": {
               "value_path": "6_1_0_system_on_chip_reference.clusters[0].actual_frequency_ghz",
+              // GUIDELINE: Absolute path to the actual clock frequency in Section 6.1.0.
               "value": 3.3
+              // GUIDELINE: Inherits frequency from the referenced §6.1.0 cluster.
             },
-                "frequency_adjusted_core_score": {
-                  "value": 8.0000,
-                  // GUIDELINE: architecture.subscore × actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-                },
+            "frequency_adjusted_core_score": {
+              "value": 8.0000,
+              // GUIDELINE: architecture.subscore × actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+            },
           },
-          "single_thread_raw_score": {
-            "value": 8.0000,
-            "description": "Single-Thread Raw Score (STRS = CAS * FSF)"
-          },
-          "predicted_score": 5.36
-          // SCORING GUIDELINE (Section 6.2 Method C): strs = single_thread_raw_score.value. Formula: 10 × (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
+        "single_thread_raw_score": {
+          "value": 8.0000,
+          "description": "Single-Thread Raw Score (STRS = CAS × FSF)"
+          // GUIDELINE: strs = strongest_core.frequency_adjusted_core_score.value.
         },
+        "predicted_score": 5.36
+        // SCORING GUIDELINE (Section 6.2 Method C): strs = single_thread_raw_score.value. Formula: 10 × (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
+        // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+      },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
@@ -2287,11 +2294,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The neighbor's Method A geekbench_6_single_core_benchmark.subscore.
             },
             {
+              // Neighbor2
               "device_id_2": "oneplus_12",
               "predicted_score_2": 5.34,
               "benchmark_score_2": 7.75
             },
             {
+              // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "predicted_score_3": 5.38,
               "benchmark_score_3": 7.90
@@ -2306,7 +2315,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "interpolated_score": 7.82
           // SCORING GUIDELINE (Section 6.2 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
         },
-
         "scores": {
           "predicted": 5.36,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_efficiency_model.predicted_score.
@@ -2345,7 +2353,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://www.3dmark.com/search",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 1850",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 6.3 Method A formula: SGS_Bench = 10 × (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. (Constants: Min=500, Max=1800).
+          // SCORING GUIDELINE: Apply the Section 6.3 Method A formula: SGS_Bench = 10 × (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10.
+        },
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD C — Graphics Component Prediction Model (Tertiary / baseline for Method B)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_c_component_model": {
+          "standard_graphics_score": {
+            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.standard_graphics",
+            "value": 10.00,
+            "description": "Architecture baseline performance"
+          },
+          "ray_tracing_score": {
+            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.ray_tracing",
+            "value": 10.00,
+            "description": "Hardware ray tracing capability"
+          },
+          "predicted_score": 9.30
+          // SCORING GUIDELINE (Section 6.3 Method C): Weighted average of standard and ray tracing graphics scores.
+          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2366,11 +2393,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The neighbor's Method A 3d_mark_steel_nomad_light_benchmark.subscore.
             },
             {
+              // Neighbor2
               "device_id_2": "oneplus_12",
               "predicted_score_2": 9.28,
               "benchmark_score_2": 9.95
             },
             {
+              // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "predicted_score_3": 9.32,
               "benchmark_score_3": 10.00
@@ -2384,25 +2413,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE (Section 6.3 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
           // SCORING GUIDELINE (Section 6.3 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Component Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_component_model": {
-          "standard_graphics_score": {
-            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.standard_graphics",
-            "value": 10.00,
-            "description": "Architecture baseline performance"
-          },
-          "ray_tracing_score": {
-            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.ray_tracing",
-            "value": 10.00,
-            "description": "Hardware ray tracing capability"
-          },
-          "predicted_score": 9.30
-          // SCORING GUIDELINE (Section 6.3 Method C): Weighted average of standard and ray tracing graphics scores.
-          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
         "scores": {
           "predicted": 10.00,
@@ -2436,6 +2446,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score. (Constants: Min=500, Max=4500). Clamped to 10.0.
         },
 
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_c_component_model": {
+          "ai_hardware_score": {
+            "value_path": "6_1_0_system_on_chip_reference.ai_performance_score",
+            "value": 10.00,
+            "description": "NPU baseline performance (Sec 6.4 reference table)"
+          },
+          "predicted_score": 10.00
+          // SCORING GUIDELINE (Section 6.4 Method C): ai_hardware_score.value scaled via Section 6.4 Method C formula.
+          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+        },
+
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2457,12 +2482,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The neighbor's Method A geekbench_ai_quantized_benchmark.subscore.
             },
             {
+              // Neighbor2
               "device_id_2": "oneplus_12",
               "euclidean_distance_2": 0.0800,
               "predicted_score_2": 9.70,
               "benchmark_score_2": 9.90
             },
             {
+              // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "euclidean_distance_3": 0.1000,
               "predicted_score_3": 9.80,
@@ -2470,25 +2497,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           ],
           "avg_predicted_neighbors": 9.7500,
+          // SCORING GUIDELINE (Section 6.4 Method B Step 2): (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 9.9667,
           // SCORING GUIDELINE (Section 6.4 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0256,
           // SCORING GUIDELINE (Section 6.4 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
           // SCORING GUIDELINE (Section 6.4 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Static Component Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_component_model": {
-          "ai_hardware_score": {
-            "value_path": "6_1_0_system_on_chip_reference.ai_performance_score",
-            "value": 10.00,
-            "description": "NPU baseline performance (Sec 6.4 reference table)"
-          },
-          "predicted_score": 10.00
-          // PREDICTED_SCORE_GUIDELINE: ai_hardware_score.value scaled via Section 6.4 Method C formula.
         },
         "scores": {
           "predicted": 10.00,
@@ -3084,6 +3099,27 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: Apply Section 8.1 Method A normalization (0-10) for PhoneArena.
           }
         },
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_c_technical_predictive_model": {
+          "layer_a_energy_score": {
+            "value": 8.50
+            // SCORING GUIDELINE: Theoretical capacity vs drain.
+          },
+          "layer_b_hardware_efficiency_score": {
+            "value": 8.00
+            // SCORING GUIDELINE: SoC efficiency x Display efficiency.
+          },
+          "layer_c_software_optimization_score": {
+            "value": 9.00
+            // SCORING GUIDELINE: OS level power management.
+          },
+          "predicted_score": 8.43
+          // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C.
+          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+        },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
@@ -3106,12 +3142,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
             },
             {
+              // Neighbor2
               "device_id_2": "oneplus_12",
               "euclidean_distance_2": 0.0800,
               "predicted_score_2": 8.45,
               "benchmark_score_2": 9.40
             },
             {
+              // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "euclidean_distance_3": 0.1000,
               "predicted_score_3": 8.35,
@@ -3125,27 +3163,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE (Section 8.1 Method B Step 2): method_c_technical_predictive_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 9.26
           // SCORING GUIDELINE (Section 8.1 Method B Step 3): correction_ratio × avg_benchmark_neighbors. This is the final Method B score.
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Technical Predictive Model (Tertiary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_technical_predictive_model": {
-          "layer_a_energy_score": {
-            "value": 8.50
-            // SCORING GUIDELINE: Theoretical capacity vs drain.
-          },
-          "layer_b_hardware_efficiency_score": {
-            "value": 8.00
-            // SCORING GUIDELINE: SoC efficiency x Display efficiency.
-          },
-          "layer_c_software_optimization_score": {
-            "value": 9.00
-            // SCORING GUIDELINE: OS level power management.
-          },
-          "predicted_score": 8.43
-          // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C.
-          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
 
         "scores": {
