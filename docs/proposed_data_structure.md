@@ -655,7 +655,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "https://www.dxomark.com/smartphones/#display", // if the score is available for the device you MUST put the exact url here
         "exact_extract": "Proof pending",
         "subscore": 9.34
-        // SCORING GUIDELINE: Apply the Section 2.11 Method A logarithmic normalization: Score = 10 * (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. DXOMARK scores cover readability, colour, video, motion, touch. If no DXOMARK score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        //     - WHERE TO FIND IT: Search for "[Device Name] DXOMARK display score" on dxomark.com.
+        //     - EXTRACTION RULE: Use the "Overall Display Score". Ensure category is "Display" (not Camera/Selfie/Audio).
+        // SCORING GUIDELINE: Score = 10 * (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
@@ -700,9 +702,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "euclidean_distance_1": 0.0500,
             // GUIDELINE: Weighted Euclidean distance from Step 1.
             "predicted_score_1": 7.50,
-            // GUIDELINE: The neighbor's own Method C predicted_score (overall display).
+            // GUIDELINE: The neighbor's own Method C predicted_score.
             "benchmark_score_1": 9.30
-            // GUIDELINE: The neighbor's Method A dxomark_display_benchmark.subscore.
+            // GUIDELINE: The neighbor's Method A subscore.
           },
           {
             // Neighbor2
@@ -724,9 +726,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "avg_benchmark_neighbors": 9.3000,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
         "correction_ratio": 0.9991,
-        // SCORING GUIDELINE: method_c_prediction_model.predicted_score / avg_predicted_neighbors.
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model.predicted_score / avg_predicted_neighbors.
         "interpolated_score": 9.29
-        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
@@ -1854,9 +1856,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending"
           // DATA GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
-          // SCORING GUIDELINE: ALL subscores below (PAL, UC, SA) MUST be extracted directly from this Master Skin Lookup Table based on the `skin` value.
+          // SCORING GUIDELINE: ALL subscores below (PAL, UC, SA) MUST be extracted directly from this Skin Lookup Table based on the `skin` value.
           //
-          // MASTER SKIN LOOKUP TABLE:
+          // SKIN LOOKUP TABLE:
           // | Platform / Skin                           | PAL Score (40%) | UC Score (30%) | SA Score (30%) | *Composite* |
           // | :---------------------------------------- | :-------------: | :------------: | :------------: | :---------: |
           // | **iOS**                                   | **10.0**        | **10.0**       | **10.0**       | *10.00*     |
@@ -1891,7 +1893,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Multiple pre-loaded social media apps, games, and partner software.
           //   • "Tier 4: Extreme Bloat"              →  0.00
           //     Definition: Dozens of third-party apps and promotional "Hot Apps" folders out-of-box.
-          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
+          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
         "5_2_2_user_control": {
           "value": "Tier 2: Disabling Only",
@@ -1905,7 +1907,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Many apps cannot be deleted but can be natively hidden and "disabled".
           //   • "Tier 3: Highly Restrictive"         →  0.00
           //     Definition: Core bloatware runs in the background and cannot be turned off normally.
-          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
+          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
         "5_2_3_system_ads": {
           "value": "Tier 2: Opt-Out / Occasional",
@@ -1919,11 +1921,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Native app promotions exist but can be permanently deactivated.
           //   • "Tier 3: Intrusive / Persistent"     →  0.00
           //     Definition: Mandatory UI ads and lock screen promotions that cannot be disabled.
-          // IMPORTANT: Subscore MUST be extracted from the Master Skin Lookup Table above for autonomous scoring.
+          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
         "scores": {
           "predicted": 4.20,
-          // SCORING GUIDELINE: scores.predicted = (0.40 * 5_2_1_preinstalled_app_load.subscore) + (0.30 * 5_2_2_user_control.subscore) + (0.30 * 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Master Skin Lookup Table directly.
+          // SCORING GUIDELINE: scores.predicted = (0.40 * 5_2_1_preinstalled_app_load.subscore) + (0.30 * 5_2_2_user_control.subscore) + (0.30 * 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Skin Lookup Table directly.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.20,
@@ -2005,7 +2007,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     },
     "6_processing_power_and_performance": {
       
-      // █ 6.1.0 MODULE: CPU CORE ARCHITECTURE MASTER SCORING TABLE
+      // █ 6.1.0 MODULE: CPU CORE ARCHITECTURE SCORING TABLE
       // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency).
       // 
       // | CPU Core Architecture        | Score | Ref Freq |
@@ -2032,40 +2034,38 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // -------------------------------------------------------------------------
 
       "6_1_0_system_on_chip_reference": {
-        // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts, architectural types, and actual clock frequencies. This module provides the primary raw data for all CPU performance scoring models.
+        // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts and architectural types.
         "value_path": "identity.hardware_configuration.chipset.value",
+        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "value": "Snapdragon 8 Gen 3",
+        // GUIDELINE: Inherits the chipset model name from the device identity record.
         "clusters": [
           // GUIDELINE: The number of cluster objects and their roles (e.g., "Prime", "Performance", "Efficiency") must be dynamically adjusted (added or removed) to match the specific SoC architecture (e.g., 2 clusters for Apple, 3 for most Android).
           {
             "role": "Prime",
             // GUIDELINE: The functional role of the cluster (e.g., "Prime", "Performance", "Efficiency").
             "architecture": "Cortex-X4",
-            // GUIDELINE: The specific CPU core architecture name matching the Master Table above (e.g., "Cortex-X4").
+            // GUIDELINE: The specific CPU core architecture name matching the Table above (e.g., "Cortex-X4").
             "count": 1,
             // GUIDELINE: The number of cores contained in this specific cluster.
-            "actual_frequency_ghz": 3.3,
-            // GUIDELINE: The maximum advertised frequency for this cluster in GHz (e.g., 3.3).
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            // GUIDELINE: Direct source URL for architectural and clock data.
-            "exact_extract": "1x 3.3 GHz – Cortex-X4"
-            // GUIDELINE: The verbatim proof from the source (e.g., "1x 3.3 GHz – Cortex-X4").
+            // GUIDELINE: Direct source URL for architectural data (type and count).
+            "exact_extract": "Cortex-X4"
+            // GUIDELINE: The verbatim proof from the source confirming architecture type and core count.
           },
           {
             "role": "Performance",
             "architecture": "Cortex-A720",
             "count": 5,
-            "actual_frequency_ghz": 3.2,
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            "exact_extract": "5x 3.2 GHz – Cortex-A720"
+            "exact_extract": "Cortex-A720"
           },
           {
             "role": "Efficiency",
             "architecture": "Cortex-A520",
             "count": 2,
-            "actual_frequency_ghz": 2.3,
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            "exact_extract": "2x 2.3 GHz – Cortex-A520"
+            "exact_extract": "Cortex-A520"
           }
         ]
       },
@@ -2080,7 +2080,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
           "subscore": 8.63
-          // SCORING GUIDELINE: Apply the Section 6.1 Method A logarithmic normalization: Score = 10 * (log(method_a_geekbench_6_multi_core_benchmark.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no Geekbench score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: primary benchmark is Geekbench 6 Multi-Core.
+          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
+          // • EXTRACTION RULE: Use the "Multi-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Single-Core scores.
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_geekbench_6_multi_core_benchmark.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2096,9 +2099,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "value": "Cortex-X4",
                 // GUIDELINE: Inherits architecture name from the referenced §6.1.0 cluster.
                 "subscore": 8.00,
-                // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Master Table by matching architecture.value.
+                // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Table by matching architecture.value.
                 "reference_frequency_ghz": 3.30
-                // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Master Table by matching architecture.value.
+                // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Table by matching architecture.value.
               },
               "core_count": {
                 "value_path": "6_1_0_system_on_chip_reference.clusters[0].count",
@@ -2107,15 +2110,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: Inherits count from the referenced §6.1.0 cluster.
               },
               "actual_frequency_ghz": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[0].actual_frequency_ghz",
-                // GUIDELINE: Absolute path to the actual clock frequency in Section 6.1.0.
-                "value": 3.3
-                // GUIDELINE: Inherits frequency from the referenced §6.1.0 cluster.
+                "value": 3.3,
+                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+                "exact_extract": "1x 3.3 GHz"
+                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": {
-                "value": 8.0000,
+              "frequency_adjusted_core_score": 8.0000,
                 // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-              },
             },
             {
               "architecture": {
@@ -2123,20 +2124,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "value": "Cortex-A720",
                 "subscore": 5.00,
                 "reference_frequency_ghz": 2.80
-                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Master Table.
+                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Table.
               },
               "core_count": {
                 "value_path": "6_1_0_system_on_chip_reference.clusters[1].count",
                 "value": 5
               },
               "actual_frequency_ghz": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[1].actual_frequency_ghz",
-                "value": 3.2
+                "value": 3.2,
+                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+                "exact_extract": "5x 3.2 GHz"
+                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": {
-                "value": 28.5714,
+              "frequency_adjusted_core_score": 28.5714, 
                 // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-              }
             },
             {
               "architecture": {
@@ -2144,29 +2145,27 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "value": "Cortex-A520",
                 "subscore": 1.00,
                 "reference_frequency_ghz": 2.00
-                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Master Table.
+                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Table.
               },
               "core_count": {
                 "value_path": "6_1_0_system_on_chip_reference.clusters[2].count",
                 "value": 2
               },
               "actual_frequency_ghz": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[2].actual_frequency_ghz",
-                "value": 2.3
+                "value": 2.3,
+                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+                "exact_extract": "2x 2.3 GHz"
+                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": {
-                "value": 2.3000,
+              "frequency_adjusted_core_score": 2.3000,
                 // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-              }
             }
           ],
-          "raw_performance_throughput_score": {
-            "value": 38.8714,
-            // GUIDELINE: Raw Performance Throughput Score (PTS) = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-          },
+          "raw_performance_throughput_score": 38.8714,
+          // GUIDELINE: raw_performance_throughput_score = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision. 
           "predicted_score": 7.40
-        // SCORING GUIDELINE: pts (Performance Throughput Score—a predicted value measuring the total combined power of all CPU cores) = raw_performance_throughput_score.value. predicted_score = 10 * (log(pts) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
-      },
+          // SCORING GUIDELINE: predicted_score = 10 * (log(raw_performance_throughput_score) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
+        },
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2182,7 +2181,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "predicted_score_1": 7.40,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall Multi-Core).
               "benchmark_score_1": 8.60
-              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_6_multi_core_benchmark.subscore).
+              // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
@@ -2202,9 +2201,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 8.6000,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: method_c_throughput_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_throughput_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.60
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
@@ -2212,7 +2211,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_throughput_model.predicted_score.
           "final": {
             "value": 8.63,
-            // SCORING GUIDELINE (Section 6.1): Use Method A if method_a_geekbench_6_multi_core_benchmark is available (method_a_geekbench_6_multi_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_throughput_model.predicted_score).
+            // SCORING GUIDELINE: Use Method A if method_a_geekbench_6_multi_core_benchmark is available (method_a_geekbench_6_multi_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_throughput_model.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
@@ -2236,7 +2235,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
           "subscore": 8.53
-          // SCORING GUIDELINE: Apply the Section 6.2 Method A logarithmic normalization: Score = 10 * (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: primary benchmark is Geekbench 6 Single-Core.
+          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
+          // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Multi-Core scores.
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2251,23 +2253,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "value": "Cortex-X4",
               // GUIDELINE: Inherits architecture name from the referenced §6.1.0 cluster.
               "subscore": 8.00,
-              // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Master Table by matching architecture.value.
+              // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Table by matching architecture.value.
               "reference_frequency_ghz": 3.30
-              // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Master Table by matching architecture.value.
+              // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Table by matching architecture.value.
             },
             "actual_frequency_ghz": {
-              "value_path": "6_1_0_system_on_chip_reference.clusters[0].actual_frequency_ghz",
-              // GUIDELINE: Absolute path to the actual clock frequency in Section 6.1.0.
+              "value_path": "6_1_cpu_multi_core_performance.method_c_throughput_model.clusters[0].actual_frequency_ghz.value",
+              // GUIDELINE: Absolute path to the actual clock frequency defined in Section 6.1 Method C.
               "value": 3.3
-              // GUIDELINE: Inherits frequency from the referenced §6.1.0 cluster.
+              // GUIDELINE: Inherits frequency from the primary core cluster in §6.1.
             },
-            "frequency_adjusted_core_score": {
-              "value": 8.0000,
+            "frequency_adjusted_core_score": 8.0000,
               // GUIDELINE: architecture.subscore * actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-            },
           },
           "predicted_score": 9.31
-          // SCORING GUIDELINE: strs (Single-Thread Raw Score—a predicted value measuring the power of the strongest single CPU core) = strongest_core.frequency_adjusted_core_score.value. predicted_score = 10 * (log(strs) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: predicted_score = 10 * (log(strongest_core.frequency_adjusted_core_score) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2285,7 +2285,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "predicted_score_1": 9.31,
               // GUIDELINE: The neighbor's own Method C predicted_score (overall Single-Core).
               "benchmark_score_1": 8.49
-              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_6_single_core_benchmark.subscore).
+              // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
@@ -2305,9 +2305,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 8.5033,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.50
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
           "predicted": 9.31,
@@ -2327,17 +2327,170 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
+      // █ 6.3.0 MODULE: GPU ARCHITECTURE SCORING TABLE
+      // Centralized hardware index used to ensure 100% autonomous scoring across performance (§6.3) and efficiency (§8.1) modules.
+      // • Standard Graphics Score (SGS): The baseline architectural performance capacity for standard rasterization (non-RT) tasks.
+      // • Ray Tracing Score (RTS): The specialized hardware performance index for accelerated ray tracing calculations.
+      // • Ref Freq (MHz): The canonical maximum frequency used to calculate frequency-corrected performance multipliers in Method C.
+      // • Efficiency: The silicon-level power/thermal management index used exclusively for Section 8.1 benchmarking to derive normalized efficiency scores.
+      // 
+      // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
+      // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
+      // | Adreno 830                 |      10.00        |    10.00    |      1100      |    10.00   |
+      // | Immortalis-G925 MC12       |      10.00        |    10.00    |      1626      |    10.00   |
+      // | Immortalis-G720 MC12       |      10.00        |    10.00    |      1300      |    10.00   |
+      // | Adreno 750                 |      10.00        |    10.00    |       903      |     9.00   |
+      // | Apple GPU (A18 Pro)        |       9.00        |     9.00    |      1398      |    10.00   |
+      // | Apple GPU (A18)            |       9.00        |     8.00    |      1398      |    10.00   |
+      // | Immortalis-G715 MC11       |       9.00        |     8.00    |       981      |     9.00   |
+      // | Xclipse 940                |       9.00        |     8.00    |      1100      |     7.00   |
+      // | Adreno 740                 |       9.00        |     8.00    |       680      |     9.00   |
+      // | Apple GPU (A17 Pro)        |       8.00        |     7.00    |      1398      |     9.00   |
+      // | Adreno 735                 |       8.00        |     6.00    |       950      |     8.00   |
+      // | Adreno 732                 |       8.00        |     6.00    |       900      |     8.00   |
+      // | Adreno 730                 |       8.00        |     6.00    |       900      |     7.00   |
+      // | Adreno 725                 |       8.00        |     5.00    |       580      |     9.00   |
+      // | Mali-G715 MC9              |       8.00        |     6.00    |       850      |     9.00   |
+      // | Apple GPU (A16 Bionic)     |       7.00        |     4.00    |      1398      |     8.00   |
+      // | Xclipse 920                |       7.00        |     5.00    |      1300      |     6.00   |
+      // | Mali-G710 MC10             |       7.00        |     5.00    |       850      |     8.00   |
+      // | Adreno 660                 |       7.00        |     0.00    |       840      |     5.00   |
+      // | Mali-G715 MC7              |       7.00        |     5.00    |       850      |     9.00   |
+      // | Mali-G715 (Tensor G3)      |       7.00        |     4.00    |       890      |     6.00   |
+      // | Apple GPU (A15 Bionic)     |       6.00        |     0.00    |      1296      |     8.00   |
+      // | Adreno 720                 |       6.00        |     0.00    |       800      |     8.00   |
+      // | Adreno 710                 |       6.00        |     0.00    |       800      |     8.00   |
+      // | Adreno 650                 |       6.00        |     0.00    |       587      |     6.00   |
+      // | Adreno 642L                |       6.00        |     0.00    |       490      |     8.00   |
+      // | Mali-G610 MC6              |       6.00        |     0.00    |       850      |     8.00   |
+      // | Mali-G77 MC9               |       6.00        |     0.00    |       850      |     6.00   |
+      // | Apple GPU (A14 Bionic)     |       5.00        |     0.00    |      1086      |     7.00   |
+      // | Apple GPU (A13 Bionic)     |       5.00        |     0.00    |       979      |     6.00   |
+      // | Adreno 640                 |       5.00        |     0.00    |       585      |     5.00   |
+      // | Mali-G610 MC4              |       5.00        |     0.00    |       850      |     7.00   |
+      // | Adreno 620                 |       4.00        |     0.00    |       625      |     6.00   |
+      // | Adreno 619                 |       4.00        |     0.00    |       825      |     6.00   |
+      // | Mali-G68 MC4               |       4.00        |     0.00    |       900      |     6.00   |
+      // | Adreno 618                 |       3.00        |     0.00    |       610      |     5.00   |
+      // | Mali-G57 MC3               |       3.00        |     0.00    |       950      |     5.00   |
+      // | Adreno 613                 |       3.00        |     0.00    |       955      |     6.00   |
+      // | Adreno 610                 |       2.00        |     0.00    |       600      |     8.00   |
+      // | Mali-G57 MC2               |       2.00        |     0.00    |       950      |     5.00   |
+      // | Mali-G52 MP2               |       1.00        |     0.00    |       850      |     4.00   |
+      // | PowerVR GE8320             |       0.00        |     0.00    |       680      |     2.00   |
+      // -------------------------------------------------------------------------
+      // Understanding Mali/Immortalis "MC" Notation:
+      // ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count.
+      // - Immortalis-G715 MC11 = 11 shader cores (flagship config)
+      // - Mali-G715 MC9 = 9 shader cores (high-end config)
+      // - Mali-G715 MC7 = 7 shader cores (mid-range config)
+      // More cores = higher performance. Always match the exact MC count from device specifications.
+      // -------------------------------------------------------------------------
+      // AMBIGUOUS SPECIFICATION RESOLUTION (MANDATORY PROCEDURE)
+      // 1. Identify the SoC: Retrieve the specific chipset model from Section 6.1.
+      // 2. External Verification (Web Search): The parsing engine is strictly prohibited from guessing the GPU tier based on incomplete generic strings. The engine MUST execute an active web search targeting the host SoC's official specifications (e.g., query: "Qualcomm Snapdragon 680 GPU specs" or "Dimensity 9000 exact GPU model").
+      // 3. Canonical Component Extraction: Extract the exact GPU model number from the search results.
+      // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
+      
       "6_3_0_graphics_processing_unit_architecture_reference": {
         "value_path": "identity.hardware_configuration.chipset.value",
+        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "value": "Snapdragon 8 Gen 3",
+        // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
         "graphics_processing_unit_model": {
           "value": "Adreno 750",
+          // GUIDELINE: Must match a specific model from the "6.3.0 MODULE" table above. If the spec sheet assigns a generic family name without identifiers (e.g., "Adreno GPU"), the engine MUST execute the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure above to infer the canonical GPU architecture.
           "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+          // GUIDELINE: Direct source URL for GPU model data.
           "exact_extract": "Qualcomm® Adreno™ GPU"
+          // GUIDELINE: The verbatim proof from the source confirming the GPU identifier.
         }
       },
       "6_3_graphics_processing_unit_performance": {
         // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
+        
+      // █ GPU API SUPPORT SCORING TABLE
+        // Defines the scoring for the highest supported graphics API (Vulkan/Metal/OpenGL ES/DirectX).
+        //
+        // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
+        // | :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
+        // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | 10.0      |
+        // | —                 | Metal 3.3      | —                  | —                       | 9.8       |
+        // | —                 | Metal 3.2      | —                  | D3D 12 (FL 12_1)        | 9.6       |
+        // | —                 | Metal 3.1      | —                  | —                       | 9.4       |
+        // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_0)        | 9.2       |
+        // | —                 | Metal 2.4      | —                  | D3D 11.2                | 8.5       |
+        // | Vulkan 1.2        | Metal 2.3      | —                  | D3D 11.1                | 8.0       |
+        // | —                 | Metal 2.2      | —                  | —                       | 7.5       |
+        // | —                 | Metal 2.1      | —                  | —                       | 7.0       |
+        // | Vulkan 1.1        | Metal 2.0      | —                  | D3D 11.0                | 6.5       |
+        // | Vulkan 1.0        | —              | —                  | D3D 10.1                | 6.0       |
+        // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | 5.0       |
+        // | —                 | Metal 1.2      | —                  | —                       | 4.5       |
+        // | —                 | Metal 1.1      | —                  | —                       | 4.2       |
+        // | —                 | Metal 1.0      | —                  | D3D 9.3                 | 4.0       |
+        // | —                 | —              | —                  | D3D 9.2                 | 3.5       |
+        // | —                 | —              | OpenGL ES 3.1      | —                       | 3.0       |
+        // | —                 | —              | —                  | D3D 9.1                 | 2.5       |
+        // | —                 | —              | —                  | D3D 9.0c                | 2.0       |
+        // | —                 | —              | —                  | —                       | 1.5       |
+        // | —                 | —              | OpenGL ES 3.0      | —                       | 1.0       |
+        // | —                 | —              | OpenGL ES 2.0      | —                       | 0.5       |
+        // | —                 | —              | OpenGL ES 1.x      | —                       | 0.0       |
+        //
+        // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
+        // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
+        //
+        // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
+        // | Apple SoC Generation | Min iOS Version | Inferred API Version |
+        // | :------------------- | :-------------- | :------------------- |
+        // | A18, M4, M5          | iOS 18+         | Metal 4.0            | 
+        // | A17 Pro              | iOS 17.5+       | Metal 3.3            |
+        // | A15, A16, M2         | iOS 17.0+       | Metal 3.2            | 
+        // | A14, M1, M3          | iOS 16.4+       | Metal 3.1            |
+        // | A13 (Apple Family 6) | iOS 16.0+       | Metal 3.0            |
+        // | A12 Bionic           | iOS 15.x        | Metal 2.4            |
+        // | A11 Bionic           | iOS 14.x        | Metal 2.3            |
+        // | A10 Fusion           | iOS 13.x        | Metal 2.2            |
+        // | A9 / A9X             | iOS 12.x        | Metal 2.1            |
+        // | A8 / A8X             | iOS 11.x        | Metal 2.0            | 
+        // | A7 (64-bit Baseline) | iOS 10.x        | Metal 1.2            |
+        // | A7 (64-bit Baseline) | iOS 9.x         | Metal 1.1            |
+        // | A7 (64-bit Baseline) | iOS 8.x         | Metal 1.0            |
+        // | A4, A5, A6           | iOS 6.x - 10.x  | OpenGL ES 2.0        |
+        // | iPhone 1st Gen / 3G  | iPhone OS 1 - 3 | OpenGL ES 1.1        |
+        //
+        // MATRIX 2: ANDROID (Deep Coverage Mirror)
+        // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
+        // | :------------------- | :----------------------------- | :------------ |
+        // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
+        // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
+        // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
+        // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
+        // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
+        // | Android 6.0          | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
+        // | Android 5.0          | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
+        // | Android 4.3          | Adreno 3xx (Older), Mali-T6xx  | OpenGL ES 3.0 |
+        // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
+        // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.x | 
+        //
+        // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
+        // | Windows OS Version   | Era / Reference Hardware       | Inferred API  |
+        // | :------------------- | :----------------------------- | :------------ |
+        // | Windows 11 (24H2)    | Snapdragon X Elite (Adreno X1) | D3D 12 (12_2) |
+        // | Windows 11 (22H2)    | Snapdragon 8cx Gen 3           | D3D 12 (12_1) |
+        // | Windows 10/11 ARM    | Snapdragon 850 / 8cx Gen 1/2   | D3D 12 (12_0) |
+        // | Windows 10 Mobile    | Lumia 950 / 950 XL             | D3D 11.2      |
+        // | Windows Phone 8.1    | Lumia 930 / 1520               | D3D 11.1      |
+        // | Windows Phone 8 GDR  | Snapdragon 800 / 400 (Late WP8)| D3D 11.0      |
+        // | Windows Phone 8.0    | Lumia 520 / 620 (Entry Adreno) | D3D 10.1      |
+        // | Windows Phone 8.0    | Early Surface RT / Tegra 3     | D3D 10.0      |
+        // | Windows Phone 8.0    | Lumia 920 / 1020 (Baseline)    | D3D 9.3       |
+        // | Windows Phone 8.0    | Early builds / Dev hardware    | D3D 9.2       |
+        // | Windows Phone 7.x    | Lumia 800 / 900                | D3D 9.1       |
+        // | Windows Phone 7.0    | Samsung Focus / LG Quantum     | D3D 9.0c      |
+        // | Pre-WP7 Legacy       | Pre-2010 HTC / Samsung         | OpenGL ES 1.x |
+        // ------------------------------------------------------------------------- 
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2346,27 +2499,48 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 1850,
           "source": "https://www.3dmark.com/search",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 1850",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 6.3 Method A formula: SGS_Bench = 10 * (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10.
+          "subscore": 8.36
+          // SCORING GUIDELINE: primary benchmark is 3DMark Steel Nomad Light.
+          // • WHERE TO FIND IT: Search 3dmark.com search index or GSMArena/NotebookCheck reviews.
+          // • EXTRACTION RULE: Use the "Steel Nomad Light" score. Ensure it is not the desktop "Steel Nomad" or older "Wild Life" benchmarks.
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Graphics Component Prediction Model (Tertiary / baseline for Method B)
+        // METHOD C — Graphics Performance Prediction Model (Tertiary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_component_model": {
-          "standard_graphics_score": {
-            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.standard_graphics",
-            "value": 10.00,
-            "description": "Architecture baseline performance"
+        "method_c_graphics_prediction_model": {
+          "graphics_processing_unit": {
+            "architecture": {
+              "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value",
+              // GUIDELINE: Absolute path to the GPU model name in Section 6.3.0.
+              "value": "Adreno 750",
+              // GUIDELINE: Inherits GPU architecture name from the referenced §6.3.0 record.
+              "subscore": 10.00,
+              // GUIDELINE: Retrieval of SGS (Standard Graphics Score) from the §6.3.0 Table by matching architecture.value.
+              "reference_frequency_mhz": 903.0000
+              // GUIDELINE: Retrieval of Ref Freq (MHz) from the §6.3.0 Table by matching architecture.value.
+            },
+            "actual_frequency_mhz": {
+              "value": 1100,
+              "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+              "exact_extract": "Qualcomm® Adreno™ GPU [...] 1.1 GHz"
+              // GUIDELINE: The maximum advertised frequency of the GPU in MHz (e.g., 1100).
+            },
+            "frequency_adjusted_graphics_architecture_score": 12.1816,
+            // GUIDELINE: "architecture.subscore * actual_frequency_mhz.value / architecture.reference_frequency_mhz"
           },
-          "ray_tracing_score": {
-            "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.ray_tracing",
-            "value": 10.00,
-            "description": "Hardware ray tracing capability"
+          "api_modifier": {
+            "value": "Vulkan 1.3",
+            "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
+            "exact_extract": "Vulkan 1.3 support",
+            "subscore": 9.20
+            // SCORING GUIDELINE: Match highest supported API version against the §6.3 GPU API SUPPORT SCORING TABLE to retrieve subscore. If unspecified, execute §6.3 AMBIGUOUS API RESOLUTION.
           },
-          "predicted_score": 9.30
-          // SCORING GUIDELINE (Section 6.3 Method C): Weighted average of standard and ray tracing graphics scores.
-          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+          "graphics_raw_score": 11.9380,
+          // SCORING GUIDELINE: frequency_adjusted_graphics_architecture_score * (0.75 + (0.25 * api_modifier.subscore / 10.0)).
+          "predicted_score": 9.98
+          // SCORING GUIDELINE: predicted_score = 10 * (log(graphics_raw_score) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min)), clamped 0–10.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2374,46 +2548,50 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation": {
           // SCORING GUIDELINE (Section 6.3 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Section 6.3 Method B.1): Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
-          // Step 2 (Section 6.3 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "predicted_score_1": 9.30,
-              // GUIDELINE: The neighbor's own Method C predicted_score (overall GPU).
-              "benchmark_score_1": 10.00
-              // GUIDELINE: The neighbor's Method A subscore (method_a_3d_mark_steel_nomad_light_benchmark.subscore).
+              "predicted_score_1": 9.40,
+              // GUIDELINE: The neighbor's own Method C predicted_score.
+              "benchmark_score_1": 7.82
+              // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
-              "device_id_2": "oneplus_12",
-              "predicted_score_2": 9.28,
-              "benchmark_score_2": 9.95
+              "device_id_2": "samsung_galaxy_s24_ultra",
+              "predicted_score_2": 9.71,
+              "benchmark_score_2": 8.05
             },
             {
               // Neighbor3
-              "device_id_3": "asus_rog_phone_8_pro",
-              "predicted_score_3": 9.32,
-              "benchmark_score_3": 10.00
+              "device_id_3": "oneplus_12",
+              "predicted_score_3": 9.40,
+              "benchmark_score_3": 7.88
             }
           ],
-          "avg_predicted_neighbors": 9.3000,
-          // SCORING GUIDELINE (Section 6.3 Method B Step 2): (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 9.9833,
-          // SCORING GUIDELINE (Section 6.3 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0753,
-          // SCORING GUIDELINE (Section 6.3 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 10.00
-          // SCORING GUIDELINE (Section 6.3 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          "avg_predicted_neighbors": 9.5033,
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          "avg_benchmark_neighbors": 7.9167,
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+          "correction_ratio": 1.0502,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_graphics_prediction_model.predicted_score / avg_predicted_neighbors.
+          "interpolated_score": 8.31
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
+
+        "ray_tracing_hardware_score": 10.00,
+        // GUIDELINE: Retrieve the Ray Tracing architectural score from the §6.3.0 Master Table matching the identified GPU model. This measures dedicated hardware acceleration for lighting and reflections.
+
         "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_component_model.predicted_score.
+          "predicted": 9.98,
+          // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_graphics_prediction_model.predicted_score * 0.90) + (ray_tracing_hardware_score * 0.10).
           "final": {
-            "value": 10.00,
-            // SCORING GUIDELINE (Section 6.3): Use Method A if method_a_3d_mark_steel_nomad_light_benchmark is available (method_a_3d_mark_steel_nomad_light_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_component_model.predicted_score).
+            "value": 8.52,
+            // SCORING GUIDELINE: Final Score combines rasterization and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (3DMark: method_a_3d_mark_steel_nomad_light_benchmark.subscore) if available; if not, Method B (Interpolation: method_b_neighbor_interpolation.interpolated_score); if not, Method C (Predictor: method_c_graphics_prediction_model.predicted_score).
             "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
@@ -2437,7 +2615,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/ai-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 6000",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 6.4 logarithmic formula based on Geekbench AI Quantized score. (Constants: Min=500, Max=4500). Clamped to 10.0.
+          // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
+          // • WHERE TO FIND IT: browser.geekbench.com/ai.
+          // • EXTRACTION RULE: Use the "Quantized Score". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
+          // SCORING GUIDELINE: subscore = XXXX. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
 
@@ -2451,7 +2632,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "description": "NPU baseline performance (Sec 6.4 reference table)"
           },
           "predicted_score": 10.00
-          // SCORING GUIDELINE (Section 6.4 Method C): ai_hardware_score.value scaled via Section 6.4 Method C formula.
+          // SCORING GUIDELINE: ai_hardware_score.value scaled via Section 6.4 Method C formula.
           // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
 
@@ -2462,7 +2643,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE (Section 6.4 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Section 6.4 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
           //         Distance = √( 0.40 * (AI_Diff)² + 0.25 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (RAM_Cap_Diff)² + 0.10 * (Process_Diff)² )
-          // Step 2 (Section 6.4 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
@@ -2471,9 +2652,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "euclidean_distance_1": 0.0500,
               // GUIDELINE: Weighted Euclidean distance from Section 6.4 Method B.1.
               "predicted_score_1": 9.75,
-              // GUIDELINE: The neighbor's own Method C predicted_score (overall AI).
+              // GUIDELINE: The neighbor's own Method C predicted_score.
               "benchmark_score_1": 10.00
-              // GUIDELINE: The neighbor's Method A subscore (method_a_geekbench_ai_quantized_benchmark.subscore).
+              // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
@@ -2491,20 +2672,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           ],
           "avg_predicted_neighbors": 9.7500,
-          // SCORING GUIDELINE (Section 6.4 Method B Step 2): (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 9.9667,
-          // SCORING GUIDELINE (Section 6.4 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0256,
-          // SCORING GUIDELINE (Section 6.4 Method B Step 2): method_c_component_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_component_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
-          // SCORING GUIDELINE (Section 6.4 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
           "predicted": 10.00,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_component_model.predicted_score.
           "final": {
             "value": 10.00,
-            // SCORING GUIDELINE (Section 6.4): Use Method A if method_a_geekbench_ai_quantized_benchmark is available (method_a_geekbench_ai_quantized_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_component_model.predicted_score).
+            // SCORING GUIDELINE: Use Method A if method_a_geekbench_ai_quantized_benchmark is available (method_a_geekbench_ai_quantized_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_component_model.predicted_score).
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
@@ -3083,14 +3264,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667p3.php",
             "exact_extract": "Active use score: 16:45h",
             "subscore": 9.45
-            // SCORING GUIDELINE: Apply Section 8.1 Method A normalization (0-10) for GSMArena.
+            // SCORING GUIDELINE: source is GSMArena.
+            // • WHERE TO FIND IT: GSMarena.com review (Battery page).
+            // • EXTRACTION RULE: Use the "Active use score" (e.g., "16:45h"). 
+            // • CALCULATION: Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the normalization formula.
+            // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
           },
           "phonearena_battery_life_estimate": {
             "value": 15.50,
             "source": "https://www.phonearena.com/phones/Samsung-Galaxy-S24-Ultra_id12151/benchmarks",
             "exact_extract": "Combined battery life: 15h 30min",
             "subscore": 9.20
-            // SCORING GUIDELINE: Apply Section 8.1 Method A normalization (0-10) for PhoneArena.
+            // SCORING GUIDELINE: source is PhoneArena.
+            // • WHERE TO FIND IT: PhoneArena.com device specs page, under "Ratings and Benchmarks".
+            // • EXTRACTION RULE: Use the "Combined battery life" estimate.
+            // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
           }
         },
         
@@ -3131,7 +3319,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "euclidean_distance_1": 0.0500,
               // GUIDELINE: Weighted Euclidean distance from Section 8.1 Method B.1.
               "predicted_score_1": 8.40,
-              // GUIDELINE: The neighbor's own Method C predicted_score (overall Battery).
+              // GUIDELINE: The neighbor's own Method C predicted_score.
               "benchmark_score_1": 9.10
               // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
             },
@@ -3152,11 +3340,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           ],
           "avg_predicted_neighbors": 8.4000,
           "avg_benchmark_neighbors": 9.2333,
-          // SCORING GUIDELINE (Section 8.1 Method B Step 3): (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0030,
-          // SCORING GUIDELINE (Section 8.1 Method B Step 2): method_c_technical_predictive_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_technical_predictive_model.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 9.26
-          // SCORING GUIDELINE (Section 8.1 Method B Step 3): correction_ratio * avg_benchmark_neighbors. This is the final Method B score.
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
