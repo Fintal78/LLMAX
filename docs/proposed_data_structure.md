@@ -2547,7 +2547,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_GPU": {
-          // SCORING GUIDELINE (Section 6.3 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
@@ -2584,14 +2584,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
 
         "ray_tracing_hardware_score": 10.00,
-        // GUIDELINE: Retrieve the Ray Tracing architectural score from the §6.3.0 Master Table matching the identified GPU model. This measures dedicated hardware acceleration for lighting and reflections.
+        // GUIDELINE: Retrieve the Ray Tracing architectural score from the §6.3.0 Table matching the identified GPU model. This measures dedicated hardware acceleration for lighting and reflections.
 
         "scores": {
           "predicted": 9.98,
           // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_prediction_model_GPU.predicted_score * 0.90) + (ray_tracing_hardware_score * 0.10).
           "final": {
             "value": 8.52,
-            // SCORING GUIDELINE: Final Score combines rasterization and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (method_a_benchmark_GPU.subscore) if available; if not, Method B (method_b_neighbor_interpolation_GPU.interpolated_score); if not, Method C (method_c_prediction_model_GPU.predicted_score).
+            // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (method_a_benchmark_GPU.subscore) if available; if not, Method B (method_b_neighbor_interpolation_GPU.interpolated_score); if not, Method C (method_c_prediction_model_GPU.predicted_score).
             "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
