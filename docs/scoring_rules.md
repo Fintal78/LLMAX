@@ -1767,38 +1767,48 @@ This table provides the authoritative GPU architecture scores used throughout th
 > 
 | GPU Model                 | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                                   |
 | :------------------------ | :---------------: | :---------: | :------------: | :--------: | :-------------------------------------- |
-| **Immortalis-G720 MC12**  | **10**            | **10**      | **1300**       | **10**     | Dimensity 9300                          |
-| **Adreno 750**            | **10**            | **10**      | **903**        | **9**      | Snapdragon 8 Gen 3                      |
-| **Xclipse 940**           | **9**             | **8**       | **1100**       | **7**      | Exynos 2400; AMD RDNA 3                 |
-| **Adreno 740**            | **9**             | **8**       | **680**        | **9**      | Snapdragon 8 Gen 2                      |
-| **Immortalis-G715 MC11**  | **9**             | **8**       | **981**        | **9**      | Dimensity 9200                          |
-| **Apple GPU (A18 Pro)**   | **9**             | **9**       | **1398**       | **10**     | 6-core (iPhone 16 Pro)                  |
-| **Apple GPU (A17 Pro)**   | **8**             | **7**       | **1398**       | **9**      | 6-core (iPhone 15 Pro)                  |
-| **Apple GPU (A16 Bionic)**| **7**             | **4**       | **1398**       | **8**      | 5-core (iPhone 14 Pro / iPhone 15)      |
-| **Adreno 730**            | **8**             | **6**       | **900**        | **7**      | Snapdragon 8 Gen 1                      |
-| **Mali-G715 MC9**         | **8**             | **6**       | **850**        | **9**      | Dimensity 9000                          |
-| **Xclipse 920**           | **7**             | **5**       | **1300**       | **6**      | Exynos 2200; AMD RDNA 2                 |
-| **Mali-G710 MC10**        | **7**             | **5**       | **850**        | **8**      | Dimensity 9000 (mid config)             |
-| **Adreno 660**            | **7**             | **0**       | **840**        | **5**      | Snapdragon 888 (No RT)                  |
-| **Mali-G715 (Tensor G3)** | **7**             | **4**       | **890**        | **6**      | Google Tensor G3                        |
-| **Mali-G715 MC7**         | **7**             | **5**       | **850**        | **9**      | Dimensity 8200                          |
-| **Apple GPU (A15 Bionic)**| **6**             | **0**       | **1296**       | **8**      | 4-core (iPhone 13) / 5-core (Pro model) |
-| **Adreno 650**            | **6**             | **0**       | **587**        | **6**      | Snapdragon 865                          |
-| **Adreno 642L**           | **6**             | **0**       | **490**        | **8**      | Snapdragon 778G                         |
-| **Mali-G610 MC6**         | **6**             | **0**       | **850**        | **8**      | Dimensity 1080                          |
-| **Mali-G77 MC9**          | **6**             | **0**       | **850**        | **6**      | Dimensity 1000+                         |
-| **Apple GPU (A14 Bionic)**| **5**             | **0**       | **1086**       | **7**      | 4-core (iPhone 12)                      |
-| **Adreno 640**            | **5**             | **0**       | **585**        | **5**      | Snapdragon 855                          |
-| **Mali-G610 MC4**         | **5**             | **0**       | **850**        | **7**      | Dimensity 920                           |
-| **Adreno 620**            | **4**             | **0**       | **625**        | **6**      | Snapdragon 765G                         |
-| **Adreno 619**            | **4**             | **0**       | **825**        | **6**      | Snapdragon 750G                         |
-| **Mali-G68 MC4**          | **4**             | **0**       | **900**        | **6**      | Dimensity 900                           |
-| **Adreno 618**            | **3**             | **0**       | **610**        | **5**      | Snapdragon 730G                         |
-| **Mali-G57 MC3**          | **3**             | **0**       | **950**        | **5**      | Budget 5G                               |
-| **Adreno 610**            | **2**             | **0**       | **600**        | **8**      | Snapdragon 680                          |
-| **Mali-G57 MC2**          | **2**             | **0**       | **950**        | **5**      | Entry 5G                                |
-| **Mali-G52 MP2**          | **1**             | **0**       | **850**        | **4**      | Entry Level                             |
-| **PowerVR GE8320**        | **0**             | **0**       | **680**        | **2**      | Ultra-budget legacy                     |
+| **Adreno 830**            |      **10.0**     |    **10.0** |    **1100**    |   **10.0** | Snapdragon 8 Elite                      |
+| **Immortalis-G925 MC12**  |      **10.0**     |    **10.0** |    **1626**    |   **10.0** | Dimensity 9400                          |
+| **Immortalis-G720 MC12**  |      **10.0**     |    **10.0** |    **1300**    |   **10.0** | Dimensity 9300                          |
+| **Adreno 750**            |      **10.0**     |    **10.0** |    **903**     |    **9.0** | Snapdragon 8 Gen 3                      |
+| **Apple GPU (A18 Pro)**   |       **9.0**     |     **9.0** |    **1398**    |   **10.0** | 6-core (iPhone 16 Pro)                  |
+| **Apple GPU (A18)**       |       **9.0**     |     **8.0** |    **1398**    |   **10.0** | 5-core (iPhone 16)                      |
+| **Xclipse 940**           |       **9.0**     |     **8.0** |    **1100**    |    **7.0** | Exynos 2400; AMD RDNA 3                 |
+| **Adreno 740**            |       **9.0**     |     **8.0** |    **680**     |    **9.0** | Snapdragon 8 Gen 2                      |
+| **Immortalis-G715 MC11**  |       **9.0**     |     **8.0** |    **981**     |    **9.0** | Dimensity 9200                          |
+| **Apple GPU (A17 Pro)**   |       **8.0**     |     **7.0** |    **1398**    |    **9.0** | 6-core (iPhone 15 Pro)                  |
+| **Adreno 735**            |       **8.0**     |     **6.0** |    **950**     |    **8.0** | Snapdragon 8s Gen 3                     |
+| **Adreno 732**            |       **8.0**     |     **6.0** |    **900**     |    **8.0** | Snapdragon 7+ Gen 3                     |
+| **Adreno 730**            |       **8.0**     |     **6.0** |    **900**     |    **7.0** | Snapdragon 8 Gen 1                      |
+| **Adreno 725**            |       **8.0**     |     **5.0** |    **580**     |    **9.0** | Snapdragon 7+ Gen 2                     |
+| **Mali-G715 MC9**         |       **8.0**     |     **6.0** |    **850**     |    **9.0** | Dimensity 9000                          |
+| **Apple GPU (A16 Bionic)**|       **7.0**     |     **4.0** |    **1398**    |    **8.0** | 5-core (iPhone 14 Pro / iPhone 15)      |
+| **Xclipse 920**           |       **7.0**     |     **5.0** |    **1300**    |    **6.0** | Exynos 2200; AMD RDNA 2                 |
+| **Mali-G710 MC10**        |       **7.0**     |     **5.0** |    **850**     |    **8.0** | Dimensity 9000 (mid config)             |
+| **Adreno 660**            |       **7.0**     |     **0.0** |    **840**     |    **5.0** | Snapdragon 888 (No RT)                  |
+| **Mali-G715 MC7**         |       **7.0**     |     **5.0** |    **850**     |    **9.0** | Dimensity 8200                          |
+| **Mali-G715 (Tensor G3)** |       **7.0**     |     **4.0** |    **890**     |    **6.0** | Google Tensor G3                        |
+| **Apple GPU (A15 Bionic)**|       **6.0**     |     **0.0** |    **1296**    |    **8.0** | 4-core (iPhone 13) / 5-core (Pro model) |
+| **Adreno 720**            |       **6.0**     |     **0.0** |    **800**     |    **8.0** | Snapdragon 7 Gen 3                      |
+| **Adreno 710**            |       **6.0**     |     **0.0** |    **800**     |    **8.0** | Snapdragon 7s Gen 2                     |
+| **Adreno 650**            |       **6.0**     |     **0.0** |    **587**     |    **6.0** | Snapdragon 865                          |
+| **Adreno 642L**           |       **6.0**     |     **0.0** |    **490**     |    **8.0** | Snapdragon 778G                         |
+| **Mali-G610 MC6**         |       **6.0**     |     **0.0** |    **850**     |    **8.0** | Dimensity 1080                          |
+| **Mali-G77 MC9**          |       **6.0**     |     **0.0** |    **850**     |    **6.0** | Dimensity 1000+                         |
+| **Apple GPU (A14 Bionic)**|       **5.0**     |     **0.0** |    **1086**    |    **7.0** | 4-core (iPhone 12)                      |
+| **Apple GPU (A13 Bionic)**|       **5.0**     |     **0.0** |    **979**     |    **6.0** | 4-core (iPhone 11)                      |
+| **Adreno 640**            |       **5.0**     |     **0.0** |    **585**     |    **5.0** | Snapdragon 855                          |
+| **Mali-G610 MC4**         |       **5.0**     |     **0.0** |    **850**     |    **7.0** | Dimensity 920                           |
+| **Adreno 620**            |       **4.0**     |     **0.0** |    **625**     |    **6.0** | Snapdragon 765G                         |
+| **Adreno 619**            |       **4.0**     |     **0.0** |    **825**     |    **6.0** | Snapdragon 750G                         |
+| **Mali-G68 MC4**          |       **4.0**     |     **0.0** |    **900**     |    **6.0** | Dimensity 900                           |
+| **Adreno 618**            |       **3.0**     |     **0.0** |    **610**     |    **5.0** | Snapdragon 730G                         |
+| **Mali-G57 MC3**          |       **3.0**     |     **0.0** |    **950**     |    **5.0** | Budget 5G                               |
+| **Adreno 613**            |       **3.0**     |     **0.0** |    **955**     |    **6.0** | Snapdragon 4 Gen 2                      |
+| **Adreno 610**            |       **2.0**     |     **0.0** |    **600**     |    **8.0** | Snapdragon 680                          |
+| **Mali-G57 MC2**          |       **2.0**     |     **0.0** |    **950**     |    **5.0** | Entry 5G                                |
+| **Mali-G52 MP2**          |       **1.0**     |     **0.0** |    **850**     |    **4.0** | Entry Level                             |
+| **PowerVR GE8320**        |       **0.0**     |     **0.0** |    **680**     |    **2.0** | Ultra-budget legacy                     |
 
 > [!NOTE]
 > **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
@@ -1891,15 +1901,73 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Unit:** Score (0-10)
 *   **Significance:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering and compute shader capabilities.
 
-| Score    | API Support                    | Description                    |
-| :------- | :----------------------------- | :----------------------------- |
-| **10.0** | **Vulkan 1.3**                 | State-of-the-art API support   |
-| **8.0**  | **Vulkan 1.2**                 | Modern standard                |
-| **6.0**  | **Vulkan 1.1**                 | Previous generation standard   |
-| **5.0**  | **OpenGL ES 3.2**              | Legacy Android graphics        |
-| **3.0**  | **OpenGL ES 3.1**              | Mid-range legacy               |
-| **2.0**  | **OpenGL ES 3.0**              | Very old                       |
-| **0.0**  | **OpenGL ES ≤ 2.0**            | Obsolete                       |
+**API Support Score Table (Detailed)**
+*   **Measurement:** Highest supported Vulkan / Metal / OpenGL ES / DirectX Version.
+*   **Unit:** Score (0-10)
+*   **Significance:** Modern APIs allow developers to squeeze significantly more performance through advanced features like dynamic rendering and compute shaders.
+
+| Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
+| :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
+| **Vulkan 1.4**    | **Metal 4.0**  | —                  | **D3D 12 (FL 12_2)**    | **10.0**  |
+| —                 | **Metal 3.3**  | —                  | —                       | **9.8**   |
+| —                 | **Metal 3.2**  | —                  | **D3D 12 (FL 12_1)**    | **9.6**   |
+| —                 | **Metal 3.1**  | —                  | —                       | **9.4**   |
+| **Vulkan 1.3**    | **Metal 3.0**  | —                  | **D3D 12 (FL 12_0)**    | **9.2**   |
+| —                 | **Metal 2.4**  | —                  | **D3D 11.2**            | **8.5**   |
+| **Vulkan 1.2**    | **Metal 2.3**  | —                  | **D3D 11.1**            | **8.0**   |
+| —                 | **Metal 2.2**  | —                  | —                       | **7.5**   |
+| —                 | **Metal 2.1**  | —                  | —                       | **7.0**   |
+| **Vulkan 1.1**    | **Metal 2.0**  | —                  | **D3D 11.0**            | **6.5**   |
+| **Vulkan 1.0**    | —              | —                  | **D3D 10.1**            | **6.0**   |
+| —                 | —              | **OpenGL ES 3.2**  | **D3D 10.0**            | **5.0**   |
+| —                 | **Metal 1.2**  | —                  | —                       | **4.5**   |
+| —                 | **Metal 1.1**  | —                  | —                       | **4.2**   |
+| —                 | **Metal 1.0**  | —                  | **D3D 9.3**             | **4.0**   |
+| —                 | —              | —                  | **D3D 9.2**             | **3.5**   |
+| —                 | —              | **OpenGL ES 3.1**  | —                       | **3.0**   |
+| —                 | —              | —                  | **D3D 9.1**             | **2.5**   |
+| —                 | —              | —                  | **D3D 9.0c**            | **2.0**   |
+| —                 | —              | —                  | —                       | **1.5**   |
+| —                 | —              | **OpenGL ES 3.0**  | —                       | **1.0**   |
+| —                 | —              | **OpenGL ES 2.0**  | —                       | **0.5**   |
+| —                 | —              | **OpenGL ES 1.x**  | —                       | **0.0**   |
+
+**AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)**
+If the explicit API version is NOT disclosed on the primary spec sheet, use the following fallback matrices based on the device's OS generation and chipset era.
+
+**MATRIX 1: APPLE / iOS**
+| Apple SoC Generation | Min iOS Version | Inferred API Version |
+| :------------------- | :-------------- | :------------------- |
+| **A18, M4, M5**      | iOS 18+         | Metal 4.0            | 
+| **A17 Pro**          | iOS 17.5+       | Metal 3.3            |
+| **A15, A16, M2**     | iOS 17.0+       | Metal 3.2            | 
+| **A14, M1, M3**      | iOS 16.4+       | Metal 3.1            |
+| **A13 Bionic**       | iOS 16.0+       | Metal 3.0            |
+| **A12 Bionic**       | iOS 15.x        | Metal 2.4            |
+| **A11 Bionic**       | iOS 14.x        | Metal 2.3            |
+| **A10 Fusion**       | iOS 13.x        | Metal 2.2            |
+| **A9 / A9X**         | iOS 12.x        | Metal 2.1            |
+| **A8 / A8X**         | iOS 11.x        | Metal 2.0            | 
+
+**MATRIX 2: ANDROID**
+| Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
+| :------------------- | :----------------------------- | :------------ |
+| **Android 15+**      | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
+| **Android 13 - 14**  | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
+| **Android 12**       | Adreno 66x, Mali-G710          | Vulkan 1.2    |
+| **Android 10 - 11**  | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
+| **Android 7.0 - 9.0**| Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
+| **Android 6.0**      | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
+| **Android 5.0**      | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
+
+**MATRIX 3: WINDOWS MOBILE**
+| Windows OS Version   | Era / Reference Hardware      | Inferred API  |
+| :------------------- | :---------------------------- | :------------ |
+| **Windows 11 (24H2)**| Snapdragon X Elite (Adreno X1)| D3D 12 (12_2) |
+| **Windows 11 (22H2)**| Snapdragon 8cx Gen 3          | D3D 12 (12_1) |
+| **Windows 10/11 ARM**| Snapdragon 850 / 8cx Gen 1/2  | D3D 12 (12_0) |
+| **Windows 10 Mobile**| Lumia 950 / 950 XL            | D3D 11.2      |
+| **Windows Phone 8.1**| Lumia 930 / 1520              | D3D 11.1      |
 
 > [!IMPORTANT]
 > **Multi-API Support & Scoring Logic:**
