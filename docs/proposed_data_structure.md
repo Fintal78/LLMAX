@@ -2618,7 +2618,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
           // • WHERE TO FIND IT: browser.geekbench.com/ai.
           // • EXTRACTION RULE: Use the "Quantized Score". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
-          // SCORING GUIDELINE: subscore = XXXX. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
 
@@ -2632,7 +2632,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "description": "NPU baseline performance (Sec 6.4 reference table)"
           },
           "predicted_score": 10.00
-          // SCORING GUIDELINE: ai_hardware_score.value scaled via Section 6.4 Method C formula.
+          // SCORING GUIDELINE: predicted_score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process).
           // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
 
@@ -3268,6 +3268,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // • WHERE TO FIND IT: GSMarena.com review (Battery page).
             // • EXTRACTION RULE: Use the "Active use score" (e.g., "16:45h"). 
             // • CALCULATION: Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the normalization formula.
+            // SCORING GUIDELINE: subscore = 10 * (value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10.
             // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
           },
           "phonearena_battery_life_estimate": {
@@ -3278,6 +3279,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: source is PhoneArena.
             // • WHERE TO FIND IT: PhoneArena.com device specs page, under "Ratings and Benchmarks".
             // • EXTRACTION RULE: Use the "Combined battery life" estimate.
+            // SCORING GUIDELINE: subscore = 10 * (value - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min), clamped 0-10.
             // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
           }
         },
@@ -3291,8 +3293,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: Theoretical capacity vs drain.
           },
           "layer_b_hardware_efficiency_score": {
+            "value_path": "theoretical_calculation",
             "value": 8.00
-            // SCORING GUIDELINE: SoC efficiency * Display efficiency.
+            // SCORING GUIDELINE (Section 8.1 Layer B): HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal).
+            // • B.1 SoC: (0.50 * Node) + (0.30 * CPU) + (0.20 * GPU).
+            // • B.2 Display: (0.35 * Tech) + (0.35 * Refresh) + (0.30 * Res).
+            // • B.3 Connectivity: (0.70 * Cellular) + (0.30 * WiFi).
           },
           "layer_c_software_optimization_score": {
             "value": 9.00
@@ -3372,7 +3378,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 8.2 logarithmic formula. Score = 10 * (log(W) - log(Charge_W_Min)) / (log(Charge_W_Max) - log(Charge_W_Min)).
+          // SCORING GUIDELINE: Apply Section 8.2 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=5W, Max=120W.
         },
         "scores": {
           "predicted": 8.00,
@@ -3393,7 +3399,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 5.00
-          // SCORING GUIDELINE: Apply Section 8.3 logarithmic formula. Score = 10 * (log(W) - log(Wireless_W_Min)) / (log(Wireless_W_Max) - log(Wireless_W_Min)). Set to 0 if unsupported.
+          // SCORING GUIDELINE: Apply Section 8.3 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=7.5W, Max=50W. Set to 0 if unsupported.
         },
         "scores": {
           "predicted": 5.00,
@@ -3456,17 +3462,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Identify the included charger wattage. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Tier 1: >= 60W"    → 10.00
-          //     Definition: Ultra-high speed charger included in the box.
-          //   • "Tier 2: 30W - 59W" → 7.00
-          //     Definition: High speed charger included.
-          //   • "Tier 3: 15W - 29W" → 4.00
-          //     Definition: Standard speed charger included.
-          //   • "Tier 4: < 15W"     → 2.00
-          //     Definition: Low speed / basic charger included.
-          //   • "Tier 5: None"      → 0.00
-          //     Definition: No charger included in the retail box.
+          // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from Sec 8.2.
         },
         "scores": {
           "predicted": 0.00,
@@ -3489,7 +3485,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.80
-          // SCORING GUIDELINE: Calculate the Base Inverted Cost Score (Section 9.1 Base Inverted Formula). Score = 10 * (X_max - Price) / (X_max - X_min). Clamped between 0 and 10. X_max = Max_Price_Threshold, X_min = Min_Price_Threshold.
+          // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price) - log(Min)) / (log(Max) - log(Min)). Min=100, Max=1600.
         },
         "scores": {
           "predicted": 0.80,
