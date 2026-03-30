@@ -650,21 +650,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // ═══════════════════════════════════════════════════════════════════════════
       // METHOD A — Direct Benchmark (Primary)
       // ═══════════════════════════════════════════════════════════════════════════
-      "dxomark_display_benchmark": {
+      "method_a_benchmark_Display": {
         "value": 150,
         "source": "https://www.dxomark.com/smartphones/#display", // if the score is available for the device you MUST put the exact url here
         "exact_extract": "Proof pending",
         "subscore": 9.34
         //     - WHERE TO FIND IT: Search for "[Device Name] DXOMARK display score" on dxomark.com.
         //     - EXTRACTION RULE: Use the "Overall Display Score". Ensure category is "Display" (not Camera/Selfie/Audio).
-        // SCORING GUIDELINE: Score = 10 * (log(dxomark_display_benchmark.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        // SCORING GUIDELINE: Score = 10 * (log(method_a_benchmark_Display.value) − log(Display_DXO_Score_Min)) / (log(Display_DXO_Score_Max) − log(Display_DXO_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
       // METHOD C — Weighted Prediction Model (Tertiary / baseline for Method B)
       // ═══════════════════════════════════════════════════════════════════════════
       
-      "method_c_prediction_model": {
+      "method_c_prediction_model_Display": {
         // SCORING GUIDELINE: these are the 8 perceptual sub-section predicted scores and their weights:
         "subscore_2_1":  { "subscore_path": "2_1_panel_architecture.scores.predicted",   "weight_2_1": 0.15 },
         "subscore_2_2":  { "subscore_path": "2_2_brightness.scores.predicted",            "weight_2_2": 0.20 },
@@ -687,11 +687,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // METHOD B — Nearest Neighbor Interpolation (Secondary)
       // ═══════════════════════════════════════════════════════════════════════════
       
-      "method_b_neighbor_interpolation": {
+      "method_b_neighbor_interpolation_Display": {
         // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
-        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the method_c_prediction_model weights and sub-section predicted scores, excluding the target device itself.
+        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the method_c_prediction_model_Display weights and sub-section predicted scores, excluding the target device itself.
         //         Distance = √( Sum( weight_i * (SubScore_Target_i − SubScore_Neighbor_i)² ) )
-        //         Where 'i' iterates over each of the 8 method_c_prediction_model entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
+        //         Where 'i' iterates over each of the 8 method_c_prediction_model_Display entries (subscore_2_1 through subscore_2_10, except subscore_2_8 and subscore_2_9), weight_i is the entry's weight, SubScore_Target_i is this device's sub-section_i predicted score, and SubScore_Neighbor_i is the candidate neighbor's sub-section_i predicted score.
         //         Search space: all phones that have a known DXOMARK Display score (Method A), excluding the target device itself.
         // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
         "neighbors": [
@@ -726,17 +726,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "avg_benchmark_neighbors": 9.3000,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
         "correction_ratio": 0.9991,
-        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model.predicted_score / avg_predicted_neighbors.
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Display.predicted_score / avg_predicted_neighbors.
         "interpolated_score": 9.29
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
         "predicted": 7.51,
-        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model.predicted_score.
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Display.predicted_score.
         "final": {
           "value": 9.34,
-          // SCORING GUIDELINE: Use Method A if dxomark_display_benchmark is available (dxomark_display_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_prediction_model.predicted_score). 
+          // SCORING GUIDELINE: Use Method A if method_a_benchmark_Display is available (method_a_benchmark_Display.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_Display.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_Display.predicted_score). 
           "method_used": "Benchmark (DXOMARK)",
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (DXOMARK)    → Method A (documented DXOMARK score)
@@ -2075,7 +2075,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_geekbench_6_multi_core_benchmark": {
+        "method_a_benchmark_CPU_multi": {
           "value": 7200,
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
@@ -2083,13 +2083,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: primary benchmark is Geekbench 6 Multi-Core.
           // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
           // • EXTRACTION RULE: Use the "Multi-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Single-Core scores.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_geekbench_6_multi_core_benchmark.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_multi.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Throughput Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_throughput_model": {
+        "method_c_prediction_model_CPU_multi": {
           // GUIDELINE: Instead of fixed cluster keys, use an array of objects for each core cluster defined in §6.1.0. The number of blocks in this array must exactly match the number of clusters found in the SoC (System on Chip) reference. Add or remove cluster blocks accordingly.
           "clusters": [
             {
@@ -2169,7 +2169,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation": {
+        "method_b_neighbor_interpolation_CPU_multi": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Neighbor Selection): Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
@@ -2201,17 +2201,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 8.6000,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_throughput_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.60
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
           "predicted": 7.40,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_throughput_model.predicted_score.
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
           "final": {
             "value": 8.63,
-            // SCORING GUIDELINE: Use Method A if method_a_geekbench_6_multi_core_benchmark is available (method_a_geekbench_6_multi_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_throughput_model.predicted_score).
+            // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_multi is available (method_a_benchmark_CPU_multi.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_multi.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_multi.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
@@ -2230,7 +2230,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_geekbench_6_single_core_benchmark": {
+        "method_a_benchmark_CPU_single": {
           "value": 2200,
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
@@ -2238,13 +2238,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: primary benchmark is Geekbench 6 Single-Core.
           // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
           // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Multi-Core scores.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_geekbench_6_single_core_benchmark.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_single.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Single-Thread Efficiency Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_efficiency_model": {
+        "method_c_prediction_model_CPU_single": {
           // GUIDELINE: Evaluation focuses on the strongest core in the SoC (System on Chip) (typically the Prime core, i.e. clusters[0]).
           "strongest_core": {
             "architecture": {
@@ -2258,7 +2258,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Table by matching architecture.value.
             },
             "actual_frequency_ghz": {
-              "value_path": "6_1_cpu_multi_core_performance.method_c_throughput_model.clusters[0].actual_frequency_ghz.value",
+              "value_path": "6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters[0].actual_frequency_ghz.value",
               // GUIDELINE: Absolute path to the actual clock frequency defined in Section 6.1 Method C.
               "value": 3.3
               // GUIDELINE: Inherits frequency from the primary core cluster in §6.1.
@@ -2273,7 +2273,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation": {
+        "method_b_neighbor_interpolation_CPU_single": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
@@ -2305,16 +2305,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 8.5033,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_efficiency_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.50
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
           "predicted": 9.31,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_efficiency_model.predicted_score.
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_single.predicted_score.
           "final": {
             "value": 8.53,
-            // SCORING GUIDELINE: Use Method A if method_a_geekbench_6_single_core_benchmark is available (method_a_geekbench_6_single_core_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_efficiency_model.predicted_score).
+            // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_single is available (method_a_benchmark_CPU_single.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_single.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_single.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
@@ -2495,7 +2495,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_3d_mark_steel_nomad_light_benchmark": {
+        "method_a_benchmark_GPU": {
           "value": 1850,
           "source": "https://www.3dmark.com/search",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 1850",
@@ -2503,13 +2503,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: primary benchmark is 3DMark Steel Nomad Light.
           // • WHERE TO FIND IT: Search 3dmark.com search index or GSMArena/NotebookCheck reviews.
           // • EXTRACTION RULE: Use the "Steel Nomad Light" score. Ensure it is not the desktop "Steel Nomad" or older "Wild Life" benchmarks.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_3d_mark_steel_nomad_light_benchmark.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_GPU.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Graphics Performance Prediction Model (Tertiary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_graphics_prediction_model": {
+        "method_c_prediction_model_GPU": {
           "graphics_processing_unit": {
             "architecture": {
               "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value",
@@ -2546,7 +2546,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation": {
+        "method_b_neighbor_interpolation_GPU": {
           // SCORING GUIDELINE (Section 6.3 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
@@ -2578,7 +2578,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 7.9167,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0502,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_graphics_prediction_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_GPU.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 8.31
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
@@ -2588,10 +2588,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 
         "scores": {
           "predicted": 9.98,
-          // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_graphics_prediction_model.predicted_score * 0.90) + (ray_tracing_hardware_score * 0.10).
+          // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_prediction_model_GPU.predicted_score * 0.90) + (ray_tracing_hardware_score * 0.10).
           "final": {
             "value": 8.52,
-            // SCORING GUIDELINE: Final Score combines rasterization and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (3DMark: method_a_3d_mark_steel_nomad_light_benchmark.subscore) if available; if not, Method B (Interpolation: method_b_neighbor_interpolation.interpolated_score); if not, Method C (Predictor: method_c_graphics_prediction_model.predicted_score).
+            // SCORING GUIDELINE: Final Score combines rasterization and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (method_a_benchmark_GPU.subscore) if available; if not, Method B (method_b_neighbor_interpolation_GPU.interpolated_score); if not, Method C (method_c_prediction_model_GPU.predicted_score).
             "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
@@ -2610,7 +2610,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_geekbench_ai_quantized_benchmark": {
+        "method_a_benchmark_AI": {
           "value": 6000,
           "source": "https://browser.geekbench.com/ai-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 6000",
@@ -2625,7 +2625,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_component_model": {
+        "method_c_prediction_model_AI": {
           "ai_hardware_score": {
             "value_path": "6_1_0_system_on_chip_reference.ai_performance_score",
             "value": 10.00,
@@ -2639,7 +2639,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation": {
+        "method_b_neighbor_interpolation_AI": {
           // SCORING GUIDELINE (Section 6.4 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Section 6.4 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
           //         Distance = √( 0.40 * (AI_Diff)² + 0.25 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (RAM_Cap_Diff)² + 0.10 * (Process_Diff)² )
@@ -2676,16 +2676,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 9.9667,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0256,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_component_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 10.00
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
           "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_component_model.predicted_score.
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_AI.predicted_score.
           "final": {
             "value": 10.00,
-            // SCORING GUIDELINE: Use Method A if method_a_geekbench_ai_quantized_benchmark is available (method_a_geekbench_ai_quantized_benchmark.subscore becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_component_model.predicted_score).
+            // SCORING GUIDELINE: Use Method A if method_a_benchmark_AI is available (method_a_benchmark_AI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_AI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_AI.predicted_score).
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
@@ -3258,7 +3258,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Benchmark Validation (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_validation": {
+        "method_a_benchmark_Battery": {
           "gsmarena_active_use_score_v2": {
             "value": 16.75,
             "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667p3.php",
@@ -3285,7 +3285,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_technical_predictive_model": {
+        "method_c_prediction_model_Battery": {
           "layer_a_energy_score": {
             "value": 8.50
             // SCORING GUIDELINE: Theoretical capacity vs drain.
@@ -3306,7 +3306,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation": {
+        "method_b_neighbor_interpolation_Battery": {
           // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1 (Section 8.1 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
           //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
@@ -3342,17 +3342,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 9.2333,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0030,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_technical_predictive_model.predicted_score / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score / avg_predicted_neighbors.
           "interpolated_score": 9.26
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
           "predicted": 8.43,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_technical_predictive_model.predicted_score.
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.
           "final": {
             "value": 9.3250,
-            // SCORING GUIDELINE (Section 8.1): Use Method A if method_a_benchmark_validation is available (the average of GSMArena + PhoneArena subscores becomes the final value). Otherwise use Method B (interpolated_score from method_b_neighbor_interpolation). Otherwise fall back to Method C (method_c_technical_predictive_model.predicted_score).
+            // SCORING GUIDELINE (Section 8.1): Use Method A if method_a_benchmark_Battery is available (the average of GSMArena + PhoneArena subscores becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_Battery.predicted_score).
             "method_used": "Benchmark (GSMArena + PhoneArena)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (GSMArena + PhoneArena) → Method A (documented GSMArena/PhoneArena scores)
