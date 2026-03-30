@@ -2604,6 +2604,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
+      // █ 6.4.0 MODULE: SOC NEURAL PROCESSING UNIT (NPU) / AI ACCELERATOR SCORING TABLE
+      // Defines the authoritative AI performance scores for NPUs.
+      // 
+      // | SoC Model                             | NPU / Neural Engine            | AI Score |
+      // |:--------------------------------------|:-------------------------------|:--------:|
+      // | Snapdragon 8 Gen 3                    | Hexagon (2024)                 |  10.00   |
+      // | Dimensity 9300                        | APU 790                        |  10.00   |
+      // | Exynos 2400                           | NPU 5th-gen (34.7 TOPS)        |   9.00   |
+      // | Apple A18 Pro                         | 16-core Neural Engine          |   9.00   |
+      // | Tensor G4                             | Google TPU (2024)              |   8.00   |
+      // | Snapdragon 8 Gen 2                    | Hexagon (2023)                 |   8.00   |
+      // | Apple A17 Pro                         | 16-core Neural Engine          |   8.00   |
+      // | Apple A16 Bionic                      | 16-core Neural Engine          |   7.00   |
+      // | Tensor G3                             | Google TPU (2023)              |   7.00   |
+      // | Dimensity 9200                        | APU 690                        |   7.00   |
+      // | Apple A15 Bionic                      | 16-core Neural Engine          |   6.00   |
+      // | Snapdragon 8 Gen 1                    | Hexagon (2022)                 |   6.00   |
+      // | Dimensity 9000                        | APU 670                        |   6.00   |
+      // | Tensor G2                             | Google TPU (2022)              |   5.00   |
+      // | Apple A14 Bionic                      | 16-core Neural Engine          |   5.00   |
+      // | Snapdragon 888                        | Hexagon 780                    |   4.00   |
+      // | Snapdragon 7 Gen 3                    | Hexagon (mid-tier, 2023)       |   4.00   |
+      // | Dimensity 8200                        | APU 8 (mid-tier, 2022)         |   4.00   |
+      // | Snapdragon 7 Gen 1 / 7 Gen 2          | Hexagon (mid-tier, 2021–2023)  |   3.00   |
+      // | Dimensity 8100                        | APU 810 (mid-tier, 2022)       |   3.00   |
+      // | Budget (Helio G / Snapdragon 4xx)     | DSP only or no dedicated NPU   |   1.00   |
+      // -------------------------------------------------------------------------
+      
       "6_4_ai_hardware_performance": {
         // SCORING GOAL: Evaluates the Neural Processing Unit (NPU) speed.
         

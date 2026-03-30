@@ -18,7 +18,7 @@ This document establishes **strict, methodic rules** for the JSON structure in `
 ### Meta Object (`meta`)
 Metadata describing the file version and integrity.
 
-**Schema:**
+**Schema Example:**
 ```json
 "meta": {
   "schema_version": "5.1",
@@ -29,7 +29,7 @@ Metadata describing the file version and integrity.
 ### Identity Object (`identity`)
 Strict identification of the device to prevent ambiguity.
 
-**Schema:**
+**Schema Example:**
 ```json
 "identity": {
   "id": { 
@@ -140,7 +140,7 @@ All scoring parameters must be broken down into specific identifier components (
 
 **B. Scores (Output)**
 **Important Note on Formulas:**
-There is no need to repeat the source name "`scoring_rules.md`" in every inline comment. The entire data structure operates under the assumption that all formulas, tables, and rules referenced as "Section X.X" or "§X.X" are found in `scoring_rules.md`.
+There is no need to repeat the source name "`scoring_rules.md`" in every inline comment. The entire data structure operates under the assumption that all formulas and rules are found in `scoring_rules.md`.
 
 The calculated result of the subsection's formula.
 The following rules define how the `scores` object is calculated, **bridging the technical inputs to the final ranking.**
@@ -172,7 +172,7 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
 -   **Low:** Verified by 2 benchmarks with high variance.
 -   **N/A:** Predictor, Neighbor Interpolation, or Single Benchmark source.
 
-**Schema:**
+**Schema Example:**
 ```json
 "7_6_sensors": {
   "core_sensor_suite": {
@@ -294,7 +294,7 @@ The following sections (2 and 3) detail how to structure the components within e
 ### Rule 4: Architectural Identifiers → X.Y.0 Tables (Exception)
 *   **Condition:** Hardware identifiers shared by multiple devices (e.g., SoC Model, GPU Model).
 *   **Action:**
-    1.  **X.Y.0 Table:** Store **only** the identifier.
+    1.  **X.Y.0 Table:** Store the identifier.
     2.  **Scoring Subsection:** Store derived scores using **Type C** (Architectural Mapping).
 
 ---
@@ -412,7 +412,7 @@ To prevent human or parser omission, every discrete scorable feature evaluated i
       "subscore": 0.0
     }
     ```
-*   **For Hierarchical Categories (e.g., Wi-Fi, Audio Codecs, OS Version):**
+*   **For Hierarchical Categories (e.g., Wi-Fi, OS Version):**
     You do NOT list all the lower tiers as `false`. As per `scoring_rules.md`, these categories only score the *highest* supported tier. You extract and evaluate ONLY that single maximum tier:
     ```json
     "bluetooth_version": {

@@ -243,9 +243,6 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 **TFT or PLS LCD**: Budget Thin-Film Transistor (TFT) or Plane-to-Line Switching (PLS) Liquid-Crystal Display (LCD). These typically feature narrower viewing angles and lower color accuracy than high-end IPS panels.\
 **TN LCD or Legacy**: Twisted Nematic (TN) LCD and other obsolete technologies. These suffer from severe color distortion and inversion beyond narrow viewing angles.
 
-> [!IMPORTANT]
-> **Single Source of Truth:** This table is the master reference for all display panel scores. Battery efficiency scoring references this table.
-
 ### 🔹 2.2 Brightness (Peak & HBM)
 *Description:* Maximum brightness. Higher nits mean the screen is easily readable outside and HDR movies look stunning.
 *   **Measurement:** High Brightness Mode (HBM) and Peak brightness.
@@ -1363,25 +1360,15 @@ Traditional SCC metrics require subjective hands-on testing that cannot be autom
 
 Use this matrix to assign the `subscore` for each of the three dimensions based purely on the `skin` field.
 
-| Platform / Skin                           | PAL Score (40%) | UC Score (30%)  | SA Score (30%)  | *Composite (Info)* |
-| :---------------------------------------- | :-------------: | :-------------: | :-------------: | :----------------: |
-| **iOS**                                   | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
-| **Pixel UI / Stock Android**              | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
-| **AOSP / Fairphone OS / Nothing OS**      | **10.0**        | **10.0**        | **10.0**        | *10.00*            |
-| **Motorola MyUX / Hello UI**              | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
-| **Sony Xperia UI / Sharp AQUOS / Nokia**  | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
-| **ASUS ZenUI / ROG UI**                   | **6.0**         | **10.0**        | **10.0**        | *8.40*             |
-| **Redmagic OS**                           | **3.0**         | **10.0**        | **10.0**        | *7.20*             |
-| **Funtouch OS (Vivo)**                    | **6.0**         | **5.0**         | **10.0**        | *6.90*             |
-| **LG UX / HTC Sense (Legacy)**            | **6.0**         | **5.0**         | **5.0**         | *5.40*             |
-| **OxygenOS (OnePlus)**                    | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
-| **Samsung One UI**                        | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
-| **ColorOS / Realme UI / OriginOS / Vivo** | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
-| **Honor MagicOS**                         | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
-| **ZTE MiFavor UI / MyOS**                 | **3.0**         | **5.0**         | **5.0**         | *4.20*             |
-| **HyperOS (Xiaomi) / Huawei EMUI**        | **0.0**         | **5.0**         | **0.0**         | *1.50*             |
-| **MIUI (Legacy Xiaomi)**                  | **0.0**         | **0.0**         | **0.0**         | *0.00*             |
-| **Tecno HiOS / Infinix XOS / Itel OS**    | **0.0**         | **0.0**         | **0.0**         | *0.00*             |
+| Platform / Skin                           | PAL Score (40%) | UC Score (30%)  | SA Score (30%)  |
+| :---------------------------------------- | :-------------: | :-------------: | :-------------: |
+| **iOS**                                   | **10.0**        | **10.0**        | **10.0**        |
+| **Pixel UI / Stock Android**              | **10.0**        | **10.0**        | **10.0**        |
+| **Samsung One UI**                        | **3.0**         | **5.0**         | **5.0**         |
+| [...]                                     | [...]           | [...]           | [...]           |
+
+> [!IMPORTANT]
+> **Source of Truth:** For the full list of all 15+ supported software skins and their authoritative scores, refer to the **Skin Lookup Table** in [proposed_data_structure.md].
 
 ---
 
@@ -1475,69 +1462,43 @@ Where each feature = 1 if present, 0 if absent. Max score = 10.0.
 
 #### Master AI Marketing Name Reference
 
-Use this reference to map brand-specific terms to the 6 core AI features. 
+Use this reference to map brand-specific terms to the 6 core AI features.
 
 **1. Visual Screen Search (20%)**
 *Definition: Identifying on-screen items without leaving the current app.*
 - Circle to Search (Google, Samsung, Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, Motorola, Asus, Nothing)
 - Visual Intelligence / Visual Look Up (Apple)
-- Magic Portal (Honor)
-- AI Screen Recognition (ZTE, Nubia, Redmagic, Tecno, Infinix)
-- AI Search (Nothing, Itel)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **2. Live Speech Translation (15%)**
 *Definition: Real-time voice translation during calls or in-person audio.*
 - Live Translate (Samsung, Google)
-- Interpreter / Interpreter Mode (Samsung, Google, Xiaomi, Oppo, OnePlus, Vivo, Realme, iQOO)
-- Translate App: Auto-Translate / Conversation Mode (Apple)
-- AI Call Translator / Assistant (Asus, ROG, Vivo)
-- AI Call Translation (Honor, ZTE, Tecno, Infinix)
-- AI Real-time Subtitles / Live Subtitles (Xiaomi, Oppo, Vivo)
-- AI Real-time Translation (Nubia, Redmagic)
-- Moto AI Translate (Motorola)
-- Ella Translate (Tecno, Infinix)
+- Interpreter / Interpreter Mode (Samsung, Google, ...)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **3. Content Summarization (20%)**
 *Definition: Distilling key points from articles, notes, or long-form documents.*
 - Note Assist / Browsing Assist (Samsung)
 - Recorder Summarize (Google)
-- Writing Tools: Summarize / Notification Summaries (Apple)
-- AI Summary / AI Web Page Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix, Asus, ROG)
-- Catch Me Up (Motorola)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **4. AI Writing Tools (5%)**
 *Definition: System-wide text rewriting, tone adjustment, or proofreading.*
 - Chat Assist / Keyboard AI (Samsung)
 - Magic Compose / Help me write (Google, Gboard)
-- Writing Tools: Rewrite / Proofread (Apple)
-- AI Writing Assistant / AI Writer (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Tecno, Infinix, Asus, ROG)
-- AI Creative Writing (Nubia, Redmagic)
-- Magic Text (Honor)
-- Style Sync (Motorola)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **5. Meeting / Call Transcription (20%)**
 *Definition: Converting recorded or live speech into text logs with speaker ID.*
 - Transcript Assist (Samsung)
 - Recorder: AI Transcription (Google)
-- Call Notes / Instant Transcript (Google)
-- Call Transcription / Audio Transcription (Apple)
-- AI Recorder / AI Recording Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix)
-- AI Voice Scribe (Oppo, OnePlus)
-- AI Transcript / AI Voice Recording (Asus, ROG, Vivo)
-- Pay Attention (Motorola)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **6. On-Device Reliability (20%)**
 *Definition: Ability to process core AI features offline via local NPU/Models.*
 - "Process data only on device" toggle (Samsung, Google, Xiaomi, Apple)
 - Gemini Nano (Google, Samsung, Motorola, Realme)
-- Private Cloud Compute / Secure Enclave (Apple)
-- MagicLM On-Device (Honor)
-- BlueLM (Vivo, iQOO)
-- HyperMind / HyperAI (Xiaomi)
-- Breeno / AndesBrain (Oppo)
-- Nebula AI Model (ZTE, Nubia, Redmagic)
-- Moto AI On-Device (Motorola)
-- Ella AI (Tecno, Infinix)
+- [...] *(See full list in [proposed_data_structure.md])*
 
 **Unlisted Manufacturers (Sony, Nothing, etc.)**
 - Sony Xperia / Nothing Phone: These brands standardly rely on **Google (Circle to Search, Gemini Nano)**. Only score features explicitly confirmed to be active via the Google app suite.
@@ -1562,24 +1523,8 @@ This table provides the authoritative CPU core architecture scores used througho
 | **Oryon Gen 2 (SD 8 Elite)** | **10**    | **4.32**       | 2024-2025  | Qualcomm custom, massive IPC/Freq leap     |
 | **Cortex-X925 / Lumex Ultra**| **9**     | **3.60**       | 2024-2025  | ARM Blackhawk, desktop-class IPC           |
 | **Apple A17 Pro Cores**      | **9**     | **3.78**       | 2023       | 3nm (N3B), predecessor to Everest          |
-| **Apple A16 Bionic**         | **8**     | **3.46**       | 2022       | iPhone 14 Pro / 15; High efficiency        |
-| **Cortex-X4**                | **8**     | **3.30**       | 2023-2024  | SD 8 Gen 3, Exynos 2400 prime core         |
-| **Apple A15 Bionic**         | **7**     | **3.22**       | 2021       | iPhone 13; High sustained performance      |
-| **Cortex-X3**                | **7**     | **3.20**       | 2022       | SD 8 Gen 2 prime core                      |
-| **Apple A14 Bionic**         | **6**     | **3.10**       | 2020       | iPhone 12; 5nm generation                  |
-| **Cortex-X2**                | **6**     | **3.00**       | 2021       | SD 8 Gen 1 prime core                      |
-| **Cortex-X1**                | **5**     | **2.84**       | 2020       | SD 888 / Tensor G1 prime core              |
-| **Cortex-A725 / A720**       | **5**     | **2.80**       | 2023-2024  | Modern ARMv9.2 mid-range / P-cores         |
-| **Cortex-A715 / A710**       | **4**     | **2.50**       | 2021-2022  | ARMv9.0 mid-range standard (SD 7 Gen 1)    |
-| **Cortex-A78 / A77**         | **3**     | **2.40**       | 2019-2020  | Legacy flagship, now in budget 5G chips    |
-| **Cortex-A76**               | **2**     | **2.20**       | 2018-2019  | Found in older mid-range (Helio G99)       |
-| **Cortex-A75 / A73**         | **1**     | **2.00**       | 2016-2018  | Base performance tier (Unisoc T616)        |
-| **Cortex-A525 / A520 / A510**| **1**     | **2.00**       | 2021-2025  | Modern ARMv9 efficiency cores              |
-| **Cortex-A55 / A53**         | **0**     | **1.80**       | 2014-2017  | Ultra-budget efficiency cores              |
-| **Legacy 32-bit (A7 / A9)**  | **0**     | **1.50**       | <2014      | Obsolete                                   |
+- [...] *(See full list in [proposed_data_structure.md])*
 
-> [!IMPORTANT]
-> **Single Source of Truth:** This table is the master reference for all CPU core scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
 
 ### 🔹 6.1 CPU Multi-Core Performance (Sustained Outcome)
 *Description:* Measures actual delivered CPU performance in standardized workloads, ensuring the device can handle heavy multitasking and sustained processing.
@@ -1769,46 +1714,11 @@ This table provides the authoritative GPU architecture scores used throughout th
 | :------------------------ | :---------------: | :---------: | :------------: | :--------: | :-------------------------------------- |
 | **Adreno 830**            |      **10.0**     |    **10.0** |    **1100**    |   **10.0** | Snapdragon 8 Elite                      |
 | **Immortalis-G925 MC12**  |      **10.0**     |    **10.0** |    **1626**    |   **10.0** | Dimensity 9400                          |
-| **Immortalis-G720 MC12**  |      **10.0**     |    **10.0** |    **1300**    |   **10.0** | Dimensity 9300                          |
 | **Adreno 750**            |      **10.0**     |    **10.0** |    **903**     |    **9.0** | Snapdragon 8 Gen 3                      |
-| **Apple GPU (A18 Pro)**   |       **9.0**     |     **9.0** |    **1398**    |   **10.0** | 6-core (iPhone 16 Pro)                  |
-| **Apple GPU (A18)**       |       **9.0**     |     **8.0** |    **1398**    |   **10.0** | 5-core (iPhone 16)                      |
-| **Xclipse 940**           |       **9.0**     |     **8.0** |    **1100**    |    **7.0** | Exynos 2400; AMD RDNA 3                 |
-| **Adreno 740**            |       **9.0**     |     **8.0** |    **680**     |    **9.0** | Snapdragon 8 Gen 2                      |
-| **Immortalis-G715 MC11**  |       **9.0**     |     **8.0** |    **981**     |    **9.0** | Dimensity 9200                          |
-| **Apple GPU (A17 Pro)**   |       **8.0**     |     **7.0** |    **1398**    |    **9.0** | 6-core (iPhone 15 Pro)                  |
-| **Adreno 735**            |       **8.0**     |     **6.0** |    **950**     |    **8.0** | Snapdragon 8s Gen 3                     |
-| **Adreno 732**            |       **8.0**     |     **6.0** |    **900**     |    **8.0** | Snapdragon 7+ Gen 3                     |
-| **Adreno 730**            |       **8.0**     |     **6.0** |    **900**     |    **7.0** | Snapdragon 8 Gen 1                      |
-| **Adreno 725**            |       **8.0**     |     **5.0** |    **580**     |    **9.0** | Snapdragon 7+ Gen 2                     |
-| **Mali-G715 MC9**         |       **8.0**     |     **6.0** |    **850**     |    **9.0** | Dimensity 9000                          |
-| **Apple GPU (A16 Bionic)**|       **7.0**     |     **4.0** |    **1398**    |    **8.0** | 5-core (iPhone 14 Pro / iPhone 15)      |
-| **Xclipse 920**           |       **7.0**     |     **5.0** |    **1300**    |    **6.0** | Exynos 2200; AMD RDNA 2                 |
-| **Mali-G710 MC10**        |       **7.0**     |     **5.0** |    **850**     |    **8.0** | Dimensity 9000 (mid config)             |
-| **Adreno 660**            |       **7.0**     |     **0.0** |    **840**     |    **5.0** | Snapdragon 888 (No RT)                  |
-| **Mali-G715 MC7**         |       **7.0**     |     **5.0** |    **850**     |    **9.0** | Dimensity 8200                          |
-| **Mali-G715 (Tensor G3)** |       **7.0**     |     **4.0** |    **890**     |    **6.0** | Google Tensor G3                        |
-| **Apple GPU (A15 Bionic)**|       **6.0**     |     **0.0** |    **1296**    |    **8.0** | 4-core (iPhone 13) / 5-core (Pro model) |
-| **Adreno 720**            |       **6.0**     |     **0.0** |    **800**     |    **8.0** | Snapdragon 7 Gen 3                      |
-| **Adreno 710**            |       **6.0**     |     **0.0** |    **800**     |    **8.0** | Snapdragon 7s Gen 2                     |
-| **Adreno 650**            |       **6.0**     |     **0.0** |    **587**     |    **6.0** | Snapdragon 865                          |
-| **Adreno 642L**           |       **6.0**     |     **0.0** |    **490**     |    **8.0** | Snapdragon 778G                         |
-| **Mali-G610 MC6**         |       **6.0**     |     **0.0** |    **850**     |    **8.0** | Dimensity 1080                          |
-| **Mali-G77 MC9**          |       **6.0**     |     **0.0** |    **850**     |    **6.0** | Dimensity 1000+                         |
-| **Apple GPU (A14 Bionic)**|       **5.0**     |     **0.0** |    **1086**    |    **7.0** | 4-core (iPhone 12)                      |
-| **Apple GPU (A13 Bionic)**|       **5.0**     |     **0.0** |    **979**     |    **6.0** | 4-core (iPhone 11)                      |
-| **Adreno 640**            |       **5.0**     |     **0.0** |    **585**     |    **5.0** | Snapdragon 855                          |
-| **Mali-G610 MC4**         |       **5.0**     |     **0.0** |    **850**     |    **7.0** | Dimensity 920                           |
-| **Adreno 620**            |       **4.0**     |     **0.0** |    **625**     |    **6.0** | Snapdragon 765G                         |
-| **Adreno 619**            |       **4.0**     |     **0.0** |    **825**     |    **6.0** | Snapdragon 750G                         |
-| **Mali-G68 MC4**          |       **4.0**     |     **0.0** |    **900**     |    **6.0** | Dimensity 900                           |
-| **Adreno 618**            |       **3.0**     |     **0.0** |    **610**     |    **5.0** | Snapdragon 730G                         |
-| **Mali-G57 MC3**          |       **3.0**     |     **0.0** |    **950**     |    **5.0** | Budget 5G                               |
-| **Adreno 613**            |       **3.0**     |     **0.0** |    **955**     |    **6.0** | Snapdragon 4 Gen 2                      |
-| **Adreno 610**            |       **2.0**     |     **0.0** |    **600**     |    **8.0** | Snapdragon 680                          |
-| **Mali-G57 MC2**          |       **2.0**     |     **0.0** |    **950**     |    **5.0** | Entry 5G                                |
-| **Mali-G52 MP2**          |       **1.0**     |     **0.0** |    **850**     |    **4.0** | Entry Level                             |
-| **PowerVR GE8320**        |       **0.0**     |     **0.0** |    **680**     |    **2.0** | Ultra-budget legacy                     |
+| [...]                     | [...]             | [...]       | [...]          | [...]      | [...]                                   |
+
+> [!IMPORTANT]
+> **Source of Truth:** For the full list of all 40+ supported GPU architectures and their authoritative scores, refer to the **GPU ARCHITECTURE SCORING TABLE** in [proposed_data_structure.md].
 
 > [!NOTE]
 > **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
@@ -1817,9 +1727,6 @@ This table provides the authoritative GPU architecture scores used throughout th
 > - **Mali-G715 MC7** = 7 shader cores (mid-range config)
 > More cores = higher performance. Always match the exact MC count from device specifications (found on GSMArena under "Chipset" details).
 
-> [!IMPORTANT]
-> **Single Source of Truth:** This table is the master reference for all GPU scores. All other sections reference this table. Do not duplicate or modify scores elsewhere.
-> **Reference Frequency Usage:** The "Reference Frequency" column provides the standard operating frequency for each GPU model. If the actual device frequency is unavailable on GSMArena, use this reference value for FSF calculation (FSF = 1.0).
 
 ### 🔹 6.3 GPU Performance (Graphics & Gaming)
 *Description:* Measures the graphical processing power for gaming, rendering, and compute tasks. This score reflects the device's ability to drive high-fidelity visuals at high frame rates.
@@ -1909,65 +1816,38 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
 | :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
 | **Vulkan 1.4**    | **Metal 4.0**  | —                  | **D3D 12 (FL 12_2)**    | **10.0**  |
-| —                 | **Metal 3.3**  | —                  | —                       | **9.8**   |
-| —                 | **Metal 3.2**  | —                  | **D3D 12 (FL 12_1)**    | **9.6**   |
-| —                 | **Metal 3.1**  | —                  | —                       | **9.4**   |
 | **Vulkan 1.3**    | **Metal 3.0**  | —                  | **D3D 12 (FL 12_0)**    | **9.2**   |
-| —                 | **Metal 2.4**  | —                  | **D3D 11.2**            | **8.5**   |
-| **Vulkan 1.2**    | **Metal 2.3**  | —                  | **D3D 11.1**            | **8.0**   |
-| —                 | **Metal 2.2**  | —                  | —                       | **7.5**   |
-| —                 | **Metal 2.1**  | —                  | —                       | **7.0**   |
-| **Vulkan 1.1**    | **Metal 2.0**  | —                  | **D3D 11.0**            | **6.5**   |
-| **Vulkan 1.0**    | —              | —                  | **D3D 10.1**            | **6.0**   |
-| —                 | —              | **OpenGL ES 3.2**  | **D3D 10.0**            | **5.0**   |
-| —                 | **Metal 1.2**  | —                  | —                       | **4.5**   |
-| —                 | **Metal 1.1**  | —                  | —                       | **4.2**   |
-| —                 | **Metal 1.0**  | —                  | **D3D 9.3**             | **4.0**   |
-| —                 | —              | —                  | **D3D 9.2**             | **3.5**   |
-| —                 | —              | **OpenGL ES 3.1**  | —                       | **3.0**   |
-| —                 | —              | —                  | **D3D 9.1**             | **2.5**   |
-| —                 | —              | —                  | **D3D 9.0c**            | **2.0**   |
-| —                 | —              | —                  | —                       | **1.5**   |
-| —                 | —              | **OpenGL ES 3.0**  | —                       | **1.0**   |
-| —                 | —              | **OpenGL ES 2.0**  | —                       | **0.5**   |
-| —                 | —              | **OpenGL ES 1.x**  | —                       | **0.0**   |
+| [...]             | [...]          | [...]              | [...]                   | [...]     |
+
+> [!IMPORTANT]
+> **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, refer to the **GPU API Support Scoring Table** in [proposed_data_structure.md].
 
 **AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)**
 If the explicit API version is NOT disclosed on the primary spec sheet, use the following fallback matrices based on the device's OS generation and chipset era.
 
-**MATRIX 1: APPLE / iOS**
+**MATRIX 1: APPLE / iOS (Extract)**
 | Apple SoC Generation | Min iOS Version | Inferred API Version |
 | :------------------- | :-------------- | :------------------- |
 | **A18, M4, M5**      | iOS 18+         | Metal 4.0            | 
 | **A17 Pro**          | iOS 17.5+       | Metal 3.3            |
-| **A15, A16, M2**     | iOS 17.0+       | Metal 3.2            | 
-| **A14, M1, M3**      | iOS 16.4+       | Metal 3.1            |
-| **A13 Bionic**       | iOS 16.0+       | Metal 3.0            |
-| **A12 Bionic**       | iOS 15.x        | Metal 2.4            |
-| **A11 Bionic**       | iOS 14.x        | Metal 2.3            |
-| **A10 Fusion**       | iOS 13.x        | Metal 2.2            |
-| **A9 / A9X**         | iOS 12.x        | Metal 2.1            |
-| **A8 / A8X**         | iOS 11.x        | Metal 2.0            | 
+| [...]                | [...]           | [...]                |
 
-**MATRIX 2: ANDROID**
+> [!IMPORTANT]
+> **Source of Truth:** For the full OS/Architecture fallback matrices (Matrix 1, 2, and 3), refer to the **Ambiguous API Resolution** section in [proposed_data_structure.md].
+
+**MATRIX 2: ANDROID (Extract)**
 | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
 | :------------------- | :----------------------------- | :------------ |
 | **Android 15+**      | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
 | **Android 13 - 14**  | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-| **Android 12**       | Adreno 66x, Mali-G710          | Vulkan 1.2    |
-| **Android 10 - 11**  | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
-| **Android 7.0 - 9.0**| Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
-| **Android 6.0**      | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
-| **Android 5.0**      | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
+| [...]                | [...]                          | [...]         |
 
-**MATRIX 3: WINDOWS MOBILE**
+**MATRIX 3: WINDOWS MOBILE (Extract)**
 | Windows OS Version   | Era / Reference Hardware      | Inferred API  |
 | :------------------- | :---------------------------- | :------------ |
 | **Windows 11 (24H2)**| Snapdragon X Elite (Adreno X1)| D3D 12 (12_2) |
-| **Windows 11 (22H2)**| Snapdragon 8cx Gen 3          | D3D 12 (12_1) |
-| **Windows 10/11 ARM**| Snapdragon 850 / 8cx Gen 1/2  | D3D 12 (12_0) |
-| **Windows 10 Mobile**| Lumia 950 / 950 XL            | D3D 11.2      |
-| **Windows Phone 8.1**| Lumia 930 / 1520              | D3D 11.1      |
+| **Windows Phone 8.0**| Lumia 920 / 1020 (Baseline)   | D3D 9.3       |
+| [...]                | [...]                         | [...]         |
 
 > [!IMPORTANT]
 > **Multi-API Support & Scoring Logic:**
@@ -2064,6 +1944,12 @@ This table provides the authoritative AI scores for major SoCs, reflecting their
 | **Snapdragon 7 Gen 1 / 7 Gen 2**      | Hexagon (mid-tier, 2021–2023)  | **3**           |
 | **Dimensity 8100**                    | APU 810 (mid-tier, 2022)       | **3**           |
 | **Budget (Helio G / Snapdragon 4xx)** | DSP only or no dedicated NPU   | **1**           |
+
+| [...]                                 | [...]                          | [...]           |
+
+> [!IMPORTANT]
+> **Source of Truth:** For the full list of all 20+ supported SoC AI accelerators and their authoritative scores, refer to the **SoC Neural Processing Unit (NPU) / AI Accelerator Scoring Table** in [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md#L2608).
+
 
 > [!IMPORTANT]
 > **SoC not listed above?** Do **not** guess a score. Add a new row to this table first:
