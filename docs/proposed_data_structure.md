@@ -201,8 +201,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
       // SCORING GOAL: Scores dust and water resistance separately using the two digits of the Ingress Protection (IP) rating defined by International Electrotechnical Commission (IEC) standard 60529. The full composite string is available at `1_2_durability.ingress_protection_rating.value` for reference.
       "dust_protection_digit": {
-        "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Tier 1: Digit 6",
+        "value_path": "1_2_durability.ingress_protection_rating.value",
         "subscore": 10.00
           // SCORING GUIDELINE: Identify the first digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Digit 6"    → 10.00
@@ -213,8 +213,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 6: Digit 0–1"  → 0.00
       },
       "water_protection_digit": {
-        "value_path": "1_2_durability.ingress_protection_rating.value",
         "value": "Tier 2: Digit 8",
+        "value_path": "1_2_durability.ingress_protection_rating.value",
         "subscore": 9.00
           // SCORING GUIDELINE: Identify the second digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
           //   • "Tier 1: Digit 9"    → 10.00
@@ -1798,9 +1798,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • Goal: Measure "Safe Utility Lifespan" (Longevity).
         //   • Anchor: The latest (most future) date between Operating System (OS) and Security support.
         "launch_date_ref": {
-          "value_path": "identity.release_date.value",
-          "value": "2024-01-24"
-          // ### Type B: Internal Reference. Use the global launch date (identity.release_date) as the baseline for all calculations below.
+          "value": "2024-01-24",
+          "value_path": "identity.release_date.value"
+          // Use the global launch date (identity.release_date) as the baseline for all calculations below.
         },
         "os_end_date": {
           "value": "2031-01-24",
@@ -1858,7 +1858,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // DATA GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
           // SCORING GUIDELINE: ALL subscores below (PAL, UC, SA) MUST be extracted directly from this Skin Lookup Table based on the `skin` value.
           //
-          // SKIN LOOKUP TABLE:
+          // █ SKIN_LOOKUP_TABLE:
           // | Platform / Skin                           | PAL Score (40%) | UC Score (30%) | SA Score (30%) | *Composite* |
           // | :---------------------------------------- | :-------------: | :------------: | :------------: | :---------: |
           // | **iOS**                                   | **10.0**        | **10.0**       | **10.0**       | *10.00*     |
@@ -1879,53 +1879,62 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // | **MIUI (Legacy Xiaomi)**                  | **0.0**         | **0.0**        | **0.0**        | *0.00*      |
           // | **Tecno HiOS / Infinix XOS / Itel OS**    | **0.0**         | **0.0**        | **0.0**        | *0.00*      |
         },
-        "5_2_1_preinstalled_app_load": {
-          "value": "Tier 3: Significant Bloat",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 3.00
-          // SCORING GUIDELINE: Identify the app load tier. Use the following exact Tier Names for "value" with related scores as subscore:
+        "5_2_1_preinstalled_app_load_score": {
+          "identifier": "Samsung One UI",
+          // GUIDELINE: Standardized name from the SKIN_LOOKUP_TABLE corresponding to the device's `skin.value`.
+          "reference_table": "SKIN_LOOKUP_TABLE",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "Preinstalled App Load (PAL) Score",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 3.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. PAL). 
+          // For info only:
           //   • "Tier 1: Minimal / Core Only"        → 10.00
           //     Definition: No third-party applications or redundant first-party duplicates.
-          //   • "Tier 2: Moderate Proprietary"        →  6.00
+          //   • "Tier 2: Moderate Proprietary"       →  6.00
           //     Definition: First-party duplicates present (e.g., two browsers), rare third-party.
           //   • "Tier 3: Significant Bloat"          →  3.00
           //     Definition: Multiple pre-loaded social media apps, games, and partner software.
           //   • "Tier 4: Extreme Bloat"              →  0.00
           //     Definition: Dozens of third-party apps and promotional "Hot Apps" folders out-of-box.
-          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
-        "5_2_2_user_control": {
-          "value": "Tier 2: Disabling Only",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.00
-          // SCORING GUIDELINE: Identify the user control tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Tier 1: Fully Uninstallable"        → 10.00
+        "5_2_2_user_control_score": {
+          "identifier": "Samsung One UI",
+          // GUIDELINE: Standardized name from the SKIN_LOOKUP_TABLE corresponding to the device's `skin.value`.
+          "reference_table": "SKIN_LOOKUP_TABLE",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "User Control (UC) Score",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 5.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. UC).
+          // For info only:
+          //   • "Tier 1: Fully Uninstallable"       → 10.00
           //     Definition: Almost all non-essential apps can be completely deleted.
-          //   • "Tier 2: Disabling Only"             →  5.00
+          //   • "Tier 2: Disabling Only"            →  5.00
           //     Definition: Many apps cannot be deleted but can be natively hidden and "disabled".
-          //   • "Tier 3: Highly Restrictive"         →  0.00
+          //   • "Tier 3: Highly Restrictive"        →  0.00
           //     Definition: Core bloatware runs in the background and cannot be turned off normally.
-          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
-        "5_2_3_system_ads": {
-          "value": "Tier 2: Opt-Out / Occasional",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.00
-          // SCORING GUIDELINE: Identify the system ads tier. Use the following exact Tier Names for "value" with related scores as subscore:
-          //   • "Tier 1: Ad-Free"                    → 10.00
+        "5_2_3_system_ads_score": {
+          "identifier": "Samsung One UI",
+          // GUIDELINE: Standardized name from the SKIN_LOOKUP_TABLE corresponding to the device's `skin.value`.
+          "reference_table": "SKIN_LOOKUP_TABLE",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "System Advertisements (SA) Score",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 5.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. SA).
+          // For info only:
+          //   • "Tier 1: Ad-Free"                   → 10.00
           //     Definition: Zero system-level advertisements or promotional pushes.
-          //   • "Tier 2: Opt-Out / Occasional"       →  5.00
+          //   • "Tier 2: Opt-Out / Occasional"      →  5.00
           //     Definition: Native app promotions exist but can be permanently deactivated.
-          //   • "Tier 3: Intrusive / Persistent"     →  0.00
+          //   • "Tier 3: Intrusive / Persistent"    →  0.00
           //     Definition: Mandatory UI ads and lock screen promotions that cannot be disabled.
-          // IMPORTANT: Subscore MUST be extracted from the Skin Lookup Table above for autonomous scoring.
         },
         "scores": {
           "predicted": 4.20,
-          // SCORING GUIDELINE: scores.predicted = (0.40 * 5_2_1_preinstalled_app_load.subscore) + (0.30 * 5_2_2_user_control.subscore) + (0.30 * 5_2_3_system_ads.subscore). Alternatively, use the *Composite* score from the Skin Lookup Table directly.
+          // SCORING GUIDELINE: scores.predicted = (0.40 * 5_2_1_preinstalled_app_load_score.value) + (0.30 * 5_2_2_user_control_score.value) + (0.30 * 5_2_3_system_ads_score.value). Alternatively, use the *Composite* score from the SKIN_LOOKUP_TABLE directly.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.20,
@@ -2007,38 +2016,38 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     },
     "6_processing_power_and_performance": {
       
-      // █ 6.1.0 MODULE: CPU CORE ARCHITECTURE SCORING TABLE
+      // █ CPU_CORE_ARCHITECTURE_LOOKUP_TABLE
       // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency).
       // 
-      // | CPU Core Architecture        | Score | Ref Freq |
-      // |:-----------------------------|:-----:|:--------:|
-      // | Apple Everest (A18/Pro)      | 10.00 |   4.05   |
-      // | Oryon Gen 2 (SD 8 Elite)     | 10.00 |   4.32   |
-      // | Cortex-X925 / Lumex Ultra    |  9.00 |   3.60   |
-      // | Apple A17 Pro Cores          |  9.00 |   3.78   |
-      // | Apple A16 Bionic             |  8.00 |   3.46   |
-      // | Cortex-X4                    |  8.00 |   3.30   |
-      // | Apple A15 Bionic             |  7.00 |   3.22   |
-      // | Cortex-X3                    |  7.00 |   3.20   |
-      // | Apple A14 Bionic             |  6.00 |   3.10   |
-      // | Cortex-X2                    |  6.00 |   3.00   |
-      // | Cortex-X1                    |  5.00 |   2.84   |
-      // | Cortex-A725 / A720           |  5.00 |   2.80   |
-      // | Cortex-A715 / A710           |  4.00 |   2.50   |
-      // | Cortex-A78 / A77             |  3.00 |   2.40   |
-      // | Cortex-A76                   |  2.00 |   2.20   |
-      // | Cortex-A75 / A73             |  1.00 |   2.00   |
-      // | Cortex-A525 / A520 / A510    |  1.00 |   2.00   |
-      // | Cortex-A55 / A53             |  0.00 |   1.80   |
-      // | Legacy 32-bit (A7 / A9)      |  0.00 |   1.50   |
+      // | CPU Core Architecture        | Score | Ref Freq (GHz) |
+      // |:-----------------------------|:-----:|:--------------:|
+      // | Apple Everest (A18/Pro)      | 10.00 |      4.05      |
+      // | Oryon Gen 2 (SD 8 Elite)     | 10.00 |      4.32      |
+      // | Cortex-X925 / Lumex Ultra    |  9.00 |      3.60      |
+      // | Apple A17 Pro Cores          |  9.00 |      3.78      |
+      // | Apple A16 Bionic             |  8.00 |      3.46      |
+      // | Cortex-X4                    |  8.00 |      3.30      |
+      // | Apple A15 Bionic             |  7.00 |      3.22      |
+      // | Cortex-X3                    |  7.00 |      3.20      |
+      // | Apple A14 Bionic             |  6.00 |      3.10      |
+      // | Cortex-X2                    |  6.00 |      3.00      |
+      // | Cortex-X1                    |  5.00 |      2.84      |
+      // | Cortex-A725 / A720           |  5.00 |      2.80      |
+      // | Cortex-A715 / A710           |  4.00 |      2.50      |
+      // | Cortex-A78 / A77             |  3.00 |      2.40      |
+      // | Cortex-A76                   |  2.00 |      2.20      |
+      // | Cortex-A75 / A73             |  1.00 |      2.00      |
+      // | Cortex-A525 / A520 / A510    |  1.00 |      2.00      |
+      // | Cortex-A55 / A53             |  0.00 |      1.80      |
+      // | Legacy 32-bit (A7 / A9)      |  0.00 |      1.50      |
       // -------------------------------------------------------------------------
 
       "6_1_0_system_on_chip_reference": {
         // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts and architectural types.
-        "value_path": "identity.hardware_configuration.chipset.value",
-        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "value": "Snapdragon 8 Gen 3",
         // GUIDELINE: Inherits the chipset model name from the device identity record.
+        "value_path": "identity.hardware_configuration.chipset.value",
+        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "clusters": [
           // GUIDELINE: The number of cluster objects and their roles (e.g., "Prime", "Performance", "Efficiency") must be dynamically adjusted (added or removed) to match the specific SoC architecture (e.g., 2 clusters for Apple, 3 for most Android).
           {
@@ -2093,21 +2102,31 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // GUIDELINE: Instead of fixed cluster keys, use an array of objects for each core cluster defined in §6.1.0. The number of blocks in this array must exactly match the number of clusters found in the SoC (System on Chip) reference. Add or remove cluster blocks accordingly.
           "clusters": [
             {
-              "architecture": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[0].architecture",
-                // GUIDELINE: Absolute path to the architecture name in Section 6.1.0.
-                "value": "Cortex-X4",
-                // GUIDELINE: Inherits architecture name from the referenced §6.1.0 cluster.
-                "subscore": 8.00,
-                // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Table by matching architecture.value.
-                "reference_frequency_ghz": 3.30
-                // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Table by matching architecture.value.
+              "core_architecture_score": {
+                "identifier": "Cortex-X4",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[0].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "CPU Score",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 8.00
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              },
+              "reference_frequency_ghz": {
+                "identifier": "Cortex-X4",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[0].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "Ref Freq (GHz)",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 3.30
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
               "core_count": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[0].count",
-                // GUIDELINE: Absolute path to the core count in Section 6.1.0.
-                "value": 1
+                "value": 1,
                 // GUIDELINE: Inherits count from the referenced §6.1.0 cluster.
+                "value_path": "6_1_0_system_on_chip_reference.clusters[0].count"
+                // GUIDELINE: Absolute path to the core count in Section 6.1.0.
               },
               "actual_frequency_ghz": {
                 "value": 3.3,
@@ -2116,19 +2135,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
               "frequency_adjusted_core_score": 8.0000,
-                // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+                // GUIDELINE: core_architecture_score.value * core_count.value * actual_frequency_ghz.value / reference_frequency_ghz.value Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
             },
             {
-              "architecture": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[1].architecture",
-                "value": "Cortex-A720",
-                "subscore": 5.00,
-                "reference_frequency_ghz": 2.80
-                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Table.
+              "core_architecture_score": {
+                "identifier": "Cortex-A720",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[1].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "CPU Score",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 5.00
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              },
+              "reference_frequency_ghz": {
+                "identifier": "Cortex-A720",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[1].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "Ref Freq (GHz)",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 2.80
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
               "core_count": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[1].count",
-                "value": 5
+                "value": 5,
+                // GUIDELINE: Inherits count from the referenced §6.1.0 cluster.
+                "value_path": "6_1_0_system_on_chip_reference.clusters[1].count"
+                // GUIDELINE: Absolute path to the core count in Section 6.1.0.
               },
               "actual_frequency_ghz": {
                 "value": 3.2,
@@ -2137,19 +2171,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
               "frequency_adjusted_core_score": 28.5714, 
-                // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+                // GUIDELINE: core_architecture_score.value * core_count.value * actual_frequency_ghz.value / reference_frequency_ghz.value Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
             },
             {
-              "architecture": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[2].architecture",
-                "value": "Cortex-A520",
-                "subscore": 1.00,
-                "reference_frequency_ghz": 2.00
-                // SCORING GUIDELINE: Retrieve CAS (subscore) and Ref Freq (reference_frequency_ghz) by matching architecture.value in the §6.1.0 Table.
+              "core_architecture_score": {
+                "identifier": "Cortex-A520",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[2].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "CPU Score",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 1.00
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              },
+              "reference_frequency_ghz": {
+                "identifier": "Cortex-A520",
+                // GUIDELINE: Standardized core architecture name matching the record in 6_1_0_system_on_chip_reference.clusters[2].architecture
+                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "Ref Freq (GHz)",
+                // GUIDELINE: Description of the architectural constant being retrieved.
+                "value": 2.00
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
               "core_count": {
-                "value_path": "6_1_0_system_on_chip_reference.clusters[2].count",
-                "value": 2
+                "value": 2,
+                // GUIDELINE: Inherits count from the referenced §6.1.0 cluster.
+                "value_path": "6_1_0_system_on_chip_reference.clusters[2].count"
+                // GUIDELINE: Absolute path to the core count in Section 6.1.0.
               },
               "actual_frequency_ghz": {
                 "value": 2.3,
@@ -2158,7 +2207,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
               "frequency_adjusted_core_score": 2.3000,
-                // GUIDELINE: architecture.subscore * core_count * actual_frequency_ghz / architecture.reference_frequency_ghz. Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+                // GUIDELINE: core_architecture_score.value * core_count.value * actual_frequency_ghz.value / reference_frequency_ghz.value Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
             }
           ],
           "raw_performance_throughput_score": 38.8714,
@@ -2225,7 +2274,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_2_cpu_architecture_single_core": {
-        // SCORING GOAL: Evaluates individual core capability and IPC (Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick) efficiency, representing the snappiness of the interface and single-threaded application speed.
+        // SCORING GOAL: Evaluates individual core capability and IPC efficiency(Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick), representing the snappiness of the interface and single-threaded application speed.
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2247,24 +2296,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_c_prediction_model_CPU_single": {
           // GUIDELINE: Evaluation focuses on the strongest core in the SoC (System on Chip) (typically the Prime core, i.e. clusters[0]).
           "strongest_core": {
-            "architecture": {
-              "value_path": "6_1_0_system_on_chip_reference.clusters[0].architecture",
-              // GUIDELINE: Absolute path to the architecture name in Section 6.1.0.
-              "value": "Cortex-X4",
-              // GUIDELINE: Inherits architecture name from the referenced §6.1.0 cluster.
-              "subscore": 8.00,
-              // GUIDELINE: Retrieval of CAS (Core Architecture Score) from the §6.1.0 Table by matching architecture.value.
-              "reference_frequency_ghz": 3.30
-              // GUIDELINE: Retrieval of Ref Freq (Reference Frequency) from the §6.1.0 Table by matching architecture.value.
+            "core_architecture_score": {
+              "identifier": "Cortex-X4",
+              // GUIDELINE: Standardized core architecture name of the **STRONGEST** core which should be matching the record in 6_1_0_system_on_chip_reference.clusters[0].architecture
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "CPU Score",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 8.00
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+            },
+            "reference_frequency_ghz": {
+              "identifier": "Cortex-X4",
+              // GUIDELINE: Standardized core architecture name of the **STRONGEST** core which should be matching the record in 6_1_0_system_on_chip_reference.clusters[0].architecture
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Ref Freq (GHz)",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 3.30
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
             "actual_frequency_ghz": {
-              "value_path": "6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters[0].actual_frequency_ghz.value",
-              // GUIDELINE: Absolute path to the actual clock frequency defined in Section 6.1 Method C.
-              "value": 3.3
-              // GUIDELINE: Inherits frequency from the primary core cluster in §6.1.
+              "value": 3.3,
+              // GUIDELINE: Inherits frequency from the strongest core cluster in §6.1.
+              "value_path": "6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters[0].actual_frequency_ghz.value"
+              // GUIDELINE: Absolute path to the actual clock frequency of the strongest core.
             },
             "frequency_adjusted_core_score": 8.0000,
-              // GUIDELINE: architecture.subscore * actual_frequency_ghz / architecture.reference_frequency_ghz. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+              // GUIDELINE: core_architecture_score.value * actual_frequency_ghz.value / reference_frequency_ghz.value. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
           },
           "predicted_score": 9.31
           // SCORING GUIDELINE: predicted_score = 10 * (log(strongest_core.frequency_adjusted_core_score) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
@@ -2327,7 +2386,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
-      // █ 6.3.0 MODULE: GPU ARCHITECTURE SCORING TABLE
+      // █ GPU_ARCHITECTURE_LOOKUP_TABLE
       // Centralized hardware index used to ensure 100% autonomous scoring across performance (§6.3) and efficiency (§8.1) modules.
       // • Standard Graphics Score (SGS): The baseline architectural performance capacity for standard rasterization (non-RT) tasks.
       // • Ray Tracing Score (RTS): The specialized hardware performance index for accelerated ray tracing calculations.
@@ -2387,19 +2446,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // More cores = higher performance. Always match the exact MC count from device specifications.
       // -------------------------------------------------------------------------
       // AMBIGUOUS SPECIFICATION RESOLUTION (MANDATORY PROCEDURE)
-      // 1. Identify the SoC: Retrieve the specific chipset model from Section 6.1.
+      // 1. Identify the SoC: Retrieve the specific chipset model from identity.hardware_configuration.chipset.value
       // 2. External Verification (Web Search): The parsing engine is strictly prohibited from guessing the GPU tier based on incomplete generic strings. The engine MUST execute an active web search targeting the host SoC's official specifications (e.g., query: "Qualcomm Snapdragon 680 GPU specs" or "Dimensity 9000 exact GPU model").
       // 3. Canonical Component Extraction: Extract the exact GPU model number from the search results.
       // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
       
       "6_3_0_graphics_processing_unit_architecture_reference": {
-        "value_path": "identity.hardware_configuration.chipset.value",
-        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "value": "Snapdragon 8 Gen 3",
         // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
+        "value_path": "identity.hardware_configuration.chipset.value",
+        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "graphics_processing_unit_model": {
           "value": "Adreno 750",
-          // GUIDELINE: Must match a specific model from the "6.3.0 MODULE" table above. If the spec sheet assigns a generic family name without identifiers (e.g., "Adreno GPU"), the engine MUST execute the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure above to infer the canonical GPU architecture.
+          // GUIDELINE: Must match a specific model from the GPU_ARCHITECTURE_LOOKUP_TABLE above. If the spec sheet assigns a generic family name without identifiers (e.g., "Adreno GPU"), the engine MUST execute the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure above to infer the canonical GPU architecture.
           "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
           // GUIDELINE: Direct source URL for GPU model data.
           "exact_extract": "Qualcomm® Adreno™ GPU"
@@ -2408,90 +2467,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
       "6_3_graphics_processing_unit_performance": {
         // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
-        
-      // █ GPU API SUPPORT SCORING TABLE
-        // Defines the scoring for the highest supported graphics API (Vulkan/Metal/OpenGL ES/DirectX).
-        //
-        // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
-        // | :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
-        // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | 10.0      |
-        // | —                 | Metal 3.3      | —                  | —                       | 9.8       |
-        // | —                 | Metal 3.2      | —                  | D3D 12 (FL 12_1)        | 9.6       |
-        // | —                 | Metal 3.1      | —                  | —                       | 9.4       |
-        // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_0)        | 9.2       |
-        // | —                 | Metal 2.4      | —                  | D3D 11.2                | 8.5       |
-        // | Vulkan 1.2        | Metal 2.3      | —                  | D3D 11.1                | 8.0       |
-        // | —                 | Metal 2.2      | —                  | —                       | 7.5       |
-        // | —                 | Metal 2.1      | —                  | —                       | 7.0       |
-        // | Vulkan 1.1        | Metal 2.0      | —                  | D3D 11.0                | 6.5       |
-        // | Vulkan 1.0        | —              | —                  | D3D 10.1                | 6.0       |
-        // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | 5.0       |
-        // | —                 | Metal 1.2      | —                  | —                       | 4.5       |
-        // | —                 | Metal 1.1      | —                  | —                       | 4.2       |
-        // | —                 | Metal 1.0      | —                  | D3D 9.3                 | 4.0       |
-        // | —                 | —              | —                  | D3D 9.2                 | 3.5       |
-        // | —                 | —              | OpenGL ES 3.1      | —                       | 3.0       |
-        // | —                 | —              | —                  | D3D 9.1                 | 2.5       |
-        // | —                 | —              | —                  | D3D 9.0c                | 2.0       |
-        // | —                 | —              | —                  | —                       | 1.5       |
-        // | —                 | —              | OpenGL ES 3.0      | —                       | 1.0       |
-        // | —                 | —              | OpenGL ES 2.0      | —                       | 0.5       |
-        // | —                 | —              | OpenGL ES 1.x      | —                       | 0.0       |
-        //
-        // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
-        // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
-        //
-        // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
-        // | Apple SoC Generation | Min iOS Version | Inferred API Version |
-        // | :------------------- | :-------------- | :------------------- |
-        // | A18, M4, M5          | iOS 18+         | Metal 4.0            | 
-        // | A17 Pro              | iOS 17.5+       | Metal 3.3            |
-        // | A15, A16, M2         | iOS 17.0+       | Metal 3.2            | 
-        // | A14, M1, M3          | iOS 16.4+       | Metal 3.1            |
-        // | A13 (Apple Family 6) | iOS 16.0+       | Metal 3.0            |
-        // | A12 Bionic           | iOS 15.x        | Metal 2.4            |
-        // | A11 Bionic           | iOS 14.x        | Metal 2.3            |
-        // | A10 Fusion           | iOS 13.x        | Metal 2.2            |
-        // | A9 / A9X             | iOS 12.x        | Metal 2.1            |
-        // | A8 / A8X             | iOS 11.x        | Metal 2.0            | 
-        // | A7 (64-bit Baseline) | iOS 10.x        | Metal 1.2            |
-        // | A7 (64-bit Baseline) | iOS 9.x         | Metal 1.1            |
-        // | A7 (64-bit Baseline) | iOS 8.x         | Metal 1.0            |
-        // | A4, A5, A6           | iOS 6.x - 10.x  | OpenGL ES 2.0        |
-        // | iPhone 1st Gen / 3G  | iPhone OS 1 - 3 | OpenGL ES 1.1        |
-        //
-        // MATRIX 2: ANDROID (Deep Coverage Mirror)
-        // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
-        // | :------------------- | :----------------------------- | :------------ |
-        // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
-        // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-        // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
-        // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
-        // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
-        // | Android 6.0          | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
-        // | Android 5.0          | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
-        // | Android 4.3          | Adreno 3xx (Older), Mali-T6xx  | OpenGL ES 3.0 |
-        // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
-        // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.x | 
-        //
-        // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
-        // | Windows OS Version   | Era / Reference Hardware       | Inferred API  |
-        // | :------------------- | :----------------------------- | :------------ |
-        // | Windows 11 (24H2)    | Snapdragon X Elite (Adreno X1) | D3D 12 (12_2) |
-        // | Windows 11 (22H2)    | Snapdragon 8cx Gen 3           | D3D 12 (12_1) |
-        // | Windows 10/11 ARM    | Snapdragon 850 / 8cx Gen 1/2   | D3D 12 (12_0) |
-        // | Windows 10 Mobile    | Lumia 950 / 950 XL             | D3D 11.2      |
-        // | Windows Phone 8.1    | Lumia 930 / 1520               | D3D 11.1      |
-        // | Windows Phone 8 GDR  | Snapdragon 800 / 400 (Late WP8)| D3D 11.0      |
-        // | Windows Phone 8.0    | Lumia 520 / 620 (Entry Adreno) | D3D 10.1      |
-        // | Windows Phone 8.0    | Early Surface RT / Tegra 3     | D3D 10.0      |
-        // | Windows Phone 8.0    | Lumia 920 / 1020 (Baseline)    | D3D 9.3       |
-        // | Windows Phone 8.0    | Early builds / Dev hardware    | D3D 9.2       |
-        // | Windows Phone 7.x    | Lumia 800 / 900                | D3D 9.1       |
-        // | Windows Phone 7.0    | Samsung Focus / LG Quantum     | D3D 9.0c      |
-        // | Pre-WP7 Legacy       | Pre-2010 HTC / Samsung         | OpenGL ES 1.x |
-        // ------------------------------------------------------------------------- 
-        
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2511,15 +2486,25 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_GPU": {
           "graphics_processing_unit": {
-            "architecture": {
-              "value_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value",
-              // GUIDELINE: Absolute path to the GPU model name in Section 6.3.0.
-              "value": "Adreno 750",
-              // GUIDELINE: Inherits GPU architecture name from the referenced §6.3.0 record.
-              "subscore": 10.00,
-              // GUIDELINE: Retrieval of SGS (Standard Graphics Score) from the §6.3.0 Table by matching architecture.value.
-              "reference_frequency_mhz": 903.0000
-              // GUIDELINE: Retrieval of Ref Freq (MHz) from the §6.3.0 Table by matching architecture.value.
+            "graphics_architecture_score": {
+              "identifier": "Adreno 750",
+              // GUIDELINE: Standardized GPU model name matching the record in 6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value
+              "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Standard Graphics",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 10.00
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+            },
+            "reference_frequency_mhz": {
+              "identifier": "Adreno 750",
+              // GUIDELINE: Standardized GPU model name matching the record in 6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value
+              "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Ref Freq (MHz)",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 903.00
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
             "actual_frequency_mhz": {
               "value": 1100,
@@ -2527,18 +2512,107 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "exact_extract": "Qualcomm® Adreno™ GPU [...] 1.1 GHz"
               // GUIDELINE: The maximum advertised frequency of the GPU in MHz (e.g., 1100).
             },
-            "frequency_adjusted_graphics_architecture_score": 12.1816,
-            // GUIDELINE: "architecture.subscore * actual_frequency_mhz.value / architecture.reference_frequency_mhz"
           },
           "api_modifier": {
             "value": "Vulkan 1.3",
+            // GUIDELINE: Standardized API version supported by the GPU as found in technical specifications.
             "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
-            "exact_extract": "Vulkan 1.3 support",
-            "subscore": 9.20
-            // SCORING GUIDELINE: Match highest supported API version against the §6.3 GPU API SUPPORT SCORING TABLE to retrieve subscore. If unspecified, execute §6.3 AMBIGUOUS API RESOLUTION.
+            "exact_extract": "Vulkan 1.3 support",          
+            "api_support_score": {
+              // █ GPU_API_SUPPORT_LOOKUP_TABLE
+              // Defines the scoring for the highest supported graphics API (Vulkan/Metal/OpenGL ES/DirectX).
+              //
+              // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
+              // | :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
+              // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | 10.0      |
+              // | —                 | Metal 3.3      | —                  | —                       | 9.8       |
+              // | —                 | Metal 3.2      | —                  | D3D 12 (FL 12_1)        | 9.6       |
+              // | —                 | Metal 3.1      | —                  | —                       | 9.4       |
+              // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_0)        | 9.2       |
+              // | —                 | Metal 2.4      | —                  | D3D 11.2                | 8.5       |
+              // | Vulkan 1.2        | Metal 2.3      | —                  | D3D 11.1                | 8.0       |
+              // | —                 | Metal 2.2      | —                  | —                       | 7.5       |
+              // | —                 | Metal 2.1      | —                  | —                       | 7.0       |
+              // | Vulkan 1.1        | Metal 2.0      | —                  | D3D 11.0                | 6.5       |
+              // | Vulkan 1.0        | —              | —                  | D3D 10.1                | 6.0       |
+              // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | 5.0       |
+              // | —                 | Metal 1.2      | —                  | —                       | 4.5       |
+              // | —                 | Metal 1.1      | —                  | —                       | 4.2       |
+              // | —                 | Metal 1.0      | —                  | D3D 9.3                 | 4.0       |
+              // | —                 | —              | —                  | D3D 9.2                 | 3.5       |
+              // | —                 | —              | OpenGL ES 3.1      | —                       | 3.0       |
+              // | —                 | —              | —                  | D3D 9.1                 | 2.5       |
+              // | —                 | —              | —                  | D3D 9.0c                | 2.0       |
+              // | —                 | —              | —                  | —                       | 1.5       |
+              // | —                 | —              | OpenGL ES 3.0      | —                       | 1.0       |
+              // | —                 | —              | OpenGL ES 2.0      | —                       | 0.5       |
+              // | —                 | —              | OpenGL ES 1.x      | —                       | 0.0       |
+              //
+              // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
+              // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
+              //
+              // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
+              // | Apple SoC Generation | Min iOS Version | Inferred API Version |
+              // | :------------------- | :-------------- | :------------------- |
+              // | A18, M4, M5          | iOS 18+         | Metal 4.0            | 
+              // | A17 Pro, M3          | iOS 17.5+       | Metal 3.3            |
+              // | A15, A16, M2         | iOS 17.0+       | Metal 3.2            | 
+              // | A14, M1              | iOS 16.4+       | Metal 3.1            |
+              // | A13 (Apple Family 6) | iOS 16.0+       | Metal 3.0            |
+              // | A12 Bionic           | iOS 15.x        | Metal 2.4            |
+              // | A11 Bionic           | iOS 14.x        | Metal 2.3            |
+              // | A10 Fusion           | iOS 13.x        | Metal 2.2            |
+              // | A9 / A9X             | iOS 12.x        | Metal 2.1            |
+              // | A8 / A8X             | iOS 11.x        | Metal 2.0            | 
+              // | A7 (64-bit Baseline) | iOS 10.x        | Metal 1.2            |
+              // | A7 (64-bit Baseline) | iOS 9.x         | Metal 1.1            |
+              // | A7 (64-bit Baseline) | iOS 8.x         | Metal 1.0            |
+              // | A4, A5, A6           | iOS 6.x - 10.x  | OpenGL ES 2.0        |
+              // | iPhone 1st Gen / 3G  | iPhone OS 1 - 3 | OpenGL ES 1.1        |
+              //
+              // MATRIX 2: ANDROID (Deep Coverage Mirror)
+              // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
+              // | :------------------- | :----------------------------- | :------------ |
+              // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
+              // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
+              // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
+              // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
+              // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
+              // | Android 6.0          | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
+              // | Android 5.0          | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
+              // | Android 4.3          | Adreno 3xx (Older), Mali-T6xx  | OpenGL ES 3.0 |
+              // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
+              // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.x | 
+              //
+              // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
+              // | Windows OS Version   | Era / Reference Hardware       | Inferred API  |
+              // | :------------------- | :----------------------------- | :------------ |
+              // | Windows 11 (24H2)    | Snapdragon X Elite (Adreno X1) | D3D 12 (12_2) |
+              // | Windows 11 (22H2)    | Snapdragon 8cx Gen 3           | D3D 12 (12_1) |
+              // | Windows 10/11 ARM    | Snapdragon 850 / 8cx Gen 1/2   | D3D 12 (12_0) |
+              // | Windows 10 Mobile    | Lumia 950 / 950 XL             | D3D 11.2      |
+              // | Windows Phone 8.1    | Lumia 930 / 1520               | D3D 11.1      |
+              // | Windows Phone 8 GDR  | Snapdragon 800 / 400 (Late WP8)| D3D 11.0      |
+              // | Windows Phone 8.0    | Lumia 520 / 620 (Entry Adreno) | D3D 10.1      |
+              // | Windows Phone 8.0    | Early Surface RT / Tegra 3     | D3D 10.0      |
+              // | Windows Phone 8.0    | Lumia 920 / 1020 (Baseline)    | D3D 9.3       |
+              // | Windows Phone 8.0    | Early builds / Dev hardware    | D3D 9.2       |
+              // | Windows Phone 7.x    | Lumia 800 / 900                | D3D 9.1       |
+              // | Windows Phone 7.0    | Samsung Focus / LG Quantum     | D3D 9.0c      |
+              // | Pre-WP7 Legacy       | Pre-2010 HTC / Samsung         | OpenGL ES 1.x |
+              // ------------------------------------------------------------------------- 
+              "identifier": "Vulkan 1.3",
+              // GUIDELINE: Retrieved from "api_modifier.value".
+              "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Score",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 9.20
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`. If unspecified, execute AMBIGUOUS API RESOLUTION.
+            }
           },
           "graphics_raw_score": 11.9380,
-          // SCORING GUIDELINE: frequency_adjusted_graphics_architecture_score * (0.75 + (0.25 * api_modifier.subscore / 10.0)).
+          // SCORING GUIDELINE: graphics_raw_score = graphics_processing_unit.graphics_architecture_score.value * graphics_processing_unit.actual_frequency_mhz.value / graphics_processing_unit.reference_frequency_mhz.value * (0.75 + 0.25 * api_modifier.api_support_score.value / 10.0).
           "predicted_score": 9.98
           // SCORING GUIDELINE: predicted_score = 10 * (log(graphics_raw_score) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min)), clamped 0–10.
         },
@@ -2583,15 +2657,27 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
-        "ray_tracing_hardware_score": 10.00,
-        // GUIDELINE: Retrieve the Ray Tracing architectural score from the §6.3.0 Table matching the identified GPU model. This measures dedicated hardware acceleration for lighting and reflections.
-
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Ray Tracing 
+        // ═══════════════════════════════════════════════════════════════════════════
+        "ray_tracing_score": {
+          // This measures dedicated hardware acceleration for lighting and reflections.
+          "identifier": "Adreno 750",
+          // GUIDELINE: Standardized GPU model name matching the record in 6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value
+          "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "Ray Tracing",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 10.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+        },
+        
         "scores": {
           "predicted": 9.98,
-          // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_prediction_model_GPU.predicted_score * 0.90) + (ray_tracing_hardware_score * 0.10).
+          // SCORING GUIDELINE: Final weighted predicted score including ray tracing. Formula: (method_c_prediction_model_GPU.predicted_score * 0.90) + (ray_tracing_score.value * 0.10).
           "final": {
             "value": 8.52,
-            // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_hardware_score * 0.10). Standard Graphics Score is derived from Method A (method_a_benchmark_GPU.subscore) if available; if not, Method B (method_b_neighbor_interpolation_GPU.interpolated_score); if not, Method C (method_c_prediction_model_GPU.predicted_score).
+            // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (Standard Graphics Score * 0.90) + (ray_tracing_score.value * 0.10). Standard Graphics Score is derived from Method A (method_a_benchmark_GPU.subscore) if available; if not, Method B (method_b_neighbor_interpolation_GPU.interpolated_score); if not, Method C (method_c_prediction_model_GPU.predicted_score).
             "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
@@ -2604,7 +2690,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
-      // █ 6.4.0 MODULE: SOC NEURAL PROCESSING UNIT (NPU) / AI ACCELERATOR SCORING TABLE
+      // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
       // Defines the authoritative AI performance scores for NPUs.
       // 
       // | SoC Model                             | NPU / Neural Engine            | AI Score |
@@ -2649,15 +2735,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
-
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_AI": {
-          "ai_hardware_score": {
-            "value_path": "6_1_0_system_on_chip_reference.ai_performance_score",
-            "value": 10.00,
-            "description": "NPU baseline performance (Sec 6.4 reference table)"
+          "ai_acceleration_score": {
+            "identifier": "Snapdragon 8 Gen 3",
+            // GUIDELINE: Standardized SoC identifier matching the record in §1.1 (identity.hardware_configuration.chipset.value).
+            "reference_table": "SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE",
+            // GUIDELINE: Path to the authoritative lookup table for mapping.
+            "lookup_parameter": "Score",
+            // GUIDELINE: Description of the architectural constant being retrieved.
+            "value": 10.00
+            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
           },
           "predicted_score": 10.00
           // SCORING GUIDELINE: predicted_score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process).
@@ -2668,8 +2758,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_AI": {
-          // SCORING GUIDELINE (Section 6.4 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Section 6.4 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
           //         Distance = √( 0.40 * (AI_Diff)² + 0.25 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (RAM_Cap_Diff)² + 0.10 * (Process_Diff)² )
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
@@ -2756,8 +2846,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "6_6_ram_capacity": {
         // SCORING GOAL: Evaluates total system RAM capacity.
         "capacity_gb": {
-          "value_path": "identity.hardware_configuration.ram_gb.value",
           "value": 12,
+          "value_path": "identity.hardware_configuration.ram_gb.value",
           "subscore": 8.00
           // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)).
         },
@@ -2803,8 +2893,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "6_8_storage_capacity": {
         // SCORING GOAL: Evaluates maximum internal storage capacity.
         "capacity_gb": {
-          "value_path": "identity.hardware_configuration.storage_gb.value",
           "value": 512,
+          "value_path": "identity.hardware_configuration.storage_gb.value",
           "subscore": 8.00
           // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min)).
         },
@@ -2850,7 +2940,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_10_thermal_dissipation_stability": {
-        // SCORING GOAL: Evaluates thermal cooling capability based on frame architecture, weight, surface area, and active/passive cooling system.
+        // SCORING GOAL: Evaluates thermal cooling capability based on frame architecture, weight, surface area, and active/passive cooling system. Used for 8.1 hence lookup table?
         "part_b_cooling_system_class": {
           "value": "Tier 2: Extreme Passive (VC ≥4000 mm²)",
           "source": "TBD",
@@ -2870,22 +2960,29 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   • "Tier 6: None / Air-only"                   → 0.00
           //     Definition: No dedicated internal thermal dissipation materials or structures mentioned.
         },
-        "part_c_process_node_size_nm": {
-          "value": 4,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.00
-          // SCORING GUIDELINE: Process Node Score calculated via Section 6.10 Part C Node Score formula.
+        "node_efficiency_score": {
+          "identifier": "4nm",
+          // GUIDELINE: Standardized manufacturing process node name matching the record in §6.1.0 chipset specifications (e.g. TSMC 4nm).
+          "reference_table": "6_10_thermal_dissipation_stability.part_c_node_efficiency_table",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "Node Score",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 8.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
         },
-        "part_c_foundry": {
-          "value": "Tier 1: TSMC",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
+        "foundry_efficiency_score": {
+          "identifier": "TSMC",
+          // GUIDELINE: Standardized semiconductor foundry name matching the record in §6.1.0 chipset specifications (e.g. TSMC).
+          "reference_table": "6_10_thermal_dissipation_stability.part_c_foundry_efficiency_table",
+          // GUIDELINE: Path to the authoritative lookup table for mapping.
+          "lookup_parameter": "Foundry Score",
+          // GUIDELINE: Description of the architectural constant being retrieved.
+          "value": 10.00
           // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table. Use the following exact Tier Names for "value":
           //   • "Tier 1: TSMC"    → 10.00
           //   • "Tier 2: Samsung" → 5.00
           //   • "Tier 3: Others"  → 0.00
+          // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
         },
         "scores": {
           "predicted": 9.50,
@@ -3321,12 +3418,84 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: Theoretical capacity vs drain.
           },
           "layer_b_hardware_efficiency_score": {
-            "value_path": "theoretical_calculation",
-            "value": 8.00
+            "value": 8.00,
+            "value_path": "theoretical_calculation"
             // SCORING GUIDELINE (Section 8.1 Layer B): HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal).
             // • B.1 SoC: (0.50 * Node) + (0.30 * CPU) + (0.20 * GPU).
             // • B.2 Display: (0.35 * Tech) + (0.35 * Refresh) + (0.30 * Res).
             // • B.3 Connectivity: (0.70 * Cellular) + (0.30 * WiFi).
+            
+            "hei_model": {
+              "identifier": "HEI_v1.0",
+              // GUIDELINE: Matches the versioned weight set identifier in §8.1.0 (8_1_0_battery_efficiency_model_weights.identifier).
+              "reference_table": "8_1_0_battery_efficiency_model_weights",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Weight",
+              // GUIDELINE: Description of the architectural model being used.
+              "value": 1.0
+              // GUIDELINE: Value retrieved from the Weight Table by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+            },
+            "soc_efficiency": {
+              "identifier": "Snapdragon 8 Gen 3",
+              // GUIDELINE: Standardized SoC identifier matching the record in §1.1 (identity.hardware_configuration.chipset.value).
+              "reference_table": "6_3_0_graphics_processing_unit_architecture_reference",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Efficiency",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 9.00,
+              "weight_mapping": {
+                "identifier": "HEI_v1.0",
+                // GUIDELINE: Matches the versioned weight set identifier in §8.1.0 (8_1_0_battery_efficiency_model_weights.identifier).
+                "reference_table": "8_1_0_battery_efficiency_model_weights",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "Weight",
+                // GUIDELINE: Perceptual weight assigned to SoC efficiency in the HEI composite.
+                "value": 0.40
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              }
+            },
+            "display_efficiency": {
+              "identifier": "LTPO AMOLED",
+              // GUIDELINE: Standardized display panel technology matching the record in §2.1 (2_1_panel_technology_scoring_table.identifier).
+              "reference_table": "2_1_panel_technology_scoring_table",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Score",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 10.00,
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              "weight_mapping": {
+                "identifier": "HEI_v1.0",
+                // GUIDELINE: Matches the versioned weight set identifier in §8.1.0 (8_1_0_battery_efficiency_model_weights.identifier).
+                "reference_table": "8_1_0_battery_efficiency_model_weights",
+                // GUIDELINE: Path to the authoritative §8.1.0 Weight Table for the Hardware Efficiency Index (HEI).
+                "lookup_parameter": "Weight",
+                // GUIDELINE: Perceptual weight assigned to display efficiency in the HEI composite.
+                "value": 0.40
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              }
+            },
+            "thermal_node_efficiency": {
+              "identifier": "4nm (TSMC)",
+              // GUIDELINE: Matches the combined process node and foundry identifier in §6.10 (node_efficiency_score.identifier).
+              "reference_table": "6_10_thermal_dissipation_stability",
+              // GUIDELINE: Path to the authoritative lookup table for mapping.
+              "lookup_parameter": "Node Score",
+              // GUIDELINE: Description of the architectural constant being retrieved.
+              "value": 8.00,
+              // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              "weight_mapping": {
+                "identifier": "HEI_v1.0",
+                // GUIDELINE: Matches the versioned weight set identifier in §8.1.0 (8_1_0_battery_efficiency_model_weights.identifier).
+                "reference_table": "8_1_0_battery_efficiency_model_weights",
+                // GUIDELINE: Path to the authoritative lookup table for mapping.
+                "lookup_parameter": "Weight",
+                // GUIDELINE: Perceptual weight assigned to process efficiency in the HEI composite.
+                "value": 0.20
+                // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+              }
+            },
+            "predicted_score": 9.20
+            // SCORING GUIDELINE: predicted_score = Sum(component.value * component.weight_mapping.value).
           },
           "layer_c_software_optimization_score": {
             "value": 9.00

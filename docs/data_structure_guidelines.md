@@ -435,10 +435,10 @@ In this particular case the fields are optional to enable flexibility. Use only 
 
 | Field           | Description                                                                                    |
 | :-------------- | :--------------------------------------------------------------------------------------------- |
-| `value_path`    | Path to the source value: `"Section_Subsection.parameter.value"`.                              |
 | `value`         | The literal parameter value extracted from `value_path`.                                       |
-| `subscore_path` | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                         |
+| `value_path`    | Path to the source value: `"Section_Subsection.parameter.value"`.                              |
 | `subscore`      | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated. |
+| `subscore_path` | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                         |
 
 **Example where the path `subscore_path` is not used:**
 ```json
@@ -466,23 +466,31 @@ In this particular case the fields are optional to enable flexibility. Use only 
 ```
 
 ### Type C: Architectural Mapping
-**Definition:** A derived constant or score determined by a hardware identifier.
-**Usage:** GPU Scores, Reference Frequencies.
+**Definition:** A derived constant or score determined by a hardware or software "architecture" identifier (e.g., CPU, GPU, Software Skin).
+**Usage:** GPU Scores, Reference Frequencies, Software Skin weights.
 
-| Field         | Description                                                                                     |
-| :------------ | :---------------------------------------------------------------------------------------------- |
-| `identifier`  | The identifier string matching the table record.                                                |
-| `reference`   | Path to the Identifier in the X.Y.0 table.                                                      |
-| `description` | **MUST** identify the specific column/parameter in the table (e.g., "Standard Graphics Score"). |
-| `subscore`    | The score extracted from the reference table.                                                   |
+| Field              | Description                                                                                                |
+| :----------------- | :--------------------------------------------------------------------------------------------------------- |
+| `identifier`       | The key string matching the authoritative reference table record.                                          |
+| `reference_table`  | Name of the authoritative reference table / object.                                                        |
+| `lookup_parameter` | **MUST** identify the specific column/constant name in the table (e.g., "Standard Graphics", "CPU Score"). |
+| `value`            | The specific numeric value or constant extracted from the reference table.                                 |
+
+**Multi-Constant Mapping:** If an architecture relates to multiple constants (e.g., Standard Graphics Score and Ref Freq), each constant **MUST** have its own self-contained Type C block to ensure automated parseability.
 
 **Example:**
 ```json
 "graphics_architecture_score": {
   "identifier": "Adreno 750",
-  "reference": "6_3_0_gpu_architecture_reference.gpu_model",
-  "description": "Standard Graphics Score (SGS)",
-  "subscore": 10.00
+  "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+  "lookup_parameter": "Standard Graphics",
+  "value": 10.00
+},
+"reference_frequency_mhz": {
+  "identifier": "Adreno 750",
+  "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+  "lookup_parameter": "Ref Freq (MHz)",
+  "value": 903
 }
 ```
 
