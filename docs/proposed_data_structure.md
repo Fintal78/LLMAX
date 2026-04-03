@@ -2695,27 +2695,45 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // 
       // | SoC Model                             | NPU / Neural Engine            | AI Score |
       // |:--------------------------------------|:-------------------------------|:--------:|
-      // | Snapdragon 8 Gen 3                    | Hexagon (2024)                 |  10.00   |
-      // | Dimensity 9300                        | APU 790                        |  10.00   |
-      // | Exynos 2400                           | NPU 5th-gen (34.7 TOPS)        |   9.00   |
-      // | Apple A18 Pro                         | 16-core Neural Engine          |   9.00   |
-      // | Tensor G4                             | Google TPU (2024)              |   8.00   |
-      // | Snapdragon 8 Gen 2                    | Hexagon (2023)                 |   8.00   |
-      // | Apple A17 Pro                         | 16-core Neural Engine          |   8.00   |
-      // | Apple A16 Bionic                      | 16-core Neural Engine          |   7.00   |
-      // | Tensor G3                             | Google TPU (2023)              |   7.00   |
-      // | Dimensity 9200                        | APU 690                        |   7.00   |
-      // | Apple A15 Bionic                      | 16-core Neural Engine          |   6.00   |
-      // | Snapdragon 8 Gen 1                    | Hexagon (2022)                 |   6.00   |
-      // | Dimensity 9000                        | APU 670                        |   6.00   |
-      // | Tensor G2                             | Google TPU (2022)              |   5.00   |
-      // | Apple A14 Bionic                      | 16-core Neural Engine          |   5.00   |
-      // | Snapdragon 888                        | Hexagon 780                    |   4.00   |
-      // | Snapdragon 7 Gen 3                    | Hexagon (mid-tier, 2023)       |   4.00   |
-      // | Dimensity 8200                        | APU 8 (mid-tier, 2022)         |   4.00   |
-      // | Snapdragon 7 Gen 1 / 7 Gen 2          | Hexagon (mid-tier, 2021–2023)  |   3.00   |
-      // | Dimensity 8100                        | APU 810 (mid-tier, 2022)       |   3.00   |
-      // | Budget (Helio G / Snapdragon 4xx)     | DSP only or no dedicated NPU   |   1.00   |
+      // | Snapdragon 8 Elite Gen 5              | Hexagon (2026 Model)           |  10.00   |
+      // | Snapdragon 8 Elite                    | Hexagon (Oryon v1)             |   9.50   |
+      // | Apple A19 Pro                         | 16-Core Neural Engine          |   9.00   |
+      // | Apple A18 Pro                         | 16-Core Neural Engine          |   8.80   |
+      // | Dimensity 9400                        | APU 890                        |   8.70   |
+      // | Apple A17 Pro                         | 16-Core Neural Engine          |   8.60   |
+      // | Snapdragon 8 Gen 3                    | Hexagon (2024)                 |   8.30   |
+      // | Dimensity 9300                        | APU 790                        |   8.10   |
+      // | Snapdragon 8 Gen 2                    | Hexagon (2023)                 |   7.80   |
+      // | Apple A16 Bionic                      | 16-Core Neural Engine          |   7.70   |
+      // | Apple A15 Bionic                      | 16-Core Neural Engine          |   7.10   |
+      // | Exynos 2400                           | NPU 5th-gen (34.7 TOPS)        |   6.70   |
+      // | Apple A14 Bionic                      | 16-Core Neural Engine          |   6.20   |
+      // | Tensor G4                             | Google TPU (2024)              |   5.90   |
+      // | Snapdragon 8 Gen 1                    | Hexagon (2022)                 |   5.90   |
+      // | Dimensity 9200                        | APU 690                        |   5.40   |
+      // | Tensor G3                             | Google TPU (2023)              |   4.90   |
+      // | Snapdragon 888+                       | Hexagon 780 (Overclocked)      |   4.70   |
+      // | Snapdragon 888                        | Hexagon 780                    |   4.50   |
+      // | Tensor G2                             | Google TPU (2022)              |   4.10   |
+      // | Dimensity 9000                        | APU 670                        |   3.90   |
+      // | Snapdragon 7+ Gen 2                   | Hexagon (Mid-tier)             |   3.60   |
+      // | Snapdragon 7 Gen 3                    | Hexagon (Mid-tier)             |   3.50   |
+      // | Dimensity 8200                        | APU 810                        |   3.20   |
+      // | Dimensity 8100                        | APU 810                        |   3.00   |
+      // | Snapdragon 7 Gen 1                    | Hexagon (Mid-tier)             |   2.90   |
+      // | Dimensity 8000                        | APU 810                        |   2.80   |
+      // | Snapdragon 6 Gen 3                    | Hexagon (Mid-tier)             |   2.70   |
+      // | Snapdragon 870                        | Hexagon 698                    |   2.60   |
+      // | Tensor G1                             | Google TPU (2021)              |   2.40   |
+      // | Snapdragon 865                        | Hexagon 698                    |   2.30   |
+      // | Snapdragon 6 Gen 1                    | Hexagon (Mid-tier)             |   1.70   |
+      // | Snapdragon 695                        | Hexagon 686                    |   1.50   |
+      // | Snapdragon 4 Gen 2                    | Hexagon (Budget-tier)          |   1.50   |
+      // | Helio G99                             | CPU-only emulation             |   1.30   |
+      // | Helio G96                             | CPU-only emulation             |   1.20   |
+      // | Helio G95                             | CPU-only emulation             |   0.90   |
+      // | Snapdragon 680                        | CPU-only emulation             |   0.00   |
+      // | Helio G85 / G88                       | CPU-only emulation             |   0.00   |
       // -------------------------------------------------------------------------
       
       "6_4_ai_hardware_performance": {
@@ -2725,10 +2743,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD A — Direct Benchmark (Primary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_a_benchmark_AI": {
-          "value": 6000,
+          "value": 35000,
           "source": "https://browser.geekbench.com/ai-benchmarks",
-          "exact_extract": "Samsung Galaxy S24 Ultra [...] 6000",
-          "subscore": 10.00
+          "exact_extract": "Samsung Galaxy S24 Ultra [...] 35000",
+          "subscore": 8.34
           // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
           // • WHERE TO FIND IT: browser.geekbench.com/ai.
           // • EXTRACTION RULE: Use the "Quantized Score". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
@@ -2746,10 +2764,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: Path to the authoritative lookup table for mapping.
             "lookup_parameter": "Score",
             // GUIDELINE: Description of the architectural constant being retrieved.
-            "value": 10.00
+            "value": 8.30
             // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
           },
-          "predicted_score": 10.00
+          "predicted_score": 8.30
           // SCORING GUIDELINE: predicted_score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process).
           // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
         },
@@ -2769,40 +2787,40 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "euclidean_distance_1": 0.0500,
               // GUIDELINE: Weighted Euclidean distance from Section 6.4 Method B.1.
-              "predicted_score_1": 9.75,
+              "predicted_score_1": 8.30,
               // GUIDELINE: The neighbor's own Method C predicted_score.
-              "benchmark_score_1": 10.00
+              "benchmark_score_1": 8.30
               // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
               "device_id_2": "oneplus_12",
               "euclidean_distance_2": 0.0800,
-              "predicted_score_2": 9.70,
-              "benchmark_score_2": 9.90
+              "predicted_score_2": 8.30,
+              "benchmark_score_2": 8.30
             },
             {
               // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "euclidean_distance_3": 0.1000,
-              "predicted_score_3": 9.80,
-              "benchmark_score_3": 10.00
+              "predicted_score_3": 8.30,
+              "benchmark_score_3": 8.30
             }
           ],
-          "avg_predicted_neighbors": 9.7500,
+          "avg_predicted_neighbors": 8.3000,
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 9.9667,
+          "avg_benchmark_neighbors": 8.3000,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0256,
+          "correction_ratio": 1.0000,
           // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 10.00
+          "interpolated_score": 8.30
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 10.00,
+          "predicted": 8.30,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_AI.predicted_score.
           "final": {
-            "value": 10.00,
+            "value": 8.30,
             // SCORING GUIDELINE: Use Method A if method_a_benchmark_AI is available (method_a_benchmark_AI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_AI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_AI.predicted_score).
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:

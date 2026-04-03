@@ -1923,36 +1923,15 @@ This table provides the authoritative AI scores for major SoCs, reflecting their
 
 | SoC Model                             | NPU / Neural Engine            | AI Score (0-10) |
 | :------------------------------------ | :----------------------------- | :-------------- |
-| **Snapdragon 8 Gen 3**                | Hexagon (2024)                 | **10**          |
-| **Dimensity 9300**                    | APU 790                        | **10**          |
-| **Exynos 2400**                       | NPU 5th-gen (34.7 TOPS)        | **9**           |
-| **Apple A18 Pro**                     | 16-core Neural Engine          | **9**           |
-| **Tensor G4**                         | Google TPU (2024)              | **8**           |
-| **Snapdragon 8 Gen 2**                | Hexagon (2023)                 | **8**           |
-| **Apple A17 Pro**                     | 16-core Neural Engine          | **8**           |
-| **Apple A16 Bionic**                  | 16-core Neural Engine          | **7**           |
-| **Tensor G3**                         | Google TPU (2023)              | **7**           |
-| **Dimensity 9200**                    | APU 690                        | **7**           |
-| **Apple A15 Bionic**                  | 16-core Neural Engine          | **6**           |
-| **Snapdragon 8 Gen 1**                | Hexagon (2022)                 | **6**           |
-| **Dimensity 9000**                    | APU 670                        | **6**           |
-| **Tensor G2**                         | Google TPU (2022)              | **5**           |
-| **Apple A14 Bionic**                  | 16-core Neural Engine          | **5**           |
-| **Snapdragon 888**                    | Hexagon 780                    | **4**           |
-| **Snapdragon 7 Gen 3**                | Hexagon (mid-tier, 2023)       | **4**           |
-| **Dimensity 8200**                    | APU 8 (mid-tier, 2022)         | **4**           |
-| **Snapdragon 7 Gen 1 / 7 Gen 2**      | Hexagon (mid-tier, 2021–2023)  | **3**           |
-| **Dimensity 8100**                    | APU 810 (mid-tier, 2022)       | **3**           |
-| **Budget (Helio G / Snapdragon 4xx)** | DSP only or no dedicated NPU   | **1**           |
-
+| **Snapdragon 8 Elite Gen 5**          | Hexagon (2026 Model)           | **10.0**        |
+| **Snapdragon 8 Elite**                | Hexagon (Oryon v1)             | **9.5**         |
 | [...]                                 | [...]                          | [...]           |
 
 > [!IMPORTANT]
-> **Source of Truth:** For the full list of all 20+ supported SoC AI accelerators and their authoritative scores, refer to the **SoC Neural Processing Unit (NPU) / AI Accelerator Scoring Table** in [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md#L2608).
-
+> **Source of Truth:** For the full list of all supported SoC AI accelerators and their authoritative scores, refer to the **SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE** in [proposed_data_structure.md].
 
 > [!IMPORTANT]
-> **SoC not listed above?** Do **not** guess a score. Add a new row to this table first:
+> **SoC not listed in the table?** Do **not** guess a score. Add a new row to this table first:
 > 1. Find the SoC's Geekbench AI (Quantized INT8) score on the [Geekbench AI Leaderboard](https://browser.geekbench.com/ai-benchmarks).
 > 2. Normalise it against the Min/Max constants (Method A formula below) to get an authoritative score.
 > 3. Insert the new row in descending score order, then use it for scoring.
@@ -1969,7 +1948,7 @@ This is the preferred method when a direct Geekbench AI score is available. It p
     *   **Min Score (0.0):** ≤ AI_GB_Quant_Score_Min
 
 > [!NOTE]
-> **Why Logarithmic?** AI performance utility follows diminishing returns. The difference between a sluggish 500-point device (struggles with basic voice commands) and a capable 1500-point device (handles real-time translation) is transformative. The difference between a 3500-point flagship and a 4500-point ultra-flagship is noticeable only in extreme edge cases like running large LLMs locally.
+> **Why Logarithmic?** AI performance utility follows a curve of diminishing returns relative to real-world experience. A **+5,000 point** jump from a legacy 1,000-point NPU to 6,000 points is transformative, enabling the shift from basic cloud-assisted tasks to capable local voice processing and real-time photo object removal. In contrast, an identical **+5,000 point** jump from 75,000 to 80,000 points represents a marginal improvement in the inference speed of extremely large local LLMs that is imperceptible for 99% of daily smartphone AI features. Logarithmic scaling correctly assigns more value to these early, usability-defining gains.
 
 #### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
@@ -1981,7 +1960,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
     *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
         *   `AI` (table above, Sec 6.4), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
-    *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. A 1-point difference in AI Score pulls phones "farther apart" than a 1-point difference in Process Node.
+    *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. 
     *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
@@ -2005,7 +1984,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
 
 1.  **SoC AI Score (40%) – The Engine**
-    *   **Source:** Retrieve `AI Score` from **the Section 6.4 table above**.
+    *   **Source:** Retrieve `AI Score` from **the Section 6.4 table**.
     *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
 
 2.  **RAM Technology Score (25%) – The Highway**
@@ -2025,15 +2004,7 @@ The predicted score is a weighted sum of 5 hardware factors, based on research i
     *   **Rationale:** AI calculations generate significant heat. A more efficient chip (e.g., 3nm vs 5nm) determines whether the device can run at top speed for sustained periods or if it will slow down (throttle) to cool off.
 
 **Step 2: Calculate Predicted Score**
-`Predicted_Score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process)`
-
-> **Example: Snapdragon 8 Gen 3 (12GB RAM)**
-> *   **AI Score:** 10.0
-> *   **RAM Tech:** 10.0 (LPDDR5X)
-> *   **GPU Score:** 10.0 (Adreno 750)
-> *   **RAM Cap:** 8.5 (12GB)
-> *   **Process:** 9.0 (4nm TSMC)
-> *   **Predicted:** `4.0 + 2.5 + 1.5 + 0.85 + 0.9` = **9.75/10**
+`Predicted_Score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process_Node)`
 
 
 ### 🔹 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
