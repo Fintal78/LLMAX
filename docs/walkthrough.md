@@ -59,4 +59,9 @@ The output is a JSON file `phones_db.json` in the project folder.
     -   Network bands are now parsed into lists (e.g., `["1", "3", "5"]`) instead of long strings.
     -   Display size is parsed into a number (`size_inches`).
     -   Text is cleaned of excessive whitespace.
+-   **Calculated & Corrected AI Hardware Scoring**:
+    - [x] Standardized `software_stack_score` as a **Type A** block with Advanced Traceability and deterministic boolean guidelines.
+    - [x] Verified and corrected S24 Ultra demo values in Section 6.4 (NPU: 9.28, RAM: 10.0, GPU: 9.98, CPU: 9.31, SW: 8.00 → AI System Score: 9.30).
+    - [x] Corrected the `cpu_score` reference identifier to `6_2_cpu_architecture_single_core`.
+    - [x] Synchronized formulas and guidelines across `scoring_rules.md` and `proposed_data_structure.md`.
 -   **Summary**: The file now starts with a summary of the total count and breakdown by brand.

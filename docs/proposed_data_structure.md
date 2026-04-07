@@ -1885,7 +1885,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "SKIN_LOOKUP_TABLE",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "Preinstalled App Load (PAL) Score",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 3.00
           // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. PAL). 
           // For info only:
@@ -1904,7 +1904,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "SKIN_LOOKUP_TABLE",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "User Control (UC) Score",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 5.00
           // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. UC).
           // For info only:
@@ -1921,7 +1921,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "SKIN_LOOKUP_TABLE",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "System Advertisements (SA) Score",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 5.00
           // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter` (e.g. SA).
           // For info only:
@@ -2108,7 +2108,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "CPU Score",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 8.00
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2118,7 +2118,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "Ref Freq (GHz)",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 3.30
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2144,7 +2144,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "CPU Score",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 5.00
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2154,7 +2154,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "Ref Freq (GHz)",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 2.80
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2180,7 +2180,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "CPU Score",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 1.00
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2190,7 +2190,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "Ref Freq (GHz)",
-                // GUIDELINE: Description of the architectural constant being retrieved.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 2.00
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               },
@@ -2302,7 +2302,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "CPU Score",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 8.00
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
@@ -2312,7 +2312,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Ref Freq (GHz)",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 3.30
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
@@ -2492,7 +2492,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Standard Graphics",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 10.00
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
@@ -2502,7 +2502,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Ref Freq (MHz)",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 903.00
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
@@ -2606,7 +2606,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Score",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 9.20
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`. If unspecified, execute AMBIGUOUS API RESOLUTION.
             }
@@ -2667,7 +2667,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "Ray Tracing",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 10.00
           // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
         },
@@ -2691,38 +2691,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
-      // NPU-only scoring: Each NPU is scored independently using three weighted hardware factors:
-      //
-      // 1. Peak INT8 TOPS (50%) — Raw Throughput:
-      //    • Focus: Theoretical peak computational capacity at 8-bit integer precision.
-      //    • Goal: Represents raw "horsepower," but is capped to avoid over-indexing on marketing numbers.
-      //
-      // 2. Architecture Generation (30%) — Structural Sophistication:
-      //    • Focus: Design efficiency, operator coverage, tensor scheduling, on-chip SRAM cache (≥2MB), and transformer pipelines.
-      //    • Goal: Measures how effectively the hardware utilizes its raw TOPS for modern GenAI/LLM workloads.
-      //
-      // 3. Precision Support (20%) — Bandwidth Efficiency:
-      //    • Focus: Range of supported formats (INT4, INT8, FP16).
-      //    • Goal: INT4 support halves the memory bandwidth requirement, drastically increasing generation speed.
-      //
-      // Formulas:
-      //   TOPS_Normalized = 10 * (log(TOPS) − log(NPU_TOPS_Min)) / (log(NPU_TOPS_Max) − log(NPU_TOPS_Min))   [clamped 0-10]
-      //   NPU_Score = Clamp( 0.50 * TOPS_Normalized + 0.30 * ArchGen_Score + 0.20 * Precision_Score, 0.0, 10.0 )
-      //
-      // Architecture Generation Score (30% weight):
-      // • [ 10.0 ] Gen AI Native: Purpose-built for generative AI (autoregressive token pipeline, extreme SRAM cache ≥2MB, dynamic scheduling). The chip was designed from the ground up for generative AI.
-      // • [ 8.0 ] Gen AI Capable: Supports gen AI via heavy tensor hardware and memory routing, but uses generic matrix operations. Can execute complex quantized LLMs across the system stack.
-      // • [ 6.0 ] ML Optimized: Efficient tensor/matrix acceleration designed strictly for traditional ML (Machine Learning) inference (image classification, object detection). Lacks token generation design.
-      // • [ 4.0 ] ML Accelerated: Dedicated basic NPU hardware using basic tensor operations (Hexagon 770/780, APU 3.0). Limited mathematical operator coverage and lacks unified on-chip data scheduling.
-      // • [ 2.0 ] DSP/HVX Assisted: No dedicated NPU. AI is processed by a Digital Signal Processor (DSP) with SIMD vector extensions (e.g., Qualcomm HVX).
-      // • [ 0.0 ] CPU-Only Emulation: All AI runs on general-purpose CPU or GPU.
-      //
-      // Precision Support Score (20% weight):
-      // • [ 10.0 ] INT4 + INT8 + FP16: Vendor documentation confirms native support for all three precision formats. INT4 support is the key differentiator.
-      // • [ 7.0 ] INT8 + FP16: Standard modern support. Vendor confirms both INT8 and FP16 on the NPU. No INT4 capability.
-      // • [ 4.0 ] INT8 only: NPU supports only 8-bit integer operations. FP16 tasks fall back to GPU.
-      // • [ 2.0 ] FP16 only: NPU supports only half-precision floating point. Rare in modern mobile NPUs.
-      // • [ 0.0 ] None: No dedicated precision support.
       //
       // TOPS values prefixed with ~ are estimates from vendor relative claims and family cross-referencing.
       //
@@ -2813,8 +2781,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "subscore": 8.34
           // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
           // • WHERE TO FIND IT: browser.geekbench.com/ai.
-          // • EXTRACTION RULE: Use the "Quantized Score". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
-          // SCORING GUIDELINE: subscore = 10 * (ln(method_a_benchmark_AI.value) - ln(AI_GB_Quant_Score_Min)) / (ln(AI_GB_Quant_Score_Max) - ln(AI_GB_Quant_Score_Min)), clamped 0-10. This subscore is the "AI System Score" for Method A. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // • EXTRACTION RULE: Use the "Quantized Score (INT8)". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. This subscore is the "AI System Score" for Method A. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2823,41 +2791,66 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_c_prediction_model_AI": {
           "npu_score": {
             "identifier": "Snapdragon 8 Gen 3",
-            // GUIDELINE: Standardized SoC identifier matching the record in §1.1 (identity.hardware_configuration.chipset.value).
+            // GUIDELINE: Standardized SoC identifier matching the record in identity.hardware_configuration.chipset.value
             "reference_table": "SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE",
             // GUIDELINE: Path to the authoritative lookup table for mapping.
             "lookup_parameter": "NPU Score",
             // GUIDELINE: Description of the column being retrieved.
-            "value": 9.44
-            // GUIDELINE: Value retrieved from the lookup table. NPU Score = Clamp(0.50 * TOPS_Norm + 0.30 * ArchGen + 0.20 * Precision, 0.0, 10.0).
+            "value": 9.28
+            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
           },
           "ram_tech_score": {
-            "section_reference": "§6.5",
-            "value": 10.00
+            "value": 10.00,
+            "value_path": "6_5_ram_technology.scores.predicted",
             // GUIDELINE: Retrieve scores.predicted from section 6_5_ram_technology.
           },
           "gpu_score": {
-            "section_reference": "§6.3",
-            "value": 8.30
-            // GUIDELINE: Retrieve scores.predicted from section 6_3_gpu_performance.
+            "value": 9.98,
+            "value_path": "6_3_graphics_processing_unit_performance.scores.predicted",
+            // GUIDELINE: Retrieve scores.predicted from section 6_3_graphics_processing_unit_performance.
           },
           "cpu_score": {
-            "section_reference": "§6.2",
-            "value": 8.50
-            // GUIDELINE: Retrieve scores.predicted from section 6_2_cpu_single_core_performance (Single-Core IPC reflects serial AI inference speed).
+            "value": 9.31,
+            "value_path": "6_2_cpu_architecture_single_core.scores.predicted",
+            // GUIDELINE: Retrieve scores.predicted from section 6_2_cpu_architecture_single_core.
           },
-          "sw_stack_score": {
-            "tier": "Tier 2: SDK Co-Optimized",
-            "value": 8.00
-            // GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs.
-            //   • [10.0] Tier 1: Native Synergistic — IF (SoC_Family == "Google Tensor") OR (OS == "iOS" AND SoC >= "Apple A11") OR (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True).
-            //   • [ 8.0] Tier 2: SDK Co-Optimized — IF (Explicit physical Co-processor EX: MariSilicon/Vivo-V/Xiaomi-Surge) OR (SoC_Manuf IN [Qualcomm, MediaTek, Samsung, HiSilicon] AND NPU == True).
-            //   • [ 5.5] Tier 3: Hardware Accelerated / Optimized Fallback — IF (NPU == True AND NOT Tier 1/2) OR (Apple A8-A10) OR (Snapdragon 820-835).
-            //   • [ 3.0] Tier 4: CPU/GPU Fallback (Emulation) — IF (OS IN [Android, Harmony, iOS, Windows Mobile, BB OS, Tizen]) AND NOT (Previous Tier Match). (EX: A4-A7, Budget Helio/Unisoc).
-            //   • [ 0.0] Tier 5: Minimal / None — IF (OS IN [KaiOS, Symbian, S30+, Proprietary]) OR (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older").
+          "software_stack": {
+            "value": "Tier 2: SDK Co-Optimized",
+            "value_details": {
+              "Tier 1: Native Synergistic": [],
+              "Tier 2: SDK Co-Optimized": [
+                {
+                  "name": "Qualcomm Neural Network (QNN) SDK",
+                  "source": "https://www.qualcomm.com/products/technology/processors/snapdragon-8-gen-3",
+                  "exact_extract": "Qualcomm Neural Network (QNN) SDK [...] Optimized NPU delegation"
+                }
+              ],
+              "Tier 3: Hardware Accelerated / Optimized Fallback": [],
+              "Tier 4: CPU/GPU Fallback": [],
+              "Tier 5: Minimal / None": []
+            },
+            "subscore": 8.00
+            // SCORING GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. Use the following exact Tier Names for "value" with related scores as subscore:
+            // • "Tier 1: Native Synergistic"                        → 10.00
+            //   Definition: Deep OS-hardware integration where the framework extracts near-100% NPU utilization (e.g., Apple CoreML + Neural Engine).
+            //   Deterministic Rule: IF (SoC_Family == "Google Tensor") OR (OS == "iOS" AND SoC >= "Apple A11") OR (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True).
+            // • "Tier 2: SDK Co-Optimized"                          → 8.00
+            //   Definition: Vendor-provided SDKs directly targeting the NPU/DSP (e.g., Qualcomm QNN, MediaTek Neuropilot).
+            //   Deterministic Rule: IF (Explicit physical Co-processor EX: MariSilicon/Vivo-V/Xiaomi-Surge) OR (SoC_Manuf IN [Qualcomm, MediaTek, Samsung, HiSilicon] AND NPU == True).
+            // • "Tier 3: Hardware Accelerated / Optimized Fallback" → 5.50
+            //   Definition: Generic acceleration via standardized APIs (NNAPI) or legacy optimized drivers.
+            //   Deterministic Rule: IF (NPU == True AND NOT Tier 1/2) OR (Apple A8-A10) OR (Snapdragon 820-835, 730, 675, 670).
+            // • "Tier 4: CPU/GPU Fallback"                          → 3.00
+            //   Definition: No dedicated NPU support; fallback to CPU/GPU executing ML via generic emulation.
+            //   Deterministic Rule: IF (OS IN [Android, Harmony, iOS, Windows Mobile, BB OS, Tizen]) AND NOT (Previous Tier Match). (EX: A4-A7, Budget Helio/Unisoc).
+            // • "Tier 5: Minimal / None"                            → 0.00
+            //   Definition: Device lacks any software framework capable of ML execution.
+            //   Deterministic Rule: IF (OS IN [KaiOS, Symbian, S30+, Proprietary]) OR (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older").
+            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all applicable marketing names/technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           },
-          "predicted_ai_system_score": 9.18,
-          // SCORING GUIDELINE: = (0.45 * npu_score.value) + (0.15 * ram_tech_score.value) + (0.15 * gpu_score.value) + (0.10 * cpu_score.value) + (0.15 * sw_stack_score.value). Always use Predicted Scores before Boosters.
+          "predicted_ai_system_score": 9.30,
+          // SCORING GUIDELINE: = (0.45 * npu_score.value) + (0.15 * ram_tech_score.value) + (0.15 * gpu_score.value) + (0.10 * cpu_score.value) + (0.15 * software_stack.subscore). 
+          // ⚠️ MANDATORY: Retrieve only 'scores.predicted' from §6.5, §6.3, and §6.2. Do NOT use 'scores.final'.
           "ram_capacity_score": {
             "section_reference": "§6.6",
             "value": 10.00
@@ -2868,7 +2861,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "value": 8.00
             // GUIDELINE: Retrieve scores.predicted from section 6_10_thermal_dissipation_stability_index (full TDSI composite, not just Process Node Part C).
           },
-          "predicted_score": 8.60
+          "predicted_score": 9.21
           // SCORING GUIDELINE: = (predicted_ai_system_score * 0.85) + (ram_capacity_score.value * 0.05) + (tdsi_score.value * 0.10).
         },
 
@@ -2917,10 +2910,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 8.60,
+          "predicted": 9.21,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_AI.predicted_score.
           "final": {
-            "value": 8.34,
+            "value": 8.39,
             // SCORING GUIDELINE: Final Score = (AI_System_Score * 0.85) + (RAM_Capacity * 0.05) + (TDSI * 0.10).
             // AI_System_Score: Use Method A (method_a_benchmark_AI.subscore) if available; else Method B (method_b_neighbor_interpolation_AI.interpolated_score); else Method C (method_c_prediction_model_AI.predicted_ai_system_score).
             // Then apply the additive factors: RAM Capacity (§6.6 score * 0.05) and TDSI (§6.10 score * 0.10).
@@ -3086,7 +3079,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "6_10_thermal_dissipation_stability.part_c_node_efficiency_table",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "Node Score",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 8.00
           // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
         },
@@ -3096,7 +3089,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "reference_table": "6_10_thermal_dissipation_stability.part_c_foundry_efficiency_table",
           // GUIDELINE: Path to the authoritative lookup table for mapping.
           "lookup_parameter": "Foundry Score",
-          // GUIDELINE: Description of the architectural constant being retrieved.
+          // GUIDELINE: Description of the column being retrieved.
           "value": 10.00
           // SCORING GUIDELINE: Foundry Score via Section 6.10 Part C Foundry efficiency table. Use the following exact Tier Names for "value":
           //   • "Tier 1: TSMC"    → 10.00
@@ -3551,7 +3544,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "8_1_0_battery_efficiency_model_weights",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Weight",
-              // GUIDELINE: Description of the architectural model being used.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 1.0
               // GUIDELINE: Value retrieved from the Weight Table by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
             },
@@ -3561,7 +3554,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "6_3_0_graphics_processing_unit_architecture_reference",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Efficiency",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 9.00,
               "weight_mapping": {
                 "identifier": "HEI_v1.0",
@@ -3569,7 +3562,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "8_1_0_battery_efficiency_model_weights",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "Weight",
-                // GUIDELINE: Perceptual weight assigned to SoC efficiency in the HEI composite.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 0.40
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               }
@@ -3580,7 +3573,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "2_1_panel_technology_scoring_table",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Score",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 10.00,
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               "weight_mapping": {
@@ -3589,7 +3582,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "8_1_0_battery_efficiency_model_weights",
                 // GUIDELINE: Path to the authoritative §8.1.0 Weight Table for the Hardware Efficiency Index (HEI).
                 "lookup_parameter": "Weight",
-                // GUIDELINE: Perceptual weight assigned to display efficiency in the HEI composite.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 0.40
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               }
@@ -3600,7 +3593,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "reference_table": "6_10_thermal_dissipation_stability",
               // GUIDELINE: Path to the authoritative lookup table for mapping.
               "lookup_parameter": "Node Score",
-              // GUIDELINE: Description of the architectural constant being retrieved.
+              // GUIDELINE: Description of the column being retrieved.
               "value": 8.00,
               // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               "weight_mapping": {
@@ -3609,7 +3602,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "reference_table": "8_1_0_battery_efficiency_model_weights",
                 // GUIDELINE: Path to the authoritative lookup table for mapping.
                 "lookup_parameter": "Weight",
-                // GUIDELINE: Perceptual weight assigned to process efficiency in the HEI composite.
+                // GUIDELINE: Description of the column being retrieved.
                 "value": 0.20
                 // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
               }
