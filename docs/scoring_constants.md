@@ -113,7 +113,7 @@
 
 ### 6.4 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 81600 (Score 10)
-*   `NPU_TOPS_Min` = 0.5 (Score 0), `NPU_TOPS_Max` = 50 (Score 10)             // ATTENTON: direct impact on the whole NPU Scoring Table !!!  
+*   `NPU_TOPS_Min` = 0.5 (Score 0), `NPU_TOPS_Max` = 50 (Score 10)             // ATTENTON: direct impact on the NPU Scoring Table !!!  
 
 ### 6.6 RAM Capacity
 *   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)

@@ -2849,12 +2849,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "sw_stack_score": {
             "tier": "Tier 2: SDK Co-Optimized",
             "value": 8.00
-            // GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. This scores hardware utilization efficiency, orthogonal to whether AI features are installed.
-            //   • Tier 1: Native Synergistic (10.0) — Ensure: IF Device_Brand == "Apple" AND OS == "iOS" AND SoC_Model >= "Apple A11" OR Google Tensor OR HiSilicon + HarmonyOS.
-            //   • Tier 2: SDK Co-Optimized (8.0) — Ensure: Explicit physical Co-processor OR SoC IN [Snapdragon NPU, Dimensity, Helio P60+, Exynos 9820+].
-            //   • Tier 3: Standard OS API (5.0) — Ensure: SoC has NPU == True, but DOES NOT explicitly fall into Tier 1 or Tier 2. (e.g. Budget Unisoc/Rockchip NPUs).
-            //   • Tier 4: CPU/GPU Fallback (2.0) — Ensure: NPU == False AND modern OS (Android/iOS/HarmonyOS).
-            //   • Tier 5: None (0.0) — Ensure: Feature phone OS (KaiOS/Symbian).
+            // GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs.
+            //   • [10.0] Tier 1: Native Synergistic — IF (SoC_Family == "Google Tensor") OR (OS == "iOS" AND SoC >= "Apple A11") OR (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True).
+            //   • [ 8.0] Tier 2: SDK Co-Optimized — IF (Explicit physical Co-processor EX: MariSilicon/Vivo-V/Xiaomi-Surge) OR (SoC_Manuf IN [Qualcomm, MediaTek, Samsung, HiSilicon] AND NPU == True).
+            //   • [ 5.5] Tier 3: Hardware Accelerated / Optimized Fallback — IF (NPU == True AND NOT Tier 1/2) OR (Apple A8-A10) OR (Snapdragon 820-835).
+            //   • [ 3.0] Tier 4: CPU/GPU Fallback (Emulation) — IF (OS IN [Android, Harmony, iOS, Windows Mobile, BB OS, Tizen]) AND NOT (Previous Tier Match). (EX: A4-A7, Budget Helio/Unisoc).
+            //   • [ 0.0] Tier 5: Minimal / None — IF (OS IN [KaiOS, Symbian, S30+, Proprietary]) OR (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older").
           },
           "predicted_ai_system_score": 9.18,
           // SCORING GUIDELINE: = (0.45 * npu_score.value) + (0.15 * ram_tech_score.value) + (0.15 * gpu_score.value) + (0.10 * cpu_score.value) + (0.15 * sw_stack_score.value). Always use Predicted Scores before Boosters.

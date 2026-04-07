@@ -1955,7 +1955,7 @@ Each NPU is scored using three measurable hardware factors:
 > **Why logarithmic for TOPS?** The real-world usability impact of TOPS follows a curve of diminishing returns. The jump from 1 TOPS (cannot run any modern AI model locally) to 11 TOPS (can run image classification, voice processing, photo enhancement) is transformative. The jump from 35 TOPS to 45 TOPS improves LLM (Large Language Model) token generation speed by milliseconds — imperceptible for most daily AI tasks.
 
 > [!NOTE]
-> **Cross-vendor TOPS comparability:** TOPS are not perfectly comparable across vendors. Apple's 15.8 TOPS Neural Engine may outperform Qualcomm's 26 TOPS Hexagon in real-world benchmarks due to architectural efficiency and software optimization differences. The **Architecture Generation (30%)** and **Precision Support (20%)** weights are explicitly designed to over-index and fully compensate for this mismatch. They prioritize the chip's intelligence, operator design, and bandwidth efficiency over sheer raw operations, establishing a neutral baseline that confidently normalizes these discrepancies.
+> **Cross-vendor TOPS comparability:** TOPS are not perfectly comparable across vendors. Apple's 15.8 TOPS Neural Engine may outperform Qualcomm's 26 TOPS Hexagon in real-world benchmarks due to architectural efficiency and software optimization differences. The **Architecture Generation (30%)** and **Precision Support (20%)** weights are explicitly designed to over-index and compensate for this mismatch. They prioritize the chip's intelligence, operator design, and bandwidth efficiency over sheer raw operations, establishing a neutral baseline that confidently normalizes these discrepancies.
 
 **Architecture Generation Score (30% weight)**
 
@@ -2133,39 +2133,39 @@ The predicted AI System Score is a weighted sum of 5 system-level factors. Unlik
 
 **AI Software Stack Scoring Guideline:**
 
-To eliminate brand bias and ensure an AI agent can objectively score every phone—from 2012 legacy models to 2026 flagships—without abstract reasoning, the classification is presented as a structured list containing **deterministic boolean logic**. This logic relies strictly on architectural facts and historical hardware cutoffs (Device OEM, SoC Manufacturer, OS, and NPU presence).
+To eliminate brand bias and ensure an AI agent can objectively score every phone—from 2010 legacy models to 2026 flagships—without abstract reasoning, the classification is presented as a structured list containing **deterministic boolean logic**. This logic relies strictly on architectural facts and historical hardware cutoffs (Device OEM, SoC Manufacturer, OS, and NPU presence).
 
 *   **[ 10.0 ] Tier 1: Native Synergistic**
     *   *Definition:* The device manufacturer natively designs BOTH the OS framework and the SoC Hardware, AND the hardware includes a dedicated Neural Processing Unit. This guarantees exclusive high-speed hardware pipelines.
     *   *Agent Validation Rule (Concrete boolean check):*
-        *   `IF Device_Brand == "Apple" AND OS == "iOS" AND SoC_Model >= "Apple A11"` → Score 10.0 (*Note: A11 Bionic was the first to include the Neural Engine. Older Apple chips drop to Tier 4.*)
-        *   `IF Device_Brand == "Google" AND OS == "Android" AND SoC_Model == "Tensor"` → Score 10.0 (Google AI Edge + TPU).
-        *   `IF Device_Brand == "Huawei" AND OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True` → Score 10.0 (MindSpore + Da Vinci NPU).
+        *   `IF (SoC_Family == "Google Tensor")` → Score 10.0 (Native TPU stack).
+        *   `IF (Device_Brand == "Apple" AND SoC_Model >= "Apple A11")` → Score 10.0 (Neural Engine present).
+        *   `IF (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True)` → Score 10.0 (MindSpore stack).
 
 *   **[ 8.0 ] Tier 2: SDK Co-Optimized**
-    *   *Definition:* The device utilizes a flagship/mid-range 3rd-party SoC that provides an explicitly branded NPU software SDK, OR the OEM included a custom imaging NPU co-processor.
+    *   *Definition:* The device utilizes a modern 3rd-party SoC with a dedicated NPU supported by a robust, vendor-specific optimization SDK.
     *   *Agent Validation Rule (Concrete boolean check):*
-        *   `IF Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge")` → Score 8.0 (Custom hybrid stack delegation).
-        *   `IF SoC == "Qualcomm Snapdragon" AND NPU == True` → Score 8.0 (Qualcomm AI Engine Direct/QNN).
-        *   `IF SoC == "MediaTek Dimensity" OR SoC IN ["Helio P60", "Helio P70", "Helio P90", "Helio P95"]` → Score 8.0 (MediaTek NeuroPilot).
-        *   `IF SoC == "Samsung Exynos" AND NPU == True (e.g. Exynos 9820 or newer)` → Score 8.0 (Samsung AI Studio).
+        *   `IF (SoC_Manufacturer IN ["Qualcomm", "MediaTek", "Samsung", "HiSilicon"]) AND (NPU == True)` → Score 8.0.
+        *   `IF (Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge"))` → Score 8.0.
 
-*   **[ 5.0 ] Tier 3: Standard OS API (LiteRT/NNAPI fallback)**
-    *   *Definition:* The device possesses an NPU hardware block but uses an SoC that lacks a heavily optimized, bespoke SDK layer like those in Tier 2. It relies exclusively on the generic OS abstraction layer.
+*   **[ 5.5 ] Tier 3: Hardware Accelerated / Optimized Fallback**
+    *   *Definition:* The device either possesses a generic NPU (budget) OR is a legacy flagship without an NPU that features a highly optimized GPU-accelerated AI pipeline (e.g. Metal Performance Shaders, Qualcomm SNPE).
     *   *Agent Validation Rule (Concrete boolean check):*
-        *   `IF NPU == True AND SoC NOT IN [Apple A11+, Google Tensor, Snapdragon, Dimensity, Helio P60+, Exynos 9820+, Kirin w/ NPU]` → Score 5.0. 
-        *   *Example Application:* Generic budget architectures like Unisoc Tiger series, JLQ, Rockchip tablets, or generic unbranded SoCs with basic NPU hardware blocks.
+        *   `IF (NPU == True) AND NOT (Rule_Match == Tier 1 OR Rule_Match == Tier 2)` → Score 5.5 (e.g. Unisoc T820). 
+        *   `IF (Device_Brand == "Apple" AND SoC_Model IN ["Apple A8", "Apple A9", "Apple A10"])` → Score 5.5 (Optimized MPS GPU acceleration).
+        *   `IF (SoC_Model IN ["Snapdragon 820", "Snapdragon 821", "Snapdragon 835"])` → Score 5.5 (Optimized SNPE GPU acceleration).
 
-*   **[ 2.0 ] Tier 4: CPU/GPU Fallback (Emulation)**
+*   **[ 3.0 ] Tier 4: CPU/GPU Fallback (Emulation)**
     *   *Definition:* The device runs a modern OS capable of executing ML/AI models, but the hardware entirely lacks a dedicated NPU. Operations are emulated slowly on the CPU or GPU via generic runtimes.
     *   *Agent Validation Rule (Concrete boolean check):*
-        *   `IF NPU == False AND OS IN ["Android", "iOS", "HarmonyOS"]` → Score 2.0.
-        *   *Example Application:* Old hardware (iPhone 7/Apple A10 and older), budget hardware (Snapdragon 400 series, MediaTek Helio A22, Helio G85, generic Unisoc SC9863A).
+        *   `IF (OS IN ["Android", "HarmonyOS", "iOS", "Windows Mobile", "BlackBerry OS", "Tizen"])` AND NOT (Previous Tier Match) → Score 3.0.
+        *   *Example Application:* Budget Unisoc/Helio A-series, iPhone 4S through iPhone 5s (A4-A7).
 
-*   **[ 0.0 ] Tier 5: None**
-    *   *Definition:* Device lacks any software framework capable of ML execution.
+*   **[ 0.0 ] Tier 5: Minimal / None**
+    *   *Definition:* Device lacks any software framework or instruction set capable of modern ML execution.
     *   *Agent Validation Rule (Concrete boolean check):*
-        *   `IF OS IN ["KaiOS", "Series 30+", "Symbian"]` → Score 0.0. Feature phones.
+        *   `IF (OS IN ["KaiOS", "Series 30+", "Symbian", "Proprietary"]) OR (Form_Factor == "Feature Phone")` → Score 0.0.
+        *   `IF (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older")` → Score 0.0. No instruction set support.
 
 > [!NOTE]
 > **On §5.3 interaction:** §5.3 (AI Feature Suite) measures *what AI features exist* — a checklist of tools. The Software Stack score here measures *how efficiently the hardware is utilized* — driver quality. A phone could score 10/10 on Software Stack (excellent CoreML) but 0/10 on §5.3 (no features installed). These are orthogonal dimensions; overall section weights can be adjusted to calibrate the AI domain's total contribution to the system score.
