@@ -1909,59 +1909,187 @@ Weighted combination of Standard Graphics (Raster) and Ray Tracing.
 
 
 ### 🔹 6.4 AI Hardware Performance (Neural Processor)
-*Description:* Measures the raw hardware acceleration for AI/ML tasks. The Neural Processing Unit (NPU) or AI Processing Unit (APU) is a dedicated chip that handles AI workloads. This score reflects the device's ability to run on-device generative AI, real-time translation, and advanced image processing *quickly*.
-*   **Measurement:** Geekbench AI (Quantized INT8 Score).
-*   **Unit:** Points
+*Description:* Measures the raw hardware acceleration for AI/ML (Artificial Intelligence / Machine Learning) tasks. The NPU (Neural Processing Unit) or APU (AI Processing Unit) is a dedicated chip that handles AI workloads. This score reflects the device's ability to run on-device generative AI, real-time translation, and advanced image processing *quickly*.
+*   **Measurement:** Geekbench AI (Quantized INT8 Score) for benchmark; NPU TOPS (Trillions of Operations Per Second) + hardware analysis for prediction.
+*   **Unit:** Points (0-10)
 *   **Significance:** Critical for future-proofing and enabling smooth operation of modern "AI Phone" features.
 
 > [!IMPORTANT]
-> **Hardware vs. Software:** This section measures **Hardware Capability** (The Engine). It is distinct from **Section 5.3 (AI Feature Suite)** which measures the *features* the software actually provides (The Destination). A powerful Neural Processing Unit (NPU) (high 6.4 score) is required to run advanced features smoothly, but doesn't guarantee they are installed.
+> **Hardware vs. Software:** This section measures **Hardware Capability** (The Engine). It is distinct from **Section 5.3 (AI Feature Suite)** which measures the *features* the software actually provides (The Destination). A powerful NPU (high 6.4 score) is required to run advanced features smoothly, but doesn't guarantee they are installed.
 
-**SoC Neural Processing Unit (NPU) / AI Accelerator Reference Table**
+> [!NOTE]
+> **Why §6.4 Uses a Different Prediction Model Than §6.1/6.2/6.3**
+>
+> Sections 6.1 (CPU Multi-Core), 6.2 (CPU Single-Core), and 6.3 (GPU) use **architecture-level decomposition** with frequency scaling — they model *how the silicon works* (architecture score × frequency × core count). This is possible because CPU/GPU specifications (ISA, core count, clock speeds, IPC — Instructions Per Cycle) are publicly documented.
+>
+> Section 6.4 uses a **weighted-sum of system-level factors** instead, because:
+> 1. **NPU architectures are opaque.** Unlike ARM CPU cores (where IPC is well-known), NPU internals (Hexagon tensor units, Apple Neural Engine cores, MediaTek APU MAC — Multiply-Accumulate — arrays) are proprietary and insufficiently documented for frequency-scaled decomposition.
+> 2. **Heterogeneous compute delegation.** AI workloads dynamically switch between NPU, GPU, and CPU depending on operator support — varying per model, framework, and driver version.
+> 3. **Software stack is critical.** Two chips with identical TOPS can differ 2–3× in real benchmarks due to software optimization (e.g., Apple CoreML vs. generic NNAPI — Android Neural Networks API).
+>
+> The weighted-sum approach captures the *system-level factors* that collectively determine AI performance — which is exactly what the Geekbench AI benchmark measures.
 
-This table provides the authoritative AI scores for major SoCs, reflecting their Neural Processing Unit (NPU) hardware acceleration capabilities (INT8/FP16) for machine learning.
+#### 6.4.0 NPU (Neural Processing Unit) Architecture Reference Table
 
-| SoC Model                             | NPU / Neural Engine            | AI Score (0-10) |
-| :------------------------------------ | :----------------------------- | :-------------- |
-| **Snapdragon 8 Elite Gen 5**          | Hexagon (2026 Model)           | **10.0**        |
-| **Snapdragon 8 Elite**                | Hexagon (Oryon v1)             | **9.5**         |
-| [...]                                 | [...]                          | [...]           |
+**Source of Truth:** The full authoritative lookup table is located in [proposed_data_structure.md] under **SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE**.
+
+Each NPU is scored using three measurable hardware factors:
+
+*   **Peak INT8 TOPS (50%) — Raw Throughput**
+    *   *What it measures:* Theoretical peak computational capacity at 8-bit integer precision.
+    *   *Justification:* While TOPS represents the raw "horsepower," it is a theoretical maximum. A high TOPS rating alone can be misleading without structural efficiency, which is why its weight is capped to prevent over-indexing on marketing numbers.
+
+*   **Architecture Generation (30%) — Structural Sophistication**
+    *   *What it measures:* The design efficiency of hardware blocks, including operator coverage, tensor scheduling, on-chip SRAM cache size, and dedicated transformer acceleration.
+    *   *Justification:* This dictates how effectively the hardware actually utilizes its raw TOPS. Modern generative AI (LLMs) requires specific data-flow patterns that traditional ML accelerators may struggle with, regardless of their TOPS.
+
+*   **Precision Support (20%) — Bandwidth Efficiency**
+    *   *What it measures:* The range of numerical precisions (e.g., INT4, INT8, FP16) supported natively by the hardware.
+    *   *Justification:* Lower-bit precision (like INT4) drastically reduces memory bandwidth bottlenecks—halving the data payload—which allows for significantly faster token generation and lower power consumption in edge AI tasks.
+
+**NPU Score Formula:**
+`TOPS_Normalized = 10 * (log(TOPS) − log(NPU_TOPS_Min)) / (log(NPU_TOPS_Max) − log(NPU_TOPS_Min))`
+`NPU_Score = 0.50 * TOPS_Normalized + 0.30 * ArchGen_Score + 0.20 * Precision_Score` (Clamped 0-10)
+
+> [!NOTE]
+> **Why logarithmic for TOPS?** The real-world usability impact of TOPS follows a curve of diminishing returns. The jump from 1 TOPS (cannot run any modern AI model locally) to 11 TOPS (can run image classification, voice processing, photo enhancement) is transformative. The jump from 35 TOPS to 45 TOPS improves LLM (Large Language Model) token generation speed by milliseconds — imperceptible for most daily AI tasks.
+
+> [!NOTE]
+> **Cross-vendor TOPS comparability:** TOPS are not perfectly comparable across vendors. Apple's 15.8 TOPS Neural Engine may outperform Qualcomm's 26 TOPS Hexagon in real-world benchmarks due to architectural efficiency and software optimization differences. The **Architecture Generation (30%)** and **Precision Support (20%)** weights are explicitly designed to over-index and fully compensate for this mismatch. They prioritize the chip's intelligence, operator design, and bandwidth efficiency over sheer raw operations, establishing a neutral baseline that confidently normalizes these discrepancies.
+
+**Architecture Generation Score (30% weight)**
+
+This factor captures the sophistication of the NPU's internal design beyond raw throughput. The classification criteria below are designed for neutral, vendor-agnostic scoring by an AI agent.
+
+**Architecture Generation Classification Tiers**
+
+**[ 10.0 ] Gen AI Native**
+*   **Technical Definition:** Purpose-built for on-device generative AI and LLM (Large Language Model) inference.
+*   **Classification Criteria:** **ALL** of:
+    1.  Dedicated hardware transformer acceleration or autoregressive token generation pipeline.
+    2.  Dynamic precision scheduling pipeline and high-bandwidth native data flow.
+    3.  On-chip model management with large shared memory/SRAM cache (≥ 2 MB) replacing L2 wait-times.
+    4.  Vendor explicitly markets the chip design architecture as native for local LLM execution (Llama, Gemini Nano, etc.).
+*   **Key indicator:** The chip was designed *from the ground up* for generative AI, utilizing structurally different core clusters than a prior generation ML-focused design.
+
+**[ 8.0 ] Gen AI Capable**
+*   **Technical Definition:** Supports generative AI workloads via broad tensor operation capabilities.
+*   **Classification Criteria:** **ALL** of:
+    1.  Dedicated NPU (Neural Processing Unit) with heavy tensor/matrix calculation hardware.
+    2.  Advanced memory routing to emulate missing native pipeline operations.
+    3.  Can execute complex quantized LLMs across the system stack (albeit using more generic operations than Gen AI Native).
+    4.  Vendor has demonstrated on-device LLM or Stable Diffusion execution.
+*   **Key difference from Gen AI Native:** Lacks purpose-built transformer pipeline hardware and extreme SRAM; LLM execution relies entirely on generic matrix multipliers causing higher energy consumption per token.
+
+**[ 6.0 ] ML Optimized**
+*   **Technical Definition:** Efficient tensor/matrix acceleration designed strictly for traditional ML (Machine Learning) inference (image classification, object detection).
+*   **Classification Criteria:** **ALL** of:
+    1.  Dedicated NPU with specific tensor acceleration hardware blocks (not just vector/SIMD — Single Instruction, Multiple Data).
+    2.  Comprehensive operator coverage allowing full model execution without CPU assist.
+    3.  Efficient silicon layout dedicated to sustained low-power ML camera feeds.
+*   **Key difference from Gen AI Capable:** No specific generative AI architecture evolution. The NPU relies on older data-flow structures and excels at fixed-input inference tasks, but the hardware is fundamentally not pipelined for autoregressive token generation.
+
+**[ 4.0 ] ML Accelerated**
+*   **Technical Definition:** Dedicated NPU hardware using basic tensor operations.
+*   **Classification Criteria:** **ANY** of:
+    1.  Named dedicated NPU/AI accelerator (Hexagon 770/780, Neural Engine 8/16-core, APU 3.0/580/590/650, Cambricon, Da Vinci 1.0, Xclipse, Imagination NNA — Neural Network Accelerator).
+    2.  Vendor publishes TOPS (Trillions of Operations Per Second) rating ≥ 2 for the dedicated NPU.
+    3.  Device can accelerate standard ML models (face detection, scene recognition, noise reduction) on the NPU without CPU fallback.
+*   **Key difference from ML Optimized:** The NPU has limited mathematical operator coverage and lacks unified on-chip data scheduling. This forces many complex AI operations to fall back to the GPU or CPU.
+
+**[ 2.0 ] DSP/HVX Assisted**
+*   **Technical Definition:** Digital Signal Processor (DSP) with vector extensions handling AI tasks.
+*   **Classification Criteria:** **ALL** of:
+    1.  No dedicated NPU — AI is processed by a DSP with SIMD vector extensions (e.g., Qualcomm HVX — Hexagon Vector eXtensions, MediaTek APU 2.0).
+    2.  TOPS rating < 4 (if published).
+    3.  AI workloads execute via vector math, not tensor-specific hardware.
+*   **Key indicator:** The AI accelerator was originally designed for audio/image signal processing and repurposed for basic neural network inference. Limited operator support; many AI models fall back to CPU.
+
+**[ 0.0 ] CPU-Only Emulation**
+*   **Technical Definition:** No dedicated AI hardware.
+*   **Classification Criteria:** **ALL** of:
+    1.  No NPU, no AI-capable DSP, no dedicated accelerator.
+    2.  All AI workloads run on general-purpose CPU or GPU.
+    3.  Spec sheets and vendor documentation make no mention of AI/NPU/ML hardware acceleration.
+*   **Examples:** Helio G85/G88, Unisoc T606/T612/T616.
+
+
+**Precision Support Score (20% weight)**
+
+This dimension measures the range of mathematical data formats the AI hardware can process natively. It is critical because executing AI models at lower bit depths (e.g. 4-bit vs 16-bit) exponentially reduces the memory bandwidth required, allowing massive Generative AI models to run faster and cooler without draining the battery. If a chip natively supports a wide array of precision formats, it provides developers immense flexibility to optimize specific models exactly to the hardware.
+
+**Precision Support Classification Levels**
+
+**[ 10.0 ] INT4 + INT8 + FP16**
+*   **Classification Criteria:** Vendor documentation confirms native support for all three precision formats. INT4 (4-bit Integer) support is the key differentiator — verify via official specs or SDK (Software Development Kit) documentation.
+
+**[ 7.0 ] INT8 + FP16**
+*   **Classification Criteria:** Standard modern support. Vendor confirms both INT8 (8-bit Integer) and FP16 (Half-Precision Floating Point) on the NPU. No INT4 capability.
+
+**[ 4.0 ] INT8 only**
+*   **Classification Criteria:** NPU supports only 8-bit integer operations. FP16 tasks fall back to GPU.
+
+**[ 2.0 ] FP16 only**
+*   **Classification Criteria:** NPU supports only half-precision floating point (no integer quantization). Rare in modern mobile NPUs.
+
+**[ 0.0 ] None**
+*   **Classification Criteria:** No dedicated precision support (CPU-only emulation).
+
+
+**Extract of the NPU Reference Table** (descending score order):
+
+| SoC Model                 | NPU / AI Engine       | TOPS (INT8) | Arch Gen        | Precision   | NPU Score |
+| :------------------------ | :-------------------- | :---------: | :-------------- | :---------- | :-------: |
+| **Snapdragon 8 Elite**    | Hexagon (Oryon NPU)   |      45     | Gen AI Native   | INT4+8+FP16 | **9.89**  |
+| **Dimensity 9400**        | APU 890               |     ~40     | Gen AI Native   | INT4+8+FP16 | **9.76**  |
+| [...]                     | [...]                 |    [...]    | [...]           | [...]       |   [...]   |
 
 > [!IMPORTANT]
-> **Source of Truth:** For the full list of all supported SoC AI accelerators and their authoritative scores, refer to the **SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE** in [proposed_data_structure.md].
+> **Source of Truth:** For the complete, verified list of all SoC NPU scores, refer to the **SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE** in [proposed_data_structure.md].
 
-> [!IMPORTANT]
-> **SoC not listed in the table?** Do **not** guess a score. Add a new row to this table first:
-> 1. Find the SoC's Geekbench AI (Quantized INT8) score on the [Geekbench AI Leaderboard](https://browser.geekbench.com/ai-benchmarks).
-> 2. Normalise it against the Min/Max constants (Method A formula below) to get an authoritative score.
-> 3. Insert the new row in descending score order, then use it for scoring.
+#### Scoring Architecture
+
+The AI hardware score is fundamentally built upon the **AI System Score** derived from the strict sequence of Method A/B/C calculations (see below). Only after the core processing engine capability is completely isolated and scored do overarching platform constraints (e.g., total device RAM capacity or sustained thermal dissipation limits) apply.
+
+**What Geekbench AI Quantized INT8 Measures vs. What It Does Not:**
+
+| Factor                                    | Captured by benchmark? | How captured in scoring                             |
+|:------------------------------------------|:----------------------:|:----------------------------------------------------|
+| NPU raw throughput                        |          Yes           | Part of AI System Score                             |
+| GPU compute fallback                      |          Yes           | Part of AI System Score                             |
+| CPU compute fallback                      |          Yes           | Part of AI System Score                             |
+| Memory bandwidth (data speed to NPU)      |          Yes           | Part of AI System Score                             |
+| Software stack optimization (QNN, CoreML) |          Yes           | Part of AI System Score                             |
+| RAM capacity (which models can be loaded) |          No            | Factor added later on (on top of Method A/B/C)      |
+| Sustained thermal performance             |          No            | Factor added later on (on top of Method A/B/C)      |
+
 
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
-This is the preferred method when a direct Geekbench AI score is available. It provides the most accurate representation of real-world AI/NPU performance.
+This is the preferred method when a direct Geekbench AI score is available. It provides the most accurate representation of real-world AI system performance, as it tests the full hardware + software stack (NPU, GPU fallback, CPU fallback, memory bandwidth, and driver optimization) simultaneously.
 *   **Source:** [Geekbench AI Leaderboard](https://browser.geekbench.com/ai-benchmarks)
 *   **Metric:** Quantized Score (INT8)
-    *   *Why Quantized?* Mobile NPUs are optimized for integer math (INT8) for efficiency. Evaluating FLOAT32 often falls back to the CPU/GPU, missing the NPU's true potential.
+    *   *Why Quantized?* Mobile NPUs are optimized for integer math (INT8) for efficiency. Evaluating FLOAT32 (Full Precision) often falls back to the CPU/GPU, missing the NPU's true potential.
 *   **Normalization:**
-    *   **Formula:** `Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min))` (Clamped 0-10)
+    *   **Formula:** `Benchmark_AI_System_Score = 10 * (log(Geekbench_AI_Score) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min))` (Clamped 0-10)
     *   **Max Score (10.0):** ≥ AI_GB_Quant_Score_Max
     *   **Min Score (0.0):** ≤ AI_GB_Quant_Score_Min
 
 > [!NOTE]
-> **Why Logarithmic?** AI performance utility follows a curve of diminishing returns relative to real-world experience. A **+5,000 point** jump from a legacy 1,000-point NPU to 6,000 points is transformative, enabling the shift from basic cloud-assisted tasks to capable local voice processing and real-time photo object removal. In contrast, an identical **+5,000 point** jump from 75,000 to 80,000 points represents a marginal improvement in the inference speed of extremely large local LLMs that is imperceptible for 99% of daily smartphone AI features. Logarithmic scaling correctly assigns more value to these early, usability-defining gains.
+> **Why Logarithmic?** AI performance utility follows a curve of diminishing returns. A **+5,000 point** jump from a legacy 1,000-point score to 6,000 is transformative — enabling the shift from basic cloud-assisted tasks to capable local voice processing and real-time photo object removal. An identical **+5,000 point** jump from 75,000 to 80,000 represents a marginal improvement imperceptible for 99% of daily AI features.
 
 #### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
 **1. Identify Neighbors via Feature Distance (Minimum Variance)**
-Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across **all** AI-relevant hardware components.
+Find the 3 devices that are statistically closest across **all** AI-relevant hardware components.
 *   **Search Space:** All phones with known Geekbench AI scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Weighted Euclidean Distance.
-    *   `Distance = Sqrt( 0.40*(AI_Diff)^2 + 0.25*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(RAM_Cap_Diff)^2 + 0.10*(Process_Diff)^2 )`
+    *   `Distance = Sqrt( 0.45*(NPU_Diff)^2 + 0.15*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(CPU_Diff)^2 + 0.15*(Software_Stack_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
-        *   `AI` (table above, Sec 6.4), `RAM_Tech` (Sec 6.5), `GPU` (Sec 6.3), `RAM_Cap` (Sec 6.6), `Process` (Sec 6.10 Part C).
-    *   **Scientific Rationale:** We weight the distance calculation to ensure that neighbors are selected based on the most critical performance factors (NPU, Bandwidth) rather than less impactful specs. 
-    *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). This ensures we compare devices based on intrinsic hardware similarity.
+        *   `NPU` (§6.4 table), `RAM_Tech` (§6.5), `GPU` (§6.3), `CPU` (§6.2), `Software_Stack` (Software Stack tier).
+    *   **Scientific Rationale:** Weights mirror the proportional Method C AI System Score component weights to ensure neighbors are selected based on the most critical AI performance factors. RAM Capacity and TDSI are excluded from this matching stage because they are applied globally *after* interpolation.
+    *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters).
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!TIP]
@@ -1975,36 +2103,85 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 
 **3. Apply to Benchmark:**
 *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-*   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+*   `Interpolated_AI_System_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
-**Step 1: Gather Components**
-The predicted score is a weighted sum of 5 hardware factors, based on research into mobile AI bottlenecks (Geekbench AI, MLPerf).
+**Predicted AI System Score Calculation**
+The predicted AI System Score is a weighted sum of 5 system-level factors. Unlike §6.1/6.2/6.3 which decompose CPU/GPU architecture at the silicon level, §6.4 captures the *system-level factors* that collectively determine AI performance — because NPU architectures are proprietary and cannot be decomposed from public specifications (see Design Rationale above).
 
-1.  **SoC AI Score (40%) – The Engine**
-    *   **Source:** Retrieve `AI Score` from **the Section 6.4 table**.
-    *   **Rationale:** The Neural Processing Unit (NPU) is the specialized processor designed to do the heavy lifting for AI. Just as a powerful engine drives a car, the NPU is built to run AI math (quantized INT8) efficiently. It is the single most important factor for raw performance.
+1.  **NPU Score (40%) — The Dedicated AI Engine**
+    *   **Source:** Retrieve from the **§6.4.0 NPU Lookup Table**.
+    *   **Rationale:** The NPU executes the vast majority (60–95%) of quantized AI operations on modern devices. Scored based on peak INT8 TOPS, architecture generation, and precision support — reflecting **only** the NPU's isolated hardware capability, independent of other system factors.
 
-2.  **RAM Technology Score (25%) – The Highway**
+2.  **RAM Technology Score (15%) — The Data Highway**
     *   **Source:** Retrieve Score from **Section 6.5**.
-    *   **Rationale:** An engine is useless without fuel. AI models require massive amounts of data to be fed to the NPU instantly. If the "highway" (Memory Bandwidth) is too narrow, the NPU sits idle waiting for data. Faster RAM (e.g., LPDDR5X) directly translates to faster AI response times.
+    *   **Rationale:** AI models require enormous data throughput. Memory bandwidth determines how fast data reaches the NPU. LPDDR5X delivers ~134 GB/s vs. LPDDR4X at ~51 GB/s (2.6× difference). A powerful NPU starved of bandwidth sits idle.
 
-3.  **GPU Performance Score (15%) – The Backup Engine**
+3.  **GPU Performance Score (15%) — The Compute Fallback**
     *   **Source:** Retrieve Score from **Section 6.3**.
-    *   **Rationale:** While the NPU handles most tasks, some complex AI instructions (floating point math) are too specific for it. In these cases, the system falls back to the Graphics Unit (GPU). A strong GPU ensures the phone doesn't choke on these complex tasks.
+    *   **Rationale:** Some AI operations (specific floating-point math, unsupported operators) fall back to the GPU. Geekbench AI explicitly tests GPU-delegated workloads. A strong GPU ensures the phone handles complex fallback operations.
 
-4.  **RAM Capacity Score (10%) – The Warehouse**
-    *   **Source:** Retrieve Score from **Section 6.6**.
-    *   **Rationale:** This measures *how big* of a model you can run. 8GB is the bare minimum for modern "On-Device AI". If the warehouse is too small, the phone has to constantly swap data in and out, drastically slowing down performance. *Note: having excess RAM (e.g., 24GB) doesn't make a small task faster, which is why this weight is limited to 10%.*
+4.  **CPU Performance Score (10%) — The Universal Fallback**
+    *   **Source:** Retrieve Score from **Section 6.2** (Single-Core — reflects per-thread IPC).
+    *   **Rationale:** For budget devices with no dedicated NPU (e.g., Helio G85, Unisoc T606), the CPU is the *sole* processor running AI workloads. Even on flagships, certain unsupported model operators fall back to CPU. *Why §6.2 (Single-Core)?* AI inference pipelines are predominantly serial (one neural network layer feeds the next). Single-thread IPC is the primary determinant of CPU-executed AI operator speed.
 
-5.  **Process Node Score (10%) – Efficiency**
-    *   **Source:** Retrieve Score from **Section 6.10 Part C**.
-    *   **Rationale:** AI calculations generate significant heat. A more efficient chip (e.g., 3nm vs 5nm) determines whether the device can run at top speed for sustained periods or if it will slow down (throttle) to cool off.
+5.  **AI Software Stack Optimization (10%) — The Driver Quality**
+    *   **Source:** Tiered classification based on the device's AI framework ecosystem (see table below).
+    *   **Rationale:** Two chips with identical hardware can differ 2–3× in benchmarks due to software optimization. Apple's CoreML is tightly integrated with the Neural Engine, extracting near-100% utilization. Qualcomm's QNN (Qualcomm Neural Network SDK) provides optimized NPU delegation. Meanwhile, some devices rely on generic NNAPI delegates that leave significant NPU capability untapped. This factor captures the *efficiency of hardware utilization*.
 
-**Step 2: Calculate Predicted Score**
-`Predicted_Score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process_Node)`
+**AI Software Stack Scoring Guideline:**
+
+To eliminate brand bias and ensure an AI agent can objectively score every phone—from 2012 legacy models to 2026 flagships—without abstract reasoning, the classification is presented as a structured list containing **deterministic boolean logic**. This logic relies strictly on architectural facts and historical hardware cutoffs (Device OEM, SoC Manufacturer, OS, and NPU presence).
+
+*   **[ 10.0 ] Tier 1: Native Synergistic**
+    *   *Definition:* The device manufacturer natively designs BOTH the OS framework and the SoC Hardware, AND the hardware includes a dedicated Neural Processing Unit. This guarantees exclusive high-speed hardware pipelines.
+    *   *Agent Validation Rule (Concrete boolean check):*
+        *   `IF Device_Brand == "Apple" AND OS == "iOS" AND SoC_Model >= "Apple A11"` → Score 10.0 (*Note: A11 Bionic was the first to include the Neural Engine. Older Apple chips drop to Tier 4.*)
+        *   `IF Device_Brand == "Google" AND OS == "Android" AND SoC_Model == "Tensor"` → Score 10.0 (Google AI Edge + TPU).
+        *   `IF Device_Brand == "Huawei" AND OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True` → Score 10.0 (MindSpore + Da Vinci NPU).
+
+*   **[ 8.0 ] Tier 2: SDK Co-Optimized**
+    *   *Definition:* The device utilizes a flagship/mid-range 3rd-party SoC that provides an explicitly branded NPU software SDK, OR the OEM included a custom imaging NPU co-processor.
+    *   *Agent Validation Rule (Concrete boolean check):*
+        *   `IF Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge")` → Score 8.0 (Custom hybrid stack delegation).
+        *   `IF SoC == "Qualcomm Snapdragon" AND NPU == True` → Score 8.0 (Qualcomm AI Engine Direct/QNN).
+        *   `IF SoC == "MediaTek Dimensity" OR SoC IN ["Helio P60", "Helio P70", "Helio P90", "Helio P95"]` → Score 8.0 (MediaTek NeuroPilot).
+        *   `IF SoC == "Samsung Exynos" AND NPU == True (e.g. Exynos 9820 or newer)` → Score 8.0 (Samsung AI Studio).
+
+*   **[ 5.0 ] Tier 3: Standard OS API (LiteRT/NNAPI fallback)**
+    *   *Definition:* The device possesses an NPU hardware block but uses an SoC that lacks a heavily optimized, bespoke SDK layer like those in Tier 2. It relies exclusively on the generic OS abstraction layer.
+    *   *Agent Validation Rule (Concrete boolean check):*
+        *   `IF NPU == True AND SoC NOT IN [Apple A11+, Google Tensor, Snapdragon, Dimensity, Helio P60+, Exynos 9820+, Kirin w/ NPU]` → Score 5.0. 
+        *   *Example Application:* Generic budget architectures like Unisoc Tiger series, JLQ, Rockchip tablets, or generic unbranded SoCs with basic NPU hardware blocks.
+
+*   **[ 2.0 ] Tier 4: CPU/GPU Fallback (Emulation)**
+    *   *Definition:* The device runs a modern OS capable of executing ML/AI models, but the hardware entirely lacks a dedicated NPU. Operations are emulated slowly on the CPU or GPU via generic runtimes.
+    *   *Agent Validation Rule (Concrete boolean check):*
+        *   `IF NPU == False AND OS IN ["Android", "iOS", "HarmonyOS"]` → Score 2.0.
+        *   *Example Application:* Old hardware (iPhone 7/Apple A10 and older), budget hardware (Snapdragon 400 series, MediaTek Helio A22, Helio G85, generic Unisoc SC9863A).
+
+*   **[ 0.0 ] Tier 5: None**
+    *   *Definition:* Device lacks any software framework capable of ML execution.
+    *   *Agent Validation Rule (Concrete boolean check):*
+        *   `IF OS IN ["KaiOS", "Series 30+", "Symbian"]` → Score 0.0. Feature phones.
+
+> [!NOTE]
+> **On §5.3 interaction:** §5.3 (AI Feature Suite) measures *what AI features exist* — a checklist of tools. The Software Stack score here measures *how efficiently the hardware is utilized* — driver quality. A phone could score 10/10 on Software Stack (excellent CoreML) but 0/10 on §5.3 (no features installed). These are orthogonal dimensions; overall section weights can be adjusted to calibrate the AI domain's total contribution to the system score.
+
+`Predicted_AI_System_Score = (0.45 * NPU) + (0.15 * RAM_Tech) + (0.15 * GPU) + (0.10 * CPU) + (0.15 * Software_Stack)`  (Clamped 0-10)
+
+
+#### Section 6.4 Score Summary & Final Calculation
+
+The overall Section 6.4 score is a composite of the core processing power and the physical system constraints required for real-world utility.
+
+*   **AI System Score (85%):** Derived via the standard **Method A → B → C** priority hierarchy (see above).
+*   **RAM Capacity Factor (5%):** From §6.6. Determines *which* AI models can be loaded into memory. 8 GB is the bare minimum for modern on-device LLMs. Geekbench AI's test models are small enough that RAM capacity rarely bottlenecks the benchmark — but for real-world use (loading local LLMs), it matters. *Note: excess RAM (e.g., 24 GB) doesn't make a small task faster, so this weight is limited to 5%.*
+*   **Sustained Efficiency Factor (10%):** Uses the **full TDSI (Thermal Dissipation & Stability Index) score from §6.10**. Geekbench AI is a burst test (30–90 seconds per workload). For real-world sustained AI usage (running a local LLM for 10+ minutes, continuous AI camera processing), the phone's complete thermal envelope matters: the chassis's ability to absorb heat (Part A), the internal cooling system such as vapor chamber or graphite sheet (Part B), and the process node efficiency — smaller nanometer = less heat generated (Part C).
+
+**Final Formula:** `Score = (AI_System_Score * 0.85) + (RAM_Capacity_Factor * 0.05) + (TDSI_Score * 0.10)`  (Clamped 0-10)
 
 
 ### 🔹 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)

@@ -2691,53 +2691,117 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
-      // Defines the authoritative AI performance scores for NPUs.
-      // 
-      // | SoC Model                             | NPU / Neural Engine            | AI Score |
-      // |:--------------------------------------|:-------------------------------|:--------:|
-      // | Snapdragon 8 Elite Gen 5              | Hexagon (2026 Model)           |  10.00   |
-      // | Snapdragon 8 Elite                    | Hexagon (Oryon v1)             |   9.50   |
-      // | Apple A19 Pro                         | 16-Core Neural Engine          |   9.00   |
-      // | Apple A18 Pro                         | 16-Core Neural Engine          |   8.80   |
-      // | Dimensity 9400                        | APU 890                        |   8.70   |
-      // | Apple A17 Pro                         | 16-Core Neural Engine          |   8.60   |
-      // | Snapdragon 8 Gen 3                    | Hexagon (2024)                 |   8.30   |
-      // | Dimensity 9300                        | APU 790                        |   8.10   |
-      // | Snapdragon 8 Gen 2                    | Hexagon (2023)                 |   7.80   |
-      // | Apple A16 Bionic                      | 16-Core Neural Engine          |   7.70   |
-      // | Apple A15 Bionic                      | 16-Core Neural Engine          |   7.10   |
-      // | Exynos 2400                           | NPU 5th-gen (34.7 TOPS)        |   6.70   |
-      // | Apple A14 Bionic                      | 16-Core Neural Engine          |   6.20   |
-      // | Tensor G4                             | Google TPU (2024)              |   5.90   |
-      // | Snapdragon 8 Gen 1                    | Hexagon (2022)                 |   5.90   |
-      // | Dimensity 9200                        | APU 690                        |   5.40   |
-      // | Tensor G3                             | Google TPU (2023)              |   4.90   |
-      // | Snapdragon 888+                       | Hexagon 780 (Overclocked)      |   4.70   |
-      // | Snapdragon 888                        | Hexagon 780                    |   4.50   |
-      // | Tensor G2                             | Google TPU (2022)              |   4.10   |
-      // | Dimensity 9000                        | APU 670                        |   3.90   |
-      // | Snapdragon 7+ Gen 2                   | Hexagon (Mid-tier)             |   3.60   |
-      // | Snapdragon 7 Gen 3                    | Hexagon (Mid-tier)             |   3.50   |
-      // | Dimensity 8200                        | APU 810                        |   3.20   |
-      // | Dimensity 8100                        | APU 810                        |   3.00   |
-      // | Snapdragon 7 Gen 1                    | Hexagon (Mid-tier)             |   2.90   |
-      // | Dimensity 8000                        | APU 810                        |   2.80   |
-      // | Snapdragon 6 Gen 3                    | Hexagon (Mid-tier)             |   2.70   |
-      // | Snapdragon 870                        | Hexagon 698                    |   2.60   |
-      // | Tensor G1                             | Google TPU (2021)              |   2.40   |
-      // | Snapdragon 865                        | Hexagon 698                    |   2.30   |
-      // | Snapdragon 6 Gen 1                    | Hexagon (Mid-tier)             |   1.70   |
-      // | Snapdragon 695                        | Hexagon 686                    |   1.50   |
-      // | Snapdragon 4 Gen 2                    | Hexagon (Budget-tier)          |   1.50   |
-      // | Helio G99                             | CPU-only emulation             |   1.30   |
-      // | Helio G96                             | CPU-only emulation             |   1.20   |
-      // | Helio G95                             | CPU-only emulation             |   0.90   |
-      // | Snapdragon 680                        | CPU-only emulation             |   0.00   |
-      // | Helio G85 / G88                       | CPU-only emulation             |   0.00   |
+      // NPU-only scoring: Each NPU is scored independently using three weighted hardware factors:
+      //
+      // 1. Peak INT8 TOPS (50%) — Raw Throughput:
+      //    • Focus: Theoretical peak computational capacity at 8-bit integer precision.
+      //    • Goal: Represents raw "horsepower," but is capped to avoid over-indexing on marketing numbers.
+      //
+      // 2. Architecture Generation (30%) — Structural Sophistication:
+      //    • Focus: Design efficiency, operator coverage, tensor scheduling, on-chip SRAM cache (≥2MB), and transformer pipelines.
+      //    • Goal: Measures how effectively the hardware utilizes its raw TOPS for modern GenAI/LLM workloads.
+      //
+      // 3. Precision Support (20%) — Bandwidth Efficiency:
+      //    • Focus: Range of supported formats (INT4, INT8, FP16).
+      //    • Goal: INT4 support halves the memory bandwidth requirement, drastically increasing generation speed.
+      //
+      // Formulas:
+      //   TOPS_Normalized = 10 * (log(TOPS) − log(NPU_TOPS_Min)) / (log(NPU_TOPS_Max) − log(NPU_TOPS_Min))   [clamped 0-10]
+      //   NPU_Score = Clamp( 0.50 * TOPS_Normalized + 0.30 * ArchGen_Score + 0.20 * Precision_Score, 0.0, 10.0 )
+      //
+      // Architecture Generation Score (30% weight):
+      // • [ 10.0 ] Gen AI Native: Purpose-built for generative AI (autoregressive token pipeline, extreme SRAM cache ≥2MB, dynamic scheduling). The chip was designed from the ground up for generative AI.
+      // • [ 8.0 ] Gen AI Capable: Supports gen AI via heavy tensor hardware and memory routing, but uses generic matrix operations. Can execute complex quantized LLMs across the system stack.
+      // • [ 6.0 ] ML Optimized: Efficient tensor/matrix acceleration designed strictly for traditional ML (Machine Learning) inference (image classification, object detection). Lacks token generation design.
+      // • [ 4.0 ] ML Accelerated: Dedicated basic NPU hardware using basic tensor operations (Hexagon 770/780, APU 3.0). Limited mathematical operator coverage and lacks unified on-chip data scheduling.
+      // • [ 2.0 ] DSP/HVX Assisted: No dedicated NPU. AI is processed by a Digital Signal Processor (DSP) with SIMD vector extensions (e.g., Qualcomm HVX).
+      // • [ 0.0 ] CPU-Only Emulation: All AI runs on general-purpose CPU or GPU.
+      //
+      // Precision Support Score (20% weight):
+      // • [ 10.0 ] INT4 + INT8 + FP16: Vendor documentation confirms native support for all three precision formats. INT4 support is the key differentiator.
+      // • [ 7.0 ] INT8 + FP16: Standard modern support. Vendor confirms both INT8 and FP16 on the NPU. No INT4 capability.
+      // • [ 4.0 ] INT8 only: NPU supports only 8-bit integer operations. FP16 tasks fall back to GPU.
+      // • [ 2.0 ] FP16 only: NPU supports only half-precision floating point. Rare in modern mobile NPUs.
+      // • [ 0.0 ] None: No dedicated precision support.
+      //
+      // TOPS values prefixed with ~ are estimates from vendor relative claims and family cross-referencing.
+      //
+      // |  # | SoC Model                  | NPU / AI Engine               | TOPS(INT8) | TOPS Norm | Arch Gen         | Precision     | NPU Score |
+      // |:--:|:---------------------------|:------------------------------|:----------:|:---------:|:-----------------|:-------------:|:---------:|
+      // |  1 | Snapdragon 8 Elite         | Hexagon (Oryon NPU)           |      45    |   9.77    | Gen AI Native    | INT4+8+FP16   |   9.88    |
+      // |  2 | Dimensity 9400             | APU 890                       |     ~40    |   9.52    | Gen AI Native    | INT4+8+FP16   |   9.76    |
+      // |  3 | Apple A18                  | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
+      // |  4 | Apple A18 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
+      // |  5 | Snapdragon 8 Gen 3         | Hexagon (2024)                |      45    |   9.77    | Gen AI Capable   | INT4+8+FP16   |   9.28    |
+      // |  6 | Apple A17 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Capable   | INT4+8+FP16   |   9.01    |
+      // |  7 | Exynos 2400                | NPU 5th-gen                   |    34.7    |   9.21    | Gen AI Capable   | INT4+8+FP16   |   9.00    |
+      // |  8 | Dimensity 9300             | APU 790                       |     ~30    |   8.89    | Gen AI Capable   | INT4+8+FP16   |   8.84    |
+      // |  9 | Snapdragon 8 Gen 2         | Hexagon (2023)                |      26    |   8.58    | Gen AI Capable   | INT4+8+FP16   |   8.69    |
+      // | 10 | Snapdragon 8 Gen 1         | Hexagon (2022)                |      27    |   8.66    | ML Optimized     | INT8+FP16     |   7.53    |
+      // | 11 | Snapdragon 888             | Hexagon 780                   |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
+      // | 12 | Snapdragon 888+            | Hexagon 780 (OC)              |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
+      // | 13 | Dimensity 9200             | APU 690                       |     ~18    |   7.78    | ML Optimized     | INT8+FP16     |   7.09    |
+      // | 14 | Apple A16 Bionic           | 16-Core Neural Engine         |      17    |   7.66    | ML Optimized     | INT8+FP16     |   7.03    |
+      // | 15 | Apple A15 Bionic           | 16-Core Neural Engine         |    15.8    |   7.50    | ML Optimized     | INT8+FP16     |   6.95    |
+      // | 16 | Exynos 1480                | NPU (6K MAC)                  |     ~20    |   8.01    | ML Accelerated   | INT8+FP16     |   6.61    |
+      // | 17 | Snapdragon 7+ Gen 2        | Hexagon (Mid 2023)            |     ~13    |   7.07    | ML Optimized     | INT8+FP16     |   6.74    |
+      // | 18 | Kirin 9010                 | Da Vinci (Refined)            |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
+      // | 19 | Tensor G4                  | Google TPU (2024)             |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
+      // | 20 | Exynos 990                 | Dual-core NPU                 |     ~15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+      // | 21 | Snapdragon 865             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+      // | 22 | Snapdragon 870             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+      // | 23 | Kirin 9000                 | Da Vinci 2.0 (2+1 core)       |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
+      // | 24 | Tensor G3                  | Google TPU (2023)             |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
+      // | 25 | Dimensity 9000             | APU 590                       |     ~12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+      // | 26 | Snapdragon 778G / 778G+    | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+      // | 27 | Snapdragon 780G            | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+      // | 28 | Apple A14 Bionic           | 16-Core Neural Engine         |      11    |   6.71    | ML Accelerated   | INT8+FP16     |   5.96    |
+      // | 29 | Exynos 2200                | Xclipse NPU                   |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
+      // | 30 | Snapdragon 7 Gen 3         | Hexagon (Mid 2024)            |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
+      // | 31 | Snapdragon 7 Gen 1         | Hexagon (Mid 2022)            |      ~9    |   6.28    | ML Accelerated   | INT8+FP16     |   5.74    |
+      // | 32 | Kirin 990 5G               | Da Vinci 1.0 (2+1 core)       |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+      // | 33 | Tensor G2                  | Google TPU (2022)             |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+      // | 34 | Unisoc T820                | Dedicated NPU                 |       8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+      // | 35 | Apple A13 Bionic           | 8-Core Neural Engine          |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
+      // | 36 | Dimensity 8200             | APU 580                       |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
+      // | 37 | Dimensity 8100             | APU 580                       |    ~5.5    |   5.21    | ML Accelerated   | INT8+FP16     |   5.21    |
+      // | 38 | Dimensity 7300             | APU 650+                      |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+      // | 39 | Dimensity 8000             | APU 580                       |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+      // | 40 | Tensor G1                  | Google TPU (2021)             |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+      // | 41 | Apple A12 Bionic           | 8-Core Neural Engine          |       5    |   5.00    | ML Accelerated   | INT8 only     |   4.50    |
+      // | 42 | Exynos 1380                | NPU                           |     4.9    |   4.96    | ML Accelerated   | INT8 only     |   4.48    |
+      // | 43 | Dimensity 1300             | APU 3.0 (6-core OC)           |    ~4.5    |   4.77    | ML Accelerated   | INT8 only     |   4.38    |
+      // | 44 | Exynos 1280                | NPU                           |     4.3    |   4.67    | ML Accelerated   | INT8 only     |   4.33    |
+      // | 45 | Dimensity 1200             | APU 3.0 (6-core)              |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+      // | 46 | Dimensity 7200             | APU 650                       |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+      // | 47 | Kirin 980                  | Cambricon (Dual-NPU)          |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+      // | 48 | Snapdragon 6 Gen 3         | Hexagon (Mid-tier)            |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+      // | 49 | Unisoc T770                | Imagination NNA               |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+      // | 50 | Dimensity 7050             | APU 650                       |    ~3.5    |   4.23    | ML Accelerated   | INT8 only     |   4.12    |
+      // | 51 | Snapdragon 680             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
+      // | 52 | Snapdragon 695             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
+      // | 53 | Unisoc T760                | Dedicated NPU                 |     3.2    |   4.03    | DSP/HVX          | INT8 only     |   3.42    |
+      // | 54 | Snapdragon 480             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+      // | 55 | Snapdragon 6 Gen 1         | Hexagon (Mid-tier)            |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+      // | 56 | Snapdragon 662             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+      // | 57 | Snapdragon 685             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+      // | 58 | Kirin 970                  | Cambricon (Single-NPU)        |      ~2    |   3.01    | ML Accelerated   | INT8 only     |   3.50    |
+      // | 59 | Dimensity 6100+            | APU (Budget)                  |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
+      // | 60 | Snapdragon 4 Gen 2         | Hexagon (Budget)              |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
+      // | 61 | Snapdragon 4 Gen 1         | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
+      // | 62 | Snapdragon 4s Gen 2        | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
+      // | 63 | Exynos 850                 | Minimal NPU                   |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
+      // | 64 | Helio G99                  | APU 2.0                       |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
+      // | 65 | Helio G96                  | APU 2.0                       |    ~0.8    |   1.02    | DSP/HVX          | INT8 only     |   1.91    |
+      // | 66 | Apple A11 Bionic           | 2-Core Neural Engine          |     0.6    |   0.40    | ML Accelerated   | INT8 only     |   2.20    |
+      // | 67 | Helio G95                  | APU 2.0                       |    ~0.7    |   0.73    | DSP/HVX          | INT8 only     |   1.77    |
+      // | 68 | Helio G85 / G88            | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
+      // | 69 | Unisoc T616 / T612 / T606  | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
       // -------------------------------------------------------------------------
       
       "6_4_ai_hardware_performance": {
-        // SCORING GOAL: Evaluates the Neural Processing Unit (NPU) speed.
+        // SCORING GOAL: Evaluates the AI hardware acceleration capability.
+        // AI_System_Score: Method A → B → C hierarchy.
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2750,26 +2814,62 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
           // • WHERE TO FIND IT: browser.geekbench.com/ai.
           // • EXTRACTION RULE: Use the "Quantized Score". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: subscore = 10 * (ln(method_a_benchmark_AI.value) - ln(AI_GB_Quant_Score_Min)) / (ln(AI_GB_Quant_Score_Max) - ln(AI_GB_Quant_Score_Min)), clamped 0-10. This subscore is the "AI System Score" for Method A. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_AI": {
-          "ai_acceleration_score": {
+          "npu_score": {
             "identifier": "Snapdragon 8 Gen 3",
             // GUIDELINE: Standardized SoC identifier matching the record in §1.1 (identity.hardware_configuration.chipset.value).
             "reference_table": "SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE",
             // GUIDELINE: Path to the authoritative lookup table for mapping.
-            "lookup_parameter": "Score",
-            // GUIDELINE: Description of the architectural constant being retrieved.
-            "value": 8.30
-            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
+            "lookup_parameter": "NPU Score",
+            // GUIDELINE: Description of the column being retrieved.
+            "value": 9.44
+            // GUIDELINE: Value retrieved from the lookup table. NPU Score = Clamp(0.50 * TOPS_Norm + 0.30 * ArchGen + 0.20 * Precision, 0.0, 10.0).
           },
-          "predicted_score": 8.30
-          // SCORING GUIDELINE: predicted_score = (0.40 * AI) + (0.25 * RAM_Tech) + (0.15 * GPU) + (0.10 * RAM_Cap) + (0.10 * Process).
-          // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+          "ram_tech_score": {
+            "section_reference": "§6.5",
+            "value": 10.00
+            // GUIDELINE: Retrieve scores.predicted from section 6_5_ram_technology.
+          },
+          "gpu_score": {
+            "section_reference": "§6.3",
+            "value": 8.30
+            // GUIDELINE: Retrieve scores.predicted from section 6_3_gpu_performance.
+          },
+          "cpu_score": {
+            "section_reference": "§6.2",
+            "value": 8.50
+            // GUIDELINE: Retrieve scores.predicted from section 6_2_cpu_single_core_performance (Single-Core IPC reflects serial AI inference speed).
+          },
+          "sw_stack_score": {
+            "tier": "Tier 2: SDK Co-Optimized",
+            "value": 8.00
+            // GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. This scores hardware utilization efficiency, orthogonal to whether AI features are installed.
+            //   • Tier 1: Native Synergistic (10.0) — Ensure: IF Device_Brand == "Apple" AND OS == "iOS" AND SoC_Model >= "Apple A11" OR Google Tensor OR HiSilicon + HarmonyOS.
+            //   • Tier 2: SDK Co-Optimized (8.0) — Ensure: Explicit physical Co-processor OR SoC IN [Snapdragon NPU, Dimensity, Helio P60+, Exynos 9820+].
+            //   • Tier 3: Standard OS API (5.0) — Ensure: SoC has NPU == True, but DOES NOT explicitly fall into Tier 1 or Tier 2. (e.g. Budget Unisoc/Rockchip NPUs).
+            //   • Tier 4: CPU/GPU Fallback (2.0) — Ensure: NPU == False AND modern OS (Android/iOS/HarmonyOS).
+            //   • Tier 5: None (0.0) — Ensure: Feature phone OS (KaiOS/Symbian).
+          },
+          "predicted_ai_system_score": 9.18,
+          // SCORING GUIDELINE: = (0.45 * npu_score.value) + (0.15 * ram_tech_score.value) + (0.15 * gpu_score.value) + (0.10 * cpu_score.value) + (0.15 * sw_stack_score.value). Always use Predicted Scores before Boosters.
+          "ram_capacity_score": {
+            "section_reference": "§6.6",
+            "value": 10.00
+            // GUIDELINE: Retrieve scores.predicted from section 6_6_ram_capacity.
+          },
+          "tdsi_score": {
+            "section_reference": "§6.10",
+            "value": 8.00
+            // GUIDELINE: Retrieve scores.predicted from section 6_10_thermal_dissipation_stability_index (full TDSI composite, not just Process Node Part C).
+          },
+          "predicted_score": 8.60
+          // SCORING GUIDELINE: = (predicted_ai_system_score * 0.85) + (ram_capacity_score.value * 0.05) + (tdsi_score.value * 0.10).
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2777,51 +2877,53 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_AI": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.40 * (AI_Diff)² + 0.25 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (RAM_Cap_Diff)² + 0.10 * (Process_Diff)² )
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+         // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+         //         Distance = √( 0.45 * (NPU_Diff)² + 0.15 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² + 0.15 * (SW_Diff)² )
+         // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "euclidean_distance_1": 0.0500,
-              // GUIDELINE: Weighted Euclidean distance from Section 6.4 Method B.1.
-              "predicted_score_1": 8.30,
+              // GUIDELINE: Weighted Euclidean distance from Section 6.4 Method B.
+              "predicted_score_1": 8.60,
               // GUIDELINE: The neighbor's own Method C predicted_score.
-              "benchmark_score_1": 8.30
+              "benchmark_score_1": 8.34
               // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
               "device_id_2": "oneplus_12",
               "euclidean_distance_2": 0.0800,
-              "predicted_score_2": 8.30,
+              "predicted_score_2": 8.50,
               "benchmark_score_2": 8.30
             },
             {
               // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
               "euclidean_distance_3": 0.1000,
-              "predicted_score_3": 8.30,
-              "benchmark_score_3": 8.30
+              "predicted_score_3": 8.55,
+              "benchmark_score_3": 8.32
             }
           ],
-          "avg_predicted_neighbors": 8.3000,
+          "avg_predicted_neighbors": 8.5500,
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 8.3000,
+          "avg_benchmark_neighbors": 8.3200,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0000,
+          "correction_ratio": 1.0058,
           // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 8.30
+          "interpolated_score": 8.37
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 8.30,
+          "predicted": 8.60,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_AI.predicted_score.
           "final": {
-            "value": 8.30,
-            // SCORING GUIDELINE: Use Method A if method_a_benchmark_AI is available (method_a_benchmark_AI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_AI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_AI.predicted_score).
+            "value": 8.34,
+            // SCORING GUIDELINE: Final Score = (AI_System_Score * 0.85) + (RAM_Capacity * 0.05) + (TDSI * 0.10).
+            // AI_System_Score: Use Method A (method_a_benchmark_AI.subscore) if available; else Method B (method_b_neighbor_interpolation_AI.interpolated_score); else Method C (method_c_prediction_model_AI.predicted_ai_system_score).
+            // Then apply the additive factors: RAM Capacity (§6.6 score * 0.05) and TDSI (§6.10 score * 0.10).
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
