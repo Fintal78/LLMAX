@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "5.4",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-03-27"
+    "last_updated": "2026-04-08"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -146,7 +146,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "Tier 5: Not Disclosed": []
         },
         "subscore": 10.00
-          // SCORING GUIDELINE: Identify the frame material. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the frame material. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Titanium Alloy"     → 10.00
           //     Definition: High-strength, aerospace-grade alloy (e.g., Grade 5 Titanium).
           //   • "Tier 2: Stainless Steel"    → 8.50
@@ -168,7 +168,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "Tier 5: Not Disclosed": []
         },
         "subscore": 8.00
-          // SCORING GUIDELINE: Identify the back panel material. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the back panel material. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Ceramic"            → 10.00
           //     Definition: Inorganic, non-metallic solid offering superior scratch resistance and heat dissipation.
           //   • "Tier 2: Strengthened Glass" → 8.00
@@ -204,7 +204,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "value": "Tier 1: Digit 6",
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "subscore": 10.00
-          // SCORING GUIDELINE: Identify the first digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the first digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Digit 6"    → 10.00
           //   • "Tier 2: Digit 5"    → 8.00
           //   • "Tier 3: Digit 4"    → 6.00
@@ -216,7 +216,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "value": "Tier 2: Digit 8",
         "value_path": "1_2_durability.ingress_protection_rating.value",
         "subscore": 9.00
-          // SCORING GUIDELINE: Identify the second digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the second digit of the IP rating via "ingress_protection_rating". Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Digit 9"    → 10.00
           //   • "Tier 2: Digit 8"    → 9.00
           //   • "Tier 3: Digit 7"    → 8.00
@@ -255,7 +255,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "Tier 9: Plastic or No Glass": []
         },
         "subscore": 10.00
-        // SCORING GUIDELINE: Identify the highest glass tier based on manufacturer drop/scratch claims. Use the following exact Tier Names for "value" with related scores as subscore:
+        // SCORING GUIDELINE: Identify the highest glass tier based on manufacturer drop/scratch claims. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
         //   • "Tier 1: Armor-Class"            → 10.00
         //     Definition: Anti-reflective (AR) coating + ≥2.0m rough-surface drop certification (e.g., Gorilla Glass Armor).
         //   • "Tier 2: Shield-Class"           → 9.50
@@ -372,7 +372,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "Tier 6: TN LCD or Legacy": []
         },
         "subscore": 9.00
-        // SCORING GUIDELINE: Identify the panel type. Use the following exact Tier Names for "value" with related scores as subscore:
+        // SCORING GUIDELINE: Identify the panel type. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
         //   • "Tier 1: Tandem OLED"                   → 10.00
         //     Definition: Dual-stack Organic Light-Emitting Diode (OLED) with two vertical light-emitting layers.
         //   • "Tier 2: LTPO OLED"                     → 9.00
@@ -677,7 +677,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 
         // These inputs are used to calculate the overall predicted_score (Method C):
         "predicted_score": 7.51,
-        // SCORING GUIDELINE: predicted_score = Sum(subscore_X * weight_X) for all 8 entries above. 
+        // SCORING GUIDELINE: predicted_score = Sum(subscore_X * weight_X) for all 8 entries above. This is the score used for Method B neighbors. 
 
         // Sections 2.8 (Screen-to-Body Ratio) and 2.9 (Screen Size) are excluded because DXOMARK does not evaluate physical dimensions.
         // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
@@ -702,7 +702,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "euclidean_distance_1": 0.0500,
             // GUIDELINE: Weighted Euclidean distance from Step 1.
             "predicted_score_1": 7.50,
-            // GUIDELINE: The neighbor's own Method C predicted_score.
+            // GUIDELINE: The neighbor's own Method C predicted score.
             "benchmark_score_1": 9.30
             // GUIDELINE: The neighbor's Method A subscore.
           },
@@ -763,7 +763,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: No Usable Speaker": []
           },
           "subscore": 7.00
-          // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Balanced / Symmetrical Stereo" → 10.00
           //     Definition: Two identical or near-identical dedicated speaker units (top/bottom or left/right) offering matched frequency response and volume. Must explicitly state "Symmetrical speakers" or "Balanced stereo".
           //   • "Tier 2: Standard Hybrid Stereo"        → 7.00
@@ -822,7 +822,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 3: No spatial rendering": []
           },
           "subscore": 7.00
-          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Spatial audio with Dynamic Head Tracking"      → 10.00
           //   • "Tier 2: Static spatial audio (no head tracking)"       → 7.00
           //   • "Tier 3: No spatial rendering"                          → 0.00
@@ -847,7 +847,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 3.00
-          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 3.5mm headphone jack (native analog output)"  → 10.00
           //   • "Tier 2: USB-C with documented analog audio output"    → 6.00
           //   • "Tier 3: USB-C digital audio only (dongle required)"   → 3.00
@@ -872,7 +872,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Record the physical microphone count. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Record the physical microphone count. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: ≥4 microphones" → 10.00
           //   • "Tier 2: 3"              → 8.00
           //   • "Tier 3: 2"              → 5.00
@@ -890,7 +890,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: Voice-only / unclear": []
           },
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Multi-channel / spatial audio" → 10.00
           //     Definition: Captures audio with directional data (e.g., 5.1, 7.1, or OZO Audio).
           //   • "Tier 2: Stereo"                        → 8.00
@@ -1130,7 +1130,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 5: None": []
           },
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
           //     Definition: The entire camera module floats on a multi-axis mechanical suspension or gimbal (e.g., vivo, ASUS ROG/Zenfone).
           //   • "Tier 2: Sensor-Shift Optical Image Stabilization"              → 9.00
@@ -1221,7 +1221,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore:
+            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
             //   • "Tier 1: Autofocus"   → 10.00
             //   • "Tier 2: Fixed Focus" → 3.00
             //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be "N/A", and "subscore" MUST be 0.00.
@@ -1328,7 +1328,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 8K"                    → 10.00
           //   • "Tier 2: 4K (Ultra HD)"         → 10.00
           //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
@@ -1418,7 +1418,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 3: Standard": []
           },
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: True RAW"    → 10.00
           //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
           //   • "Tier 2: Mezzanine"   → 8.00
@@ -1437,7 +1437,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 3: Standard only": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: True Log"       → 10.00
           //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
           //   • "Tier 2: Flat / Cine"    → 5.00
@@ -1541,7 +1541,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: No Front Camera": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Autofocus"                        → 10.00
           //     Definition: An active mechanical system where the lens moves to find focus (e.g., Phase Detection Auto Focus (PDAF), Dual Pixel, or Laser Auto Focus).
           //   • "Tier 2: Fixed Focus (Modern Wide-DOF)"    → 6.00
@@ -1573,7 +1573,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "source": "TBD",
             "exact_extract": "Proof pending",
             "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact Tier Names for "value" with related scores as subscore:
+            // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
             //   • "Tier 1: 8K"                    → 10.00
             //   • "Tier 2: 4K (Ultra HD)"         → 10.00
             //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
@@ -1630,7 +1630,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "Tier 3: Standard": []
             },
             "subscore": 8.00
-          // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: True RAW"    → 10.00
           //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
           //   • "Tier 2: Mezzanine"   → 8.00
@@ -1651,7 +1651,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "Tier 3: Standard only": []
             },
             "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore:
+            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
             //   • "Tier 1: True Log"       → 10.00
             //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
             //   • "Tier 2: Flat / Cine"    → 5.00
@@ -1689,7 +1689,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: Basic / Single Frame (Legacy)": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Advanced Semantic & Neural Stacking" → 10.0
           //     Definition: Advanced pipeline that uses semantic segmentation (understanding sky, faces, skin) within a Zero Shutter Lag (ZSL) multi-frame buffer.
           //   • "Tier 2: Standard Always-on Multi-Frame HDR"  → 7.5
@@ -1726,7 +1726,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: None": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Neural Semantic Segmentation" → 10.0
           //     Definition: Real-time, pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth) during captured multi-frame pipeline.
           //   • "Tier 2: Object-Based Optimization"    → 7.5
@@ -1762,7 +1762,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 4: None": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Post-Capture AI tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the Post-Capture AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Generative Content Transformation" → 10.0
           //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
           //   • "Tier 2: Advanced Semantic Edits"           → 7.50
@@ -2213,14 +2213,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "raw_performance_throughput_score": 38.8714,
           // GUIDELINE: raw_performance_throughput_score = Sum of all frequency_adjusted_core_score values in the clusters array above. Keep 4 decimal places (e.g. 9.5478) to preserve precision. 
           "predicted_score": 7.40
-          // SCORING GUIDELINE: predicted_score = 10 * (log(raw_performance_throughput_score) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: predicted_score = 10 * (log(raw_performance_throughput_score) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
         },
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_CPU_multi": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Neighbor Selection): Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 1 (Neighbor Selection): Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -2228,7 +2228,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "predicted_score_1": 7.40,
-              // GUIDELINE: The neighbor's own Method C predicted_score (overall Multi-Core).
+              // GUIDELINE: The neighbor's own Method C predicted score (overall Multi-Core).
               "benchmark_score_1": 8.60
               // GUIDELINE: The neighbor's Method A subscore.
             },
@@ -2326,7 +2326,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: core_architecture_score.value * actual_frequency_ghz.value / reference_frequency_ghz.value. Adjusted performance baseline of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
           },
           "predicted_score": 9.31
-          // SCORING GUIDELINE: predicted_score = 10 * (log(strongest_core.frequency_adjusted_core_score) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: predicted_score = 10 * (log(strongest_core.frequency_adjusted_core_score) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2334,7 +2334,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_CPU_single": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -2342,7 +2342,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "predicted_score_1": 9.31,
-              // GUIDELINE: The neighbor's own Method C predicted_score (overall Single-Core).
+              // GUIDELINE: The neighbor's own Method C predicted score (overall Single-Core).
               "benchmark_score_1": 8.49
               // GUIDELINE: The neighbor's Method A subscore.
             },
@@ -2614,7 +2614,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "graphics_raw_score": 11.9380,
           // SCORING GUIDELINE: graphics_raw_score = graphics_processing_unit.graphics_architecture_score.value * graphics_processing_unit.actual_frequency_mhz.value / graphics_processing_unit.reference_frequency_mhz.value * (0.75 + 0.25 * api_modifier.api_support_score.value / 10.0).
           "predicted_score": 9.98
-          // SCORING GUIDELINE: predicted_score = 10 * (log(graphics_raw_score) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min)), clamped 0–10.
+          // SCORING GUIDELINE: predicted_score = 10 * (log(graphics_raw_score) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2622,7 +2622,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_GPU": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -2630,7 +2630,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "predicted_score_1": 9.40,
-              // GUIDELINE: The neighbor's own Method C predicted_score.
+              // GUIDELINE: The neighbor's own Method C predicted score.
               "benchmark_score_1": 7.82
               // GUIDELINE: The neighbor's Method A subscore.
             },
@@ -2797,22 +2797,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "lookup_parameter": "NPU Score",
             // GUIDELINE: Description of the column being retrieved.
             "value": 9.28
-            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`.
-          },
-          "ram_tech_score": {
-            "value": 10.00,
-            "value_path": "6_5_ram_technology.scores.predicted",
-            // GUIDELINE: Retrieve scores.predicted from section 6_5_ram_technology.
-          },
-          "gpu_score": {
-            "value": 9.98,
-            "value_path": "6_3_graphics_processing_unit_performance.scores.predicted",
-            // GUIDELINE: Retrieve scores.predicted from section 6_3_graphics_processing_unit_performance.
-          },
-          "cpu_score": {
-            "value": 9.31,
-            "value_path": "6_2_cpu_architecture_single_core.scores.predicted",
-            // GUIDELINE: Retrieve scores.predicted from section 6_2_cpu_architecture_single_core.
+            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`
           },
           "software_stack": {
             "value": "Tier 2: SDK Co-Optimized",
@@ -2830,39 +2815,55 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "Tier 5: Minimal / None": []
             },
             "subscore": 8.00
-            // SCORING GUIDELINE: Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. Use the following exact Tier Names for "value" with related scores as subscore:
-            // • "Tier 1: Native Synergistic"                        → 10.00
-            //   Definition: Deep OS-hardware integration where the framework extracts near-100% NPU utilization (e.g., Apple CoreML + Neural Engine).
-            //   Deterministic Rule: IF (SoC_Family == "Google Tensor") OR (OS == "iOS" AND SoC >= "Apple A11") OR (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True).
-            // • "Tier 2: SDK Co-Optimized"                          → 8.00
-            //   Definition: Vendor-provided SDKs directly targeting the NPU/DSP (e.g., Qualcomm QNN, MediaTek Neuropilot).
-            //   Deterministic Rule: IF (Explicit physical Co-processor EX: MariSilicon/Vivo-V/Xiaomi-Surge) OR (SoC_Manuf IN [Qualcomm, MediaTek, Samsung, HiSilicon] AND NPU == True).
-            // • "Tier 3: Hardware Accelerated / Optimized Fallback" → 5.50
-            //   Definition: Generic acceleration via standardized APIs (NNAPI) or legacy optimized drivers.
-            //   Deterministic Rule: IF (NPU == True AND NOT Tier 1/2) OR (Apple A8-A10) OR (Snapdragon 820-835, 730, 675, 670).
-            // • "Tier 4: CPU/GPU Fallback"                          → 3.00
-            //   Definition: No dedicated NPU support; fallback to CPU/GPU executing ML via generic emulation.
-            //   Deterministic Rule: IF (OS IN [Android, Harmony, iOS, Windows Mobile, BB OS, Tizen]) AND NOT (Previous Tier Match). (EX: A4-A7, Budget Helio/Unisoc).
-            // • "Tier 5: Minimal / None"                            → 0.00
-            //   Definition: Device lacks any software framework capable of ML execution.
-            //   Deterministic Rule: IF (OS IN [KaiOS, Symbian, S30+, Proprietary]) OR (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older").
+            // SCORING GUIDELINE: **AI Software Stack Scoring Guideline:**
+            //
+            // Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+            //
+            //  • "Tier 1: Native Synergistic"                        → 10.00
+            //     *   *Definition:* The device manufacturer natively designs the OS framework strictly for their own silicon compiler. This guarantees exclusive high-speed pipelines bypassing generic API translation layers (e.g., **Apple Core ML**, **Google Android AICore + Edge TPU**, **Huawei MindSpore**).
+            //     *   *Agent Validation Rule (Concrete boolean check):*
+            //         *   `IF (SoC_Family == "Google Tensor")` → Score 10.0.
+            //         *   `IF (Device_Brand == "Apple" AND SoC_Model >= "Apple A11")` → Score 10.0.
+            //         *   `IF (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True)` → Score 10.0.
+            //
+            //  • "Tier 2: SDK Co-Optimized"                          → 8.00
+            //     *   *Definition:* The device uses a modern 3rd-party SoC supported by a robust, vendor-specific optimization SDK that bridges the OS and hardware (e.g., **Qualcomm QNN**, **MediaTek NeuroPilot**, **Samsung ENN**).
+            //     *   *Agent Validation Rule (Concrete boolean check):*
+            //         *   `IF (SoC_Manufacturer IN ["Qualcomm", "MediaTek", "Samsung", "HiSilicon"]) AND (NPU == True)` → Score 8.0.
+            //         *   `IF (Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge"))` → Score 8.0.
+            //
+            //  • "Tier 3: Hardware Accelerated / Optimized Fallback" → 5.50
+            //     *   *Definition:* The device lacks a modern dedicated NPU but features an OS-level API highly optimized for bare-metal GPU acceleration or standard fixed-function blocks (e.g., **Apple Metal Performance Shaders (MPS)**, **Qualcomm SNPE**).
+            //     *   *Agent Validation Rule (Concrete boolean check):*
+            //         *   `IF (NPU == True) AND NOT (Rule_Match == Tier 1 OR Rule_Match == Tier 2)` → Score 5.5 (e.g. Budget NPU Standard Fallback).
+            //         *   `IF (Device_Brand == "Apple" AND SoC_Model IN ["Apple A8", "Apple A9", "Apple A10"])` → Score 5.5.
+            //         *   `IF (SoC_Model IN ["Snapdragon 820", "Snapdragon 821", "Snapdragon 835", "Snapdragon 730", "Snapdragon 675", "Snapdragon 670"])` → Score 5.5.
+            //
+            //  • "Tier 4: CPU/GPU Fallback"                          → 3.00
+            //     *   *Definition:* The device relies entirely on generic runtime translation (e.g., standard **Android NNAPI** or early OpenGL kernels). Operations are emulated slowly without pipeline-specific silicon.
+            //     *   *Agent Validation Rule (Concrete boolean check):*
+            //         *   `IF (OS IN ["Android", "HarmonyOS", "iOS", "Windows Mobile", "BlackBerry OS", "Tizen"])` AND NOT (Previous Tier Match) → Score 3.0.
+            //         *   *Example Application:* Budget Unisoc/Helio A-series, iPhone 4S through iPhone 5s (A4-A7).
+            //
+            //  • "Tier 5: Minimal / None"                            → 0.00
+            //     *   *Definition:* Device lacks any software framework capable of ML execution.
+            //     *   *Agent Validation Rule (Concrete boolean check):*
+            //         *   `IF (OS IN ["KaiOS", "Series 30+", "Symbian", "Proprietary"]) OR (Form_Factor == "Feature Phone")` → Score 0.0.
+            //         *   `IF (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older")` → Score 0.0.
+            //
             // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all applicable marketing names/technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           },
-          "predicted_ai_system_score": 9.30,
-          // SCORING GUIDELINE: = (0.45 * npu_score.value) + (0.15 * ram_tech_score.value) + (0.15 * gpu_score.value) + (0.10 * cpu_score.value) + (0.15 * software_stack.subscore). 
-          // ⚠️ MANDATORY: Retrieve only 'scores.predicted' from §6.5, §6.3, and §6.2. Do NOT use 'scores.final'.
-          "ram_capacity_score": {
-            "section_reference": "§6.6",
-            "value": 10.00
-            // GUIDELINE: Retrieve scores.predicted from section 6_6_ram_capacity.
-          },
-          "tdsi_score": {
-            "section_reference": "§6.10",
-            "value": 8.00
-            // GUIDELINE: Retrieve scores.predicted from section 6_10_thermal_dissipation_stability_index (full TDSI composite, not just Process Node Part C).
-          },
-          "predicted_score": 9.21
-          // SCORING GUIDELINE: = (predicted_ai_system_score * 0.85) + (ram_capacity_score.value * 0.05) + (tdsi_score.value * 0.10).
+          "scores": {
+            "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu_score.value",               "weight_NPU": 0.45 },
+            "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.15 },
+            "subscore_GPU":      { "subscore_path": "6_3_graphics_processing_unit_performance.method_c_prediction_model_GPU.predicted_score", "weight_GPU": 0.15 },
+            "subscore_CPU":      { "subscore_path": "6_2_cpu_architecture_single_core.scores.predicted",                                      "weight_CPU": 0.10 },
+            "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
+            // These inputs are used to calculate the predicted score (Method C):
+            "predicted": 9.30,
+            // SCORING GUIDELINE: Sum(subscore_X * weight_X) for all 5 entries above. This is the score used for Method B neighbors.
+            // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison. IMPORTANT: For the `GPU` component score, use the **Model C Predicted Score** (Standard Graphics only) and NOT the final composite score, as Ray Tracing does not contribute to AI performance.
+          }
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2870,18 +2871,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_AI": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-         // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-         //         Distance = √( 0.45 * (NPU_Diff)² + 0.15 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² + 0.15 * (SW_Diff)² )
-         // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+          //         Distance = √( 0.45 * (NPU_Diff)² + 0.15 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² + 0.15 * (Software_Diff)² )
+          //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_AI.scores`.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "euclidean_distance_1": 0.0500,
-              // GUIDELINE: Weighted Euclidean distance from Section 6.4 Method B.
+              // GUIDELINE: Weighted Euclidean distance from Step 1.
               "predicted_score_1": 8.60,
-              // GUIDELINE: The neighbor's own Method C predicted_score.
+              // GUIDELINE: The neighbor's own Method C predicted score.
               "benchmark_score_1": 8.34
               // GUIDELINE: The neighbor's Method A subscore.
             },
@@ -2904,19 +2906,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 8.3200,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0058,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 8.37
+          "correction_ratio": 1.0877,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.scores.predicted / avg_predicted_neighbors.
+          "interpolated_score": 9.05
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 9.21,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_AI.predicted_score.
+          "predicted": 9.26,
+          // SCORING GUIDELINE: Final weighted predicted score including RAM capacity and thermal stability (TDSI). Formula: (method_c_prediction_model_AI.scores.predicted * 0.85) + (6_6_ram_capacity.scores.predicted * 0.05) + (6_10_thermal_dissipation_stability.scores.predicted * 0.10).
           "final": {
-            "value": 8.39,
-            // SCORING GUIDELINE: Final Score = (AI_System_Score * 0.85) + (RAM_Capacity * 0.05) + (TDSI * 0.10).
-            // AI_System_Score: Use Method A (method_a_benchmark_AI.subscore) if available; else Method B (method_b_neighbor_interpolation_AI.interpolated_score); else Method C (method_c_prediction_model_AI.predicted_ai_system_score).
-            // Then apply the additive factors: RAM Capacity (§6.6 score * 0.05) and TDSI (§6.10 score * 0.10).
+            "value": 8.44,
+            // SCORING GUIDELINE: Final Score combines the AI System Score with RAM capacity and thermal stability (TDSI) according to the A→B→C hierarchy. Formula: (AI_System_Score * 0.85) + (6_6_ram_capacity.scores.predicted * 0.05) + (6_10_thermal_dissipation_stability.scores.predicted * 0.10). 
+            // AI_System_Score is derived from Method A (method_a_benchmark_AI.subscore) if available; if not, Method B (method_b_neighbor_interpolation_AI.interpolated_score); if not, Method C (method_c_prediction_model_AI.scores.predicted). 
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
@@ -2936,7 +2937,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the RAM technology. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the RAM technology. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "LPDDR5X"      → 10.00
           //     Definition: Highest speed tier (e.g., LPDDR5X).
           //   • "LPDDR5 / 4X"  → 7.00
@@ -2983,7 +2984,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the internal storage technology. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the internal storage technology. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: UFS 4.0 / NVMe" → 10.00
           //     Definition: Highest speed tier (e.g., UFS 4.0, Apple NVMe).
           //   • "Tier 2: UFS 3.1"        → 8.00
@@ -3030,7 +3031,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Identify the expandability support. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the expandability support. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Dedicated Slot" → 10.00
           //     Definition: Separate tray or contact specifically for a removable memory card (MicroSD) that does not interfere with SIM card usage.
           //   • "Tier 2: Hybrid Slot"    → 7.00
@@ -3059,7 +3060,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the cooling mechanism class. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the cooling mechanism class. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Active Cooling (Fan)"              → 10.00
           //     Definition: Internal motorized fan pushing air through the chassis for heat dissipation.
           //   • "Tier 2: Extreme Passive (VC ≥4000 mm²)"    → 8.00
@@ -3118,7 +3119,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 5G mmWave + Sub-6 (Global band coverage)" → 10.00
           //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
           //   • "Tier 2: 5G Sub-6 (Global band coverage)"          → 8.50
@@ -3151,7 +3152,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00
           //     Definition: Supports two or more active eSIM profiles/integrated SIM alongside a physical Nano-SIM slot.
           //   • "Tier 2: eSIM + Physical Slot"              → 8.00
@@ -3183,7 +3184,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Wi-Fi 7"   → 10.00
           //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
           //   • "Tier 2: Wi-Fi 6E"  → 8.00
@@ -3214,7 +3215,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.50
-          // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 5.4"      → 5.00
           //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
           //   • "Tier 2: 5.3"      → 4.50
@@ -3242,7 +3243,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             ]
           },
           "subscore": 4.00
-          // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Lossless"   → 5.00
           //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
           //   • "Tier 2: High-Res"   → 4.00
@@ -3277,7 +3278,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 5: None / Pin Only": []
           },
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 3D Face / Sonic Gen 2"  → 10.00
           //     Definition: Secure 3D facial recognition (e.g., Face ID) or 2nd-gen Ultrasonic fingerprint sensors (large area, fast).
           //   • "Tier 2: Ultrasonic FP"          → 8.00
@@ -3383,7 +3384,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: NFC + UWB" → 10.00
           //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
           //   • "Tier 2: NFC Only"   → 5.00
@@ -3464,7 +3465,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 9.00
-          // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: USB 3.2 Gen 2x2 (20Gbps)" → 10.00
           //     Definition: SuperSpeed USB 20Gbps.
           //   • "Tier 2: USB 3.2 Gen 2 (10Gbps)"   → 9.00
@@ -3526,6 +3527,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_Battery": {
+          "scores": {
+            "subscore_LayerA": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_a_energy_score.value",               "weight_LayerA": 0.45 },
+            "subscore_LayerB": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_b_hardware_efficiency_score.value", "weight_LayerB": 0.35 },
+            "subscore_LayerC": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_c_software_optimization_score.value", "weight_LayerC": 0.20 }
+          },
           "layer_a_energy_score": {
             "value": 8.50
             // SCORING GUIDELINE: Theoretical capacity vs drain.
@@ -3614,9 +3620,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "value": 9.00
             // SCORING GUIDELINE: OS level power management.
           },
-          "predicted_score": 8.43
-          // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C.
+          "predicted_score": 8.43,
+          // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C. This is the score used for Method B neighbors.
           // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+          "scores": {
+            "subscore_LayerA": { "subscore_path": "method_c_prediction_model_Battery.layer_a_energy_score.value" },
+            "subscore_LayerB": { "subscore_path": "method_c_prediction_model_Battery.layer_b_hardware_efficiency_score.predicted_score" },
+            "subscore_LayerC": { "subscore_path": "method_c_prediction_model_Battery.layer_c_software_optimization_score.value" }
+          }
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -3624,18 +3635,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_Battery": {
           // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Section 8.1 Method B.1): Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
           //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
-          // Step 2 (Section 8.1 Method B.2–B.3): Calculate the correction ratio and apply it to the average neighbor benchmark.
+          //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_Battery.scores`.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "euclidean_distance_1": 0.0500,
-              // GUIDELINE: Weighted Euclidean distance from Section 8.1 Method B.1.
+              // GUIDELINE: Weighted Euclidean distance from Step 1.
               "predicted_score_1": 8.40,
-              // GUIDELINE: The neighbor's own Method C predicted_score.
+              // GUIDELINE: The neighbor's own Method C predicted score.
               "benchmark_score_1": 9.10
               // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
             },
@@ -3864,7 +3876,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore:
+          // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
           //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
           //   • "Tier 2: Active stylus support (dedicated digitizer, no silo)"              → 7.00

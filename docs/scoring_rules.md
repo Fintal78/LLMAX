@@ -2088,7 +2088,8 @@ Find the 3 devices that are statistically closest across **all** AI-relevant har
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
         *   `NPU` (§6.4 table), `RAM_Tech` (§6.5), `GPU` (§6.3), `CPU` (§6.2), `Software_Stack` (Software Stack tier, see dedicated paragraph below).
     *   **Scientific Rationale:** Weights mirror the proportional Method C AI System Score component weights to ensure neighbors are selected based on the most critical AI performance factors. RAM Capacity and TDSI (Thermal Dissipation & Stability Index) are excluded from this matching stage because they are applied globally *after* interpolation.
-    *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters).
+    *   **Important:** Calculation uses **Predicted Scores** (Specs only) for all components to ensure neutrality, not Final Scores (Specs + Boosters). 
+    *   **⚠️ Important:** For the `GPU` component score, use the **Model C Predicted Score** from Section 6.3 (Standard Graphics only) and NOT the final composite score, as Ray Tracing does not contribute to AI performance.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!TIP]
@@ -2119,7 +2120,8 @@ The predicted AI System Score is a weighted sum of 5 system-level factors. Unlik
     *   **Rationale:** AI models require enormous data throughput. Memory bandwidth determines how fast data reaches the NPU. LPDDR5X delivers ~134 GB/s vs. LPDDR4X at ~51 GB/s (2.6× difference). A powerful NPU starved of bandwidth sits idle.
 
 3.  **GPU Performance Score (15%) — The Compute Fallback**
-    *   **Source:** Retrieve **Predicted Score** from **Section 6.3**.
+    *   **Source:** Retrieve the **Model C Predicted Score** from **Section 6.3**. 
+    *   **⚠️ IMPORTANT:** Use the rasterization-only score (`method_c_prediction_model_GPU.predicted_score`) and NOT the final composite score, as Ray Tracing hardware acceleration does not contribute to AI workloads.
     *   **Rationale:** Some AI operations (specific floating-point math, unsupported operators) fall back to the GPU. Geekbench AI explicitly tests GPU-delegated workloads. A strong GPU ensures the phone handles complex fallback operations.
 
 4.  **CPU Performance Score (10%) — The Universal Fallback**
