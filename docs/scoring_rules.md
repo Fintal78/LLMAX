@@ -2223,6 +2223,7 @@ This section uses a **Logarithmic Scoring Formula** to derive the MTEI score fro
 > [!IMPORTANT]
 > **Authoritative Resolution:** For the 100% precision mapping of marketing terms (e.g., "Full-blooded", "Turbo"), the complete **Data Priority Rules**, and the exhaustive **MTEI Scoring & Resolution Matrix**, refer to **[proposed_data_structure.md]**.
 
+
 ### 🔹 6.6 RAM Capacity - Memory Capacity Index (MCI)
 *Description:* Measures the amount of physical memory available for applications and background processes. More RAM improves multitasking, reduces app reloads, and increases system stability under load.
 
@@ -2245,21 +2246,47 @@ This section uses a **Logarithmic Scoring Formula** to derive the score from phy
 
 
 ### 🔹 6.7 Storage Technology
-*Description:* The speed of the internal drive. Faster storage means the phone boots up instantly, apps install quickly, and files copy fast.
-*   **Measurement:** Sequential Read/Write speed capacity.
-*   **Unit:** Storage Generation, internal storage only.
-*   **Significance:** Affects boot time, app load time, and file transfer speed.
+*Description:* This section evaluates the efficiency and throughput of the device's internal non-volatile storage. Faster storage technology directly impacts system boot times, application installation speed, file transfer rates, and the overall responsiveness of the OS when loading heavy data (e.g., high-resolution textures in games or large AI models).
 
-| Score    | Technology   | Representative Examples    |
-| :------- | :----------- | :------------------------- |
-| **10.0** | **UFS 4.0**  | S24 Ultra, Xiaomi 14       |
-| **8.0**  | **UFS 3.1**  | Pixel 7, S21 Ultra         |
-| **7.0**  | **UFS 3.0**  | OnePlus 8 Pro              |
-| **6.0**  | **UFS 2.2**  | Redmi Note 13, Galaxy A34  |
-| **5.0**  | **UFS 2.1**  | Older Mid-range            |
-| **3.0**  | **eMMC 5.1** | Galaxy A05, Budget Tablets |
-| **1.0**  | **eMMC 4.5** | Very old                   |
-| **0.0**  | **eMMC≤4.0** | Obsolete                   |
+*   **Measurement:** Storage Protocol and Generation.
+*   **Unit:** Protocol Class (Discrete) / Sequential Read Speed (MB/s)
+*   **Significance:** Determines the data bottleneck between the flash memory and the SoC.
+
+#### Technical Differentiators & Terminology
+*   **UFS (Universal Flash Storage):** The modern serial interface standard for mobile storage, succeeding eMMC.
+*   **NVMe (Non-Volatile Memory express):** A high-performance transport protocol used by Apple in iPhones, optimized for low latency via the **PCIe** (Peripheral Component Interconnect Express) bus.
+*   **eMMC (embedded MultiMediaCard):** A legacy parallel interface standard. It is **half-duplex** (cannot read and write simultaneously), making it a major system bottleneck.
+*   **Write Booster (WB):** A performance feature (introduced in **UFS 2.2** and **UFS 3.1** and standard in **UFS 4.0**) that utilizes a high-speed **pSLC** (pseudo Single-Level Cell) cache to accelerate sequential write operations for app installs and large file downloads.
+*   **Host Performance Booster (HPB):** A performance extension (introduced with **UFS 3.1** and standard in **UFS 4.0**) that caches the "Logical-to-Physical" address translation map in the system **RAM** to reduce random read latency.
+*   **Mbps / MB/s (Megabytes per second):** The units used to measure sequential data throughput.
+
+#### Logarithmic Scoring Formula
+
+> **Formula:** `Score = 10 * (log(MB/s) - log(STORAGE_MBPS_Min)) / (log(STORAGE_MBPS_Max) - log(STORAGE_MBPS_Min))` (Clamped 0-10)
+> *   **Max Score (10.0):** ≥ **STORAGE_MBPS_Max** 
+> *   **Min Score (0.0):** ≤ **STORAGE_MBPS_Min**
+
+> [!NOTE]
+> **Why Logarithmic?** 
+1.  **Perceptual Response Scaling (Weber-Fechner Law):** Human perception of speed jumps (like app loading times) is logarithmic, not linear. A jump from 100 MB/s to 1100 MB/s (11x) is perceived as a massive transformation, whereas a jump from 3200 MB/s to 4200 MB/s (~1.3x) is barely noticeable in daily use, despite the identical +1000 MB/s raw delta.
+2.  **Bottleneck Shift & Latency Saturation (Amdahl’s Law):** At lower speeds (eMMC), the storage interface is the primary system bottleneck. As throughput exceeds ~1500 MB/s (UFS 3.0) and random read latency hits the sub-millisecond range, the bottleneck shifts to **CPU IPC** (Instructions Per Cycle), **RAM Latency**, and **OS Kernel/Software overhead**. Further hardware-level speed increases are masked by the time required for the OS to execute the request, providing zero practical benefit for 99% of mobile workloads.
+
+
+#### Extract of the Storage Technology Efficiency Index (STEI) (descending score order):
+
+| Tier        | MB/s (Basis) | Score (Log) | Technology Denominations & Parity  |
+| :---------- | :----------: | :---------: | :--------------------------------- |
+| **Tier 1**  | **4200**     |  **10.00**  | **UFS 4.0 Peak / NVMe (A17/A18)**  |
+| **Tier 2**  | **3000**     |   **9.10**  | **UFS 4.0 Base / NVMe (A16)**      |
+| [...]       | [...]        |    [...]    | [...]                              |
+
+> [!IMPORTANT]
+> **Authoritative Source of Truth:** For the full scoring table, the **Autonomous Resolution Matrix** (including Ambiguous Disclosure Fallback rules), detailed **Data Priority Rules**, refer to the comprehensive hardware documentation in **[proposed_data_structure.md]**.
+
+> [!NOTE]
+> **On NVMe and iPhone Mapping:**
+> Because Apple does not disclose UFS versions, iPhones are scored based on verified Sequential Read performance parity. Mapping is performed by SoC generation.
+
 
 ### 🔹 6.8 Storage Capacity
 *Description:* Internal space for your data. More storage means you can save more photos, videos, and games without deleting old ones.

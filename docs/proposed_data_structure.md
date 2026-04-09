@@ -1,4 +1,4 @@
-# Ultimate Smartphone Data Structure Proposal (v5.1)
+﻿# Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
@@ -2999,7 +2999,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "effective_speed_mts": {
           "value": 8533,
-          // GUIDELINE: The effective transfer rate in MT/s. Retrieve the subscore by matching this value to the MTEI SCORING & RESOLUTION MATRIX in the header of this block.
+          // GUIDELINE: The effective transfer rate in MT/s.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 9.34
@@ -3043,23 +3043,92 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_7_storage_technology": {
-        // SCORING GOAL: Evaluates internal storage format efficiency and read/write speeds.
+        // SCORING GOAL: Evaluates internal storage protocol efficiency and sequential throughput using the Storage Technology Efficiency Index (STEI).
+        // Faster storage directly impacts system boot times, app installation speed, and overall OS responsiveness.
+        // Storage throughput is measured in MB/s (Megabytes per second), representing the data bottleneck between the flash memory and the SoC.
+        //
+        // ═══════════════════════════════════════════════════════════════════════════
+        // STEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // | Tier    | Denomination (Logic Key)      | Score | MB/s  |
+        // | :------ | :---------------------------- | :---- | :---- |
+        // | Tier 1  | UFS 4.0 Peak / NVMe (A17/18)  | 10.00 | 4200  |
+        // | Tier 2  | UFS 4.0 Base / NVMe (A16)     |  9.10 | 3000  |
+        // | Tier 3  | UFS 3.1 (Enhanced - WB+HPB)   |  8.15 | 2100  |
+        // | Tier 4  | UFS 3.1 Standard / NVMe (A15) |  7.66 | 1750  |
+        // | Tier 5  | UFS 3.0 / NVMe (A14)          |  7.15 | 1450  |
+        // | Tier 6  | UFS 2.2 / NVMe (A13)          |  6.16 | 1000  |
+        // | Tier 7  | UFS 2.1 (Peak)                |  5.72 | 850   |
+        // | Tier 8  | UFS 2.1 Standard / NVMe (A12) |  4.80 | 600   |
+        // | Tier 9  | UFS 2.0 / NVMe (A11)          |  4.02 | 450   |
+        // | Tier 10 | eMMC 5.1 Peak / NVMe (A10)    |  3.20 | 330   |
+        // | Tier 11 | eMMC 5.1 Base / NVMe (A9)     |  2.11 | 220   |
+        // | Tier 12 | eMMC 5.0                      |  1.09 | 150   |
+        // | Tier 13 | eMMC ≤ 4.5 / NVMe (A8 & Older)|  0.00 | 100   |
+        //
+        // RESOLUTION LOGIC:
+        // 1. PRIMARY: MB/s VERBATIM -> Match verbatim sequential read speed (e.g., "2100 MB/s") to the nearest Basis.
+        // 2. SECONDARY: TECH + KEYWORDS (Exhaustive Mapping) ->
+        //    - Tier 1 (Peak 4.0): Requires "UFS 4.0" AND ("Peak" OR "High-speed" OR "4.2 GB/s").
+        //    - Tier 3 (Enhanced 3.1): Requires "UFS 3.1" AND ("Write Booster" OR "WB") AND ("HPB" OR "Host Performance Booster").
+        //    - Tier 7 (Peak 2.1): Requires "UFS 2.1" AND ("Turbo Write" OR "Write Booster" OR "WB").
+        //    - Tier 10 (Peak eMMC 5.1): Requires "eMMC 5.1" AND ("Peak" OR "High-speed").
+        // 3. TERTIARY: BASELINE by default (Ambiguous Disclosure) ->
+        //    - Generic "UFS 4.0" -> Tier 2 (Baseline).
+        //    - Generic "UFS 3.1" -> Tier 4 (Baseline).
+        //    - Generic "UFS 2.1" -> Tier 8 (Baseline).
+        //    - Generic "eMMC 5.1" -> Tier 11 (Baseline).
+        // 4. FALLBACK: SoC PARITY -> Map Apple devices exactly as defined in 'Denomination' column.
+        //
         "storage_format": {
-          "value": "Tier 1: UFS 4.0 / NVMe",
+          "value": "Tier 1: UFS 4.0 Peak",
+          "value_details": {
+            "Tier 1: \"UFS 4.0 Peak\" OR \"NVMe (A17/18)\"": [
+               { "name": "UFS 4.0 Peak", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Tier 2: \"UFS 4.0 Base\" OR \"NVMe (A16)\"": [],
+            "Tier 3: \"UFS 3.1 (Enhanced - WB + HPB)\"": [],
+            "Tier 4: \"UFS 3.1 Standard\" OR \"NVMe (A15)\"": [],
+            "Tier 5: \"UFS 3.0\" OR \"NVMe (A14)\"": [],
+            "Tier 6: \"UFS 2.2\" OR \"NVMe (A13)\"": [],
+            "Tier 7: \"UFS 2.1 (Peak)\"": [],
+            "Tier 8: \"UFS 2.1 Standard\" OR \"NVMe (A12)\"": [],
+            "Tier 9: \"UFS 2.0\" OR \"NVMe (A11)\"": [],
+            "Tier 10: \"eMMC 5.1 Peak\" OR \"NVMe (A10)\"": [],
+            "Tier 11: \"eMMC 5.1 Base\" OR \"NVMe (A9)\"": [],
+            "Tier 12: \"eMMC 5.0\"": [],
+            "Tier 13: \"eMMC ≤ 4.5\" OR \"NVMe (A8 & Older)\"": []
+          }
+          // SCORING GUIDELINE: Identify the storage technical denomination strictly via reported protocol or sequential throughput.
+          // Match the device's highest verified specification to the corresponding Tier in the "STEI SCORING & RESOLUTION MATRIX" above.
+          // TRACEABILITY RULE: In the final "value" field, keep ONLY the denomination part that applies to the device to ensure precise traceability.
+          // Use the following exact Tier Names as the basis for "value" (always apply the highest applicable tier) and store the related score in "effective_sequential_read_mbps".
+          //   • Tier 1:  "UFS 4.0 Peak" OR "NVMe (A17/18)"        → 10.00
+          //   • Tier 2:  "UFS 4.0 Base" OR "NVMe (A16)"           → 9.10
+          //   • Tier 3:  "UFS 3.1 (Enhanced - WB + HPB)"          → 8.15
+          //   • Tier 4:  "UFS 3.1 Standard" OR "NVMe (A15)"       → 7.66
+          //   • Tier 5:  "UFS 3.0" OR "NVMe (A14)"                → 7.15
+          //   • Tier 6:  "UFS 2.2" OR "NVMe (A13)"                → 6.16
+          //   • Tier 7:  "UFS 2.1 (Peak)"                         → 5.72
+          //   • Tier 8:  "UFS 2.1 Standard" OR "NVMe (A12)"       → 4.80
+          //   • Tier 9:  "UFS 2.0" OR "NVMe (A11)"                → 4.02
+          //   • Tier 10: "eMMC 5.1 Peak" OR "NVMe (A10)"          → 3.20
+          //   • Tier 11: "eMMC 5.1 Base" OR "NVMe (A9)"           → 2.11
+          //   • Tier 12: "eMMC 5.0"                               → 1.09
+          //   • Tier 13: "eMMC ≤ 4.5" OR "NVMe (A8 & Older)"      → 0.00
+          // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/MBps Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
+        },
+        "effective_sequential_read_mbps": {
+          "value": 4200,
+          // GUIDELINE: The effective sequential throughput in MB/s.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the internal storage technology. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: UFS 4.0 / NVMe" → 10.00
-          //     Definition: Highest speed tier (e.g., UFS 4.0, Apple NVMe).
-          //   • "Tier 2: UFS 3.1"        → 8.00
-          //     Definition: High-speed standard (e.g., UFS 3.1).
-          //   • "Tier 3: UFS 2.2 / eMMC" → 0.00
-          //     Definition: Legacy or budget storage (e.g., UFS 2.2, eMMC 5.1).
+          // SCORING GUIDELINE: Match the "effective_sequential_read_mbps.value" to the "STEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
         },
         "scores": {
           "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits storage_format.subscore.
+          // SCORING GUIDELINE: scores.predicted directly inherits effective_sequential_read_mbps.subscore.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 10.00,
