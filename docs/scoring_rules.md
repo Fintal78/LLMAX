@@ -2186,20 +2186,42 @@ The overall Section 6.4 score is a composite of the core processing power and th
 
 
 ### 🔹 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
-*Description:* The type of memory used. Newer technology (LPDDR5X) allows for faster app switching and saves battery compared to older types.
-*   **Measurement:** JEDEC standard specification.
-*   **Unit:** Memory Generation
-*   **Significance:** Affects data transfer speeds and power consumption.
+*Description:* This section evaluates the efficiency and throughput of the physical RAM (Random Access Memory) module. RAM is the device's "short-term memory" where active data is stored for immediate access. Newer technologies like LPDDR5X or even LPDDR5T allow for significantly faster data transfer speeds—measured in **MT/s (Megatransfers per second)**—while consuming less power than older generations.
 
-| Score    | Technology    | Representative Examples        |
-| :------- | :------------ | :----------------------------- |
-| **10.0** | **LPDDR5X**   | S24 Ultra, OnePlus 12          |
-| **9.0**  | **LPDDR5**    | S22 Ultra, Pixel 7 Pro         |
-| **7.0**  | **LPDDR4X**   | Galaxy A54, Nothing Phone (2a) |
-| **5.0**  | **LPDDR4**    | Older Mid-range                |
-| **3.0**  | **LPDDR3**    | Legacy Budget                  |
-| **1.0**  | **LPDDR2**    | Obsolete                       |
-| **0.0**  | **DDR2/DDR3** | Ancient                        |
+*   **Measurement:** JEDEC (Joint Electron Device Engineering Council) standard specification and data rate.
+*   **Unit:** MT/s (Megatransfers per second) — used to quantify the effective speed of the memory bus.
+*   **Significance:** Higher MT/s ratings directly improve app launch speeds, multitasking responsiveness, and AI processing efficiency (§6.4). Modern LPDDR (Low Power Double Data Rate) standards also incorporate sophisticated power management features that extend battery life.
+
+#### MTEI Scoring Formula
+This section uses a **Logarithmic Scoring Formula** to derive the MTEI score from the effective MT/s.
+
+> **Formula:** `Score = 10 * (log(MT/s) - log(RAM_MTS_Min)) / (log(RAM_MTS_Max) - log(RAM_MTS_Min))`  (Clamped 0-10)
+> *   **Max Score (10.0):** ≥ RAM_MTS_Max (LPDDR5T Ceiling)
+> *   **Min Score (0.0):** ≤ RAM_MTS_Min (LPDDR3 Baseline)
+
+> [!NOTE]
+> **Why Logarithmic?** 
+> The real-world performance impact of memory bandwidth follows a curve of diminishing returns. Once bandwidth reaches a specific threshold relative to the system's architecture, the primary performance bottleneck shifts from memory throughput to CPU IPC, storage latency, and software efficiency.
+>
+> **Logarithmic Scaling Rationale:** A **1000 MT/s increase** at entry-level speeds (e.g., from **1600 to 2600 MT/s**) represents a significant **~1.6x jump** in throughput, which significantly transforms system responsiveness. In contrast, the same **1000 MT/s increase** at flagship levels (e.g., from **8600 to 9600 MT/s**) yields only a marginal **~1.1x gain**, providing negligible perceptible benefit for daily tasks or even heavy gaming workloads.
+
+#### Terminology & Autonomous Resolution
+
+| Denomination     | MT/s (Basis) | Marketing Terms (Examples)       | Score (Log) |
+| :--------------- | :----------: | :------------------------------- | :---------: |
+| **LPDDR5T**      |     9600     | Turbo (SK Hynix/Vivo), 9.6 Gbps  |  **10.00**  |
+| **LPDDR5X-8533** |     8533     | Full-blooded (Xiaomi), Peak      |   **9.34**  |
+| **LPDDR5X-7500** |     7500     | Power Optimized, 7.5 Gbps        |   **8.62**  |
+| **LPDDR5-6400**  |     6400     | Unified Memory (Apple), 6.4 Gbps |   **7.74**  |
+| **LPDDR5-5500**  |     5500     | Standard LPDDR5                  |   **6.89**  |
+| **LPDDR4X-4266** |     4266     | Enhanced 4X, Peak 4X             |   **5.47**  |
+| **LPDDR4X-3733** |     3733     | Standard LPDDR4X                 |   **4.73**  |
+| **LPDDR4-3200**  |     3200     | High-speed LPDDR4                |   **3.87**  |
+| **LPDDR4-2133**  |     2133     | Budget LPDDR4                    |   **1.60**  |
+| **LPDDR3**       |     1600     | Legacy, Obsolete, Baseline       |   **0.00**  |
+
+> [!IMPORTANT]
+> **Authoritative Resolution:** For the 100% precision mapping of marketing terms (e.g., "Full-blooded", "Turbo"), the complete **Data Priority Rules**, and the exhaustive **MTEI Scoring & Resolution Matrix**, refer to **[proposed_data_structure.md]**.
 
 ### 🔹 6.6 RAM Capacity - Memory Capacity Index (MCI)
 *Description:* Measures the amount of physical memory available for applications and background processes. More RAM improves multitasking, reduces app reloads, and increases system stability under load.

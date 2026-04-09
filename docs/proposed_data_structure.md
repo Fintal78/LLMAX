@@ -2931,26 +2931,86 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_5_ram_technology": {
-        // SCORING GOAL: Evaluates RAM type efficiency and bandwidth.
+        // SCORING GOAL: Evaluates RAM (Random Access Memory) throughput and efficiency using the Memory Technology Efficiency Index (MTEI).
+        // RAM is the device's "short-term memory" where active data is stored for immediate access. 
+        // Newer technologies like LPDDR5X or even LPDDR5T allow for significantly faster data transfer speeds—measured in MT/s (Megatransfers per second).
+        //
+        // ═══════════════════════════════════════════════════════════════════════════
+        // MTEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // | Denomination | MT/s (Basis)  | Score | Marketing Terms & Keywords                                 |
+        // | :----------- | :-----------: | :---- | :--------------------------------------------------------- |
+        // | LPDDR5T      | 9600          | 10.00 | Turbo (SK Hynix/Vivo), 9.6 Gbps, Enhanced 5X Peak          |
+        // | LPDDR5X-8533 | 8533          |  9.34 | Full-blooded (Xiaomi/Redmi), Peak, 8.5 Gbps, Flagship 5X   |
+        // | LPDDR5X-7500 | 7500          |  8.62 | Power Optimized, 7.5 Gbps, Standard 5X, Optimized          |
+        // | LPDDR5-6400  | 6400          |  7.74 | Unified Memory (Apple A16/A17 Pro), 6.4 Gbps, High-speed 5 |
+        // | LPDDR5-5500  | 5500          |  6.89 | Standard LPDDR5, 5.5 Gbps, Mainstream 5                    |
+        // | LPDDR4X-4266 | 4266          |  5.47 | Enhanced 4X, Peak 4X, 4.2 Gbps, High-speed 4X              |
+        // | LPDDR4X-3733 | 3733          |  4.73 | Standard LPDDR4X, 3.7 Gbps, Mainstream 4X                  |
+        // | LPDDR4-3200  | 3200          |  3.87 | High-speed LPDDR4, 3.2 Gbps, Standard 4                    |
+        // | LPDDR4-2133  | 2133          |  1.60 | Budget LPDDR4, 2.1 Gbps, Entry LPDDR4                      |
+        // | LPDDR3       | 1600          |  0.00 | Baseline, Legacy, Obsolete, 1.6 Gbps, LPDDR3/2/1           |
+        //
+        // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
+        // To ensure absolute scoring neutrality and prevent speculative "peak-speed" awarding for undisclosed hardware, the following hierarchy MUST be followed:
+        //
+        //   1. LEVEL 1: VERBATIM SPECIFICATION (PRIMARY)
+        //      - Use only if the exact MT/s (e.g., "8533 MT/s") is found in the official technical specification or verified hardware teardown.
+        //   2. LEVEL 2: DETERMINISTIC MARKETING BIN (SECONDARY)
+        //      - If MT/s is missing but qualified marketing terms (e.g., "Turbo", "9.6 Gbps", "Full-blooded") are used, match them directly to the Resolution Matrix above.
+        //   3. LEVEL 3: CONSERVATIVE GENERATIONAL FALLBACK
+        //      - If only a generic generation is disclosed (e.g., "LPDDR5X", "LPDDR5"), the agent MUST resolve to the **Standard/Consensus JEDEC baseline** for that generation.
+        //      - PEAK BIN SCORES (e.g., 8533 MT/s, 9600 MT/s) are strictly PROHIBITED for generic disclosures.
+        //      - EXAMPLES: 
+        //                       Generic "LPDDR5X" resolves to **7500 MT/s**
+        //                       Generic "LPDDR5"  resolves to **5500 MT/s**
+        //                       Generic "LPDDR4X" resolves to **3733 MT/s**
+
         "technology_generation": {
-          "value": "LPDDR5X",
+          "value": "Tier 2: LPDDR5X-8533",
+          "value_details": {
+            "Tier 1: LPDDR5T-9600": [],
+            "Tier 2: LPDDR5X-8533": [
+              { "name": "Full-blooded LPDDR5X", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
+            "Tier 3: LPDDR5X-7500": [],
+            "Tier 4: LPDDR5-6400": [],
+            "Tier 5: LPDDR5-5500": [],
+            "Tier 6: LPDDR4X-4266": [],
+            "Tier 7: LPDDR4X-3733": [],
+            "Tier 8: LPDDR4-3200": [],
+            "Tier 9: LPDDR4-2133": [],
+            "Tier 10: LPDDR3-1600 or older": []
+          }
+          // SCORING GUIDELINE: Identify the RAM technical denomination strictly via reported standard or data rate.
+          // Match the device's highest verified specification to the corresponding Tier in the "MTEI SCORING & RESOLUTION MATRIX" above. 
+          // Use the following exact Tier Names for "value" (always apply the highest applicable tier) and store the related score in "effective_speed_mts".
+          //   • "Tier 1: LPDDR5T-9600"         → 10.00
+          //   • "Tier 2: LPDDR5X-8533"         → 9.34
+          //   • "Tier 3: LPDDR5X-7500"         → 8.62
+          //   • "Tier 4: LPDDR5-6400"          → 7.74
+          //   • "Tier 5: LPDDR5-5500"          → 6.89
+          //   • "Tier 6: LPDDR4X-4266"         → 5.47
+          //   • "Tier 7: LPDDR4X-3733"         → 4.73
+          //   • "Tier 8: LPDDR4-3200"          → 3.87
+          //   • "Tier 9: LPDDR4-2133"          → 1.60
+          //   • "Tier 10: LPDDR3-1600 or older" → 0.00
+          // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/Data Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
+        },
+        "effective_speed_mts": {
+          "value": 8533,
+          // GUIDELINE: The effective transfer rate in MT/s. Retrieve the subscore by matching this value to the MTEI SCORING & RESOLUTION MATRIX in the header of this block.
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the RAM technology. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "LPDDR5X"      → 10.00
-          //     Definition: Highest speed tier (e.g., LPDDR5X).
-          //   • "LPDDR5 / 4X"  → 7.00
-          //     Definition: Standard modern memory (e.g., LPDDR5, LPDDR4X).
-          //   • "Legacy"       → 0.00
-          //     Definition: LPDDR3 or older technology.
+          "subscore": 9.34
+          // SCORING GUIDELINE: Match the "effective_speed_mts.value" to the "MTEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
         },
         "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits technology_generation.subscore.
+          "predicted": 9.34,
+          // SCORING GUIDELINE: scores.predicted directly inherits effective_speed_mts.subscore.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
+            "value": 9.34,
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"
