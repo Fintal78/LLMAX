@@ -2225,14 +2225,24 @@ This section uses a **Logarithmic Scoring Formula** to derive the MTEI score fro
 
 ### 🔹 6.6 RAM Capacity - Memory Capacity Index (MCI)
 *Description:* Measures the amount of physical memory available for applications and background processes. More RAM improves multitasking, reduces app reloads, and increases system stability under load.
+
 *   **Measurement:** Total physical RAM.
 *   **Unit:** Gigabytes (GB)
-*   **Significance:** Determines multitasking capability and app retention.
-*Formula:* `Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ RAM_GB_Max
-*   **Min Score (0.0):** ≤ RAM_GB_Min
+*   **Significance:** Determines multitasking ceiling and ability to load large AI models (§6.4). 
+
+#### MCI Score Formula
+This section uses a **Logarithmic Scoring Formula** to derive the score from physical capacity.
+
+> **Formula:** `Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min))` (Clamped 0-10)
+> *   **Max Score (10.0):** ≥ RAM_GB_Max
+> *   **Min Score (0.0):** ≤ RAM_GB_Min
+
+> [!IMPORTANT]
+> **Virtual RAM Exclusion Policy:** To ensure deterministic hardware scoring, any form of "Virtual RAM", "Extended RAM", "Dynamic RAM Expansion", or "RAM Plus" (which uses slower internal storage as swap space) is strictly **EXCLUDED** from the `capacity_gb` input. Only the physical, soldered RAM capacity is scorable.
+
 > [!NOTE]
-> **Why Logarithmic?** The utility of RAM diminishes as it increases. Going from 4GB to 8GB (+4GB) dramatically improves multitasking and system stability. However, an identical +4GB upgrade from 20GB to 24GB offers almost zero tangible benefit for current mobile applications.
+> **Why Logarithmic?** The utility of RAM follows a curve of diminishing returns. Going from 4GB to 8GB (+4GB) dramatically improves multitasking and system stability. However, an identical +4GB upgrade from 20GB to 24GB offers almost zero tangible benefit for current mobile applications.
+
 
 ### 🔹 6.7 Storage Technology
 *Description:* The speed of the internal drive. Faster storage means the phone boots up instantly, apps install quickly, and files copy fast.
@@ -2400,6 +2410,39 @@ This section uses a **Logarithmic Scoring Formula** to derive the MTEI score fro
 > [!NOTE]
 > **Why these weights?** By multiplying the `Physical_Score` by 0.8 (max 8.0 points) and adding a `Load_Bonus` (max 4.0 points, but typically 2.0 for flagships), an ultra-gaming flagship with perfect physical cooling (8.0) and top-tier chip efficiency (2.0) will score a perfect 10.0 without exceeding the clamp limit. This ensures that no premium thermal hardware is "wasted" mathematically when combined with efficient chips.
 > **Why this formula?** We use an **Additive Bonus** approach. The physical hardware (Parts A & B) sets the baseline cooling capability. Then, we add bonus points if the "engine" is small or highly efficient. This correctly predicts that a passively cooled flagship will throttle, while a passively cooled budget phone will remain perfectly stable.
+
+### 🔹 6.11 System Architecture & Synergy Index (SASI) [⚠️ EXPERIMENTAL / NON-SCORING]
+*Description:* This subsection evaluates the performance-enhancing effects of "Vertical Integration"—the technical synergy achieved when the Operating System and System-on-Chip (SoC) are co-designed. This synergy allows a device to potentially outperform competitors with superior raw hardware specs by reducing system overhead and latency.
+
+> [!IMPORTANT]
+> **Scoring Status:** This section is for **TECHNICAL DOCUMENTATION ONLY** in Version 5.x. It does not contribute to the Final Score. It is introduced to define the parameters for future scoring recalibrations.
+
+#### SASI Evaluation Parameters
+The synergy index is categorized based on the following architectural levels:
+
+1.  **Memory Architecture Class (MAC):**
+    *   **Unified Memory (Advanced):** High-speed, low-latency shared memory pool for CPU, GPU, and NPU. Eliminates data copying between discrete buffers (e.g., Apple Silicon UMA).
+    *   **Discrete/Pooled (Standard):** Standard segmented memory pools with interconnect overhead.
+2.  **OS Kernel Efficiency (OKE):**
+    *   **Microkernel (Optimized):** Radical reduction of kernel-space services to minimize background footprint and scheduling jitter (e.g., HarmonyOS Microkernel).
+    *   **Monolithic (Standard):** Comprehensive kernel services with standard background resource overhead (e.g., Standard Android/Linux kernel).
+3.  **Hardware-Accelerated Software Services (HASS):**
+    *   **Deep Integration:** Dedicated silicon blocks (Accelerators) specifically designed for OS-level services like biometric security, real-time translation, or computational photography (e.g., Google Tensor TPU/ISP co-design).
+    *   **Software-Emulated:** OS services running on standard general-purpose CPU/GPU cores.
+4.  **System Fabric & Interconnect (SFI):**
+    *   **Proprietary Fabric:** Custom high-bandwidth interconnects between all SoC components that are specifically tuned to the OS’s interrupt and data flow patterns.
+
+#### Complementary Performance Metrics
+To avoid double-scoring with Sections 6.1-6.6, SASI focuses on **System Overhead** and **Inter-Component Latency** rather than raw peak throughput.
+*   **Excluded:** Raw Clock Speed (§6.1), Peak TFLOPS (§6.3), Peak MT/s (§6.5).
+*   **Included:** Idle Memory Usage, System Inter-Process Communication (IPC) Latency, Component Context-Switching Speed.
+
+#### Industry Context & Literature Baseline
+The proposal for SASI is supported by the following industry shifts toward vertical integration:
+*   **Apple Silicon UMA (Unified Memory Architecture):** Unlike traditional architectures where CPU and GPU data must be copied across a relatively slow bus, UMA allows all components to access the same high-bandwidth memory pool simultaneously. Literature indicates this "zero-copy" mechanism significantly reduces power consumption and latency during intensive tasks like real-time video processing (Source: *Apple Developer - Unified Memory*).
+*   **Huawei HarmonyOS Microkernel:** Transitioning from a monolithic Linux kernel to a microkernel allows for a "Deterministic Latency Engine." By isolating kernel services, the OS can ensure precise task scheduling with microsecond accuracy, effectively reducing "input lag" even on mid-range hardware (Source: *IEEE - HarmonyOS: A Distributed OS for All-Scenario Smart Life*).
+*   **Google Tensor Co-Design:** By designing custom silicon (TPU) specifically for the Android Neural Networks API, Google achieves higher throughput for on-device AI models (e.g. Call Screen, Real-time HDR) than generic SoCs with higher raw TOPS (Source: *Google Research - Tensor SoC Architecture*).
+
 
 ## 🟣 7. Connectivity & Sensors
 

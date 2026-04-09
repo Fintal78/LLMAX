@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "5.4",
+    "schema_version": "5.5",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-04-08"
+    "last_updated": "2026-04-09"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -3018,19 +3018,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_6_ram_capacity": {
-        // SCORING GOAL: Evaluates total system RAM capacity.
+        // SCORING GOAL: Evaluates total physical system RAM capacity.
         "capacity_gb": {
           "value": 12,
+          // GUIDELINE: Inherits the physical RAM capacity from the device identity Section.
           "value_path": "identity.hardware_configuration.ram_gb.value",
-          "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 6.6 logarithmic formula. Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)).
+          "subscore": 7.21
+          // SCORING GUIDELINE: Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)), clamped 0-10. 
+          // VIRTUAL RAM DISCRIMINATION:
+          //    - The scoring engine MUST strictly distinguish between physical hardware and software-based "Virtual RAM" (e.g., RAM Plus, Dynamic RAM, Extended RAM).
+          //    - VIRTUAL RAM IS PROHIBITED: If a spec says "12GB + 8GB Extended RAM", the scorable value is STRICTLY **12**.
+          //    - DYNAMIC STRINGS: Ignore strings like "Up to 24GB RAM" if they refer to swap space.
         },
         "scores": {
-          "predicted": 8.00,
+          "predicted": 7.21,
           // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
+            "value": 7.21,
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"
