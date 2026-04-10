@@ -1,4 +1,4 @@
-﻿# Ultimate Smartphone Data Structure Proposal (v5.1)
+# Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
@@ -3139,19 +3139,41 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_8_storage_capacity": {
-        // SCORING GOAL: Evaluates maximum internal storage capacity.
+        // SCORING GOAL: Evaluates total physical internal non-volatile memory capacity using the Storage Capacity Index (SCI).
+        // Higher storage allows for expansive on-device AI models (§6.4) and high-resolution media without performance degradation due to capacity saturation.
+        //
+        // ═════════════════════════════════════
+        // SCI SCORING & BENCHMARK REFERENCE
+        // ═════════════════════════════════════
+        // | Denomination | Basis (GB) | Score | 
+        // | :----------- | :--------: | :---- |
+        // | 2 TB         | 2048       | 10.00 |
+        // | 1 TB         | 1024       |  8.75 |
+        // | 512 GB       | 512        |  7.50 |
+        // | 256 GB       | 256        |  6.25 |
+        // | 128 GB       | 128        |  5.00 |
+        // | 64 GB        | 64         |  3.75 |
+        // | 32 GB        | 32         |  2.50 |
+        // | 16 GB        | 16         |  1.25 |
+        // | ≤8 GB        | 8          |  0.00 |
+        //
+        // CONSOLIDATION & NORMALIZATION RULES:
+        // 1. VARIANT ISOLATION: The database scores the SPECIFIC variant listed in Section 0 (Identity). If a phone has 128/256/512 variants, ensure the scorable `value` matches the `identity` version.
+        // 2. PHYSICAL EXCLUSIVITY: Strictly exclude "Cloud", "Virtual", or "MicroSD-combined" strings. Only the physical NAND flash integrated into the main logic board is eligible for scoring.
+        //
         "capacity_gb": {
           "value": 512,
+          // GUIDELINE: Inherits the physical storage capacity from the device identity Section.
           "value_path": "identity.hardware_configuration.storage_gb.value",
-          "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 6.8 logarithmic formula. Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min)).
+          "subscore": 7.50
+          // SCORING GUIDELINE: Subscore is resolved via the SCI SCORING & BENCHMARK REFERENCE table (defined above). Score is clamped 0-10.
         },
         "scores": {
-          "predicted": 8.00,
+          "predicted": 7.50,
           // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
+            "value": 7.50,
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"

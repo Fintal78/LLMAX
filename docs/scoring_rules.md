@@ -2289,15 +2289,41 @@ This section uses a **Logarithmic Scoring Formula** to derive the score from phy
 
 
 ### 🔹 6.8 Storage Capacity
-*Description:* Internal space for your data. More storage means you can save more photos, videos, and games without deleting old ones.
-*   **Measurement:** Total internal non-volatile memory.
+*Description:* This section evaluates the total physical internal non-volatile memory of the device. More storage allows for the local installation of larger applications, high-resolution media (4K/8K video), and expansive on-device AI models without requiring constant cloud offloading or data deletion.
+
+*   **Measurement:** Total physical internal storage capacity (Advertised spec).
 *   **Unit:** Gigabytes (GB)
 *   **Significance:** Determines capacity for apps, media, and files.
-*Formula:* `Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))` (Clamped 0-10)
+
+#### Storage Capacity Scoring Formula
+This section uses a **Logarithmic Scoring Formula** to derive the score from the physical capacity.
+
+> **Formula:** `Score = 10 * (log(GB) - log(Storage_GB_Min)) / (log(Storage_GB_Max) - log(Storage_GB_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ Storage_GB_Max
 *   **Min Score (0.0):** ≤ Storage_GB_Min
+
 > [!NOTE]
-> **Why Logarithmic?** Similar to RAM, storage utility is non-linear. The +64GB upgrade from 64GB to 128GB is a critical jump that prevents "storage full" anxiety. However, an identical +64GB addition from 512GB to 576GB provides almost zero perceptible change to a user's daily experience.
+> **Why Logarithmic? (The AI & Media Utility Curve)**
+> 1.  **AI Local Persistence:** Modern on-device Large Language Models (LLMs) and generative AI features require significant "model weight" space (often 40GB to 60GB). A jump from 64GB to 128GB is transformative because it enables the use of these models alongside essential apps.
+> 2.  **Diminishing Returns:** The utility of storage follows a curve of diminishing daily impact. While the transition from 128GB to 256GB prevents "storage full" anxiety for 90% of users, an identical absolute jump at the ultra-high end (e.g., from 768GB to 896GB) provides almost zero perceptible change to the daily user experience.
+
+#### Storage Capacity Benchmarks & Scoring Reference
+
+| Denomination | Basis (GB) | Market Positioning & Use-Case Context          | Score (Log) |
+| :----------- | :--------: | :--------------------------------------------- | :---------: |
+| **2 TB**     |    2048    | **Extreme Pro**: 2026 State-of-the-Art Ceiling |  **10.00**  |
+| **1 TB**     |    1024    | **Unrestricted Pro**: 8K video & AI LLMs       |   **8.75**  |
+| **512 GB**   |    512     | **High Density**: Local AI & 4K libraries      |   **7.50**  |
+| **256 GB**   |    256     | **Flagship Std**: Overhead for 40GB+ OS        |   **6.25**  |
+| **128 GB**   |    128     | **Balanced**: Req. management for 4K media     |   **5.00**  |
+| **64 GB**    |     64     | **Restricted**: OS consumes ~50% capacity      |   **3.75**  |
+| **32 GB**    |     32     | **Legacy Min**: Limits Android 15 updates      |   **2.50**  |
+| **16 GB**    |     16     | **Transition**: Traditional modern floor       |   **1.25**  |
+| **≤8 GB**    |      8     | **2016 Baseline**: Modern Era Floor            |   **0.00**  |
+
+> [!IMPORTANT]
+> **Physical Only:** Strictly exclude "Cloud Hybrid," "Virtual Storage," or "Network Drive" capacities. Only the physical NAND flash integrated into the main logic board is eligible for scoring.
+
 
 ### 🔹 6.9 Storage Expandability
 *Description:* Ability to add a memory card. A dedicated slot lets you cheaply add massive storage for photos and media.

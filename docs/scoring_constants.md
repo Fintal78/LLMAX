@@ -125,7 +125,7 @@
 *   `STORAGE_MBPS_Min` = 100 (Score 0 | Legacy eMMC), `STORAGE_MBPS_Max` = 4200 (Score 10 | UFS 4.0/NVMe Gen 4 Peak) // ATTENTON: direct impact on the Scoring Table !!!
 
 ### 6.8 Storage Capacity
-*   `Storage_GB_Min` = 16 (Score 0), `Storage_GB_Max` = 1024 (Score 10)
+*   `Storage_GB_Min` = 8 (Score 0 | 2016 Modern Era Floor), `Storage_GB_Max` = 2048 (Score 10 | 2026 State-of-the-Art Ceiling)
 
 ### 6.10 Thermal Dissipation & Stability Index (TDSI)
 *   `SoC_Process_Node_nm_Min` = 3 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 20 (Score 0 for Node component)
