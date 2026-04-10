@@ -2048,19 +2048,20 @@ This dimension measures the range of mathematical data formats the AI hardware c
 
 #### Scoring Architecture
 
-The AI hardware score is fundamentally built upon the **AI System Score** derived from the strict sequence of Method A/B/C calculations (see below). Only after the core processing engine capability is completely isolated and scored do overarching platform constraints (e.g., total device RAM capacity or sustained thermal dissipation limits) apply.
+The AI hardware score is fundamentally built upon the **AI System Score** (Method A/B/C) but incorporates overarching platform constraints that determine real-world utility. While benchmarks measure the "Engine," this model also accounts for the "Fuel" (RAM), the "Hangar" (Storage), and the "Cooling" (Thermals).
 
 **What Geekbench AI Quantized INT8 Measures vs. What It Does Not:**
 
-| Factor                                    | Captured by benchmark? | How captured in scoring                             |
-|:------------------------------------------|:----------------------:|:----------------------------------------------------|
-| NPU raw throughput                        |          Yes           | Part of AI System Score (inluded in Method A/B/C)   |
-| GPU compute fallback                      |          Yes           | Part of AI System Score (inluded in Method A/B/C)   |
-| CPU compute fallback                      |          Yes           | Part of AI System Score (inluded in Method A/B/C)   |
-| Memory bandwidth (data speed to NPU)      |          Yes           | Part of AI System Score (inluded in Method A/B/C)   |
-| Software stack optimization (QNN, CoreML) |          Yes           | Part of AI System Score (inluded in Method A/B/C)   |
-| RAM capacity (which models can be loaded) |          No            | Factor added later on (on top of Method A/B/C)      |
-| Sustained thermal performance             |          No            | Factor added later on (on top of Method A/B/C)      |
+| Factor                 | In Benchmark?| Impact & Justification                                                                 | How is it captured in scoring  |
+|:-----------------------|:------------:|:---------------------------------------------------------------------------------------|:-------------------------------|
+| **NPU Raw Throughput** |   **Yes**    | Primary driver for matrix math and tensor operations.                                  | AI System Score (Method A/B/C) |
+| **RAM Bandwidth**      |   **Yes**    | The "Memory Wall": determines if data can reach the NPU fast enough for LLM inference. | AI System Score (Method A/B/C) |
+| **GPU/CPU Fallback**   |   **Yes**    | Universal compute fallback for unsupported or floating-point operators.                | AI System Score (Method A/B/C) |
+| **Software Stack**     |   **Yes**    | Driver-level optimization (CoreML, QNN) can improve performance by 2-3x.               | AI System Score (Method A/B/C) |
+| **RAM Capacity**       |   **No**     | **The Primary Residency Gate:** Determines if a model *can* be loaded into memory.     | Added on top of Method A/B/C   |
+| **Storage Capacity**   |   **No**     | **The Secondary Residency Gate:** Determines if models *can* be persisted locally.     | Added on top of Method A/B/C   |
+| **Storage Technology** |   **No**     | **Cold-start Latency:** Determines fixed loading delay from disk to RAM.               | Added on top of Method A/B/C   |
+| **Thermal Persistence**|   **No**     | **Sustainability:** Ensures performance doesn't throttle during 10+ min tasks.         | Added on top of Method A/B/C   |
 
 
 #### Method A: Benchmark (Primary)
@@ -2084,7 +2085,7 @@ Method B is populated for **all** phones (even if Method A is available) to eval
 Find the 3 devices that are statistically closest across **all** AI-relevant hardware components.
 *   **Search Space:** All phones with known Geekbench AI scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Weighted Euclidean Distance.
-    *   `Distance = Sqrt( 0.45*(NPU_Diff)^2 + 0.15*(RAM_Tech_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(CPU_Diff)^2 + 0.15*(Software_Stack_Diff)^2 )`
+    *   `Distance = Sqrt( 0.40*(NPU_Diff)^2 + 0.20*(RAM_Tech_Diff)^2 + 0.15*(Software_Stack_Diff)^2 + 0.15*(GPU_Diff)^2 + 0.10*(CPU_Diff)^2 )`
     *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
         *   `NPU` (§6.4 table), `RAM_Tech` (§6.5), `GPU` (§6.3), `CPU` (§6.2), `Software_Stack` (Software Stack tier, see dedicated paragraph below).
     *   **Scientific Rationale:** Weights mirror the proportional Method C AI System Score component weights to ensure neighbors are selected based on the most critical AI performance factors. RAM Capacity and TDSI (Thermal Dissipation & Stability Index) are excluded from this matching stage because they are applied globally *after* interpolation.
@@ -2111,26 +2112,26 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 **Predicted AI System Score Calculation**
 The predicted AI System Score is a weighted sum of 5 system-level factors. Unlike §6.1/6.2/6.3 which decompose CPU/GPU architecture at the silicon level, §6.4 captures the *system-level factors* that collectively determine AI performance — because NPU architectures are proprietary and cannot be decomposed from public specifications (see Design Rationale above).
 
-1.  **NPU Score (45%) — The Dedicated AI Engine**
+1.  **NPU Core Score (40%) — The Discrete Engine**
     *   **Source:** Retrieve from the **§6.4.0 NPU Lookup Table**.
-    *   **Rationale:** The NPU executes the vast majority (60–95%) of quantized AI operations on modern devices. Scored based on peak INT8 TOPS, architecture generation, and precision support — reflecting **only** the NPU's isolated hardware capability, independent of other system factors.
+    *   **Rationale:** The NPU executes the majority of quantized AI operations. Weight is set at 40% (rather than 100%) to acknowledge that NPU performance is useless if throttled by the "Memory Wall" or unoptimized drivers.
 
-2.  **RAM Technology Score (15%) — The Data Highway**
+2.  **RAM Technology Score (20%) — The Data Highway**
     *   **Source:** Retrieve **Predicted Score** from **Section 6.5**.
-    *   **Rationale:** AI models require enormous data throughput. Memory bandwidth determines how fast data reaches the NPU. LPDDR5X delivers ~134 GB/s vs. LPDDR4X at ~51 GB/s (2.6× difference). A powerful NPU starved of bandwidth sits idle.
+    *   **Rationale:** **Memory-Bound vs. Compute-Bound:** Deep learning workloads (especially the "decode" phase of LLMs) are bottlenecked by memory bandwidth. LPDDR5X (8.5 Gbps) vs LPDDR4X (4.2 Gbps) represents a 2x throughput delta. Weight is boosted to 20% to reflect the critical role of the data highway in preventing NPU starvation.
 
-3.  **GPU Performance Score (15%) — The Compute Fallback**
-    *   **Source:** Retrieve the **Model C Predicted Score** from **Section 6.3**. 
-    *   **⚠️ IMPORTANT:** Use the rasterization-only score (`method_c_prediction_model_GPU.predicted_score`) and NOT the final composite score, as Ray Tracing hardware acceleration does not contribute to AI workloads.
-    *   **Rationale:** Some AI operations (specific floating-point math, unsupported operators) fall back to the GPU. Geekbench AI explicitly tests GPU-delegated workloads. A strong GPU ensures the phone handles complex fallback operations.
-
-4.  **CPU Performance Score (10%) — The Universal Fallback**
-    *   **Source:** Retrieve **Predicted Score** from **Section 6.2** (Single-Core).
-    *   **Rationale:** For budget devices with no dedicated NPU (e.g., Helio G85, Unisoc T606), the CPU is the *sole* processor running AI workloads. Even on flagships, certain unsupported model operators fall back to CPU. *Why §6.2 (Single-Core)?* AI inference pipelines are predominantly serial (one neural network layer feeds the next). Single-thread IPC is the primary determinant of CPU-executed AI operator speed.
-
-5.  **AI Software Stack Optimization (15%) — The Driver Quality**
+3.  **AI Software Stack Optimization (15%) — The Driver Intelligence**
     *   **Source:** Tiered classification based on the device's AI framework ecosystem (see table below).
     *   **Rationale:** Two chips with identical hardware can differ 2–3× in benchmarks due to software optimization. Apple's Core ML is tightly integrated with the Neural Engine, extracting near-100% utilization. Qualcomm's QNN (Qualcomm Neural Network SDK) provides optimized NPU delegation. Meanwhile, some devices rely on generic NNAPI delegates that leave significant NPU capability untapped. This factor captures the *efficiency of OS-level hardware utilization*, completely orthogonal to the physical architecture generation.
+
+4.  **GPU Performance Score (15%) — The Compute Fallback**
+    *   **Source:** Retrieve the **Model C Predicted Score** from **Section 6.3** (Standard Graphics only).
+    *   **⚠️ IMPORTANT:** Use the rasterization-only score (`method_c_prediction_model_GPU.predicted_score`) and NOT the final composite score, as Ray Tracing hardware acceleration does not contribute to AI workloads.
+    *   **Rationale:** GPUs handle complex operators and floating-point tasks that many mobile NPUs avoid. A strong GPU ensures the phone handles complex fallback operations.
+
+5.  **CPU Single-Core Performance (10%) — The Task Scheduler**
+    *   **Source:** Retrieve **Predicted Score** from **Section 6.2**.
+    *   **Rationale:** Individual operator orchestration and serial fallback tasks rely on the CPU's IPC (Instructions Per Cycle). For budget devices with no dedicated NPU (e.g., Helio G85, Unisoc T606), the CPU is the *sole* processor running AI workloads. Even on flagships, certain unsupported model operators fall back to CPU. *Why §6.2 (Single-Core)?* AI inference pipelines are predominantly serial (one neural network layer feeds the next). Single-thread IPC is the primary determinant of CPU-executed AI operator speed.
 
 **AI Software Stack Scoring Guideline:**
 
@@ -2171,18 +2172,23 @@ To eliminate brand bias and ensure an AI agent can objectively score every phone
 > [!NOTE]
 > **On §5.3 interaction:** §5.3 (AI Feature Suite) measures *what AI features exist* — a checklist of tools. The Software Stack score here measures *how efficiently the hardware is utilized* — driver quality. A phone could score 10/10 on Software Stack (excellent CoreML) but 0/10 on §5.3 (no features installed). These are orthogonal dimensions; overall section weights can be adjusted to calibrate the AI domain's total contribution to the system score.
 
-`Predicted_AI_System_Score = (0.45 * NPU) + (0.15 * RAM_Tech) + (0.15 * GPU) + (0.10 * CPU) + (0.15 * Software_Stack)`  (Clamped 0-10)
+`Predicted_AI_System_Score = (0.40 * NPU) + (0.20 * RAM_Tech) + (0.15 * Software_Stack) + (0.15 * GPU) + (0.10 * CPU)`  (Clamped 0-10)
 
 
 #### Section 6.4 Score Summary & Final Calculation
 
-The overall Section 6.4 score is a composite of the core processing power and the physical system constraints required for real-world utility.
+The overall Section 6.4 score is a composite of the core processing engine capability and the physical system constraints required for real-world utility.
 
-*   **AI System Score (85%):** Derived via the standard **Method A → B → C** priority hierarchy (see above).
-*   **RAM Capacity Factor (5%):** **Predicted Score** from §6.6. Determines *which* AI models can be loaded into memory. 8 GB is the bare minimum for modern on-device LLMs. Geekbench AI's test models are small enough that RAM capacity rarely bottlenecks the benchmark — but for real-world use (loading local LLMs), it matters. *Note: excess RAM (e.g., 24 GB) doesn't make a small task faster, so this weight is limited to 5%.*
-*   **Sustained Efficiency Factor (10%):** Uses the **full TDSI (Thermal Dissipation & Stability Index) predicted score from §6.10**. Geekbench AI is a burst test (30–90 seconds per workload). For real-world sustained AI usage (running a local LLM for 10+ minutes, continuous AI camera processing), the phone's complete thermal envelope matters: the chassis's ability to absorb heat (Part A), the internal cooling system such as vapor chamber or graphite sheet (Part B), and the process node efficiency — smaller nanometer = less heat generated (Part C).
+**Component Weights & Justification:**
 
-**Final Formula:** `Score = (AI_System_Score * 0.85) + (RAM_Capacity_Factor * 0.05) + (TDSI_Score * 0.10)`  (Clamped 0-10)
+1.  **AI System Score (75%):** Derived via the standard **Method A → B → C** priority hierarchy. This represents the "Active Speed" of the runtime environment.
+2.  **RAM Capacity Factor (10%):** **Predicted Score** from §6.6. This is the **Primary Residency Gate**. Large on-device models require ~8GB of memory to load; capacity is a hard binary constraint on whether an AI task can even start without immense performance-crushing swap activity. Geekbench AI's test models are small enough that RAM capacity rarely bottlenecks the benchmark — but for real-world use (loading local LLMs), it matters. *Note: excess RAM (e.g., 24 GB) doesn't make a small task faster, so this weight is limited to 10%.*
+3.  **Thermal Dissipation & Stability (7.5%):** **Predicted Score** from §6.10. Ensures performance does not throttle during sustained generative tasks (high heat generation). Geekbench AI is a burst test (30–90 seconds per workload). For real-world sustained AI usage (running a local LLM for 10+ minutes, continuous AI camera processing), the phone's complete thermal envelope matters: the chassis's ability to absorb heat (Part A), the internal cooling system such as vapor chamber or graphite sheet (Part B), and the process node efficiency — smaller nanometer = less heat generated (Part C).
+4.  **Storage Capacity Factor (5.0%):** **Predicted Score** from §6.8. This is the **Secondary Residency Gate**. It determines the maximum size and variety of models the device can persist locally.
+5.  **Storage Technology Factor (2.5%):** **Predicted Score** from §6.7. Determines "Cold-start Latency"—the speed at which a model is fetched from disk to RAM.
+
+**Final Formula:**
+`Score = (AI_System_Score * 0.75) + (RAM_Capacity_Factor * 0.10) + (TDSI_Score * 0.075) + (Storage_Capacity_Score * 0.05) + (Storage_Technology_Score * 0.025)` (Clamped 0-10)
 
 
 ### 🔹 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)

@@ -2854,13 +2854,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all applicable marketing names/technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
           },
           "scores": {
-            "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu_score.value",               "weight_NPU": 0.45 },
-            "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.15 },
+            "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu_score.value",               "weight_NPU": 0.40 },
+            "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.20 },
+            "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
             "subscore_GPU":      { "subscore_path": "6_3_graphics_processing_unit_performance.method_c_prediction_model_GPU.predicted_score", "weight_GPU": 0.15 },
             "subscore_CPU":      { "subscore_path": "6_2_cpu_architecture_single_core.scores.predicted",                                      "weight_CPU": 0.10 },
-            "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
             // These inputs are used to calculate the predicted score (Method C):
-            "predicted": 9.30,
+            "predicted": 9.21,
             // SCORING GUIDELINE: Sum(subscore_X * weight_X) for all 5 entries above. This is the score used for Method B neighbors.
             // IMPORTANT: Always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison. IMPORTANT: For the `GPU` component score, use the **Model C Predicted Score** (Standard Graphics only) and NOT the final composite score, as Ray Tracing does not contribute to AI performance.
           }
@@ -2872,7 +2872,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_b_neighbor_interpolation_AI": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
           // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.45 * (NPU_Diff)² + 0.15 * (RAM_Tech_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² + 0.15 * (Software_Diff)² )
+          //         Distance = √( 0.40 * (NPU_Diff)² + 0.20 * (RAM_Tech_Diff)² + 0.15 * (Software_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² )
           //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_AI.scores`.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
@@ -2906,17 +2906,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 8.3200,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0877,
+          "correction_ratio": 1.0772,
           // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.scores.predicted / avg_predicted_neighbors.
-          "interpolated_score": 9.05
+          "interpolated_score": 8.96
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 9.26,
-          // SCORING GUIDELINE: Final weighted predicted score including RAM capacity and thermal stability (TDSI). Formula: (method_c_prediction_model_AI.scores.predicted * 0.85) + (6_6_ram_capacity.scores.predicted * 0.05) + (6_10_thermal_dissipation_stability.scores.predicted * 0.10).
+          "predicted": 8.97,
+          // SCORING GUIDELINE: Final weighted predicted score. Formula: (method_c_prediction_model_AI.scores.predicted * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025).
           "final": {
-            "value": 8.44,
-            // SCORING GUIDELINE: Final Score combines the AI System Score with RAM capacity and thermal stability (TDSI) according to the A→B→C hierarchy. Formula: (AI_System_Score * 0.85) + (6_6_ram_capacity.scores.predicted * 0.05) + (6_10_thermal_dissipation_stability.scores.predicted * 0.10). 
+            "value": 8.31,
+            // SCORING GUIDELINE: Final Score combines the AI System Score with residency gates (RAM/Storage) and thermal stability (TDSI) according to the A→B→C hierarchy. Formula: (AI_System_Score * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025). 
             // AI_System_Score is derived from Method A (method_a_benchmark_AI.subscore) if available; if not, Method B (method_b_neighbor_interpolation_AI.interpolated_score); if not, Method C (method_c_prediction_model_AI.scores.predicted). 
             "method_used": "Benchmark (Geekbench AI)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
