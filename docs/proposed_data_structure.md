@@ -1,4 +1,4 @@
-# Ultimate Smartphone Data Structure Proposal (v5.1)
+﻿# Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "5.5",
+    "schema_version": "5.7",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-04-09"
+    "last_updated": "2026-04-11"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -1855,7 +1855,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": "One UI 6.1",
           "source": "TBD",
           "exact_extract": "Proof pending"
-          // DATA GUIDELINE: Record the exact OEM skin / platform name as declared by the manufacturer.
+          // DATA GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) skin / platform name as declared by the manufacturer.
           // SCORING GUIDELINE: ALL subscores below (PAL, UC, SA) MUST be extracted directly from this Skin Lookup Table based on the `skin` value.
           //
           // █ SKIN_LOOKUP_TABLE:
@@ -3181,21 +3181,48 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_9_storage_expandability": {
-        // SCORING GOAL: Evaluates if SD Card expansion is supported.
+        // SCORING GOAL: Evaluates the device's ability to expand its non-volatile memory via removable media (e.g. microSD, NM card). 
+        // This is a critical usability differentiator for power users, media creators, and offline consumers who require large, inexpensive storage buffers without sacrificing SIM connectivity.
+        // It is a deterministic index based strictly on physical slot configuration and trade-offs.
+        //
+        // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+        // MEMORY EXPANSION RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+        // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+        // | Tier    | Architecture (Logic Key)      | Score | Marketing Terms & Keywords                                 |
+        // | :------ | :---------------------------- | :---- | :--------------------------------------------------------- |
+        // | Tier 1  | Dedicated Slot                | 10.00 | Triple slot, 3-card tray, 2 SIM + 1 SD, Dedicated microSD  |
+        // | Tier 2  | Hybrid Slot                   |  7.00 | Shared SIM slot, SIM2 or MicroSD, 2-in-1 tray              |
+        // | Tier 3  | Proprietary                   |  5.00 | Nano Memory, NM card support, Huawei Memory                |
+        // | Tier 4  | None                          |  0.00 | No expansion, non-expandable, physical storage fixed       |
+        //
+        // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
+        // 1. PRIMARY: PHYSICAL TRAY INSPECTION / SCHEMATIC ->
+        //    - Tier 1: Requires evidence of 3 distinct physical contact points (e.g. "Triple slot") or official mention of "Dedicated slot for MicroSD".
+        //    - Tier 2: Confirmed by terms like "Shared slot" or "SIM2 or SD".
+        // 2. SECONDARY: eSIM FLEXIBILITY CLARIFICATION ->
+        //    - Devices utilizing a physical Hybrid tray (1x dedicated Nano-SIM slot + 1x shared slot for either SIM2 or a memory card) are strictly categorized as **Tier 2: Hybrid Slot**, regardless of eSIM support. While eSIM allows for dual-line usage without a second physical card, the physical architecture still forces a trade-off for users with two physical Nano-SIM cards.
+        // 3. TERTIARY: Original Equipment Manufacturer (OEM) BRANDING ->
+        //    - Huawei devices with NM cards score strictly as **Tier 3 (Proprietary)** due to limited third-party card availability and higher cost-per-GB.
+        // 4. FALLBACK: ABSENCE OF EVIDENCE -> 
+        //    - If no expansion mentioned in GSMarena or other sources (Memory -> Card slot: No), resolve to **Tier 4 (None)**.
+        //
         "expandability_support": {
           "value": "Tier 4: None",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Identify the expandability support. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+          // SCORING GUIDELINE: Identify the expandability support strictly via the physical slot configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: Dedicated Slot" → 10.00
-          //     Definition: Separate tray or contact specifically for a removable memory card (MicroSD) that does not interfere with SIM card usage.
+          //     Definition: Separate tray or contact specifically for a removable memory card (microSD) that does not interfere with simultaneous Dual SIM usage.
           //   • "Tier 2: Hybrid Slot"    → 7.00
-          //     Definition: Shared slot where the user must choose between a second SIM card or a memory card (e.g., MicroSD, Nano Memory).
+          //     Definition: Shared slot where the user must choose between a second physical SIM card or a memory card (e.g., microSD, Nano Memory).
           //   • "Tier 3: Proprietary"    → 5.00
           //     Definition: Support for branded/exclusive removable storage formats (e.g., Huawei NM Card).
           //   • "Tier 4: None"           → 0.00
-          //     Definition: No physical slot for internal storage expansion.
+          //     Definition: No physical hardware interface for local storage expansion.
+          // 
+          // RESOLUTION OF AMBIGUITY:
+          // In cases where marketing terms or technical descriptions are unclear, prioritize the PHYSICAL TRAY INSPECTION and DATA PRIORITY RULES documented in the RESOLUTION MATRIX above to ensure deterministic categorization.
         },
         "scores": {
           "predicted": 0.00,
@@ -3319,7 +3346,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
           //   • "Tier 5: None"                              → 0.00
           //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
-          // VALUE_DETAILS GUIDELINE: Record the exact OEM marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
+          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
         },
         "scores": {
           "predicted": 10.00,

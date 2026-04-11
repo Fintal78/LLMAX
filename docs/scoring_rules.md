@@ -2332,17 +2332,27 @@ This section uses a **Logarithmic Scoring Formula** to derive the score from the
 
 
 ### 🔹 6.9 Storage Expandability
-*Description:* Ability to add a memory card. A dedicated slot lets you cheaply add massive storage for photos and media.
-*   **Measurement:** Physical expansion slot.
-*   **Unit:** Slot Type
-*   **Significance:** Cost-effective storage expansion option.
+*Description:* Ability to add a memory card. A dedicated slot lets you cheaply add massive storage for photos and media without sacrificing connectivity.
+*   **Measurement:** Slot Architecture (Discrete).
+*   **Unit:** Performance Tier (0–10)
+*   **Significance:** Critical for users with large media libraries, high-resolution video recording, or offline data needs, offering a significantly lower cost-per-GB compared to internal storage upgrades.
 
-| Score    | Feature                     | Example Models                |
-| :------- | :-------------------------- | :---------------------------- |
-| **10.0** | **Dedicated MicroSD Slot**  | Galaxy A15, Poco M6 Pro       |
-| **8.0**  | **Hybrid SIM/MicroSD Slot** | Galaxy A54, Redmi Note 13     |
-| **5.0**  | **Proprietary Expansion**   | Huawei (NM Card)              |
-| **0.0**  | **No Expansion Slot**       | S24 Ultra, iPhone 15, Pixel 8 |
+#### Scoring Tiers
+| Tier       | Feature              | Key Usability Attribute                                                                       | Score     |
+| :--------- | :--------------------| :-------------------------------------------------------------------------------------------- | :-------- |
+| **Tier 1** | **Dedicated Slot**   | Simultaneous 2x SIM + 1x microSD usage.                                                       | **10.00** |
+| **Tier 2** | **Hybrid Slot**      | Compromise: Physical tray forces choice between SIM 2 or Storage (even if eSIM is supported). | **7.00**  |
+| **Tier 3** | **Proprietary Slot** | Restricted to Original Equipment Manufacturer (OEM) cards (e.g., Huawei NM).                  | **5.00**  |
+| **Tier 4** | **No Expansion**     | Zero physical expansion capability.                                                           | **0.00**  |
+
+> [!NOTE]
+> **Technical Justification for Model Simplification:**
+> Earlier iterations of this model considered weighted sub-scores for **Maximum Capacity** (8GB–2TB) and **Protocol Speed** (UHS-I/II, SD Express). These were abandoned for the final scoring framework because:
+> 1. **Physical Bottleneck:** Virtually all modern smartphones lack the extra physical pins required for UHS-II/Express speeds, resulting in a universal fallback to UHS-I. For now, scoring the protocol would reward "paper specs" with no real-world performance delta.
+> 2. **Current Utility Focus:** While doubling theoretical capacity (e.g. from 1TB to 2TB) represents a significant hardware leap, the primary value differentiator for the current "Modern Era" baseline is the *physical accessibility* and tray logic (Dedicated vs Hybrid). The current model prioritizes the hardware interface utility, but it is architecturally prepared for future updates where granular capacity thresholds or high-speed protocol requirements may be integrated as they become more prevalent in the smartphone market.
+
+> [!IMPORTANT]
+> **Authoritative Resolution:** For the mapping of marketing terms (e.g., "Triple slot", "3-card tray"), Detailed **Data Priority Rules**, and the **Autonomous Resolution Matrix**, refer to **[proposed_data_structure.md]**.
 
 
 ### 🔹 6.10 Thermal Dissipation & Stability Index (TDSI)
