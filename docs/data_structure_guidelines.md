@@ -326,9 +326,14 @@ Every field must fall into one of these strict categories.
 | :------------- | :------------------------------------- | :------------------------------------------------------------ |
 | **Role**       | **Canonical tier** used for scoring.   | **Tier-to-Marketing mapping** for traceability.               |
 | **Mandatory?** | Yes — always required.                 | No — only when mapping marketing terms to scorable tiers.     |
+| **Principle**  | Single source of truth for the score.  | **Value-Add only.** Must bring necessary proof or context.    |
 | **Data shape** | Standard (numeric, string, bool, etc.) | **Object/Dictionary** with tier keys and string array values. |
 
-**When to add `value_details`:** Use `value_details` strictly for categorical tier classification to justify the choice of `value`. It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of objects** containing marketing terms and their associated proof belonging to that tier.
+**When to add `value_details`:** `value_details` is a **value-added field** and should be utilized exclusively when a single root-level `source` and `exact_extract` pair is insufficient to fully document and prove the device's characteristics. Mandatory use cases include:
+1.  **Multi-Tier Integration**: When a device possesses multiple distinct features or hardware components that span several technological tiers described in the scoring guidelines.
+2.  **Advanced Traceability (Omni-Source)**: When proving the presence of several components or marketing names requires data from multiple sources (or distinct sections of a single page), necessitating individual `source` and `exact_extract` metadata for each scorable item.
+
+It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of objects** containing marketing terms and their associated proof belonging to that tier.
 
 ### Rules for value_details (Traceability & Efficiency)
 1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score.

@@ -1646,8 +1646,8 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 **Step 2: Calculate Predicted Score**
 1.  **Raw Performance Throughput Score (PTS):** Sum of `FACS` from all clusters in the SoC configuration.
 2.  **Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
-    *   **Max Score (10.0):** ≥ CPU_PTS_Score_Max
-    *   **Min Score (0.0):** ≤ CPU_PTS_Score_Min
+*   **Max Score (10.0):** ≥ CPU_PTS_Score_Max
+*   **Min Score (0.0):** ≤ CPU_PTS_Score_Min
 
 > **Example: Snapdragon 8 Gen 3**
 > *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 6.1.0)
@@ -2510,92 +2510,166 @@ Section 6.10.A1.1 evaluates frame materials as **Active Thermal Spreading Highwa
 **Note:** For detailed material-to-thermal mapping and identification guidelines, refer to the operational documentation in [proposed_data_structure.md].
 
 **Why these scores? (Engineering Justification):**
-### Scoring Methodology (Transient Thermodynamic RC Model)
+### Scoring Methodology (Radiator Efficiency Model)
 
-Section 6.10 evaluates the device as a **Dynamic Thermal System**. Instead of arbitrary points, the score represents a physical reality: the **Maximum Sustainable Power (Watts)** the phone can dissipate for **1200 seconds (20 minutes)** without exceeding a 20°C surface temperature rise.
+Section 6.10.A1.2 evaluates the back panel as a **Thermal Window**. The score is derived through an exhaustive 6-step engineering calculation to determine the system-level cooling efficiency.
 
-To achieve this, the scoring agent selects between two methods:
-- **Method A (Benchmarked Reality):** Uses the **3DMark Wild Life Extreme Stability Score (%)**.
-- **Method B (Technical Simulation):** Solves the first-order differential equation for thermal accumulation:
-> `Sustainable-Watts = 20 / (R-total * (1 - e^(-1200 / (R-total * C))))`
+**1. The Raw Property (Conductivity):**
+We start with the material's **Thermal Conductivity** (measured in W/m·K). This represents how well the material molecules can transfer heat energy.
 
----
+**2. Calculating Material Resistance:**
+Resistance is the physical inverse of conductivity, adjusted for thickness. To make it readable: 
+`Material Resistance = Thickness / Thermal Conductivity`
 
-**A1 — The External Radiator (Part A Properties)**
+**3. The Reference Thickness Rule & Justification:**
+For this classification, we assume a standardized **Reference Thickness** for ALL back panel types to ensure a fair 1:1 comparison.
+**4. The System Efficiency Logic:**
+While a physical device faces an environmental bottleneck (air), this framework isolates the **Material Potential (Flux Intensity)** to provide a meaningful 0-10 resolution of engineering quality. If the fixed air resistance were included in the merit index, all materials would score between 9.5 and 10.0, masking the massive internal temperature benefits achieved by removing the "insulation blanket" effect.
 
-The radiator consists of the back panel material, mass, and surface area. These properties determine how much heat the "sponge" can hold and how fast the air can take it away.
+**5. Calculating Material Flux (System Potential):**
+We calculate the material's specific "Flux Capacity"—the volume of heat per second the material class can physically transfer:
+`Material Flux = Thermal Conductivity / Reference Thickness`
 
-#### A1.1 & A1.2 — Material Conductivity & Flux
-Heat must pass through the back panel to reach the air. We calculate the **Thermal Resistance (R_material)** based on the material class and thickness.
-- **Metals (Aluminum/Titanium):** Offer near-zero resistance, behaving as "thermally transparent" radiators.
-- **Glass/Ceramic:** Act as partial insulators, creating a bottleneck between the chip and the air.
-- **Polymers/Leathers:** Act as "thermal blankets," trapping heat inside the core.
+**6. Logarithmic Normalization (The 0-10 Score):**
+Because the flux gap between Aluminum and Plastic is over 160x, a **Logarithmic Merit Index** is used to stretch the scores. This ensures that materials like Specialized Ceramic (4.70) or Glass (3.06) are fairly rewarded for their significant real-world utility compared to a total insulator (0.00).
+`Score = 10 * [ (Log(Material Flux) - Log(Floor Flux)) / (Log(Max Flux) - Log(Floor Flux)) ]`
 
-#### A2 — Device Thermal Mass (Capacitance)
-*   **Significance:** Based on the Heat Capacity formula (`C = Mass * Specific Heat`), heavier devices have a larger "thermal sponge." They can absorb significant bursts of power before the temperature begins to rise.
-*   **Rule:** Heaver devices have higher **Capacitance (J/K)**, allowing them to remain stable for longer durations before throttling.
+- **Anchor Max (10.00):** Defined by 6000 Series Aluminum (The best radiator).
+- **Floor (0.00):** Defined by the Flexible Membrane (The ultimate insulator).
 
-#### A3 — Convective Surface Area
-*   **Significance:** According to Newton's Law of Cooling, the rate of dissipation is directly proportional to the surface area. A larger "Radiator Area" reduces the **Air Resistance (R_air)**.
+**Logic (Unlocking the Atmosphere):**
+Because the back panel is the "final escape route" for heat, its only engineering job is to minimize its own resistance to as close to zero as possible.
+- **Insulation Blankets (Lower Scores):** Standard glass and polymers have high thermal resistance. They act like a blanket that traps heat inside the core, forcing the internal components to stay at higher temperatures.
+- **Thermal Transparency (Higher Scores):** Metals like Aluminum and Zinc have almost zero thermal resistance. They remove the material bottleneck entirely, making the back panel "thermally transparent" and allowing the device to dump heat into the air at the maximum possible rate.
 
----
+**Engineering Justification (Material Analysis):**
 
-**Part B — Internal Spreading Efficiency (The "Active Window")**
+- **6000 Series Aluminum (10.00):** The peak performer for steady-state heat flux. By eliminating the high thermal resistance of glass/ceramic, metal backs convert the entire rear surface into an active radiator with 167 W/m·K conductance—completely removing the "insulation blanket" effect.
+- **7000 Series Aluminum (9.68):** High-strength aerospace alloy providing near-identical radiator efficiency utilizing the full rear surface area for convective cooling.
+- **Zinc Alloy (Zamak 3) (9.66):** High-density radiator with excellent heat spreading capability and thermal transparency.
+- **Die-Cast Aluminum (ADC12) (9.38):** The metal unibody baseline. Extends the thermal transparency of metals to mid-range configurations.
+- **Specialized Ceramic (4.70):** A technical surface optimized for sustained thermal transparency. With ~2.5x better thermal conductivity (2.5 W/m·K) than standard glass, it significantly reduces the "internal bottleneck," keeping the device below critical throttling points during heavy use.
+- **Armor-Class Glass (3.24):** The thermal peak for glass surfaces. Higher conductivity (1.1 W/m·K) allows it to migrate heat to the atmosphere faster than standard cover glass versions.
+- **Shield-Class Glass (3.07):** Ceramic-infused glass (~1.0 W/m·K) that balances extreme structural toughness with standard thermal dissipation efficiency.
+- **Reinforced Glass (3.06):** The baseline flagship glass (1.0 W/m·K). Acts as a thermal resistor that essentially "holds" heat inside the core, requiring the air-interface to work harder.
+- **Standard Glass (3.06):** Default for generic mineral glass. Inherits the high thermal resistance and "insulation blanket" liability of standard minerals.
+- **Reinforced Polymer (1.54):** Technical composites (0.35 W/m·K / 1.69 MJ/m³·K). Offers a marginal thermal conductivity advantage over standard resins but remains a significant insulator.
+- **Composite Sheet (1.05):** Multi-layer polymer/acrylic blends specifically engineered for thin back panels.
+- **High-Performance Polymer (0.90):** Engineering resins (0.25 W/m·K / 1.44 MJ/m³·K).
+- **Standard Polymer (0.58):** Standard engineering plastics (0.18 W/m·K / 1.58 MJ/m³·K).
+- **Flexible Membrane (0.00):** Leather and silicone are powerful thermal insulators (0.15 W/m·K). While structurally tough, they act as the ultimate "thermal blanket," placing the entire cooling burden on the frame and display.
 
-Without internal spreading, heat is trapped in a tiny **4 cm² hotspot** directly over the chip. Section 6.10 Part B evaluates the technology used to bridge this heat to the rest of the chassis.
+**Data Sources:** NIST Thermal Property Database; ASM International Alloy Datasheets; Meridian Magnesium AZ91D Technical Specs; *Shuai et al., "Thermal management of smartphones," 2017.*
 
-| Internal Technology (Part B) | **Glass/Insulator Back** (Beta) | **Metal Radiator Back** (Beta) |
-| :-------------------------- | :------------------------------ | :----------------------------- |
-| **Active Air/Liquid (Built-in)** | 1.00 (Full-Body + Active)      | 1.00 (Full-Body + Active)      |
-| **Vapor Chamber (XL)**      | 0.90 (VC size limited)          | **1.00** (Full-Body saturated) |
-| **Vapor Chamber (Med)**     | 0.70 (VC size limited)          | **0.95** (High utilization)    |
-| **Graphite / Heat Pipe**    | 0.30 (Partial spread)           | **0.80** (Material assist)     |
-| **None (SoC only)**         | 0.05 (Hotspot)                  | **0.60** (Inherent spread)     |
+=
+**A2 — Device Thermal Mass (25% of Part A)**
+*   **Measurement:** Total device weight in grams.
+*   **Unit:** Grams (g)
+*   **Significance:** According to the principles of heat capacity, heavier devices can absorb larger thermal spikes before reaching critical temperatures.
+
+*Formula:* `Score = 10 * (Weight_g - Thermal_Weight_g_Min) / (Thermal_Weight_g_Max - Thermal_Weight_g_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Weight_g_Max
+*   **Min Score (0.0):** ≤ Thermal_Weight_g_Min
 
 > [!NOTE]
-> **Material Synergy Rule:** Spreading efficiency is a system result. Metals (k=200) inherently distribute heat across ~60% of the chassis even without dedicated spreaders. Glass (k=1) requires a Vapor Chamber to reach equivalent area utilization.
+> **Why Linear?** The relationship between a device's mass and its thermal capacity is perfectly linear (Heat Capacity = Mass x Specific Heat x Temperature change). Each additional gram of material provides a constant, proportional increase in the amount of energy the chassis can absorb before reaching critical temperature.
 
-*Crucial Logic:* An advanced Vapor Chamber (Part B) converts a mediocre radiator (Part A) into a high-performance system by unlocking the full surface area of the device.
+**A3 — Heat Dissipation Surface Area (30% of Part A)**
+*   **Measurement:** Calculated external footprint (Height x Width).
+*   **Unit:** Square Millimeters (mm²)
+*   **Significance:** Larger external surface areas facilitate better convective and radiative heat transfer to the environment.
 
----
+*Formula:* `Surface = Height_mm * Width_mm`  
+*Formula:* `Score = 10 * (Surface - Thermal_Surface_Area_mm2_Min) / (Thermal_Surface_Area_mm2_Max - Thermal_Surface_Area_mm2_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Surface_Area_mm2_Max
+*   **Min Score (0.0):** ≤ Thermal_Surface_Area_mm2_Min
 
-**Part C — Process Node & Heat Generation (Demand Side)**
+> [!NOTE]
+> **Why 30% Weight?** According to Newton's Law of Cooling, the rate of convective heat transfer is directly proportional to the surface area (Heat Transfer Rate = Heat Transfer Coefficient x Surface Area x Temperature Difference). In mobile devices, Surface Area is the absolute "dissipation ceiling" for sustained loads. No matter how efficient the internal spreading is, heat cannot leave the system without sufficient wetted area.
 
-To determine stability, the **Sustainable Supply (Watts)** is compared against the **SoC Peak Demand (Watts)**.
-- **Demand Tiering:** SoCs are assigned a base wattage (e.g. Ultra Flagship = 14W, Mainstream = 6W).
-- **Node Modifier:** Efficiency is scaled by the **Process Node (nm)** and **Foundry** (e.g. 3nm TSMC = 0.85x).
-- **Logic:** `Section-Score = (Sustainable-Supply / (Base-Peak * Node-Modifier)) * 10`
 
----
 
-**Final Calculation: The Thermal Performance Ratio**
+**A4 — Device Thickness (10% of Part A)**
+*   **Measurement:** Device thickness excluding camera protrusion.
+*   **Unit:** Millimeters (mm)
+*   **Significance:** Thicker phones have more internal volume for heat dissipation and airflow, allowing for better passive cooling and thermal capacity.
 
-1.  **Calculate System Resistance (R-total):** Corrected for Area-eff (Part B) and Material (A1).
-2.  **Calculate System Capacitance (C):** Derived from Weight (A2).
-3.  **Calculate Sustained Supply (Watts-sustained):** Solved via the ODE for 1200s (Maps to **Lowest Loop**).
-4.  **Calculate Sustained Power Ratio (Ratio-watt):** `Watts-sustained / P-demand`.
-5.  **Calculate Predicted Performance Ratio (Ratio-FPS):** `Ratio-watt ^ Gamma`.
-    *   **Peak State (Highest Loop):** The 100% initial performance target.
-    *   **Gamma (0.40):** The non-linear scaling factor. Matches Geekerwan's finding that a **70% power reduction** only results in a **30% FPS reduction** due to undervolting.
-6.  **Final TDSI Score:** The `Ratio-FPS` result, scaled to 10.0.
+*Formula:* `Score = 10 * (Thickness_mm - Thermal_Thickness_mm_Min) / (Thermal_Thickness_mm_Max - Thermal_Thickness_mm_Min)` (Clamped 0-10)
+*   **Max Score (10.0):** ≥ Thermal_Thickness_mm_Max
+*   **Min Score (0.0):** ≤ Thermal_Thickness_mm_Min
 
-### 🔹 Integration: The "Master Modifier" Rule
+> [!NOTE]
+> **Why 10% Weight?** Increasing device thickness provides a linear increase in internal volume (Volume = Surface Area x Thickness) and lateral spreading cross-section. While it helps mitigate hotspots and improve ergonomic skin-temperature comfort, it is a secondary contributor to total capacity compared to material conductivity and total surface area.
 
-The Section 6.10 score is the authoritative **Thermal Speed Limit** for the entire system.
+**Part A Score:**  
+`Part_A = (0.21 * A1.1) + (0.14 * A1.2) + (0.25 * A2) + (0.30 * A3) + (0.10 * A4)`
 
-**1. Synergy with Section 6.1 (CPU) & 6.3 (GPU):**
-If a processor's Peak Power Demand exceeds the 6.10 Sustainable Watts, a **Throttling Penalty** is applied to the final score:
-- `Modifier = 6.10_Sustainable_Watts / Peak_Processor_Watts` (Max 1.0)
-- `Sustained_Score = Peak_Score * Modifier`
+**Part B: Internal Cooling System Class (50%)**
+*   *What is it?* The sophistication of the engineering solutions used to actively or passively move heat away from the System-on-Chip (SoC) and battery.
+*   **Measurement:** Declared cooling technology and verified surface area.
+*   **Unit:** Cooling Class (Discrete)
+*   **Significance:** Advanced phase-change (VC) and active (Fans/Pumps) systems provide the "stability" required for marathon gaming or AI sessions.
 
-**2. Synergy with Section 6.4 (AI Hardware):**
-AI workloads generate constant load. If AI Demand is within the 6.10 envelope, the Stability Multiplier remains **1.0x (Perfect)**. If not, the AI score is reduced proportionately.
+| Score    | Cooling Tier / Class                    | Technical Definition & Scorable Characteristics                                             |
+| :------- | :-------------------------------------- | :-------------------------------------------------------------------------------------------|
+| **10.0** | **Active Force-Air / Liquid Loop**      | Integrated motorized fan (e.g. RedMagic) OR internal active liquid micro-pump circulation.  |
+| **9.0**  | **Ultra-Extreme Passive (VC ≥10k mm²)** | Vapor Chambers (VC) with surface area ≥ 10,000 mm² (e.g. 3D Ice-step VCs).                  |
+| **8.0**  | **Extreme Passive (VC ≥7000 mm²)**      | Vapor Chambers with surface area ≥ 7,000 mm² (often Dual-VC or "Cryo-velocity" designs).    |
+| **7.0**  | **Large Passive (VC ≥4000 mm²)**        | Standard flagship Vapor Chambers with surface area ≥ 4,000 mm².                             |
+| **6.0**  | **Standard Passive (VC <4000 mm²)**     | Presence of a Vapor Chamber of smaller or unspecified area.                                 |
+| **4.0**  | **Basic Passive (Graphite / Heat Pipe)**| Use of graphite/graphene sheets or copper heat pipes without a phase-change vapor chamber.  |
+| **2.0**  | **Legacy (Shielding / Spreaders)**      | Minimal dedicated heat spreading; reliance on standard internal EMI shielding.              |
+| **0.0**  | **None / Not Disclosed**                | No dedicated thermal dissipation hardware mentioned in official or third-party teardowns.   |
 
-**3. Synergy with Section 8.1 (Battery Endurance):**
-Heat is the enemy of battery life. The 6.10 model predicts the internal operating temperature.
-- Devices with **Low Thermal Resistance** keep batteries cooler, preventing the "Thermal Decay" of lithium efficiency. 
-- Section 8.1 uses the 6.10 Resistance value to apply an **Efficiency Correction** to the available Watt-hours.
+> **VC Rule:** If the Vapor Chamber area is not explicitly disclosed, it MUST default to **Tier 5: Standard Passive (6.0)** unless it is a known gaming-oriented device, in which case a booster or manual override may apply.
 
+**Part C: Process Node Efficiency Reference**
+*   *What is it?* Chip manufacturing technology. Smaller numbers (e.g., 3nm) mean the chip is more advanced, wasting less energy as heat.
+*   **Measurement:** Semiconductor process node size + Foundry.
+*   **Unit:** Nanometers (nm)
+*   **Significance:** Determines the baseline thermal inefficiency of the chip that the cooling system must overcome.
+
+**Formula:**
+1.  **Node Score:** `10 * (log(SoC_Process_Node_nm_Max) - log(Node)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
+2.  **Foundry Score:** See Foundry Efficiency table below.
+3.  **Process Node Score:** `(0.9 * Node_Score) + (0.1 * Foundry_Score)` (Clamped 0-10)
+
+*   **Max Score (10.0):** ≤ SoC_Process_Node_nm_Min + TSMC Foundry
+*   **Min Score (0.0):** ≥ SoC_Process_Node_nm_Max + SMIC/Other Foundry
+
+> [!NOTE]
+> **Why Logarithmic?** Transistor density and power efficiency scale non-linearly. A shrink from a mid-range node to a cutting-edge node represents a massive efficiency leap, while equivalent absolute reductions at larger nodes yield diminishing returns in waste heat reduction.
+
+**Foundry Efficiency Score:**
+| Foundry           | Foundry Score | Why?                                                                        |
+| :---------------- | :-----------: | :-------------------------------------------------------------------------- |
+| **TSMC**          | **10**        | 20-30% better power efficiency at same node label (empirically proven).     |
+| **Samsung**       | **5**         | Standard efficiency baseline.                                               |
+| **SMIC / Others** | **0**         | Generally lower yield/efficiency than leaders.                              |
+
+> [!NOTE]
+>
+> **Global Reference:** This calculated Process Node Score is the authoritative value used by both the **Battery Endurance Model (Section 8.1)** and the **AI Hardware Performance Model (Section 6.4)**.
+
+**Final Formula: Peak Thermal Demand Compensation**
+*   *What is it?* A fairness adjustment based on the **Peak Thermal Demand** generated by the processing engine, rewarding devices that are inherently easier to cool.
+*   **Significance (The Peak vs. Baseline Demand Paradox):** Peak performance draws extreme wattage, generating massive heat. A flagship chip doing maximum computing (Section 6.1 Peak Score = 10) draws 15+ watts, requiring heavy cooling. A budget chip (Peak Score = 2) might only physically draw 4 watts. However, a flagship chip built on an efficient 3nm node generates *less* waste heat per watt than an inefficient 5nm node.
+*   **Calculate Thermal Mitigation:**
+    *   We combine two sources of thermal relief: having a less powerful chip (which restricts maximum power draw) and having a highly efficient manufacturing node (which wastes far less drawn power as heat).
+    *   `Peak_Thermal_Demand = Section_6_1_Score`
+    *   `Node_Efficiency_Relief = Process_Node_Score`
+    *   `Thermal_Mitigation = (10 - Peak_Thermal_Demand) + Node_Efficiency_Relief`
+*   **Calculate Load Compensation Bonus:**
+    *   `Load_Bonus = Thermal_Mitigation / 5`
+*   **Max Bonus (+4.0):** Low-power peak demand, highly efficient node -> Needs minimal cooling to remain stable.
+*   **Min Bonus (+0.0):** Extreme peak power demand, highly inefficient node -> Requires massive cooling to survive.
+
+1.  **Calculate Baseline Physical Capability:** `Physical_Score = (0.5 * Part_A) + (0.5 * Part_B)`
+2.  **Calculate TDSI Score:** `TDSI = (0.8 * Physical_Score) + Load_Bonus` (Clamped 0-10)
+
+> [!NOTE]
+> **Why these weights?** By multiplying the `Physical_Score` by 0.8 (max 8.0 points) and adding a `Load_Bonus` (max 4.0 points, but typically 2.0 for flagships), an ultra-gaming flagship with perfect physical cooling (8.0) and top-tier chip efficiency (2.0) will score a perfect 10.0 without exceeding the clamp limit. This ensures that no premium thermal hardware is "wasted" mathematically when combined with efficient chips.
+> **Why this formula?** We use an **Additive Bonus** approach. The physical hardware (Parts A & B) sets the baseline cooling capability. Then, we add bonus points if the "engine" is small or highly efficient. This correctly predicts that a passively cooled flagship will throttle, while a passively cooled budget phone will remain perfectly stable.
 
 ### 🔹 6.11 System Architecture & Synergy Index (SASI) [⚠️ EXPERIMENTAL / NON-SCORING]
 *Description:* This subsection evaluates the performance-enhancing effects of "Vertical Integration"—the technical synergy achieved when the Operating System and System-on-Chip (SoC) are co-designed. This synergy allows a device to potentially outperform competitors with superior raw hardware specs by reducing system overhead and latency.
@@ -3057,12 +3131,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 *   **B.1 SoC Efficiency (40% of Layer B)**
     *   **B.1.1 Process Node (50% of SoC)**
         *   *Why it matters:* Process node (nm) is the biggest determinant of a chip's power efficiency. Smaller transistors require less voltage to switch. Foundry differences are also critical (e.g., TSMC vs Samsung).
-        *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively.
-    
-    *   **B.1.2 Thermal Efficiency Correction (10% of SoC)**
-        *   *Why it matters:* Batteries lose ~5% efficiency for every 10°C of internal heat. A phone with high thermal resistance (Section 6.10) runs its battery hotter, causing faster energy decay.
-        *   *Formula:* `Efficiency_Modifier = 1.1 - (Section_6_10_Resistance / 500)` (Clamped 0.85 to 1.1)
-        *   *Rationale:* A high-quality metal radiator actually *improves* battery chemistry retention, while an insulated leather/glass back penalizes it.
+        *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively (i.e., `(0.9 * Node_Score) + (0.1 * Foundry_Score)`). Do **not** use the full TDSI score (which additionally includes the physical body Parts A & B and the Load Bonus).
 
     *   **B.1.2 CPU Architecture Class (30% of SoC)**
         *   *Why it matters:* Efficiency cores (e.g., A520) handle 80% of daily tasks. We use the Architecture Efficiency Score (AES) to evaluate the weighted average efficiency of the entire CPU cluster, accurately predicting idle/low-load power.

@@ -13,10 +13,10 @@
 **1. Design & Build**
 
 ### 1.4 Thickness
-*   `Thickness_mm_Min` = 6.0 (Score 10), `Thickness_mm_Max` = 10.0 (Score 0)
+*   `Thickness_mm_Min` = 5.5 (Score 10), `Thickness_mm_Max` = 11.0 (Score 0)
 
 ### 1.5 Weight
-*   `Weight_g_Min` = 140 (Score 10), `Weight_g_Max` = 250 (Score 0)
+*   `Weight_g_Min` = 140 (Score 10), `Weight_g_Max` = 260 (Score 0)
 
 ### 1.6 Ergonomics (Width)
 *   `Width_mm_Min` = 67.3 (Score 10), `Width_mm_Max` = 79.0 (Score 0)
@@ -128,10 +128,10 @@
 *   `Storage_GB_Min` = 8 (Score 0 | 2016 Modern Era Floor), `Storage_GB_Max` = 2048 (Score 10 | 2026 State-of-the-Art Ceiling)
 
 ### 6.10 Thermal Dissipation & Stability Index (TDSI)
-*   `SoC_Process_Node_nm_Min` = 3 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 20 (Score 0 for Node component)
-*   `Thermal_Weight_g_Min` = 140 (Score 0), `Thermal_Weight_g_Max` = 250 (Score 10) (*Heavier is better for thermal mass*)
-*   `Thermal_Surface_Area_mm2_Min` = 6000 (Score 0), `Thermal_Surface_Area_mm2_Max` = 9000 (Score 10)
-*   `Thermal_Thickness_mm_Min` = 6.0 (Score 0), `Thermal_Thickness_mm_Max` = 10.0 (Score 10) (*Thicker is better for thermal mass*)
+*   `SoC_Process_Node_nm_Min` = 2 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 28 (Score 0 for Node component)
+*   `Thermal_Weight_g_Min` = 140 (Score 0), `Thermal_Weight_g_Max` = 260 (Score 10) (*Heavier is better for thermal mass*)
+*   `Thermal_Surface_Area_mm2_Min` = 4500 (Score 0), `Thermal_Surface_Area_mm2_Max` = 13000 (Score 10)
+*   `Thermal_Thickness_mm_Min` = 5.5 (Score 0), `Thermal_Thickness_mm_Max` = 11.0 (Score 10) (*Thicker is better for thermal mass*)
 
 
 **7. Connectivity & Sensors**

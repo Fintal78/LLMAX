@@ -1,67 +1,42 @@
-# Smartphone Database Walkthrough
+# Smartphone Thermal & Performance Scoring Recalibration
 
-I have successfully created a tool to generate a database of Apple and Samsung smartphones.
+I have successfully recalibrated the Thermal Dissipation & Stability Index (TDSI) and consolidated the smartphone scoring framework 2016–2026 hardware era.
 
-## How to Run
+## 🌡️ Thermal Normalization (2016–2026)
 
-1.  **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
-2.  **Run the Scraper**:
-    ```bash
-    python scraper.py
-    ```
-    This will fetch phones from Samsung and Apple. It saves progress incrementally to `phones_db.json`. You can stop and restart it at any time; it will skip phones that are already in the database.
+We established new global normalization anchors in `scoring_constants.md` to ensure the scoring system remains mathematically rigorous for both legacy budget devices and future flagships.
 
-    > **Note**: The scraper may hit rate limits (Error 429) if run for too long. Just wait a while and run it again to continue.
+### **Normalization Anchors**
+| Parameter | 2016-2026 Min (0.00) | 2016-2026 Max (10.00) | Logic |
+| :--- | :---: | :---: | :--- |
+| **Process Node** | 28nm | 2nm | Legacy budget (2016) to future cutting-edge. |
+| **Surface Area** | 4,500 mm² | 13,000 mm² | Compact designs to massive Fold/Gaming phones. |
+| **Weight** | 140g | 260g | Lightweight budget to heavy titanium/glass flagships. |
+| **Thickness** | 5.5mm | 11.0mm | Inverted (Thicker = more thermal mass). |
 
-## Output
+## 📐 Reference Model Recalibration (S24 Ultra)
 
-The output is a JSON file `phones_db.json` in the project folder.
+The Galaxy S24 Ultra reference model in `proposed_data_structure.md` has been updated to reflect these new baselines across four major scoring domains:
 
-### Structure
+### **1. Design Subscores**
+- **Thickness (4.36):** Recalibrated based on the 5.5mm–11.0mm range.
+- **Weight (2.33):** Recalibrated based on the 140g–260g range.
 
-```json
-{
-  "summary": {
-    "total_phones": 61,
-    "brands": {
-      "Samsung": 56,
-      "Apple": 5
-    }
-  },
-  "phones": [
-    {
-      "brand": "Samsung",
-      "model_name": "Samsung Galaxy S25 Ultra",
-      "specs": {
-        "Network": {
-          "Technology": "GSM / CDMA / HSPA / EVDO / LTE / 5G",
-          "5G bands": ["1", "3", "5", "7", "8", "20", "28", "38", "40", "41", "66", "77", "78 SA/NSA/Sub6"]
-        },
-        "Display": {
-          "Type": "Dynamic LTPO AMOLED 2X, 120Hz...",
-          "Size": "6.9 inches...",
-          "size_inches": 6.9
-        }
-      }
-    },
-    ...
-  ]
-}
-```
+### **2. Thermal Dissipation & Stability Index (TDSI)**
+- **TDSI Score (7.68):** Recalibrated from 7.93. This reflects the more aggressive normalization curve which better separates "good" thermal mass from "elite" gaming cooling architectures.
 
-## Verification Results
+### **3. AI Hardware Performance**
+- **Final AI Score (8.11):** Recalibrated from 8.31. The 7.5% weighting of TDSI ensures that thermal stability directly impacts AI performance longevity.
 
--   **Iterative Scraping**: Validated that the scraper skips existing URLs and appends new ones.
--   **Data Quality**:
-    -   Network bands are now parsed into lists (e.g., `["1", "3", "5"]`) instead of long strings.
-    -   Display size is parsed into a number (`size_inches`).
-    -   Text is cleaned of excessive whitespace.
--   **Calculated & Corrected AI Hardware Scoring**:
-    - [x] Standardized `software_stack_score` as a **Type A** block with Advanced Traceability and deterministic boolean guidelines.
-    - [x] Verified and corrected S24 Ultra demo values in Section 6.4 (NPU: 9.28, RAM: 10.0, GPU: 9.98, CPU: 9.31, SW: 8.00 → AI System Score: 9.30).
-    - [x] Corrected the `cpu_score` reference identifier to `6_2_cpu_architecture_single_core`.
-    - [x] Synchronized formulas and guidelines across `scoring_rules.md` and `proposed_data_structure.md`.
--   **Summary**: The file now starts with a summary of the total count and breakdown by brand.
+### **4. Battery Endurance & Efficiency**
+- **HEI Predicted Score (9.13):** Updated based on the new Node Score (7.63) for the 4nm TSMC process.
+- **Battery Predicted Score (8.82):** Adjusted from 8.85 to maintain mathematical homogeneity with the updated Hardware Efficiency Index (HEI).
+
+## 📄 Documentation Integrity
+
+- **`scoring_rules.md`**: Updated Section 6.10 with high-density engineering justifications and updated logarithmic formulas.
+- **`scoring_constants.md`**: Synchronized all global Min/Max values with the 2016–2026 era.
+- **`proposed_data_structure.md`**: Verified absolute mathematical consistency between the S24 Ultra reference and the global constant sheet.
+
+---
+*Verification complete: All downstream effects of the thermal normalization have been identified, calculated, and committed.*

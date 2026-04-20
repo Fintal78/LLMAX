@@ -1645,9 +1645,18 @@ Instead of calculating a raw score and then scaling it globally, we calculate th
 
 **Step 2: Calculate Predicted Score**
 1.  **Raw Performance Throughput Score (PTS):** Sum of `FACS` from all clusters in the SoC configuration.
-2.  **Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
+2.  **Peak Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
     *   **Max Score (10.0):** ≥ CPU_PTS_Score_Max
     *   **Min Score (0.0):** ≤ CPU_PTS_Score_Min
+
+**Step 3: Thermal Stability Adjustment (The Real-World Correction)**
+*   **Significance:** Peak performance is irrelevant if the phone throttles within 5 minutes.
+*   **Formula:** `Stability_Ratio = Section_6_10_Sustainable_Watts / Calculated_Peak_Wattage` (Clamped 0.5 to 1.0)
+*   **Final Predicted Score:** `Peak_Predicted_Score * Stability_Ratio`
+
+> [!NOTE]
+> **Why this adjustment?** Section 6.1 is titled **"Sustained Outcome."** By integrating the actual thermodynamic capacity of the chassis (Section 6.10), we can predict whether the phone will drop its frequency during heavy use. A gaming phone with active fans will maintain a `Stability_Ratio` near 1.0, while a thin glass phone with no vapor chamber may drop to 0.6, losing 40% of its score.
+
 
 > **Example: Snapdragon 8 Gen 3**
 > *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 6.1.0)
@@ -1924,9 +1933,14 @@ If the explicit API version is NOT disclosed on the primary spec sheet, use the 
 
 **Step 4: Calculate Predicted SGS**
 1.  **Raw Capability Score (RC):** `GAS * FSF * API_Modifier`
-2.  **Predicted SGS:** `10 * (log(RC) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min))`
+2.  **Peak Predicted SGS:** `10 * (log(RC) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min))`
     *   **Max Score (10.0):** ≥ GPU_RC_Score_Max
     *   **Min Score (0.0):** ≤ GPU_RC_Score_Min
+
+**Step 5: Thermal Stability Adjustment**
+*   **Formula:** `Stability_Ratio = Section_6_10_Sustainable_Watts / Peak_GPU_Wattage` (Clamped 0.5 to 1.0)
+*   **Final Predicted SGS:** `Peak_Predicted_SGS * Stability_Ratio`
+
 
 #### Part 2: Ray Tracing Score (RTS)
 *Focus:* Advanced lighting physics (Reflection, Refraction, Shadows).
@@ -2232,6 +2246,18 @@ To eliminate brand bias and ensure an AI agent can objectively score every phone
 > **On §5.3 interaction:** §5.3 (AI Feature Suite) measures *what AI features exist* — a checklist of tools. The Software Stack score here measures *how efficiently the hardware is utilized* — driver quality. A phone could score 10/10 on Software Stack (excellent CoreML) but 0/10 on §5.3 (no features installed). These are orthogonal dimensions; overall section weights can be adjusted to calibrate the AI domain's total contribution to the system score.
 
 `Predicted_AI_System_Score = (0.40 * NPU) + (0.20 * RAM_Tech) + (0.15 * Software_Stack) + (0.15 * GPU) + (0.10 * CPU)`  (Clamped 0-10)
+
+#### Final AI Score (The Residency Gate)
+After calculating the **AI System Score** (the engine speed), we apply the physical constraints of the device (fuel and cooling).
+
+**1. RAM Capacity Gate:**
+- **Description:** Generative AI models require a minimum occupied RAM footprint.
+- **Rule:** If `RAM < 8 GB`, the Final AI Score is capped at **5.0** (Traditional ML only). If `RAM ≥ 12 GB`, the score is increased by a **+1.0 Bonus**.
+
+**2. Thermal Stability Multiplier (Residency):**
+- **Significance:** Large Language Models (LLMs) like Gemini Nano require sustained NPU power.
+- **Rule:** If the `AI_Task_Wattage` (typically 4W) is greater than the **Section 6.10 Sustainable Watts**, the AI Score is multiplied by the **Stability Multiplier** (Sustainable_Watts / 4.0).
+- **Outcome:** A phone with elite cooling (S24 Ultra) runs AI at **100% speed**, while a budget phone with poor thermals will experience token generation lag as the NPU throttles.
 
 
 #### Section 6.4 Score Summary & Final Calculation

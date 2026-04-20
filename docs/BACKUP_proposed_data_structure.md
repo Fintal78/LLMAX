@@ -1,4 +1,4 @@
-﻿# Ultimate Smartphone Data Structure Proposal (v5.1)
+# Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
