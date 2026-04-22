@@ -128,6 +128,7 @@
 *   `Storage_GB_Min` = 8 (Score 0 | 2016 Modern Era Floor), `Storage_GB_Max` = 2048 (Score 10 | 2026 State-of-the-Art Ceiling)
 
 ### 6.10 Thermal Dissipation & Stability Index (TDSI)
+*   `Thermal_Stability_Min` = 25.0 (Score 0), `Thermal_Stability_Max` = 100.0 (Score 10)
 *   `SoC_Process_Node_nm_Min` = 2 (Score 10 for Node component), `SoC_Process_Node_nm_Max` = 28 (Score 0 for Node component)
 *   `Thermal_Weight_g_Min` = 140 (Score 0), `Thermal_Weight_g_Max` = 260 (Score 10) (*Heavier is better for thermal mass*)
 *   `Thermal_Surface_Area_mm2_Min` = 4500 (Score 0), `Thermal_Surface_Area_mm2_Max` = 13000 (Score 10)

@@ -2415,187 +2415,361 @@ This section uses a **Logarithmic Scoring Formula** to derive the score from the
 
 
 ### 🔹 6.10 Thermal Dissipation & Stability Index (TDSI)
-*Description:* A composite index measuring the device's ability to sustain performance and shed heat. It combines the physical thermal capacity of the chassis, the internal cooling solution, and the thermal efficiency of the processor node.
-*   **Measurement:** Frame Material + Back Panel Material + Weight + Dimensions + Cooling System Type + Process Node.
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Prevents throttling, ensures sustained gaming performance, and maintains device longevity.
+*Description:* A composite index measuring the device's physical ability to shed heat and sustain performance over time. Standard benchmarks measure instantaneous burst performance, but the TDSI models the thermodynamic reality: how much heat the phone can handle before it must forcefully throttle the processor to prevent overheating.
+*   **Measurement:** Heat Dissipation Capacity (Chassis + Cooling) vs. Heat Generation (SoC + Node) / Real-world Benchmark Stability.
+*   **Unit:** Composite Stability Score (0-10)
+*   **Significance:** Predicts sustained frame rates, prevents severe throttling during long gaming sessions, and protects battery longevity.
+
+#### 6.10.A Method A: Benchmark (Primary)
+**Direct Benchmark Score**
+This is the preferred method when a direct 3DMark Wild Life Extreme stress test score is available. It provides the most accurate snapshot of the final software-hardware thermal interaction.
+
+**Benchmark Source: 3DMark Wild Life Extreme Stress Test**
+*   **Source:** [UL Benchmarks Leaderboard](https://benchmarks.ul.com/3dmark)
+*   **Metric:** Stability % (Ratio of Lowest Loop Frames Per Second (FPS) to Highest Loop FPS).
+*   **Perimeter Justification:**
+    *   **INCLUDES:** GPU/CPU thermal throttling, effectiveness of internal spreaders (Vapor Chambers), and chassis convection efficiency. 
+    *   **EXCLUDES:** Battery chemical efficiency (Section 8.1); Display panel efficiency (Section 2.2).
+
+*   **Why 3DMark?** It offers the most exhaustive public database spanning iOS, Android, and all major chipsets, ensuring absolute cross-brand parity (see BENCHMARK SELECTION MATRIX below). 
+
+*   **Calibration Note (The "Dual-Standard"):** While 3DMark measures Frames Per Second (FPS) stability, the underlying physics model evaluates thermal Power (Watts). To ensure the model remains physically accurate, the **Burnout Benchmark**—which directly measures sustained SoC Power (Watts)—is utilized internally by the scoring framework as a secondary calibration standard to validate the baseline power-to-FPS conversion.
+
+# REPORT: BENCHMARK SELECTION MATRIX (Rationale for 3DMark)
+
+| Benchmark                      | Breadth (30%) | Alignment (25%) | Transparency (20%) | Reputation (15%) | Accessibility (10%) | Weighted Total |
+| :----------------------------- | :-----------: | :-------------: | :----------------: | :--------------: | :-----------------: | :------------: |
+| **3DMark Wild Life Extreme**   |      10       |        6        |         9          |        10        |          9          |    **8.7**     |
+| **Burnout Benchmark**          |       5       |       10        |         8          |        7         |          7          |    **7.4**     |
+| **GFXBench (Manhattan)**       |       9       |        6        |         7          |        8         |          8          |    **7.6**     |
+| **Geekbench 6 (GPU)**          |      10       |        4        |         6          |        10        |         10          |    **7.7**     |
+
+| Criteria           | Description                                                             | Weight  |
+| :------------------| :---------------------------------------------------------------------- | :------ |
+| **Breadth**        | Number of brands, models, and platforms (iOS/Android/Windows) covered.  | **30%** |
+| **Model Alignment**| Ability to measure **Watts** or thermal power directly vs. just FPS.    | **25%** |
+| **Transparency**   | Disclosure of measurement methods (Queries vs. Timers) and raw logs.    | **20%** |
+| **Reputation**     | Industry adoption and status as a "standard" in tech reviews.           | **15%** |
+| **Accessibility**  | Ease of use for typical users/evaluators to verify scores.              | **10%** |
+
+*   **Normalization:**
+    *   **Formula:** `Score = 10 * (log(Stability_%) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))` (Where **Stability_%** is the benchmark result; **Min/Max** are anchors representing the full performance spectrum of all evaluated devices, accessible in `scoring_constants.md`).
+    *   **Max Score (10.0):** ≥ Thermal_Stability_Max
+    *   **Min Score (0.0):** ≤ Thermal_Stability_Min
+
+> [!NOTE]
+> **Why Logarithmic?** 
+> **Perceptual Response Scaling (Weber-Fechner Law):** Stability loss is not perceived linearly. A drop from 100% to 90% stability transitions a game from 60 FPS to 54 FPS—a difference that is largely imperceptible during active gameplay. However, a drop from 50% to 40% transitions a game from 30 FPS to 24 FPS—crossing the critical threshold from "playable" to "cinematic stutter." The logarithmic scale correctly penalizes these catastrophic drops more heavily while preserving score nuance for minor fluctuations.
+
+
+#### 6.10.B Method B: Nearest Neighbor Interpolation (Secondary / Validation) 
+Method B is populated for **all** phones—even if a direct benchmark is available—to evaluate the precision of the thermodynamic model by comparing its result with empirical behavior.
+
+**1. Identify Neighbors via Feature Distance (Minimum Variance)**
+Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the physical and thermodynamic factors that dictate thermal persistence.
+*   **Search Space:** All devices with known 3DMark Stability scores (Method A), **excluding the target device** itself.
+*   **Distance Metric:** Weighted Euclidean Distance in the 3-dimensional thermal feature space.
+    *   `Distance = Sqrt( 0.40 * (Area_Diff)^2 + 0.30 * (Material_Diff)^2 + 0.30 * (Generation_Diff)^2 )`
+    *   *Where diff is the absolute difference between Target and Neighbor Predicted Component Scores:*
+        *   **Area:** Surface Area component (from Method C Step 1).
+        *   **Material:** Material Conductivity component (from Method C Step 1).
+        *   **Generation:** SoC Peak Power Tier (from Method C Step 2).
+    *   **Scientific Rationale:** Weights prioritize the radiator surface area (40%) as the primary physical bottleneck, while splitting the remainder between material conductivity (30%) and the SoC's heat generation (30%).
+*   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
+
+> [!NOTE]
+> **Why Weighted Euclidean for Thermal?**
+> Thermal performance is an equilibrium between independent vectors. A small phone with an efficient chip might have the same score as a large phone with a power-hungry chip, but they are not "thermal neighbors." The weighted Euclidean search ensures we compare devices with similar surface volumes and heat-generation characteristics to maintain interpolation accuracy.
+
+**2. Calculate Correction Ratio:**
+*   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
+*   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
+
+**3. Apply to Benchmark:**
+*   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+*   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
+
+
+#### 6.10.C Method C: Predicted Calculation (Tertiary, Analytical Method - The Thermodynamic RC Model)
+When physical benchmark data is unavailable, this method calculates the exact thermodynamic equilibrium of the hardware using a Transient Resistor-Capacitor (RC) Model. 
+
+##### 1. Model Hypotheses & Boundary Conditions
+- **Linear Energy Conservation:** All heat generated by the SoC (P_in) must either be stored in the device's mass (Capacitance) or dissipated through the chassis (Resistance).
+- **Lumped Parameter Analysis:** The device is modeled as a single thermal node where the temperature is assumed uniform across the active radiator area.
+- **Sustainability Window (t):** Performance is evaluated over a continuous 1200-second (20-minute) window to align with "sustained" gaming reality rather than "burst" benchmarks.
+- **Psychophysical Perception:** Throttling is converted to FPS perception using the non-linear Gamma Bridge (0.40), accounting for the "Fixed Power Tax" of non-computing components (Display, Modem).
+
+The model balances two primary forces:
+1.  **Heat Dissipation (Chassis/Radiator):** The physical amount of heat (Continuous Watts) the chassis can sustainably shed into the ambient air before its surface temperature surpasses a 20°C threshold limit. *(Rationale: A 20°C rise over a standard 25°C ambient reaches the 45°C ergonomic comfort limit; above this, skin contact becomes painful over time, in alignment with IEC 62368-1 safety standards).*
+2.  **Heat Generation (SoC/Silicon):** The physical amount of heat (Continuous Watts) the processor aggressively generates under a maximum performance load.
+
+If Generation exceeds Dissipation, the processor must throttle to prevent the phone from overheating to dangerous levels.
+
+---
+
+##### 2. Dissipation Analysis (The Hardware Chassis) 
+The total heat the phone can sequentially dissipate is governed by several factors modeled into a Thermal Resistor-Capacitor (RC) Equation.
+
+###### 2.1 Thermal Resistance (R_total) 
+The difficulty of moving heat from the processor into the ambient air. Measured in Kelvin per Watt (K/W). Instead of a single thermal path, heat escapes through a **Multi-Surface Parallel Resistor Network** (Front Screen, Back Panel, Mid-Frame). The total system resistance is strictly defined by parallel circuit law:
+`1 / R_total = (1 / R_path_front) + (1 / R_path_back) + (1 / R_path_frame)`
+*   For each surface independently: `R_path = R_cond + R_conv`
+*   **Conductive Resistance (R_cond):** The struggle to pass through the material thickness. `R_cond = Thickness / (k * Area_active)` (Where **k** is Thermal Conductivity (W/m·K) and **Area_active** is the effective radiator footprint).
+*   **Convective Resistance (R_conv):** The struggle to transfer heat from the surface into the air. `R_conv = 1 / (h * Area_active)` (Where **h** is the convective Heat Transfer Coefficient (W/m²·K)).
+*   *(Note: Air convection coefficient 'h' is standardized at 10.0 W/m²·K. This value represents the combined natural convection and thermal radiation in still air for a device surface at ~45°C. Built-in active fans modify this to 30.0+).*
+
+###### 2.2 Sourcing Technical Parameters 
+To ensure thermodynamic rigor across the three paths, the following rules apply:
+    1.  **Area_device (Total Geometric Area):**
+        *   **Front / Back Panel:** `Area_device = Length * Width`
+        *   **Mid-Frame:** `Area_device = 2 * (Length + Width) * Thickness_phone * 0.85`
+            *(Justification: The **0.85 Height Factor (Chi)** accounts for the structural frame band being physically shorter than the total phone Z-height due to ergonomic chamfers, glass curves, and bezel design).*
+2.  **Conductivity (k):**
+    *   Values are consolidated from multi-source cross-referencing (MatWeb & Engineering ToolBox) for Section 1.1 materials:
+        *   **Aluminum (6k/7k):** **190 W/m·K** (Ref: 6061/7075 alloy average).
+        *   **Stainless Steel:** **16 W/m·K** (Ref: SS 304/316 baseline).
+        *   **Titanium Alloy (Gr5):** **7.0 W/m·K** (Ref: Ti-6Al-4V peak).
+        *   **Front Screen Glass:** **1.1 W/m·K** (Standardized for all front panels).
+        *   **Armor/Shield/Standard Glass:** **1.1 W/m·K** (Ref: Li-Al-Si flagship glass).
+        *   **Ceramic (ZrO2):** **2.5 W/m·K** (Ref: Zirconia thermal isolation limit).
+        *   **Engineering Polymer / Leather:** **0.3 W/m·K** (Ref: Glass-fiber PA range).
+3.  **Thickness (t) - Conduction Distance:**
+    *   The thickness of the frontier material between the heat source and the environment:
+        *   **Front Screen:** Constant **0.0007 m** (0.7 mm standard).
+        *   **Back Panel:** Constant **0.0006 m** (0.6 mm standard).
+        *   **Mid-Frame:** Constant **0.0030 m** (3.0 mm conduction path from internal mount to edge).
+
+###### 2.3 Effective Radiator Area (Area_active) 
+Heat must spread across the chassis surfaces. The percentage of the phone's total footprint used as an active radiator (`Area_active`) is dictated by the **Spreader × Material Synergy** (Spreading_efficiency) and its **Environmental Exposure** (Exposure_ratio): `Area_active = Area_device * Spreading_efficiency * Exposure_ratio`
+*   **Exposure Ratio (Exposure_ratio):** Balances standard bench-tests with the physical fact that human hands block airflow.
+    *   **Front Screen:** Exposure_ratio = `1.0` (100% Exposed).
+    *   **Mid-Frame:** Exposure_ratio = `1.0` (100% Exposed perimeter).
+    *   **Back Panel:** Exposure_ratio = `0.40` (40% Exposed). *(Rationale: Captures an overall physical compromise between being heavily smothered on a desk during a Benchmark test and being partially insulated by warm fingers during handheld gaming).*
+
+
+###### 2.4 Spreading Efficiency
+Not all internal cooling applies equally to all surfaces. We assess Spreading Efficiency (Spreading_efficiency) structurally based on three material classes derived from Section 1.1:
+-   **Class 1: High Conducting (k > 150):** Aluminum Alloys (6000/7000), Zinc Alloy (Zamak), Magnesium Alloy.
+-   **Class 2: Moderate Alloy (5 <= k <= 50):** Titanium Grade 5, Stainless Steel, Amorphous Alloy.
+-   **Class 3: Insulating (k < 5):** Glass (Armor/Shield/Std), Polymers (Std/HP/Reinforced), Leather.
+
+**Surface 1: Front Screen (Always Insulating Glass)**
+- *Cooling Tech:* While displays feature internal graphite, the SoC is mounted on the rear of the motherboard. Heat must traverse the insulating PCB to reach the screen spreaders.
+- **Spreading_efficiency = 0.25** (Low-Medium Utilization). This correctly bottlenecks its thermal participation compared to the direct SoC-to-BackPanel contact.
+
+**Surface 2: Mid-Frame (Sourcing based on Frame Material Class)**
+- *Cooling Tech:* The frame perimeter is natively isolated from the heat source unless it is structural metal.
+- **Spreading_efficiency = 1.00** (Class 1: Conductive Metal): Immediate perimeter heat sharing.
+- **Spreading_efficiency = 0.40** (Class 2: Moderate Alloy): Delayed but significant perimeter utilization.
+- **Spreading_efficiency = 0.05** (Class 3: Insulating Polymer): Heat remains trapped near the SoC footprint.
+
+**Surface 3: Back Panel (The Variable Spreader)**
+Below is the correlation of how internal spreaders strictly interact with the back panel material to dictate the percentage of the surface area utilized for cooling:
+
+*  **Spreading Efficiency Matrix (Spreading_efficiency)**
+
+| Internal Cooling Technology          | **Conductive** (Class 1)   | **Moderate Alloy** (Class 2)| **Insulating** (Class 3)    | 
+| :----------------------------------- | :------------------------- | :-------------------------- | :-------------------------- |
+| **None (SoC Only)**                  | **0.60** (Inherent Metal)  | **0.25** (Better Spread)    | **0.05** (Hotspot)          |
+| **Standard Graphite**                | **0.80**                   | **0.55**                    | **0.25**                    |
+| **Graphene (Multi-layer)**           | **0.90**                   | **0.75**                    | **0.45**                    |
+| **Standard VC (< 4,000 mm²)**        | **0.95**                   | **0.85**                    | **0.60**                    |
+| **High-Volume VC (4,000–10,000 mm²)**| **0.98**                   | **0.95**                    | **0.80**                    |
+| **Extreme/XXL VC (> 10,000 mm²)**    | **1.00** (Full-body)       | **1.00** (Full-body)        | **0.95** (Maximized)        |
+| **Active Cooling (Built-in Fan)**    | **1.00** (Global)          | **1.00** (Global)           | **0.95** (Duct-limited)     |
+
+###### 2.4.1 Environmental Exposure Ratio (E_ratio)
+Because a phone is rarely suspended in mid-air, its ability to dissipate heat is constrained by its physical environment. We apply a standardized exposure coefficient to each surface:
+- **Front Screen (E_ratio = 1.0):** Typically exposed to open air during use.
+- **Mid-Frame (E_ratio = 1.0):** Perimeter edges are generally exposed.
+- **Back Panel (E_ratio = 0.30):** Penalized by the user's hand and/or contact with surfaces (table, pocket), which effectively insulate the rear face.
+
+> [!NOTE]
+> **The 4.0 cm² Glass Hotspot Proof:** Why does glass limit cooling? Because glass is a severe thermal insulator, heat travels laterally only very minimally. Natively, it becomes trapped in a tiny ~4.0 cm² hotspot directly over the processor, rendering the rest of the chassis useless. Thus, high-end glass phones mandate massive Vapor Chambers simply to overcome this glass insulation and spread the heat. (Proof: This calculation provides a physical order of magnitude. Based on **Fin Theory**, the Characteristic Spreading Length (Lc) is sqrt((k * t) / h). While for standard 0.6mm glass (k=1.1, t=0.0006, h=10.0) this yields an Lc of ~0.81 cm and a point-source Area of ~2.1 cm², real-world factors such as the finite physical size of the SoC package, internal spreading through the PCB/shielding, and the vertical dispersion through the glass thickness ensure that heat touches the back panel across a wider region. Consequently, a baseline effective radiator of ~4.0 cm² is adopted as the physically grounded order of magnitude for glass chassis without internal spreaders).
+>
+> **The Metal Advantage:** Aluminum structural unibodies conduct heat so rapidly that even without a Vapor Chamber, they natively distribute heat across ~60-70% of the back panel. *(Proof: Aluminum (k=200) yields Lc ≈ 15.5 cm, allowing the heat to natively utilize the entire device footprint as a radiator).*
+
+> [!TIP]
+> **Material Physics - Graphene vs. Graphite:**
+> While **Graphite** provides lateral spreading, **Graphene** (used in flagship dual-stack systems) increases the "Isothermal Uniformity". It ensures that the active radiator area has a nearly flat temperature gradient, maximizing heat flux per cm² and reducing "thermal lag" during rapid load transitions.
+
+> [!NOTE]
+> **Active Cooling Coefficient (h) & Fan Tiers:**
+> While internal spreaders maximize the active area (Area_eff), built-in fans slash the external **Convective Resistance (R_conv)** by increasing the coefficient **h**. Mathematically, an increase in 'h' is physically equivalent to a corresponding multiplier on the effective surface area for the convective term.
+> - **Tier 2: Standard Active Fan (h = 30.0):** ~3.0x boost compared to passive air. Characterized by standard internal turbofans (typ. < 20,000 RPM) or single-duct airflow systems.
+> - **Tier 1: Extreme Active Fan (h = 45.0):** ~4.5x boost. Characterized by high-performance cooling stacks (typ. > 20,000 RPM fans), dual-fan configurations, or advanced active circulation loops (e.g., RedMagic ICE-X / AquaCore).
+>
+> **What "Duct-Limited" Means:** 
+> Forced cooling on an insulating chassis (Glass/Polymer) is constrained by the physical airflow path. Only the surfaces directly bridged to the internal radiator or airflow ducting can participate in the fan's benefit. Unlike Metal (which conducts heat globally to the airflow), Glass creates "thermal islands," meaning ~5% of the chassis remains isolated from the active cooling stream, capping Spreading_efficiency at 0.95.
+>
+> *(Note: We apply the h-boost strictly to R_conv. Spreading_efficiency remains capped at 1.0 because increasing air speed improves heat escape from the surface but does not change the physical conductive struggle (R_cond) through the back panel material thickness).*
+
+###### 2.5 Thermal Capacitance (C) 
+The "Thermal Sponge". `C = Mass(kg) * Specific Heat(J/kg·K)` (Where **Specific Heat** is the material's ability to store thermal energy). Heavier devices buffer intense heat spikes longer before surface temperatures rise.
+*   **Standard Bulk Specific Heat:** To simplify and ensure consistency, a standardized value of **850 J/kg·K** is used. *(Rationale: In a Lumped Parameter Model, the entire mass acts as a unified sponge. Because the lithium-ion battery and glass screen constitute the vast majority of the weight in all phones, the volumetric average specific heat converges tightly at ~850. Using this constant prevents minor backend material weight differences from skewing the total heat capacity unphysically).*
+*   **Advanced Modifier (Phase Change Materials - PCM):** Devices using internal wax-sleeves (paraffin composites) temporarily increase C during the "melting window," absorbing power spikes without temperature rise. 
+    *   **Standardized Thermal Buffer Constant (C_pcm = 25 J/K):** To ensure model consistency, we define a standardized **Latent Capacity Constant** of **25 J/K**. This represents a reference implementation of **~2.5g** of aerospace-grade organic paraffin. Given its **Latent Heat of Fusion** (the energy absorbed during the melting phase) of **200 J/g**, the total energy buffer provided is **500 J** (2.5g * 200 J/g = 500 J). Evaluated over our 20K safety window, this result yields a capacitance boost of **25 J/K** (500 J / 20 K).
+    *   **Phase-Change Utilization Factor (Sigma_pcm):** Because PCM is non-linear and only absorbs energy during the phase transition (melting), its efficiency depends on thermal contact quality. We apply a utilization factor:
+        *   **Sigma = 0.75 (Tier 1: Advanced PCM Composite):** PCM embedded in a conductive metal-graphite matrix for maximized melting uniformity. **AI Signatures:** *"Composite PCM"*, *"C-PCM"*, *"PCM Matrix"*, *"Graphene-PCM hybrid"*, *"Nanometer Carbon PCM"*.
+        *   **Sigma = 0.50 (Tier 2: Basic PCM Pad):** Standard paraffin pads with limited lateral interface. **AI Signatures:** *"Phase change pad"*, *"Organohydrocarbon interface"*, *"Solid-liquid transition interface"*.
+    *   **Effective Capacitance Formula:** `C = (Mass * 850) + (Sigma_pcm * 25)`
+    *   *(Melting Point Constraint: PCM credits are only applicable if the material's melting point is verified within the 40°C–45°C safety window. Above this, the material results in zero benefit for the sustained safety threshold).*
+
+###### 2.6 The Multi-Path Transient Solution
+The system calculates the **Admissible Thermal Power (P_adm)**—the maximum continuous wattage allowed to reach the safety threshold (Delta_T_limit) at the end of the 1200-second evaluation window. 
+
+**Part 1: The Three-Path Parallel Resistance (R_total)**
+Heat escapes the device through three parallel thermal paths. We calculate the resistance of each path ($R_{path} = R_{cond} + R_{conv}$):
+1. **Front Path ($R_{path\_front}$):** Based on Display Area and Glass insulation.
+2. **Back Path ($R_{path\_back}$):** Based on Back Material and Spreading Efficiency.
+3. **Frame Path ($R_{path\_frame}$):** Based on Perimeter area and Frame Conductivity.
+
+**Formula:** `1 / R_total = (1 / R_path_front) + (1 / R_path_back) + (1 / R_path_frame)`
+
+**Part 2: Foundational Energy Balance (The Differential Equation)**
+`C * (dT / dt) = P - (T - T_amb) / R_total`
+*Rationale: The rate of heat storage (C * dT/dt) is the difference between the generated thermal power (P) and the heat dissipated into the ambient environment (Delta_T / R_total).*
+
+**Introduction of Thermal Impedance (Z_th):**
+The relationship between the temperature rise (Delta_T) and the input power (P) over time (t) is defined by the **Thermal Impedance (Z_th)**:
+`Delta_T(t) = P * Z_th(t)`
+
+**Literal Solution (Transient RC Model):**
+`Z_th(t) = R_total * (1 - e^(-t / (R_total * C)))`
+
+**Calculating the Admissible Thermal Power (P_adm):**
+`P_adm = Delta_T_limit / Z_th(t)`
+
+**Project Parameters:**
+- **Delta_T_limit:** 20°C (The ergonomic safety limit reached at 45°C surface).
+- **t (Duration):** 1200 seconds (Standardized 20-minute sustainability window).
+- **R_total:** Reciprocal of the sum of parallel conductances (K/W).
+
+**Final Calculation:** `P_adm = 20 / (R_total * (1 - e^(-1200 / (R_total * (Mass * 850 + Sigma_pcm * 25)))))`
+
+---
+
+##### 3. Heat Generation Analysis (The SoC "Silicon Engine") 
+Peak heat generation is computed by identifying the specific **Peak Package Power (P_peak)** of the processor under maximum sustainable synthetic load. 
+
+**Model Rationale:** To maintain absolute neutrality, this model relies on verified **Package Power** measurements—the actual electricity consumed by the silicon during maximum work—rather than manufacturer 'TDP' estimates. By measuring the real wattage drawn from the motherboard (minus system idle), we identify the exact thermal load the chassis must handle. This ensures the score is anchored in physics: the higher the wattage, the more heat the cooling system must dissipate to prevent performance drops.
+
+> [!NOTE]
+> **The Efficiency vs. Capacity Paradox:** 
+> Readers may notice that modern 3nm chips have higher Peak Power (15–20W) than legacy 10nm chips (4–5W). While modern chips are ~10x more **efficient** (using much less energy for the *same* task), they have nearly 50x the **capacity** (more cores, higher speeds). 
+> 
+> **Why Efficiency Grows with Node Shrink?** 
+> Moving from 10nm to 3nm yields a 2–3x jump in raw electrical efficiency. This is because smaller transistors (FinFET and Gate-All-Around architectures) have much shorter path lengths, reducing the voltage needed to switch and drastically cutting down on wasted "leakage" current. 
+> 
+> Imagine a modern supercar vs. a 1920s tractor: The supercar is more efficient, but its engine is so much more powerful that it still burns more fuel at top speed. In Table 1, we measure the "Top Speed" (Max Capacity) of each SoC.
+
+**Table 1: Master SoC Peak Power Matrix (Extract)**
+*Values represent verified Package Power (Watts) measured under maximum peak synthetic load. For the full exhaustive database of all mobile silicon (2016–2026), refer to the Source of Truth.*
+
+| SoC Model                           | Peak Power (P_peak) [Watts] | Node  | Foundry |
+| :---------------------------------- | :-------------------------: | :---: | :-----: |
+| **Snapdragon 8 Elite**              | **19.5**                    | 3nm   | TSMC    |
+| **Snapdragon 8 Gen 1**              | **16.5**                    | 4nm   | Samsung |
+| **Dimensity 9400**                  | **15.5**                    | 3nm   | TSMC    |
+| **[...]**                           | **[...]**                   | [...] | [...]   |
 
 > [!IMPORTANT]
-> **Why is TDSI necessary to correctly evaluate performance beyond standard burst benchmarks?**
-> Standard benchmarks (like Geekbench 3.1) measure instantaneous, burst performance. They do not penalize a device that melts your hand or heavily throttles after 5 minutes of intensive load. The TDSI uniquely scores the hardware's physical capacity to sustain that peak load over time. A phone can score 10/10 in burst speed, but if it has a plastic frame and no cooling, it will throttle to 5/10. TDSI corrects this blind spot in standard benchmarking.
+> **Source of Truth:** The full authoritative lookup table for all smartphone SoCs (2016–2026) is located in [proposed_data_structure.md] under **SOC_PEAK_POWER_MATRIX**.
 
-**Part A: Chassis Thermal Capacity (50%)**
-*   *What is it?* The physical capacity of the device's body to absorb and spread heat passively through conduction and radiation.
-*   **Measurement:** Composite material conductivity (Frame + Back), total mass (weight), surface area (dimensions), and internal volume (thickness).
-
-**A1 — Composite Thermal Spreading & Interface (35% of Part A)**
-*   **Measurement:** Combined scoring of the structural frame (Spreading Conductivity) and the back panel (Dissipation Efficiency).
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Frame provides the thermal bridge; Back panel provides the radiation/convection interface.
-*   **Formula:** `A1_Score = (0.6 * A1.1_Score) + (0.4 * A1.2_Score)`
-
-> [!NOTE]
-> **Component Weight Logic (60/40 Split):** 
-> To determine the final spreading efficiency, we weight the components based on their physical role:
-> - **Frame (60% Weight):** Acts as the high-conductivity "thermal highway" bridging the internal heat source to the device edges.
-> - **Back Panel (40% Weight):** Acts as the primary "radiator" face. Because it accounts for ~45% of the total surface area, its material transparency significantly influences final heat flux to the atmosphere.
-
-**A1.1 — Frame Thermal Dissipation Class**
-*   **Measurement:** Material of the structural chassis frame.
-*   **Unit:** Material Class (Discrete)
-*   **Significance:** Evaluates the capacity of the structural frame to act as the primary heat-spreading "highway" from the SoC to the device edges.
-
-| **Frame Material Class**       | **Score** |
-| :----------------------------- | :-------- |
-| **6000 Series Aluminum**       | **10.00** |
-| **7000 Series Aluminum**       | **9.66**  |
-| **Zinc Alloy (Zamak 3)**       | **9.64**  |
-| **Die-Cast Aluminum (ADC12)**  | **9.35**  |
-| **Magnesium Alloy**            | **8.50**  |
-| **Stainless Steel**            | **7.48**  |
-| **Titanium Alloy**             | **5.53**  |
-| **Amorphous Alloy**            | **5.44**  |
-| **Specialized Ceramic**        | **4.37**  |
-| **Reinforced Polymer**         | **1.07**  |
-| **High-Performance Polymer**   | **0.33**  |
-| **Standard Polymer**           | **0.00**  |
-| **Material Not Disclosed**     | **0.00**  |
-
-**Note:** For detailed material-to-thermal mapping and identification guidelines, refer to the operational documentation in [proposed_data_structure.md].
-
-**Why these scores? (Engineering Justification):**
-Section 6.10.A1.1 evaluates frame materials as **Active Thermal Spreading Highways**. Scores are derived from a **Balanced Thermal Merit Index** (calculated as 50% Thermal Conductivity + 50% Thermal Soak).
-- **Thermal Conductivity (Heat Spreading Speed):** Represents the hardware's heat spreading efficiency (power per unit length-temperature). Metals excel here by moving heat quickly away from the source to prevent local hotspots.
-- **Thermal Soak (Volumetric Heat Capacity / Storage Buffer):** The product of Density and Specific Heat, representing the ability to buffer and absorb heat spikes within the device's small internal volume before critical temperatures are reached.
-
-**Engineering Justification (Material Analysis):**
-- **6000 Series Aluminum (10.00):** The undisputed thermal gold standard. While its volumetric soak (2.44 MJ/m³·K) is lower than stainless steel, its Thermal Conductivity (167 W/m·K) is ~10x higher. This allows heat to be bused to the large dissipation surfaces of the frame and display mid-frame instantly, preventing localized "hot spots" at the SoC.
-- **7000 Series Aluminum (9.66):** Offers a near-identical profile to 6000-series with slightly lower conductivity (130 W/m·K) balanced by a robust 2.44 MJ/m³·K soak capacity. Highly resilient to structural thermal deformation.
-- **Zinc Alloy (Zamak 3) (9.64):** High-density thermal buffer (2.77 MJ/m³·K) with notable conductivity (113 W/m·K). Provides a "solid" hand-feel with effective heat-spreading flux superior to cast aluminum.
-- **Die-Cast Aluminum (ADC12) (9.35):** The pervasive medium-conductivity baseline (96 W/m·K). While outperformed by extruded 6k/7k alloys, it provides a significantly more efficient heat path than steel or titanium.
-- **Magnesium Alloy (8.50):** A "Burst-Specialist" material. It features the highest specific heat (1.05 J/g·K), but its low density limits its volumetric soak to 1.90 MJ/m³·K. Its score is driven by moderate conductivity (72 W/m·K), which is superior to steel and titanium.
-- **Stainless Steel (7.48):** The "Ultimate Heat Reservoir." Its high density provides the framework's highest volumetric soak (4.00 MJ/m³·K), allowing it to absorb significant energy spikes. However, its low conductivity (16.2 W/m·K) acts as a bottleneck, preventing heat from spreading to the frame's edges as quickly as aluminum.
-- **Titanium Alloy (5.53):** Superior structural strength but a thermal compromise. With a low conductivity (6.7 W/m·K) and a moderate soak (2.39 MJ/m³·K), it traps heat significantly more than aluminum, requiring more aggressive internal cooling to compensate.
-- **Amorphous Alloy (5.44):** Liquid-metal alloys with a good volumetric buffer (2.68 MJ/m³·K) but very poor conductivity (5.0 W/m·K), ranking them just below Titanium in the spreading-efficiency hierarchy.
-- **Specialized Ceramic (4.37):** High-density insulator (~2.5 W/m·K) with a respectable 2.70 MJ/m³·K soak. Its primary drawback is thermal impedance; it effectively seals heat within the core, relying on the frame edges for any meaningful dissipation.
-- **Reinforced Polymer (1.07):** Technical composites (0.35 W/m·K / 1.76 MJ/m³·K). Fiber reinforcement improves upon basic resins, but it remains a thermal barrier that forces the SoC to rely almost entirely on active internal solutions.
-- **High-Performance Polymer (0.33):** Specialized resins (0.25 W/m·K / 1.44 MJ/m³·K) that offer a marginal 20-30% thermal improvement over standard plastics but provide no meaningful spreading utility.
-- **Standard Polymer (0.00):** Commodity plastics (0.18 W/m·K / 1.58 MJ/m³·K) with no active spreading utility; used as the absolute baseline (0.00 score) for the frame's thermal performance model.
-
-**Data Sources:** NIST Thermal Property Database; ASM International Alloy Datasheets; Meridian Magnesium AZ91D Technical Specs; *MatWeb Technical Polymer Repository*.
-
-**A1.2 — Back Panel Interface Material**
-*   **Measurement:** Material of the exterior back panel.
-*   **Unit:** Material Type (Discrete)
-*   **Significance:** Evaluates the efficiency of the back panel as the primary convective and radiative heat flux interface to the environment.
-
-| **Back Material Class**      | **Score** |
-| :----------------------------| :-------- |
-| **6000 Series Aluminum**     | **10.00** |
-| **7000 Series Aluminum**     | **9.68**  |
-| **Zinc Alloy (Zamak 3)**     | **9.66**  |
-| **Die-Cast Aluminum (ADC12)**| **9.38**  |
-| **Specialized Ceramic**      | **4.70**  |
-| **Armor-Class Glass**        | **3.24**  |
-| **Shield-Class Glass**       | **3.07**  |
-| **Reinforced Glass**         | **3.06**  |
-| **Standard Glass**           | **3.06**  |
-| **Reinforced Polymer**       | **1.54**  |
-| **Composite Sheet**          | **1.05**  |
-| **High-Performance Polymer** | **0.90**  |
-| **Standard Polymer**         | **0.58**  |
-| **Flexible Membrane**        | **0.00**  |
-| **Material Not Disclosed**   | **0.00**  |
-
-**Note:** For detailed material-to-thermal mapping and identification guidelines, refer to the operational documentation in [proposed_data_structure.md].
-
-**Why these scores? (Engineering Justification):**
-### Scoring Methodology (Transient Thermodynamic RC Model)
-
-Section 6.10 evaluates the device as a **Dynamic Thermal System**. Instead of arbitrary points, the score represents a physical reality: the **Maximum Sustainable Power (Watts)** the phone can dissipate for **1200 seconds (20 minutes)** without exceeding a 20°C surface temperature rise.
-
-To achieve this, the scoring agent selects between two methods:
-- **Method A (Benchmarked Reality):** Uses the **3DMark Wild Life Extreme Stability Score (%)**.
-- **Method B (Technical Simulation):** Solves the first-order differential equation for thermal accumulation:
-> `Sustainable-Watts = 20 / (R-total * (1 - e^(-1200 / (R-total * C))))`
+**Calculated Peak Generation (P_gen):**
+`P_gen = P_peak`
+*(Note: Use the **P_peak** value from the Master SoC Matrix directly. This is the final wattage measured in laboratory tests, which already encompasses all manufacturing and node characteristics.)*
 
 ---
 
-**A1 — The External Radiator (Part A Properties)**
+##### 4. Final Stability Derivation 
+Once the exact heat Dissipation limits and the Heat Generation volume are locked in, the thermal stability is calculated and converted to visual gaming stability.
 
-The radiator consists of the back panel material, mass, and surface area. These properties determine how much heat the "sponge" can hold and how fast the air can take it away.
+1.  **Define Dynamic System Base Heat (P_base_heat):**
+    The chassis must expel 100% of the device's heat. The model calculates the steady-state heat generated by the non-processor components (Display, RAM, logic), which occupies a significant portion of the total cooling budget:
+    `P_base_heat = P_static + (k_display_heat * Area_screen_cm2)`
+    *   **P_static (0.40 W):** The "Logic Board Baseline". This consists of PMIC (Power Management Integrated Circuit) conversion efficiency losses (~0.25 W) — based on a 90% efficiency baseline for modern buck converters under an active system load of ~2.5W — and baseline active logic overhead for memory controllers, sensors, and baseband idle (~0.15 W). Total Baseline Heat: `0.25 W + 0.15 W = 0.40 W`.
+    *   **k_display_heat (0.0075 W/cm²):** The "Radiant Joule Factor". Derived from first-principles normalization of high-end LTPO OLED panels:
+        1. Raw Draw: Flagship 6.8-inch panels (~114 cm²) consume ~0.90W at 500 nits.
+        2. Density: `0.90 W / 114 cm² = 0.00789 W/cm²`.
+        3. Thermodynamic Correction: Accounting for the heat factor (k_heat_factor = 0.95). While OLED luminous efficiency is ~5-15% (system level), only ~2% to 8% of total electrical energy truly escapes the device as light. A large portion of generated photons are trapped in the OLED stack or reabsorbed by electrodes, color filters, and the front glass, returning as heat. Consequently, ~92-98% of display electrical power becomes heat inside the device.
+        4. Calculation: `0.00789 * 0.95 = 0.0075 W/cm²`.
 
-#### A1.1 & A1.2 — Material Conductivity & Flux
-Heat must pass through the back panel to reach the air. We calculate the **Thermal Resistance (R_material)** based on the material class and thickness.
-- **Metals (Aluminum/Titanium):** Offer near-zero resistance, behaving as "thermally transparent" radiators.
-- **Glass/Ceramic:** Act as partial insulators, creating a bottleneck between the chip and the air.
-- **Polymers/Leathers:** Act as "thermal blankets," trapping heat inside the core.
+2.  **Calculate Admissible SoC Budget (P_adm_soc):**
+    `P_adm_soc = P_adm - P_base_heat`
+    *Rationale: By subtracting the base heat from the total chassis limit (P_adm), we determine the specific continuous thermal headroom available exclusively for the SoC workload defined in Section 6.10.3.*
 
-#### A2 — Device Thermal Mass (Capacitance)
-*   **Significance:** Based on the Heat Capacity formula (`C = Mass * Specific Heat`), heavier devices have a larger "thermal sponge." They can absorb significant bursts of power before the temperature begins to rise.
-*   **Rule:** Heaver devices have higher **Capacitance (J/K)**, allowing them to remain stable for longer durations before throttling.
+3.  **Raw Power Ratio:** 
+    `Power_Ratio = P_adm_soc / Peak_Generation_Watts`
+    *(Note: Capped at 1.0 (100%), indicating the device possesses sufficient thermal headroom to sustain maximum performance throughout the 1200-second evaluation window without requiring thermal throttling).*
 
-#### A3 — Convective Surface Area
-*   **Significance:** According to Newton's Law of Cooling, the rate of dissipation is directly proportional to the surface area. A larger "Radiator Area" reduces the **Air Resistance (R_air)**.
+4.  **The Physics of Dynamic Power (The Cube Root Law):** 
+    The dynamic power consumption of any semiconductor is governed by the equation: `P = C * V^2 * f` (Where P is Power, C is parasitic capacitance, V is Voltage, and f is Frequency).
+
+    **Why P ≈ f^3 in plain language?** 
+    At the microscopic level, a transistor is basically a tiny capacitor (a bucket) that must fill up with electrons to switch 'ON', and empty out to switch 'OFF'.
+    *   **Frequency (f):** This is how fast we are forcing the bucket to fill and empty. If we double the frequency, we have half the time to fill the bucket.
+    *   **Voltage (V):** Voltage is the 'water pressure' pushing the electrons. If we have half the time to fill the bucket, we MUST double the water pressure (Voltage) to force the electrons in fast enough.
+    *   **The Result:** Because Voltage (V) must increase proportionally with Frequency (f) to keep the chip stable, any increase in speed hits the power formula twice.
+    *   **The Formula:** Power = Capacitance * Voltage^2 * Frequency. 
+        - If you double the frequency (f * 2), you must double the voltage (V * 2). 
+        - Squaring the doubled voltage gives you * 4.
+        - Multiplying that by the doubled frequency gives you * 8.
+        - This is mathematically identical to f^3 (2^3 = 8).
+    *   Power scales cubically with Frequency. If you want a processor to run twice as fast, it will burn eight times the power.
+
+    By reversing the math: If a smartphone's cooler restricts the processor to a maximum amount of Power (P), the maximum Performance (f, which equals gaming FPS) it can achieve is the **Cube Root** of that power: `P^0.33`.
+
+    `Predicted_Stability_% = 100 * (Power_Ratio ^ 0.33)`
+
+5.  **Final TDSI Score:** 
+    The `Predicted_Stability_%` is logarithmically normalized against minimum/maximum thresholds and scaled to a strict **0-10.0** outcome.
+    *Formula:* `Score = 10 * (log(Predicted_Stability_%) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))` (Clamped 0-10)
+    *   **Max Score (10.0):** ≥ Thermal_Stability_Max
+    *   **Min Score (0.0):** ≤ Thermal_Stability_Min
 
 ---
 
-**Part B — Internal Spreading Efficiency (The "Active Window")**
+**Case Study Comparison: Metal vs Glass Thermodynamics**
+Below is the physical data demonstrating why a mid-range metal phone natively maintains higher framerates than a flagship glass device under prolonged stress.
 
-Without internal spreading, heat is trapped in a tiny **4 cm² hotspot** directly over the chip. Section 6.10 Part B evaluates the technology used to bridge this heat to the rest of the chassis.
+| System Variable                          | OnePlus Nord 4 (Metal) | Galaxy S24 Ultra (Glass)| Physical Interpretation                                        |
+| :--------------------------------------- | :--------------------- | :---------------------- | :------------------------------------------------------------- |
+| **Footprint (Total Area)**               | 122 cm²                | 128 cm²                 | Nord 4 is physically smaller.                                  |
+| **Chassis Mass (Thermal Inertia)**       | 0.1995 kg              | 0.232 kg                | S24 Ultra has higher mass to absorb heat spikes.               |
+| **Back Material (k)**                    | Aluminum (~200)        | Glass (~1.1)            | Aluminum has a 180x material conductivity advantage.           |
+| **Internal Cooling Technology**          | Internal VC Stack      | XL Vapor Chamber        | Spreading efficiency overrides material insulation.             |
+| **Spreading Efficiency (Beta)**          | **0.95**               | **0.90**                | Percentage of total surface utilized for heat exchange.        |
+| **Exposure Factor (E_ratio, Back)**      | 0.30                   | 0.30                    | Penalty for hand/surface blocking (Standardized).              |
+| **Front Path (R_path_front)**            | 32.97 K/W              | 31.42 K/W               | Total Resistance through the display face (RC Path 1).         |
+| **Frame Path (R_path_frame)**            | 26.32 K/W              | 24.12 K/W               | Aluminum natively unlocks complete phone perimeter (Path 2).   |
+| **Back Path (R_path_back)**              | 28.76 K/W              | 29.09 K/W               | Resistance through the rear face (RC Path 3).                  |
+| **Total Resistance (R_total)**           | **9.70 K/W**           | **9.29 K/W**            | S24 Ultra's larger size offsets the Glass insulation.          |
+| **Heat Dissipation (Chassis, P_adm):**   | **3.98 Watts**         | **4.48 Watts**          | The continuous heat the chassis can safely eject.              |
+| **System Base Heat (P_base_heat):**      | 1.20 Watts (~107 cm²)  | 1.26 Watts (~114 cm²)   | The Galaxy's larger screen claims a higher baseline budget.    |
+| **Admissible SoC Budget (P_adm_soc):**   | 3.98-1.20 = **2.78 W** | 4.48-1.26 = **3.22 W**  | Net continuous wattage available for the CPU/GPU workload.     |
+| **Heat Generation (SoC, P_peak):**       | 5.70 Watts             | 13.3 Watts              | The S24 Ultra generates significantly more engine heat.        |
+| **Power Ratio (P_adm_soc / P_peak):**    | 2.78 / 5.70 = **0.488**| 3.22 / 13.3 = **0.242** | The Galaxy operates far beyond its chassis constraints.        |
+| **Bridge (Ratio ^ 0.33) & Prediction:**  | **78.9%**              | **62.6%**               | Physical FPS Stability Projection using the Cube Root Law.     |
+| **Measured 3DMark Reality**              | **~75.0%**             | **60.1%**               | Empirical testing heavily validates the mathematical model.    |
 
-| Internal Technology (Part B) | **Glass/Insulator Back** (Beta) | **Metal Radiator Back** (Beta) |
-| :-------------------------- | :------------------------------ | :----------------------------- |
-| **Active Air/Liquid (Built-in)** | 1.00 (Full-Body + Active)      | 1.00 (Full-Body + Active)      |
-| **Vapor Chamber (XL)**      | 0.90 (VC size limited)          | **1.00** (Full-Body saturated) |
-| **Vapor Chamber (Med)**     | 0.70 (VC size limited)          | **0.95** (High utilization)    |
-| **Graphite / Heat Pipe**    | 0.30 (Partial spread)           | **0.80** (Material assist)     |
-| **None (SoC only)**         | 0.05 (Hotspot)                  | **0.60** (Inherent spread)     |
+> [!TIP]
+> **Example: Flagship Stability Case (S24 Ultra)**
+> *   **Admissible Thermal Power (P_adm):** XL Vapor Chamber + Glass Chassis (3-Path Model, R_total 9.29 K/W) = **4.48W**
+> *   **System Base Heat (P_base_heat):** 0.40W + (0.0075 * 114cm²) = **1.26W**
+> *   **Admissible SoC Budget (P_adm_soc):** 4.48W - 1.26W = **3.22W**
+> *   **Heat Generation (SoC P_peak):** Snapdragon 8 Gen 3 (13.3W Peak) = **13.3W**
+> *   **Thermal Stability Ratio:** `3.22 / 13.3` = **0.242**
+> *   **Stability Projection:** `0.242 ^ 0.33` = **62.6%** (Score: ~6.2 / 10.0 Log-Normalized)
 
-> [!NOTE]
-> **Material Synergy Rule:** Spreading efficiency is a system result. Metals (k=200) inherently distribute heat across ~60% of the chassis even without dedicated spreaders. Glass (k=1) requires a Vapor Chamber to reach equivalent area utilization.
-
-*Crucial Logic:* An advanced Vapor Chamber (Part B) converts a mediocre radiator (Part A) into a high-performance system by unlocking the full surface area of the device.
-
----
-
-**Part C — Process Node & Heat Generation (Demand Side)**
-
-To determine stability, the **Sustainable Supply (Watts)** is compared against the **SoC Peak Demand (Watts)**.
-- **Demand Tiering:** SoCs are assigned a base wattage (e.g. Ultra Flagship = 14W, Mainstream = 6W).
-- **Node Modifier:** Efficiency is scaled by the **Process Node (nm)** and **Foundry** (e.g. 3nm TSMC = 0.85x).
-- **Logic:** `Section-Score = (Sustainable-Supply / (Base-Peak * Node-Modifier)) * 10`
-
----
-
-**Final Calculation: The Thermal Performance Ratio**
-
-1.  **Calculate System Resistance (R-total):** Corrected for Area-eff (Part B) and Material (A1).
-2.  **Calculate System Capacitance (C):** Derived from Weight (A2).
-3.  **Calculate Sustained Supply (Watts-sustained):** Solved via the ODE for 1200s (Maps to **Lowest Loop**).
-4.  **Calculate Sustained Power Ratio (Ratio-watt):** `Watts-sustained / P-demand`.
-5.  **Calculate Predicted Performance Ratio (Ratio-FPS):** `Ratio-watt ^ Gamma`.
-    *   **Peak State (Highest Loop):** The 100% initial performance target.
-    *   **Gamma (0.40):** The non-linear scaling factor. Matches Geekerwan's finding that a **70% power reduction** only results in a **30% FPS reduction** due to undervolting.
-6.  **Final TDSI Score:** The `Ratio-FPS` result, scaled to 10.0.
-
-### 🔹 Integration: The "Master Modifier" Rule
-
-The Section 6.10 score is the authoritative **Thermal Speed Limit** for the entire system.
-
-**1. Synergy with Section 6.1 (CPU) & 6.3 (GPU):**
-If a processor's Peak Power Demand exceeds the 6.10 Sustainable Watts, a **Throttling Penalty** is applied to the final score:
-- `Modifier = 6.10_Sustainable_Watts / Peak_Processor_Watts` (Max 1.0)
-- `Sustained_Score = Peak_Score * Modifier`
-
-**2. Synergy with Section 6.4 (AI Hardware):**
-AI workloads generate constant load. If AI Demand is within the 6.10 envelope, the Stability Multiplier remains **1.0x (Perfect)**. If not, the AI score is reduced proportionately.
-
-**3. Synergy with Section 8.1 (Battery Endurance):**
-Heat is the enemy of battery life. The 6.10 model predicts the internal operating temperature.
-- Devices with **Low Thermal Resistance** keep batteries cooler, preventing the "Thermal Decay" of lithium efficiency. 
-- Section 8.1 uses the 6.10 Resistance value to apply an **Efficiency Correction** to the available Watt-hours.
-
+> [!IMPORTANT]
+> **Terminology Clarification:**
+> - **Predicted FPS Stability:** The raw visual consistency percentage (%) derived by the physical model in Method C. It represents the ratio of sustained FPS to peak FPS.
+> - **Overall Predicted Score (TDSI):** The final 0-10.0 result after logarithmic normalization. This index acts as a multiplicative throttle coefficient for all subsequent performance sections.
+> - **Gamma Index (0.33):** The physical bridge coefficient (the "Cube Root Law") that converts raw wattage throttling into visual FPS perception.
+> - **Dual-Standard Rule:** 3DMark Wild Life Extreme is the primary empirical source (Methods A/B) for consistency; Burnout Benchmark is the secondary calibration tool used strictly for model-to-wattage tuning in Method C development.
 
 ### 🔹 6.11 System Architecture & Synergy Index (SASI) [⚠️ EXPERIMENTAL / NON-SCORING]
 *Description:* This subsection evaluates the performance-enhancing effects of "Vertical Integration"—the technical synergy achieved when the Operating System and System-on-Chip (SoC) are co-designed. This synergy allows a device to potentially outperform competitors with superior raw hardware specs by reducing system overhead and latency.

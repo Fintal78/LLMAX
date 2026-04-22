@@ -1,4 +1,4 @@
-﻿# Ultimate Smartphone Data Structure Proposal (v5.1)
+# Ultimate Smartphone Data Structure Proposal (v5.1)
 
 This schema is the primary, self-contained "Recipe" for AI-automated classification and scoring. It is strictly aligned with the file `scoring_rules.md`.
 
@@ -3252,161 +3252,136 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_10_thermal_dissipation_stability": {
-        // SCORING GOAL: Evaluates the device's ability to maintain sustained performance under high thermal load. TDSI is a composite index (0-10) that normalizes hardware-only cooling capability (Parts A & B) and adjusts it via an "Asset-vs-Liability" compensation model (Load Bonus) derived from SoC efficiency (Part C) and peak power demand (§6.1).
-        // A high TDSI ensures stable frame rates in gaming, prevents aggressive AI throttling, and protects long-term battery health.
+        // SCORING GOAL: Evaluates internal cooling capability and sustained performance using the Thermodynamic RC Model.
+        // This section bridges physical heat dissipation capacity (Watts) to visual stability (FPS) using a 0.40 Gamma scaling factor.
         
         // ═══════════════════════════════════════════════════════════════════════════
-        // PART A: CHASSIS THERMAL CAPACITY (50% of Physical Score)
+        // METHOD A — Direct Benchmark (Primary Standard: 3DMark Wild Life Extreme)
         // ═══════════════════════════════════════════════════════════════════════════
-        "part_a_chassis_thermal_capacity": {
-          "a1_1_frame_material": {
-            "value": "Titanium Alloy",
-            "value_path": "1_1_materials.frame_material.value",
-            "subscore": 5.53
-            // SCORING GUIDELINE: Use the following subscores based on "value":
-            //   • "6000 Series Aluminum"                 → 10.00
-            //   • "7000 Series Aluminum"                 → 9.66
-            //   • "Zinc Alloy (Zamak 3)"                 → 9.64
-            //   • "Die-Cast Aluminum (ADC12)"            → 9.35
-            //   • "Magnesium Alloy"                      → 8.50
-            //   • "Stainless Steel"                      → 7.48
-            //   • "Titanium Alloy"                       → 5.53
-            //   • "Amorphous Alloy"                      → 5.44
-            //   • "Specialized Ceramic"                  → 4.37
-            //   • "Reinforced Polymer"                   → 1.07
-            //   • "High-Performance Polymer"             → 0.33
-            //   • "Standard Polymer"                     → 0.00
-            //   • "Not Disclosed"                        → 0.00
-          },
-          "a1_2_back_material": {
-            "value": "Armor-Class Glass",
-            "value_path": "1_1_materials.back_material.value",
-            "subscore": 3.24
-            // SCORING GUIDELINE: Use the following subscores based on "value":
-            //   • "6000 Series Aluminum"                 → 10.00
-            //   • "7000 Series Aluminum"                 → 9.68
-            //   • "Zinc Alloy (Zamak 3)"                 → 9.66
-            //   • "Die-Cast Aluminum (ADC12)"            → 9.38
-            //   • "Specialized Ceramic"                  → 4.70
-            //   • "Armor-Class Glass"                    → 3.24
-            //   • "Shield-Class Glass"                   → 3.07
-            //   • "Reinforced Glass"                     → 3.06
-            //   • "Standard Glass"                       → 3.06
-            //   • "Reinforced Polymer"                   → 1.54
-            //   • "Composite Sheet"                      → 1.05
-            //   • "High-Performance Polymer"             → 0.90
-            //   • "Standard Polymer"                     → 0.58
-            //   • "Flexible Membrane"                    → 0.00
-            //   • "Not Disclosed"                        → 0.00
-          },
-          "a2_thermal_mass_weight": {
-            "value": 232,
-            "value_path": "1_5_weight.weight_g.value",
-            "subscore": 7.67
-            // SCORING GUIDELINE: Score = 10 * (Weight_g - Thermal_Weight_g_Min) / (Thermal_Weight_g_Max - Thermal_Weight_g_Min), clamped 0-10. Note: Heavier is better for thermal mass.
-          },
-          "a3_dissipation_surface_area": {
-            "height_mm": {
-              "value": 162.3,
-              "source": "TBD",
-              "exact_extract": "Proof pending"
-              // GUIDELINE: Vertical dimension for surface area calculation.
+        "method_a_benchmark_TDSI": {
+          "value": 92.4,
+          // GUIDELINE: Stability percentage from a 20-minute 3DMark Wild Life Extreme Stress Test.
+          "source": "https://www.gsmarena.com/oneplus_nord_4-review-2720p4.php",
+          "exact_extract": "OnePlus Nord 4 [...] 3DMark Wild Life Extreme Stress Test stability: 92.4%",
+          "subscore": 9.01
+          // SCORING GUIDELINE: subscore = 10 * (log(value) - log(GPU_Stability_Min)) / (log(GPU_Stability_Max) - log(GPU_Stability_Min)), clamped 0-10. (Min=40, Max=100).
+        },
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD B — Nearest Neighbor Interpolation (Secondary)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_b_neighbor_interpolation_TDSI": {
+          "neighbors": [
+            {
+              "device_id_1": "oneplus_nord_3",
+              "predicted_score_1": 8.10,
+              "benchmark_score_1": 7.85
             },
-            "width_mm": {
-              "value": 79.0,
-              "value_path": "1_6_ergonomics.width_mm.value",
-              // GUIDELINE: Internal reference for width via §1.6.
+            {
+              "device_id_2": "samsung_galaxy_s24_ultra",
+              "predicted_score_2": 8.65,
+              "benchmark_score_2": 3.65
             },
-            "calculated_surface_mm2": 12821.7,
-            "subscore": 9.79
-            // SCORING GUIDELINE: calculated_surface_mm2 = height_mm.value * width_mm.value. Apply formula: Score = 10 * (Surface - 4500) / (13000 - 4500), clamped 0-10. (4500-13000 mm² range).
-          },
-          "a4_internal_volume_thickness": {
-            "value": 8.6,
-            "value_path": "1_4_thickness.thickness_mm.value",
-            "subscore": 5.64
-            // SCORING GUIDELINE: Apply the Section 6.10.A4 linear formula: Score = 10 * (Thickness_mm - Thermal_Thickness_mm_Min) / (Thermal_Thickness_mm_Max - Thermal_Thickness_mm_Min), clamped 0-10. Note: Thicker is better for thermal displacement.
-          },
-          "predicted_part_a": 7.03
-          // SCORING GUIDELINE: predicted_part_a = (0.21 * a1_1.subscore) + (0.14 * a1_2.subscore) + (0.25 * a2.subscore) + (0.30 * a3.subscore) + (0.10 * a4.subscore).
+            {
+              "device_id_3": "xiaomi_14_ultra",
+              "predicted_score_3": 8.50,
+              "benchmark_score_3": 5.20
+            }
+          ],
+          "avg_predicted_neighbors": 8.41,
+          "avg_benchmark_neighbors": 5.57,
+          "correction_ratio": 1.0285,
+          "interpolated_score": 5.73
+          // SCORING GUIDELINE: standard correction ratio interpolation based on Method C predicted scores.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
-        // PART B: INTERNAL COOLING SYSTEM CLASS (50% of Physical Score)
+        // METHOD C — Thermodynamic RC Prediction Model (Tertiary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "part_b_cooling_system_class": {
-          "value": "Tier 4: Large Passive (VC ≥4000 mm²)",
-          "value_details": {
-             "Tier 1: Active Force-Air / Liquid Loop": [],
-             "Tier 2: Ultra-Extreme Passive (VC ≥10k mm²)": [],
-             "Tier 3: Extreme Passive (VC ≥7000 mm²)": [],
-             "Tier 4: Large Passive (VC ≥4000 mm²)": [{ "name": "Vapor Chamber", "source": "TBD", "exact_extract": "Proof pending" }],
-             "Tier 5: Standard Passive (VC <4000 mm²)": [],
-             "Tier 6: Basic Passive (Graphite / Heat Pipe)": [],
-             "Tier 7: Legacy (Shielding / Spreaders)": [],
-             "Tier 8: None / Not Disclosed": []
+        "method_c_prediction_model_TDSI": {
+          "supply_dissipation_capacity": {
+            "effective_surface_area_mm2": {
+              "value": 9500,
+              "calculation": "Total_Area * Beta(0.80 for Metal + Graphite)",
+              "subscore": 8.50
+            },
+            "thermal_mass_capacitance": {
+              "value": 200,
+              "description": "Chassis weight in grams acting as thermal sponge",
+              "subscore": 7.50
+            },
+            "sustainable_watts_20min": 4.85
+            // SCORING GUIDELINE: Result of the transient ODE solver at 1200s for a 20°C rise.
           },
-          "subscore": 7.00
-          // SCORING GUIDELINE: Identify the cooling technology. Use the following exact Tier Names for "value" (always apply the highest applicable tier):
-          //   • "Tier 1: Active Force-Air / Liquid Loop"       → 10.00
-          //     Definition: Integrated motorized fan (e.g. RedMagic) OR internal active liquid micro-pump circulation.
-          //   • "Tier 2: Ultra-Extreme Passive (VC ≥10k mm²)"  → 9.00
-          //     Definition: Vapor Chambers (VC) with surface area ≥ 10,000 mm² (e.g. 3D Ice-step VCs).
-          //   • "Tier 3: Extreme Passive (VC ≥7000 mm²)"       → 8.00
-          //     Definition: Vapor Chambers with surface area ≥ 7,000 mm² (often Dual-VC or "Cryo-velocity" designs).
-          //   • "Tier 4: Large Passive (VC ≥4000 mm²)"         → 7.00
-          //     Definition: Standard flagship Vapor Chambers with surface area ≥ 4,000 mm².
-          //   • "Tier 5: Standard Passive (VC <4000 mm²)"      → 6.00
-          //     Definition: Presence of a Vapor Chamber of smaller or unspecified area.
-          //   • "Tier 6: Basic Passive (Graphite / Heat Pipe)" → 4.00
-          //     Definition: Use of graphite/graphene sheets or copper heat pipes without a phase-change vapor chamber.
-          //   • "Tier 7: Legacy (Shielding / Spreaders)"       → 2.00
-          //     Definition: Minimal dedicated heat spreading; reliance on standard internal EMI shielding.
-          //   • "Tier 8: None / Not Disclosed"                 → 0.00
-          //     Definition: No dedicated thermal dissipation hardware mentioned in official or third-party teardowns.
+          "demand_soc_generation": {
+            // █ SOC_PEAK_POWER_MATRIX:
+            // | SoC Model                                | Peak Power (W) | Node  | Foundry |
+            // | :---------------------------------------- | :------------: | :---: | :-----: |
+            // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
+            // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
+            // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
+            // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
+            // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
+            // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
+            // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
+            // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
+            // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
+            // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
+            // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
+            // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
+            // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
+            // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
+            // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
+            // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
+            // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
+            // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
+            // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
+            // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
+            // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
+            // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
+            // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
+            // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
+            // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
+            // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
+            // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
+            // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
+            // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
+            // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
+            // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
+            // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
+            // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
+            // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
+            // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
+            // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
+            // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
+            //
+            "peak_soc_wattage_tier": {
+              "identifier": "Snapdragon 7+ Gen 3",
+              "reference_table": "SOC_PEAK_POWER_MATRIX",
+              "lookup_parameter": "Peak Power (W)",
+              "value": 11.5
+            }
+          },
+          "base_system_heat": {
+            "p_static_watts": 0.40,
+            "display_area_cm2": 107.4,
+            "k_display_heat": 0.007,
+            "total_base_heat_watts": 1.15
+            // SCORING GUIDELINE: 0.40 + (0.007 * Area_Front_cm2).
+          },
+          "admissible_soc_budget": 2.50,
+          // SCORING GUIDELINE: System_P_adm (from capacity_dissipation) - total_base_heat_watts.
+          "sustained_performance_ratio": 0.76,
+          // SCORING GUIDELINE: (admissible_soc_budget / peak_soc_wattage) ^ 0.33. Max 1.0.
+          "predicted_score": 7.00
+          // SCORING GUIDELINE: 10 * (log(Ratio * 100) - log(40)) / (log(100) - log(40)).
         },
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        // PART C: PROCESS NODE EFFICIENCY REFERENCE
-        // ═══════════════════════════════════════════════════════════════════════════
-        "part_c_process_node_efficiency": {
-          "node_efficiency_score": {
-            "identifier": "4nm",
-            "reference_table": "PART_C_NODE_EFFICIENCY_LOOKUP",
-            "lookup_parameter": "Node Score",
-            "value": 7.37
-            // SCORING GUIDELINE: Authoritative score for the semiconductor node size from §6.10 Part C. (Higher is better efficiency).
-          },
-          "foundry_efficiency_score": {
-            "value": "TSMC",
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 10.00
-            // SCORING GUIDELINE: Foundry Score. Use the following exact Tier Names for "value" with related scores as subscore:
-            //   • "Tier 1: TSMC"    → 10.00
-            //   • "Tier 2: Samsung" → 5.00
-            //   • "Tier 3: Others"  → 0.00
-          },
-          "predicted_part_c": 7.63
-          // SCORING GUIDELINE: predicted_part_c = (0.9 * node_efficiency_score.value) + (0.1 * foundry_efficiency_score.value). Authoritative for Section 6.4 and 8.1.
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // FINAL TDSI SCORING & COMPENSATION LOGIC
-        // ═══════════════════════════════════════════════════════════════════════════
         "scores": {
-          "physical_score_baseline": 7.02,
-          // SCORING GUIDELINE: physical_score_baseline = (0.5 * part_a_chassis_thermal_capacity.predicted_part_a) + (0.5 * part_b_cooling_system_class.subscore).
-          "peak_thermal_demand": {
-            "value": 9.50,
-            "value_path": "6_1_cpu_multi_core.scores.predicted"
-          },
-          "thermal_mitigation_index": 8.13,
-          "load_compensation_bonus": 1.63,
-          "predicted": 8.65,
+          "predicted": 8.95,
           "final": {
-            "value": 8.65,
-            "method_used": "Predictor",
+            "value": 9.01,
+            "method_used": "Benchmark (3DMark)",
             "booster": "No",
             "confidence": "N/A"
           }
