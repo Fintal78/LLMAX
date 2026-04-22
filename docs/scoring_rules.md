@@ -2468,13 +2468,18 @@ Method B is populated for **all** phones—even if a direct benchmark is availab
 **1. Identify Neighbors via Feature Distance (Minimum Variance)**
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the physical and thermodynamic factors that dictate thermal persistence.
 *   **Search Space:** All devices with known 3DMark Stability scores (Method A), **excluding the target device** itself.
-*   **Distance Metric:** Weighted Euclidean Distance in the 3-dimensional thermal feature space.
-    *   `Distance = Sqrt( 0.40 * (Area_Diff)^2 + 0.30 * (Material_Diff)^2 + 0.30 * (Generation_Diff)^2 )`
-    *   *Where diff is the absolute difference between Target and Neighbor Predicted Component Scores:*
-        *   **Area:** Surface Area component (from Method C Step 1).
-        *   **Material:** Material Conductivity component (from Method C Step 1).
-        *   **Generation:** SoC Peak Power Tier (from Method C Step 2).
-    *   **Scientific Rationale:** Weights prioritize the radiator surface area (40%) as the primary physical bottleneck, while splitting the remainder between material conductivity (30%) and the SoC's heat generation (30%).
+*   **Distance Metric:** Weighted Euclidean Distance in the 6-dimensional granular thermal feature space.
+    > [!NOTE]
+    > **Methodology Context:** These six components represent the fundamental thermodynamic variables calculated in the **Analytical RC Model (Method C)**. For a detailed breakdown of how each value (e.g., R_path, P_peak, C...) is physically derived from raw device specifications, refer to the extensive technical definitions provided in Section 6.10.C (Method C).
+    *   `Distance = Sqrt( 0.40*(%Diff_P_peak)^2 + 0.20*(%Diff_C)^2 + 0.15*(%Diff_R_path_back)^2 + 0.10*(%Diff_R_path_front)^2 + 0.10*(%Diff_R_path_frame)^2 + 0.05*(%Diff_P_base_heat)^2 )`
+    *   *Where %Diff_X = abs(X_Target - X_Neighbor) / X_Target*
+    *   **Scientific Rationale:** The distance metric considers different power components first, breaking down impactful factors (like P_adm) further to capture variations in material and cooling technologies. 
+        *   **P_peak (40%):** The primary engine heat load class.
+        *   **C (20%):** Thermal inertia (Mass and Phase Change Material buffers).
+        *   **R_path_back (15%):** Back panel efficiency (Chassis material + cooling technology).
+        *   **R_path_front (10%):** Baseline dissipation area (screen footprint).
+        *   **R_path_frame (10%):** Frame metallurgy and perimeter convection.
+        *   **P_base_heat (5%):** System overhead and display radiation adjustment.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!NOTE]
@@ -2621,10 +2626,10 @@ The "Thermal Sponge". `C = Mass(kg) * Specific Heat(J/kg·K)` (Where **Specific 
 The system calculates the **Admissible Thermal Power (P_adm)**—the maximum continuous wattage allowed to reach the safety threshold (Delta_T_limit) at the end of the 1200-second evaluation window. 
 
 **Part 1: The Three-Path Parallel Resistance (R_total)**
-Heat escapes the device through three parallel thermal paths. We calculate the resistance of each path ($R_{path} = R_{cond} + R_{conv}$):
-1. **Front Path ($R_{path\_front}$):** Based on Display Area and Glass insulation.
-2. **Back Path ($R_{path\_back}$):** Based on Back Material and Spreading Efficiency.
-3. **Frame Path ($R_{path\_frame}$):** Based on Perimeter area and Frame Conductivity.
+Heat escapes the device through three parallel thermal paths. We calculate the resistance of each path (R_path = R_cond + R_conv):
+1. **Front Path (R_path_front):** Based on Display Area and Glass insulation.
+2. **Back Path (R_path_back):** Based on Back Material and Spreading Efficiency.
+3. **Frame Path (R_path_frame):** Based on Perimeter area and Frame Conductivity.
 
 **Formula:** `1 / R_total = (1 / R_path_front) + (1 / R_path_back) + (1 / R_path_frame)`
 
