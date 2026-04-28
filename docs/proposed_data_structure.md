@@ -3252,47 +3252,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_10_thermal_dissipation_stability": {
-        // SCORING GOAL: Evaluates internal cooling capability and sustained performance using the Thermodynamic RC Model.
-        // This section bridges physical heat dissipation capacity (Watts) to visual stability (FPS) using a 0.333 Gamma scaling factor.
+        // SCORING GOAL: Evaluates the device's physical ability to dissipate heat and maintain consistent performance during sustained workloads. It validates the hardware's theoretical cooling capacity (Thermodynamic RC Model) against empirical gaming stability from the 3DMark Benchmark to ensure a transparent, physics-based thermal score.
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary Standard: 3DMark Wild Life Extreme)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_a_benchmark_TDSI": {
           "value": 59.0,
-          // GUIDELINE: Stability percentage from a 20-minute 3DMark Wild Life Extreme Stress Test.
+          // GUIDELINE: The "Stability %" result from a 20-minute 3DMark Wild Life Extreme Stress Test. MANDATORY: Only extract the percentage value (e.g., 59.0) representing the ratio between the lowest and highest loops. This value must be ≤ 100.0. CRITICAL: Do NOT use the raw performance "Score" (e.g., 5230) or FPS values.
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 4.24
-          // SCORING GUIDELINE: subscore = 10 * (log(value) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10. (Min=40, Max=100).
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD B — Nearest Neighbor Interpolation (Secondary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_TDSI": {
-          "neighbors": [
-            {
-              "device_id_1": "apple_iphone_15_pro_max",
-              "predicted_score_1": 4.65,
-              "benchmark_score_1": 4.40
-            },
-            {
-              "device_id_2": "xiaomi_14_pro",
-              "predicted_score_2": 5.10,
-              "benchmark_score_2": 4.85
-            },
-            {
-              "device_id_3": "google_pixel_8_pro",
-              "predicted_score_3": 4.80,
-              "benchmark_score_3": 4.15
-            }
-          ],
-          "avg_predicted_neighbors": 4.85,
-          "avg_benchmark_neighbors": 4.46,
-          "correction_ratio": 1.037,
-          "interpolated_score": 4.62
-          // SCORING GUIDELINE: standard correction ratio interpolation based on Method C predicted scores.
+          // SCORING GUIDELINE: subscore = 10 * (log(value) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -3507,6 +3478,52 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                // SCORING GUIDELINE: Logarithmic normalization from 40 to 100 range. (Min=40, Max=100).
             }
           }
+        },
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD B — Nearest Neighbor Interpolation (Secondary)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_b_neighbor_interpolation_TDSI": {
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
+          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters (P_peak, C, R_path, etc.) defined in the thermodynamic model, excluding the target device itself.
+          //         Distance = Sqrt( 0.40*(%Diff_P_peak)^2 + 0.20*(%Diff_C)^2 + 0.15*(%Diff_R_path_back)^2 + 0.10*(%Diff_R_path_front)^2 + 0.10*(%Diff_R_path_frame)^2 + 0.05*(%Diff_P_base_heat)^2 )
+          //         Search space: all phones that have a known 3DMark Wild Life Extreme score (Method A), excluding the target device itself.
+          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+          "neighbors": [
+            {
+              // Neighbor1
+              "device_id_1": "apple_iphone_15_pro_max",
+              // GUIDELINE: The identity.id of the neighbor device (e.g., "apple_iphone_15_pro_max").
+              "euclidean_distance_1": 0.0450,
+              // GUIDELINE: Weighted Euclidean distance from Step 1.
+              "predicted_score_1": 4.65,
+              // GUIDELINE: The neighbor's own Method C predicted score.
+              "benchmark_score_1": 4.40
+              // GUIDELINE: The neighbor's Method A subscore.
+            },
+            {
+              // Neighbor2
+              "device_id_2": "xiaomi_14_pro",
+              "euclidean_distance_2": 0.0620,
+              "predicted_score_2": 5.10,
+              "benchmark_score_2": 4.85
+            },
+            {
+              // Neighbor3
+              "device_id_3": "google_pixel_8_pro",
+              "euclidean_distance_3": 0.0850,
+              "predicted_score_3": 4.80,
+              "benchmark_score_3": 4.15
+            }
+          ],
+          "avg_predicted_neighbors": 4.8500,
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          "avg_benchmark_neighbors": 4.4667,
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+          "correction_ratio": 1.0371,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.phase_d_net_soc_budget_and_prediction.predicted_tdsi_score.value / avg_predicted_neighbors.
+          "interpolated_score": 4.63
+          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
