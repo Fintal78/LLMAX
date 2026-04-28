@@ -29,29 +29,29 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   // Do NOT add per-field scoring guidelines inside those blocks.
   //
   //   "final": {
-  //     "value": <number>,         → The definitive score for this subsection.
-  //                                  Calculation: 
-  //                                  If no booster is applied, value = predicted score, i.e. scores.predicted (multiplier is 1.0).
-  //                                  If there is one booster:
-  //                                  value = scores.predicted * booster_multiplier
-  //                                  If there are several boosters:
-  //                                  value = scores.predicted * booster_multiplier_1 * booster_multiplier_2 * ... 
-  //                                  Each booster multiplier comes from the corresponding Section 11 entry.
-  //                                  CLAMPING: The result of this calculation is ALWAYS clamped to [0.00, 10.00].
-  //     "method_used": "Predictor" → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
-  //     "booster": "No"            → Which Section 11 adjustment(s) are applied to the predicted score:
-  //                                  • "No"                    = No booster applied (value = scores.predicted).
-  //                                  • "Section #"             = Single booster (e.g., "11.1").
-  //                                  • "Section # + Section #" = Multiple boosters applied in sequence (e.g., "11.1 + 11.2").
-  //     "confidence": "N/A"        → Always "N/A" for Predictor methods.
+  //     "value": <number>,              → The definitive score for this subsection.
+  //     "calculation_formula": <string> → [OPTIONAL] Formula used to derive the value (e.g. "predicted * booster_11.X").
+  //                                       If no booster is applied, value = predicted score, i.e. scores.predicted (multiplier is 1.0).
+  //                                       If there is one booster:
+  //                                       value = scores.predicted * booster_multiplier
+  //                                       If there are several boosters:
+  //                                       value = scores.predicted * booster_multiplier_1 * booster_multiplier_2 * ... 
+  //                                       Each booster multiplier comes from the corresponding Section 11 entry.
+  //                                       CLAMPING: The result of this calculation is ALWAYS clamped to [0.00, 10.00].
+  //     "method_used": "Predictor"      → Always "Predictor" for spec-calculated scores (no Benchmark or Neighbor Interpolation).
+  //     "booster": "No"                 → Which Section 11 adjustment(s) are applied to the predicted score:
+  //                                      • "No"                    = No booster applied (value = scores.predicted).
+  //                                      • "Section #"             = Single booster (e.g., "11.1").
+  //                                      • "Section # + Section #" = Multiple boosters applied in sequence (e.g., "11.1 + 11.2").
+  //     "confidence": "N/A"             → Always "N/A" for Predictor methods.
   //   }
   // ─────────────────────────────────────────────────────────────────────────────
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "5.7",
+    "schema_version": "5.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-04-15"
+    "last_updated": "2026-04-28"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -3276,19 +3276,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
              "width_mm": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.width_mm.value", "value": 79.0 },
              "thickness_mm": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.thickness_mm.value", "value": 8.6 },
              "diagonal_inch": { "value_path": "2_display.2_1_display_size.size.value", "value": 6.8 },
-             "aspect_ratio": { "value": 2.16, "calculation": "19.5 / 9", "description": "Derived from screen resolution or explicitly stated." },
+             "aspect_ratio": { "value": 2.16, "calculation_formula": "19.5 / 9", "description": "Derived from screen resolution or explicitly stated." },
              "footprint_area_m2": {
                 "value": 0.01282,
-                "calculation": "(height_mm * width_mm) / 1000000"
+                "calculation_formula": "(height_mm * width_mm) / 1000000"
              },
              "frame_radiator_area_m2": {
                 "value": 0.00353,
-                "calculation": "2 * ((height_mm/1000) + (width_mm/1000)) * (thickness_mm/1000) * 0.85",
+                "calculation_formula": "2 * ((height_mm/1000) + (width_mm/1000)) * (thickness_mm/1000) * 0.85",
                 "description": "0.85 (Chi factor) accounts for ergonomic chamfers."
              },
              "display_surface_area_cm2": {
                 "value": 113.5,
-                "calculation": "(diagonal_inch * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+                "calculation_formula": "(diagonal_inch * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
              }
           },
           "phase_b_multi_path_thermal_resistance": {
@@ -3331,7 +3331,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             },
             "back_spreading_efficiency_s_eff": {
               "value": 0.693,
-              "calculation": "s_0_baseline + (s_max_ceiling - s_0_baseline) * [ 1 - exp(-Sum(alpha_i * phi_i)) ]"
+              "calculation_formula": "s_0_baseline + (s_max_ceiling - s_0_baseline) * [ 1 - exp(-Sum(alpha_i * phi_i)) ]"
               // SCORING GUIDELINE: Cumulate the efforts of all technologies in cooling_stack_configuration.
             },
             "path_1_front_screen": {
@@ -3339,11 +3339,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                // SCORING GUIDELINE: Front screen spreading efficiency is always constant 0.25 due to PCB Thermal Wall.
                "area_active_m2": {
                   "value": 0.00320,
-                  "calculation": "footprint_area_m2 * s_eff_front"
+                  "calculation_formula": "footprint_area_m2 * s_eff_front"
                },
                "r_path_front": {
                   "value": 31.25,
-                  "calculation": "1 / (10.0 * area_active_m2)"
+                  "calculation_formula": "1 / (10.0 * area_active_m2)"
                }
             },
             "path_2_mid_frame": {
@@ -3358,30 +3358,30 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                },
                "area_active_m2": {
                   "value": 0.00141,
-                  "calculation": "frame_radiator_area_m2 * s_eff_frame"
+                  "calculation_formula": "frame_radiator_area_m2 * s_eff_frame"
                },
                "r_path_frame": {
                   "value": 70.92,
-                  "calculation": "1 / (10.0 * area_active_m2)"
+                  "calculation_formula": "1 / (10.0 * area_active_m2)"
                }
             },
             "path_3_back_panel": {
                "h_conv": {
                   "value": 10.0,
-                  "calculation": "Passive baseline is 10.0. If integrated fan is active: 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]"
+                  "calculation_formula": "Passive baseline is 10.0. If integrated fan is active: 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]"
                },
                "area_active_m2": {
                   "value": 0.00888,
-                  "calculation": "footprint_area_m2 * back_spreading_efficiency_s_eff"
+                  "calculation_formula": "footprint_area_m2 * back_spreading_efficiency_s_eff"
                },
                "r_path_back": {
                   "value": 11.26,
-                  "calculation": "1 / (h_conv * area_active_m2)"
+                  "calculation_formula": "1 / (h_conv * area_active_m2)"
                }
             },
             "total_system_resistance_r_total": {
                "value": 7.41,
-               "calculation": "(1/r_path_front + 1/r_path_frame + 1/r_path_back)^-1"
+               "calculation_formula": "(1/r_path_front + 1/r_path_frame + 1/r_path_back)^-1"
                // SCORING GUIDELINE: Parallel thermal resistance circuit combining Front, Mid-Frame, and Back paths.
             }
           },
@@ -3391,15 +3391,15 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                "pcm_buffer_constant_sigma": 0.0,
                // SCORING GUIDELINE: Advanced modifier for Phase Change Materials (PCM). Sigma = 0.75 for Advanced PCM Matrix, 0.50 for Basic PCM Pad, 0.0 otherwise.
                "value": 197.2,
-               "calculation": "(chassis_mass_kg * 850) + (pcm_buffer_constant_sigma * 25)"
+               "calculation_formula": "(chassis_mass_kg * 850) + (pcm_buffer_constant_sigma * 25)"
             },
             "time_constant_tau_s": {
                "value": 1461,
-               "calculation": "total_system_resistance_r_total * thermal_capacitance_c"
+               "calculation_formula": "total_system_resistance_r_total * thermal_capacitance_c"
             },
             "admissible_thermal_power_p_adm_watts": {
                "value": 4.82,
-               "calculation": "20 / (total_system_resistance_r_total * (1 - exp(-1200 / time_constant_tau_s)))"
+               "calculation_formula": "20 / (total_system_resistance_r_total * (1 - exp(-1200 / time_constant_tau_s)))"
                // SCORING GUIDELINE: 20 is Delta_T_limit safety threshold (ergonomic limit for 25C ambient). 1200 is evaluation window (20mins).
             }
           },
@@ -3410,11 +3410,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                // SCORING GUIDELINE: Joule heating factor from display normalized via k_display_heat = 0.0075.
                "display_area_cm2": { "value_path": "6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.phase_a_geometric_volume.display_surface_area_cm2.value", "value": 113.5 },
                "value": 1.25,
-               "calculation": "p_static + (display_area_cm2 * k_display_heat)"
+               "calculation_formula": "p_static + (display_area_cm2 * k_display_heat)"
             },
             "admissible_soc_power_p_adm_soc_watts": {
                "value": 3.57,
-               "calculation": "admissible_thermal_power_p_adm_watts - system_base_heat_p_base_watts"
+               "calculation_formula": "admissible_thermal_power_p_adm_watts - system_base_heat_p_base_watts"
             },
             "heat_generation_soc_p_gen_watts": {
                // █ SOC_PEAK_POWER_MATRIX:
@@ -3464,17 +3464,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             },
             "power_ratio": {
                "value": 0.255,
-               "calculation": "admissible_soc_power_p_adm_soc_watts / heat_generation_soc_p_gen_watts"
+               "calculation_formula": "admissible_soc_power_p_adm_soc_watts / heat_generation_soc_p_gen_watts"
                // SCORING GUIDELINE: Power ratio is capped at a maximum of 1.0 (100%).
             },
             "predicted_stability_percentage": {
                "value": 63.4,
-               "calculation": "(power_ratio ^ 0.333) * 100"
+               "calculation_formula": "(power_ratio ^ 0.333) * 100"
                // SCORING GUIDELINE: Cube root law bridging thermal power throttling to physical FPS gaming stability.
             },
             "predicted_tdsi_score": {
                "value": 5.03,
-               "calculation": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))"
+               "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))"
                // SCORING GUIDELINE: Logarithmic normalization from 40 to 100 range. (Min=40, Max=100).
             }
           }
@@ -3528,6 +3528,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 
         "scores": {
           "predicted": 5.03,
+          "calculation_formula": "method_c_prediction_model_TDSI.phase_d_net_soc_budget_and_prediction.predicted_tdsi_score.value",
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.24,

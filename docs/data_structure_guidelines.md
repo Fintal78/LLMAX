@@ -146,11 +146,13 @@ The calculated result of the subsection's formula.
 The following rules define how the `scores` object is calculated, **bridging the technical inputs to the final ranking.**
 
 - **predicted**: The mathematical result of the specific formula defined in `scoring_rules.md` for this subsection. This is typically the sum, weighted average, or lookup value derived from the individual `subscore` properties of the components defined below.
+- **calculation_formula**: **[OPTIONAL]** The mathematical formula used to derive the `predicted` score. Placed immediately after `predicted`.
 - **final**: The definitive score used for ranking. It is derived via one of four paths:
     1.  **Direct Benchmark:** Value from a trusted third-party test (e.g., DXOMARK). **Note:** If a direct benchmark is available, it completely overrides the `predicted` score's formula, as it represents real-world measured performance rather than theoretical specs.
     2.  **Neighbor Interpolation:** Calculated from similar devices (see `scoring_rules.md` Section 8.1).
     3.  **Predictor + Booster:** The `predicted` score adjusted by one or more Section 11 Boosters.
     4.  **Predictor (Default):** The `predicted` score used as-is when no benchmark, neighbor, or booster applies.
+- **calculation_formula**: **[OPTIONAL]** The formula used to derive the `final.value`. Placed immediately after `value` inside the `final` block.
 
 **Allowable Methods (`method_used`):**
 1.  `"Predictor"`: Theoretical score based on rules. Can be boosted.
@@ -230,7 +232,8 @@ Defines which Section 11 adjustment(s) are applied to the `predicted` score.
   "scores": {
     "predicted": 6.5,              // sum of all subscores
     "final": {
-      "value": 6.83,               // Definitive score (Predicted * Booster multiplier of 1.05)
+      "value": 6.83,               // Definitive score inluding potential boosters
+      "calculation_formula": "predicted * booster_11.5",
       "method_used": "Predictor",  // Method used to derive final value: Predictor | Benchmark (Source) | Neighbor Interpolation
       "booster": "11.5",           // Section reference to the booster, or "No"
       "confidence": "N/A"          // Confidence level, N/A for Predictor; High/Medium/Low for 2 Benchmarks
@@ -312,13 +315,14 @@ Every field must fall into one of these strict categories.
 >
 > **Rationale:** Prefixing ensures absolute clarity in the hierarchy and prevents ambiguity when marketing names or technical terms are similar. It also allows the AI agent to explicitly identify the discrete levels defined in the guidelines. This prefix MUST be applied consistently across the `SCORING GUIDELINE` comments, the `value` field, and the `value_details` keys. Sections using continuous/linear formulas are exempt.
 
-| Field           | Description                                                                                                      |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `value`         | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                        |
-| `value_details` | **[OPTIONAL]** Dictionary mapping scoring tiers to comma-separated marketing names or feature lists. See below.  |
-| `source`        | **MUST be a valid URL** to the exact page containing the data.                                                   |
-| `exact_extract` | **MUST be verbatim text** found exactly as-is on the source page.                                                |
-| `subscore`      | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.                                   |
+| Field                 | Description                                                                                                      |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| `value`               | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                        |
+| `value_details`       | **[OPTIONAL]** Dictionary mapping scoring tiers to comma-separated marketing names or feature lists. See below.  |
+| `source`              | **MUST be a valid URL** to the exact page containing the data.                                                   |
+| `exact_extract`       | **MUST be verbatim text** found exactly as-is on the source page.                                                |
+| `subscore`            | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.                                   |
+| `calculation_formula` | **[OPTIONAL]** The formula used to derive the `subscore`. Placed immediately after `subscore`.                   |
 
 #### `value` vs. `value_details` — When to Use Each
 
@@ -438,12 +442,13 @@ In this particular case the fields are optional to enable flexibility. Use only 
 - Similarly, if a subscore is re-used from an internal source, `subscore_path` MUST be present for traceability reasons. 
 - If the subscore from an internal source is not re-used and the subscore is directly calculated in the block, then obviously no path field (`subscore_path`) is needed.
 
-| Field           | Description                                                                                    |
-| :-------------- | :--------------------------------------------------------------------------------------------- |
-| `value`         | The literal parameter value extracted from `value_path`.                                       |
-| `value_path`    | Path to the source value: `"Section_Subsection.parameter.value"`.                              |
-| `subscore`      | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated. |
-| `subscore_path` | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                         |
+| Field                 | Description                                                                                                        |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| `value`               | The literal parameter value extracted from `value_path`.                                                           |
+| `value_path`          | Path to the source value: `"Section_Subsection.parameter.value"`.                                                  |
+| `subscore`            | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated.                     |
+| `subscore_path`       | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                                             |
+| `calculation_formula` | **[OPTIONAL]** The formula used to derive `subscore`. Omit if `subscore_path` is present. Placed after `subscore`. |
 
 **Example where the path `subscore_path` is not used:**
 ```json
@@ -537,9 +542,9 @@ To ensure the JSON data structure is entirely self-contained, every scoring subs
 
 Every subsection must contain the following "recipe":
 1.  **Subsection Goal:** An explanation at the very top of the subsection block detailing what the scoring goal is.
-2.  **Subscore Extraction:** For every `subscore` field included in the structure (noting it is optional for raw data), provide an explicit explanation of how it is derived, including the formula and its specific references from `scoring_rules.md` (or the exact conditions under which it evaluates to `"N/A"`).
-3.  **Predicted Score Logic:** For each `predicted` score field (scores.predicted), provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it.
-4.  **Final Score Compliance:** The `final` score object (scores.final) MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template governs their logic (Booster application, clamping, etc.).
+2.  **Subscore Extraction:** For every `subscore` field included in the structure (noting it is optional for raw data), provide an explicit explanation of how it is derived. While an inline comment (`//`) is mandatory for the explanation, the mathematical formula itself should ideally be placed in the optional `calculation_formula` field for maximum visibility.
+3.  **Predicted Score Logic:** For each `predicted` score field (scores.predicted), provide a clear explanation (including the mathematical formula) of how it is derived from the subscores above it. The formula must be placed in the `calculation_formula` field immediately after `predicted`, or in a comment (guideline) if trivial.
+4.  **Final Score Compliance:** The `final` score object (scores.final) MUST strictly adhere to the `FINAL_SCORE_PREDICTOR_TEMPLATE` defined in the `proposed_data_structure.md` header. The `calculation_formula` field should be used inside the `final` block, if necessary, for example to document the booster math (e.g., `predicted * booster_11.X`). To ensure cleanliness and avoid duplication, do NOT add internal comments or per-field scoring guidelines within these blocks; the global template and the `calculation_formula` field govern their logic.
     *   **Exception (Hybrid Methods):** Subsections that use multiple scoring methods (e.g., Section 2.11 with Methods A/B/C) MUST include internal comments in the `final` score object (scores.final) to document which method was selected and why.
 5.  **LLM Semantic Matching & Robust Aliasing:** When parsing spec sheets, the AI agent will use natural language semantic matching to identify the appropriate tier.
     *   **Keyword Definition Standard:** Strings inside `recognized_keywords` arrays should be properly capitalized and human-readable (e.g., use `"Gorilla Glass Victus 2"`, `"Ceramic Shield"`). Do not overly strip symbols or lowercase everything.
