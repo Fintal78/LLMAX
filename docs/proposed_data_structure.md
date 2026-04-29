@@ -49,7 +49,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "5.8",
+    "schema_version": "5.9",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
     "last_updated": "2026-04-28"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
@@ -366,12 +366,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     }
   },
   "2_display": {
-    "aspect_ratio": {
-      // GUIDELINE: Width-to-height display ratio expressed as W:H (e.g. "19.5:9"). Used for display and filtering only — not scored. Determines the shape of the canvas (e.g. whether content letterboxes, how wide the keyboard appears, cinematic vs. tall format).
-      "value": "19.5:9",
-      "source": "TBD",
-      "exact_extract": "Proof pending"
-    },
     "2_1_panel_architecture": {
       // SCORING GOAL: Scores the physical display technology (Display Panel Architecture, DPA) used to generate light and images. Focuses on panel construction only — not brightness, color, or refresh behaviour.
       "panel_type": {
@@ -3270,87 +3264,113 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Thermodynamic RC Prediction Model (Tertiary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_TDSI": {
-          "phase_a_geometric_volume": {
-             // SCORING GUIDELINE: Base geometric bounds that dictate potential cooling area.
-             "height_mm": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.height_mm.value", "value": 162.3 },
-             "width_mm": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.width_mm.value", "value": 79.0 },
-             "thickness_mm": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.thickness_mm.value", "value": 8.6 },
-             "diagonal_inch": { "value_path": "2_display.2_1_display_size.size.value", "value": 6.8 },
-             "aspect_ratio": { "value": 2.16, "calculation_formula": "19.5 / 9", "description": "Derived from screen resolution or explicitly stated." },
-             "footprint_area_m2": {
-                "value": 0.01282,
-                "calculation_formula": "(height_mm * width_mm) / 1000000"
+          // SCORING GOAL: Predicts the Thermal Dissipation Stability Index (TDSI) using a multi-physics model.
+          // The model evaluates geometric bounds, three-path thermal resistance (R_total), and the net System-on-Chip (SoC) power budget.
+          //
+          // --- [1] GEOMETRIC BOUNDARY INPUTS ---
+          "height_mm": {
+             "value": 162.3,
+             "source": "TBD",
+             "exact_extract": "Proof pending"
+             // GUIDELINE: physical height of the device.
+          },
+          "width_mm": {
+             "value": 79.0,
+             "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
+          },
+          "thickness_mm": {
+             "value": 8.6,
+             "value_path": "1_design_and_build_quality.1_4_thickness.thickness_mm.value"
+          },
+          "diagonal_inches": {
+             "value": 6.8,
+             "value_path": "2_display.2_9_screen_size.diagonal_inches.value"
+          },
+          "aspect_ratio": {
+             "value": 2.1667, // Numerical value of the screen aspect ratio (Height / Width).
+             "value_details": "19.5 / 9",
+             "source": "TBD",
+             "exact_extract": "Proof pending"
+             // GUIDELINE: Standard screen aspect ratio R (Height / Width) from specs (20:9, 19.5:9, etc.).
+          },
+          "footprint_area_m2": {
+             "value": 0.01282,
+             "calculation_formula": "(height_mm * width_mm) / 1000000"
+             // GUIDELINE: Total flat surface area (in m^2) of the device's footprint (Height * Width). Represents the theoretical maximum radiator area for BOTH the front and back panels.
+          },
+          "frame_radiator_area_m2": {
+             "value": 0.00353,
+             "calculation_formula": "2 * (height_mm + width_mm) * thickness_mm * 0.85 / 1000000"
+             // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
+          },
+          "display_surface_area_cm2": {
+             "value": 113.5,
+             "calculation_formula": "(diagonal_inches * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+             // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat (P_base_heat).
+           },
+
+          // --- [2] THERMAL RESISTANCE PARAMETERS (R_total) ---
+          "cooling_hardware_spreading": {
+             // Inventory of passive and active cooling modules.
+             "vapor_chamber": {
+                "coverage_area_mm2": {
+                   "value": 4050, 
+                   "source": "TBD",
+                   "exact_extract": "Proof pending", 
+                   // GUIDELINE: total surface area (footprint) of the Vapor Chamber in mm^2, if no Vapor Chamber is present set "value" to 0 and "source" and "exact_extract" to N/A.               
+                },
+                "phi": {
+                   "value": 0.3159,
+                   "calculation_formula": "phi = coverage_area_mm2 / (height_mm * width_mm)"
+                },
              },
-             "frame_radiator_area_m2": {
-                "value": 0.00353,
-                "calculation_formula": "2 * ((height_mm/1000) + (width_mm/1000)) * (thickness_mm/1000) * 0.85",
-                "description": "0.85 (Chi factor) accounts for ergonomic chamfers."
-             },
-             "display_surface_area_cm2": {
-                "value": 113.5,
-                "calculation_formula": "(diagonal_inch * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+             "graphite_or_graphene_layer": {
+                "value": "Multi-layer Graphite",
+                "source": "TBD",
+                "exact_extract": "Proof pending",
+                "alpha": 0.8,
+                "phi": 0.50,               
+                // GUIDELINE: Use the following exact strings present in the first column for "value" with related "alpha" and "phi". For "None (SoC Only)" set "source" and "exact_extract" to N/A.
+                // | Cooling Technology Class       |  alpha  |   phi   |
+                // | :----------------------------- | :------ | :-------|
+                // | None (SoC Only)                |   0.0   |   0.0   |
+                // | Standard Graphite Sheet        |   0.6   |   0.40  |
+                // | Multi-layer Graphite           |   0.8   |   0.50  |
+                // | Synthetic Graphene Film        |   1.2   |   0.50  |
              }
           },
-          "phase_b_multi_path_thermal_resistance": {
-            // SCORING GUIDELINE: Evaluation of three primary parallel heat paths. Conductive resistance (R_cond) is safely omitted physically as it contributes <2% to resistance compared to ambient convection (R_conv).
-            "cooling_stack_configuration": [
-              {
-                "technology": "High-Volume VC",
-                "source": "TBD",
-                "exact_extract": "Proof pending",
-                "coverage_area_mm2": 4050,
-                "alpha_constant": 2.7,
-                "phi_factor": 0.316
-                // SCORING GUIDELINE: Alpha and Phi are defined in the Calibration Table.
-                // | Technology Class               |  alpha  |      phi      |
-                // | :----------------------------- | :------ | :------------ |
-                // | None (SoC Only)                | 0.0     | 0.0           |
-                // | Standard Graphite Sheet        | 0.6     | 0.40          |
-                // | Multi-layer Graphite           | 0.8     | 0.50          |
-                // | Synthetic Graphene Film        | 1.2     | 0.50          |
-                // | Professional Vapor Chamber     | 2.7     | Area_VC / Area_face_mm2 |
-              },
-              {
-                "technology": "Multi-layer Graphite",
-                "source": "TBD",
-                "exact_extract": "Proof pending",
-                "coverage_area_mm2": null,
-                "alpha_constant": 0.8,
-                "phi_factor": 0.50
-              }
-            ],
-            "back_panel_material_class": {
-              "value_path": "1_identity_and_materials.1_1_structural_build.back_panel.value",
-              "value": "Tier 3: Basic Glass",
-              "s_0_baseline": 0.05,
-              "s_max_ceiling": 0.95
+          "back_material": {
+             "value": "Tier 3: Basic Glass",
+             "value_path": "1_design_and_build_quality.1_1_materials.back_material.value",
+             "s_0_baseline": 0.05,
+             "s_max_ceiling": 0.95
               // SCORING GUIDELINE: s_0 and s_max defined by material class.
               // Class 1 (Conductive Metal): s_0 = 0.60, s_max = 1.00
               // Class 2 (Moderate Alloy): s_0 = 0.25, s_max = 1.00
               // Class 3 (Insulating Glass/Polymer): s_0 = 0.05, s_max = 0.95
-            },
-            "back_spreading_efficiency_s_eff": {
-              "value": 0.693,
-              "calculation_formula": "s_0_baseline + (s_max_ceiling - s_0_baseline) * [ 1 - exp(-Sum(alpha_i * phi_i)) ]"
-              // SCORING GUIDELINE: Cumulate the efforts of all technologies in cooling_stack_configuration.
-            },
-            "path_1_front_screen": {
-               "s_eff_front": 0.25,
-               // SCORING GUIDELINE: Front screen spreading efficiency is always constant 0.25 due to PCB Thermal Wall.
-               "area_active_m2": {
-                  "value": 0.00320,
-                  "calculation_formula": "footprint_area_m2 * s_eff_front"
-               },
-               "r_path_front": {
-                  "value": 31.25,
-                  "calculation_formula": "1 / (10.0 * area_active_m2)"
-               }
-            },
-            "path_2_mid_frame": {
-               "frame_material_class": {
-                 "value_path": "1_identity_and_materials.1_1_structural_build.frame.value",
-                 "value": "Tier 2: Titanium Grade 1-4",
-                 "s_eff_frame": 0.40
+          },
+          "back_spreading_efficiency_s_eff": {
+             "value": 0.693,
+             "calculation_formula": "s_0_baseline + (s_max_ceiling - s_0_baseline) * [ 1 - exp(-Sum(alpha_i * phi_i)) ]"
+             // SCORING GUIDELINE: Cumulate the efforts of all technologies in cooling_hardware_spreading.
+          },
+          "h_conv_back": {
+             "value": 10.0,
+             "calculation_formula": "Passive baseline = 10.0. Active fan = 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]"
+          },
+          "r_path_1_back": {
+             "value": 11.26,
+             "calculation_formula": "1 / (h_conv_back * footprint_area_m2 * back_spreading_efficiency_s_eff)"
+          },
+          "r_path_2_front": {
+             "value": 31.25,
+             "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
+             // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
+          },
+          "frame_material": {
+             "value": "Tier 2: Titanium Alloy",
+             "value_path": "1_design_and_build_quality.1_1_materials.frame_material.value",
+             "s_eff_frame": 0.40
                  // SCORING GUIDELINE: Frame spreading efficiency depends strictly on material class:
                  // Class 1 (Metal): 1.00
                  // Class 2 (Alloy): 0.40
@@ -3359,124 +3379,122 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                "area_active_m2": {
                   "value": 0.00141,
                   "calculation_formula": "frame_radiator_area_m2 * s_eff_frame"
-               },
-               "r_path_frame": {
-                  "value": 70.92,
-                  "calculation_formula": "1 / (10.0 * area_active_m2)"
-               }
-            },
-            "path_3_back_panel": {
-               "h_conv": {
-                  "value": 10.0,
-                  "calculation_formula": "Passive baseline is 10.0. If integrated fan is active: 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]"
-               },
-               "area_active_m2": {
-                  "value": 0.00888,
-                  "calculation_formula": "footprint_area_m2 * back_spreading_efficiency_s_eff"
-               },
-               "r_path_back": {
-                  "value": 11.26,
-                  "calculation_formula": "1 / (h_conv * area_active_m2)"
-               }
-            },
-            "total_system_resistance_r_total": {
-               "value": 7.41,
-               "calculation_formula": "(1/r_path_front + 1/r_path_frame + 1/r_path_back)^-1"
-               // SCORING GUIDELINE: Parallel thermal resistance circuit combining Front, Mid-Frame, and Back paths.
-            }
           },
-          "phase_c_foundational_energy_balance": {
-            "thermal_capacitance_c": {
-               "chassis_mass_kg": { "value_path": "1_identity_and_materials.1_2_dimensions_and_weight.weight_g.value", "value": 0.232 },
-               "pcm_buffer_constant_sigma": 0.0,
-               // SCORING GUIDELINE: Advanced modifier for Phase Change Materials (PCM). Sigma = 0.75 for Advanced PCM Matrix, 0.50 for Basic PCM Pad, 0.0 otherwise.
-               "value": 197.2,
-               "calculation_formula": "(chassis_mass_kg * 850) + (pcm_buffer_constant_sigma * 25)"
-            },
-            "time_constant_tau_s": {
-               "value": 1461,
-               "calculation_formula": "total_system_resistance_r_total * thermal_capacitance_c"
-            },
-            "admissible_thermal_power_p_adm_watts": {
-               "value": 4.82,
-               "calculation_formula": "20 / (total_system_resistance_r_total * (1 - exp(-1200 / time_constant_tau_s)))"
-               // SCORING GUIDELINE: 20 is Delta_T_limit safety threshold (ergonomic limit for 25C ambient). 1200 is evaluation window (20mins).
-            }
+          "r_path_3_frame": {
+             "value": 70.92,
+             "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff_frame)"
           },
-          "phase_d_net_soc_budget_and_prediction": {
-            "system_base_heat_p_base_watts": {
-               "p_static": 0.40,
-               "k_display_heat": 0.0075,
-               // SCORING GUIDELINE: Joule heating factor from display normalized via k_display_heat = 0.0075.
-               "display_area_cm2": { "value_path": "6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.phase_a_geometric_volume.display_surface_area_cm2.value", "value": 113.5 },
-               "value": 1.25,
-               "calculation_formula": "p_static + (display_area_cm2 * k_display_heat)"
-            },
-            "admissible_soc_power_p_adm_soc_watts": {
-               "value": 3.57,
-               "calculation_formula": "admissible_thermal_power_p_adm_watts - system_base_heat_p_base_watts"
-            },
-            "heat_generation_soc_p_gen_watts": {
-               // █ SOC_PEAK_POWER_MATRIX:
-               // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
-               // | :---------------------------------------- | :------------: | :---: | :-----: |
-               // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
-               // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
-               // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
-               // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
-               // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
-               // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
-               // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
-               // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
-               // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
-               // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
-               // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
-               // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
-               // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
-               // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
-               // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
-               // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
-               // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
-               // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
-               // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
-               // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
-               // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
-               // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
-               // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
-               // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
-               // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
-               // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
-               // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
-               // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
-               // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
-               // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
-               // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
-               // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
-               // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
-               // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
-               // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
-               // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
-               // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
-               "identifier": "Snapdragon 8 Gen 3",
-               "reference_table": "SOC_PEAK_POWER_MATRIX",
-               "lookup_parameter": "Peak Power (P_peak) [Watts]",
-               "value": 14.0
-            },
-            "power_ratio": {
-               "value": 0.255,
-               "calculation_formula": "admissible_soc_power_p_adm_soc_watts / heat_generation_soc_p_gen_watts"
-               // SCORING GUIDELINE: Power ratio is capped at a maximum of 1.0 (100%).
-            },
-            "predicted_stability_percentage": {
-               "value": 63.4,
-               "calculation_formula": "(power_ratio ^ 0.333) * 100"
-               // SCORING GUIDELINE: Cube root law bridging thermal power throttling to physical FPS gaming stability.
-            },
-            "predicted_tdsi_score": {
-               "value": 5.03,
-               "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))"
-               // SCORING GUIDELINE: Logarithmic normalization from 40 to 100 range. (Min=40, Max=100).
-            }
+          "r_total": {
+             "value": 7.41,
+             "calculation_formula": "(1/r_path_1_back + 1/r_path_2_front + 1/r_path_3_frame)^-1"
+             // SCORING GUIDELINE: Parallel thermal resistance circuit combining Back, Front, and Mid-Frame paths.
+          },
+
+          // --- [3] ENERGY BALANCE & TIME CONSTANT ---
+          "weight_g": {
+             "value": 232,
+             "value_path": "1_design_and_build_quality.1_5_weight.weight_g.value"
+             // GUIDELINE: Converted to kg in formula for SI (International System of Units) consistency.
+          },
+          "pcm_buffer": {
+             "value": 0.0,
+             "value_details": ,
+             "source": "TBD",
+             "exact_extract": "Proof pending",
+             // GUIDELINE: Sigma = 0.75 for Advanced PCM Matrix, 0.50 for Basic PCM Pad, 0.0 otherwise (in that case set "source" and "exact_extract" to N/A). Represents Phase Change Material (PCM) Factor.
+          },
+          "thermal_capacitance_c": {
+             "value": 197.2,
+             "calculation_formula": "((weight_g / 1000) * 850) + (pcm_buffer * 25)"
+          },
+          "time_constant_tau_s": {
+             "value": 1461,
+             "calculation_formula": "r_total * thermal_capacitance_c"
+          },
+          "p_adm": {
+             "value": 4.82,
+             "calculation_formula": "20 / (r_total * (1 - exp(-1200 / time_constant_tau_s)))"
+             // GUIDELINE: 20 is Delta_T_limit safety threshold (ergonomic limit). 1200 is evaluation window (20 minutes).
+          },
+
+          // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
+          "p_static": {
+             "value": 0.40
+             // GUIDELINE: Static system power consumption (Idle components excluding display).
+          },
+          "p_base": {
+             "value": 1.25,
+             "k_display_heat_constant": 0.0075,
+             "calculation_formula": "p_static + (display_surface_area_cm2 * k_display_heat_constant)"
+          },
+          "p_adm_soc": {
+             "value": 3.57,
+            "calculation_formula": "p_adm - p_base"
+          },
+          "p_peak": {
+             "identifier": "Snapdragon 8 Gen 3",
+             // GUIDELINE: Standardized SoC identifier matching the record in identity.hardware_configuration.chipset.value
+             "reference_table": "SOC_PEAK_POWER_MATRIX",
+             // GUIDELINE: Path to the authoritative lookup table for mapping.
+             "lookup_parameter": "Peak Power (W)",
+             // GUIDELINE: Description of the column being retrieved.
+             "value": 14.0
+             // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`
+             //
+             // █ SOC_PEAK_POWER_MATRIX:
+             // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
+             // | :---------------------------------------- | :------------: | :---: | :-----: |
+             // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
+             // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
+             // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
+             // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
+             // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
+             // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
+             // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
+             // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
+             // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
+             // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
+             // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
+             // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
+             // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
+             // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
+             // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
+             // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
+             // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
+             // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
+             // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
+             // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
+             // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
+             // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
+             // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
+             // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
+             // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
+             // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
+             // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
+             // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
+             // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
+             // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
+             // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
+             // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
+             // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
+             // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
+             // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
+             // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
+             // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
+          },
+          "power_ratio": {
+             "value": 0.255,
+             "calculation_formula": "p_adm_soc / p_peak"
+             // GUIDELINE: Capped at 1.0 (100% capacity).
+          },
+          "predicted_stability_percentage": {
+             "value": 63.4,
+             "calculation_formula": "(power_ratio ^ 0.333) * 100"
+             // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)).
+          },
+          "predicted_tdsi_score": {
+             "value": 5.03,
+             "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))"
           }
         },
 

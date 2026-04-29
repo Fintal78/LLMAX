@@ -2546,9 +2546,9 @@ The difficulty of moving heat from the processor into the ambient air. Measured 
 ###### 2.2 Sourcing Technical Parameters 
 To ensure thermodynamic rigor across the three paths, the following rules apply:
     1.  **Area_device (Total Geometric Area):**
-        *   **Front / Back Panel:** `Area_device = Length * Width`
-        *   **Mid-Frame:** `Area_device = 2 * (Length + Width) * Thickness_phone * 0.85`
-            *(Justification: The **0.85 Height Factor (Chi)** accounts for the structural frame band being physically shorter than the total phone Z-height due to ergonomic chamfers, glass curves, and bezel design).*
+        *   **Front / Back Panel:** `Area_device = Height * Width`
+        *   **Mid-Frame:** `Area_device = 2 * (Height + Width) * Thickness * 0.85`
+            *(Justification: The **0.85 Height Factor (Chi)** accounts for the structural frame band being physically shorter than the total phone Height due to ergonomic chamfers, glass curves, and bezel design).*
 2.  **Conductivity (k):**
     *   Values are consolidated from multi-source cross-referencing (MatWeb & Engineering ToolBox) for Section 1.1 materials:
         *   **Aluminum (6k/7k):** **190 W/m·K** (Ref: 6061/7075 alloy average).
@@ -2787,7 +2787,7 @@ Once the exact heat Dissipation limits and the Heat Generation volume are locked
         2. Density: `0.90 W / 114 cm² = 0.00789 W/cm²`.
         3. Thermodynamic Correction: Accounting for the heat factor (k_heat_factor = 0.95). While OLED luminous efficiency is ~5-15% (system level), only ~2% to 8% of total electrical energy truly escapes the device as light. A large portion of generated photons are trapped in the OLED stack or reabsorbed by electrodes, color filters, and the front glass, returning as heat. Consequently, ~92-98% of display electrical power becomes heat inside the device.
         4. Calculation: `0.00789 * 0.95 = 0.0075 W/cm²`.
-    *   **Area_screen_cm2 (Display Footprint):** Derived from screen diagonal and pixel aspect ratio (R = Width / Height). Formula: `Area_screen_cm2 = (Diagonal_inch * 2.54)^2 * (R / (R^2 + 1))`. This ensures geometric parity for all modern aspect ratios (19.5:9, 20:9, etc.).
+    *   **Area_screen_cm2 (Display Footprint):** Derived from screen diagonal and the standard aspect ratio (R = Height / Width but the formula works equally well, as is, with the Ratio Width / Height). Formula: `Area_screen_cm2 = (Diagonal_inch * 2.54)^2 * (R / (R^2 + 1))`. This ensures geometric parity for all modern aspect ratios (19.5:9, 20:9, etc.).
 
 2.  **Calculate Admissible SoC Budget (P_adm_soc):**
     `P_adm_soc = P_adm - P_base_heat`
@@ -2861,7 +2861,7 @@ Below is the transparent "A to Z" derivation of the S24 Ultra's thermal persiste
 - **S2: Footprint Area (Area_face):** Height 162.3mm x Width 79.0mm = 12,821.7mm² -> **0.01282 m²** (128.2 cm²).
 - **S3: Frame Perimeter (P):** 2 x (Height + Width) = 2 x (162.3mm + 79.0mm) = 482.6mm -> **0.483 m**.
 - **S4: Frame Radiator Area (Area_frame):** Perimeter 0.483m x Thickness 0.0086m x 0.85 (Chi factor) = **0.00353 m²**.
-- **S5: Display Surface Area (Area_display):** Using the Diagonal Formula (6.8" at 19.5:9 Aspect Ratio): (6.8 x 2.54)^2 x (0.4615 / (0.4615^2 + 1)) = **113.5 cm²**.
+- **S5: Display Surface Area (Area_display):** Using the Diagonal Formula (6.8" at 19.5:9 Aspect Ratio): (6.8 x 2.54)^2 x (2.1667 / (2.1667^2 + 1)) = **113.5 cm²**.
 
 **Phase B: Multi-Path Thermal Resistance (R)**
 - **Path 1 (Front):** Conduction through 0.7mm Glass (k=1.1) + Convection (h=10).
