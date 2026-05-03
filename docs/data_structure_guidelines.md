@@ -315,14 +315,14 @@ Every field must fall into one of these strict categories.
 >
 > **Rationale:** Prefixing ensures absolute clarity in the hierarchy and prevents ambiguity when marketing names or technical terms are similar. It also allows the AI agent to explicitly identify the discrete levels defined in the guidelines. This prefix MUST be applied consistently across the `SCORING GUIDELINE` comments, the `value` field, and the `value_details` keys. Sections using continuous/linear formulas are exempt.
 
-| Field                 | Description                                                                                                      |
-| :-------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `value`               | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                        |
-| `value_details`       | **[OPTIONAL]** Dictionary mapping scoring tiers to comma-separated marketing names or feature lists. See below.  |
-| `source`              | **MUST be a valid URL** to the exact page containing the data.                                                   |
-| `exact_extract`       | **MUST be verbatim text** found exactly as-is on the source page.                                                |
-| `subscore`            | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored.                                   |
-| `calculation_formula` | **[OPTIONAL]** The formula used to derive the `subscore`. Placed immediately after `subscore`.                   |
+| Field                 | Description                                                                                                                    |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| `value`               | Raw hardware specification (must match one of the 5 allowed Data Shapes).                                                      |
+| `value_details`       | **[OPTIONAL]** Dictionary mapping scoring tiers to comma-separated marketing names or feature lists. See below.                |
+| `source`              | **MUST be a valid URL** to the exact page containing the data.                                                                 |
+| `exact_extract`       | **MUST be verbatim text** found exactly as-is on the source page.                                                              |
+| `subscore`            | **[OPTIONAL]** Individual score calculated for this value. Omit if not scored or if the score is present in the `scores` block |
+| `calculation_formula` | **[OPTIONAL]** The formula used to derive the `subscore`. Placed immediately after `subscore`.                                 |
 
 #### `value` vs. `value_details` — When to Use Each
 

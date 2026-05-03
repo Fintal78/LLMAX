@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "5.9",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-04-28"
+    "last_updated": "2026-04-30"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -169,6 +169,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 6.41
           // SCORING GUIDELINE: Identify the back panel material. Use the following exact strings for "value" with related scores as subscore (always apply the highest applicable category): 
           //   • "Specialized Ceramic"                  → 10.00 (Zirconia, Alumina, Glass-Ceramic, Sapphire)
+          //   • "Stainless Steel"                      → 9.10  (316L, 304, Surgical Grade Steel)
           //   • "7000 Series Aluminum"                 → 8.55  (Full metal back, 7xxx series alloys)
           //   • "6000 Series Aluminum"                 → 8.33  (Full metal back, 6xxx series alloys)
           //   • "Zinc Alloy (Zamak 3)"                 → 8.25  (Precision-cast rugged cladding)
@@ -193,7 +194,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //       - Recognized Engineering/Sustainable Brand (e.g., SORPLAS, Bio-PC, Glasstic, Glastic).
           //       - Technical proof of high-density reinforcement or Yield Strength ≥45 MPa.
           //       Failure to meet these thresholds defaults the material to the "Standard Polymer" class.
-          //   6. METAL UNIBODY: Marketing terms like "Metal Unibody", "Aluminum Panel", or "Metal Panel" MUST default to "Die-Cast Aluminum (ADC12)" for the back.
+          //   6. METAL RESOLUTION (GENERIC): Marketing terms like "Metal", "Aluminum", "Metal Unibody", or "Metal Panel" MUST default to "Die-Cast Aluminum (ADC12)". Any explicit mention of "Steel", "Stainless Steel", or "Surgical Grade" MUST be categorized as "Stainless Steel".
       },
       "scores": {
         "predicted": 7.84,
@@ -301,18 +302,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "1_4_thickness": {
-      // SCORING GOAL: Scores device thickness (excluding camera bump) as a measure of pocketability and hand comfort. Thinner is always better.
-      "thickness_mm": {
-        "value": 8.6,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 4.36
-        // SCORING GUIDELINE: Apply the Section 1.4 linear formula: Score = 10 − 10 * ((thickness_mm − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
-      },
+    "1_4_thickness_mm": {
+      // SCORING GOAL: Scores device thickness in millimeters (excluding camera bump) as a measure of pocketability and hand comfort. Thinner is always better.
+      "value": 8.6,
+      "source": "TBD",
+      "exact_extract": "Proof pending",
       "scores": {
         "predicted": 4.36,
-        // SCORING GUIDELINE: scores.predicted directly inherits thickness_mm.subscore.
+        // SCORING GUIDELINE: Score = 10 − 10 * ((value − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 4.36,
@@ -322,18 +319,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "1_5_weight": {
-      // SCORING GOAL: Scores total device weight as a measure of long-term holding comfort. Lighter phones cause less wrist and arm fatigue during extended use.
-      "weight_g": {
-        "value": 232,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.33
-        // SCORING GUIDELINE: Apply the Section 1.5 linear formula: Score = 10 − 10 * ((weight_g − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
-      },
+    "1_5_weight_g": {
+      // SCORING GOAL: Scores total device weight in grams as a measure of long-term holding comfort. Lighter phones cause less wrist and arm fatigue during extended use.
+      "value": 232,
+      "source": "TBD",
+      "exact_extract": "Proof pending",
       "scores": {
         "predicted": 2.33,
-        // SCORING GUIDELINE: scores.predicted directly inherits weight_g.subscore.
+        // SCORING GUIDELINE: Score = 10 − 10 * ((value − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 2.33,
@@ -524,7 +517,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 8.43
         // SCORING GUIDELINE: Apply the Section 2.5 logarithmic formula: Score = 10 * (log(pixels_per_inch) − log(Display_PPI_Min)) / (log(Display_PPI_Max) − log(Display_PPI_Min)), clamped 0–10. Use directly pixels_per_inch.value if available from any source. 
         // ONLY if pixels_per_inch is NOT available derive PPI: pixels_per_inch = √(resolution_width_px² + resolution_height_px²) / diagonal_inches 
-        // with diagonal_inches = 2_9_screen_size.diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
+        // with diagonal_inches = 2_9_screen_size_diagonal_inches.value and in that case set "source" to "Derived from resolution_width_px, resolution_height_px, and diagonal_inches" and set "exact_extract" to "N/A".
       },
       "scores": {
         "predicted": 8.43,
@@ -602,18 +595,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "2_9_screen_size": {
-      // SCORING GOAL: Scores the physical display diagonal as a measure of immersion and media consumption experience. Larger screens offer more real estate for video, gaming, and productivity.
-      "diagonal_inches": {
-        "value": 6.8,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 6.93
-        // SCORING GUIDELINE: Apply the Section 2.9 quadratic formula: Score = 10 * ((diagonal_inches² − Display_Size_Inch_Min²) / (Display_Size_Inch_Max² − Display_Size_Inch_Min²)), clamped 0–10.
-      },
+    "2_9_screen_size_diagonal_inches": {
+      // SCORING GOAL: Scores the physical display diagonal in inches as a measure of immersion and media consumption experience. Larger screens offer more real estate for video, gaming, and productivity.
+      "value": 6.8,
+      "source": "TBD",
+      "exact_extract": "Proof pending",
       "scores": {
         "predicted": 6.93,
-        // SCORING GUIDELINE: scores.predicted directly inherits diagonal_inches.subscore.
+        // SCORING GUIDELINE: Score = 10 * ((value^2 − Display_Size_Inch_Min^2) / (Display_Size_Inch_Max^2 − Display_Size_Inch_Min^2)), clamped 0–10.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 6.93,
@@ -2994,29 +2983,28 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Identify the RAM technical denomination strictly via reported standard or data rate.
           // Match the device's highest verified specification to the corresponding Tier in the "MTEI SCORING & RESOLUTION MATRIX" above. 
           // Use the following exact Tier Names for "value" (always apply the highest applicable tier) and store the related score in "effective_speed_mts".
-          //   • "Tier 1: LPDDR5T-9600"         → 10.00
-          //   • "Tier 2: LPDDR5X-8533"         → 9.34
-          //   • "Tier 3: LPDDR5X-7500"         → 8.62
-          //   • "Tier 4: LPDDR5-6400"          → 7.74
-          //   • "Tier 5: LPDDR5-5500"          → 6.89
-          //   • "Tier 6: LPDDR4X-4266"         → 5.47
-          //   • "Tier 7: LPDDR4X-3733"         → 4.73
-          //   • "Tier 8: LPDDR4-3200"          → 3.87
-          //   • "Tier 9: LPDDR4-2133"          → 1.60
+          //   • "Tier 1: LPDDR5T-9600"          → 10.00
+          //   • "Tier 2: LPDDR5X-8533"          → 9.34
+          //   • "Tier 3: LPDDR5X-7500"          → 8.62
+          //   • "Tier 4: LPDDR5-6400"           → 7.74
+          //   • "Tier 5: LPDDR5-5500"           → 6.89
+          //   • "Tier 6: LPDDR4X-4266"          → 5.47
+          //   • "Tier 7: LPDDR4X-3733"          → 4.73
+          //   • "Tier 8: LPDDR4-3200"           → 3.87
+          //   • "Tier 9: LPDDR4-2133"           → 1.60
           //   • "Tier 10: LPDDR3-1600 or older" → 0.00
           // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/Data Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
+          // Note: Stored for info and traceability, not directly used for scoring.
         },
         "effective_speed_mts": {
           "value": 8533,
           // GUIDELINE: The effective transfer rate in MT/s.
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 9.34
-          // SCORING GUIDELINE: Match the "effective_speed_mts.value" to the "MTEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
         },
         "scores": {
           "predicted": 9.34,
-          // SCORING GUIDELINE: scores.predicted directly inherits effective_speed_mts.subscore.
+          // SCORING GUIDELINE: Match the "effective_speed_mts.value" to the "MTEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 9.34,
@@ -3269,232 +3257,302 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //
           // --- [1] GEOMETRIC BOUNDARY INPUTS ---
           "height_mm": {
-             "value": 162.3,
-             "source": "TBD",
-             "exact_extract": "Proof pending"
-             // GUIDELINE: physical height of the device.
+            "value": 162.3,
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+            // GUIDELINE: Overall device height in mm. Critical for radiator surface area calculation.
           },
           "width_mm": {
-             "value": 79.0,
-             "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
-          },
-          "thickness_mm": {
-             "value": 8.6,
-             "value_path": "1_design_and_build_quality.1_4_thickness.thickness_mm.value"
-          },
-          "diagonal_inches": {
-             "value": 6.8,
-             "value_path": "2_display.2_9_screen_size.diagonal_inches.value"
+            "value": 79.0,
+            "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
+            // GUIDELINE: Overall device width in mm. Critical for radiator surface area calculation.
           },
           "aspect_ratio": {
-             "value": 2.1667, // Numerical value of the screen aspect ratio (Height / Width).
-             "value_details": "19.5 / 9",
-             "source": "TBD",
-             "exact_extract": "Proof pending"
-             // GUIDELINE: Standard screen aspect ratio R (Height / Width) from specs (20:9, 19.5:9, etc.).
+            "value": 2.1667, // Numerical value of the screen aspect ratio (Height / Width).
+            "value_details": "19.5 / 9",
+            "source": "TBD",
+            "exact_extract": "Proof pending"
+            // GUIDELINE: Standard screen aspect ratio R (Height / Width) from specs (20:9, 19.5:9, etc.).
           },
           "footprint_area_m2": {
-             "value": 0.01282,
-             "calculation_formula": "(height_mm * width_mm) / 1000000"
-             // GUIDELINE: Total flat surface area (in m^2) of the device's footprint (Height * Width). Represents the theoretical maximum radiator area for BOTH the front and back panels.
+            "value": 0.01282,
+            "calculation_formula": "(height_mm * width_mm) / 1000000"
+            // GUIDELINE: Total flat surface area (in m^2) of the device's footprint (Height * Width). Represents the theoretical maximum radiator area for BOTH the front and back panels.
           },
           "frame_radiator_area_m2": {
-             "value": 0.00353,
-             "calculation_formula": "2 * (height_mm + width_mm) * thickness_mm * 0.85 / 1000000"
-             // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
+            "value": 0.00353,
+            "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_thickness_mm.value * 0.85 / 1000000"
+            // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
           },
           "display_surface_area_cm2": {
-             "value": 113.5,
-             "calculation_formula": "(diagonal_inches * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
-             // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat (P_base_heat).
-           },
+            "value": 113.5,
+            "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+            // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat (P_base_heat).
+          },
 
           // --- [2] THERMAL RESISTANCE PARAMETERS (R_total) ---
-          "cooling_hardware_spreading": {
-             // Inventory of passive and active cooling modules.
-             "vapor_chamber": {
-                "coverage_area_mm2": {
-                   "value": 4050, 
-                   "source": "TBD",
-                   "exact_extract": "Proof pending", 
-                   // GUIDELINE: total surface area (footprint) of the Vapor Chamber in mm^2, if no Vapor Chamber is present set "value" to 0 and "source" and "exact_extract" to N/A.               
-                },
-                "phi": {
-                   "value": 0.3159,
-                   "calculation_formula": "phi = coverage_area_mm2 / (height_mm * width_mm)"
-                },
-             },
-             "graphite_or_graphene_layer": {
-                "value": "Multi-layer Graphite",
+          "cooling_hardware": {
+            // Inventory of passive and active cooling modules. Phase Change Materials (PCM) are excluded from this block as they function via heat absorption and are accounted for separately in the pcm_buffer field.
+            "vapor_chamber": {
+              // Definition: A two-dimensional heat pipe that uses liquid-to-vapor phase change within a vacuum-sealed flat chamber to rapidly spread heat away from the SoC (System on Chip) across a larger surface area.
+              // Marketing Names: Vapor Chamber, VC Cooling, Stainless Steel VC, Copper Vapor Chamber, Dual Vapor Chamber, Mega VC, IceLoop, Ice-cool, Super VC, VC Liquid Cooling, 3D Vapor Chamber.
+              "coverage_area_mm2": {
+                "value": 4050, 
                 "source": "TBD",
-                "exact_extract": "Proof pending",
-                "alpha": 0.8,
-                "phi": 0.50,               
-                // GUIDELINE: Use the following exact strings present in the first column for "value" with related "alpha" and "phi". For "None (SoC Only)" set "source" and "exact_extract" to N/A.
-                // | Cooling Technology Class       |  alpha  |   phi   |
-                // | :----------------------------- | :------ | :-------|
-                // | None (SoC Only)                |   0.0   |   0.0   |
-                // | Standard Graphite Sheet        |   0.6   |   0.40  |
-                // | Multi-layer Graphite           |   0.8   |   0.50  |
-                // | Synthetic Graphene Film        |   1.2   |   0.50  |
-             }
+                "exact_extract": "Proof pending", 
+                // GUIDELINE: total surface area (footprint) of the Vapor Chamber in mm^2, if no Vapor Chamber is present set "value" to 0 and "source" and "exact_extract" to N/A.               
+              },
+              "phi": {
+                "value": 0.3159,
+                "calculation_formula": "phi = coverage_area_mm2 / (height_mm * width_mm)"
+                // GUIDELINE: Thermal Coverage Factor (ratio of Vapor Chamber footprint to device footprint).
+              },
+              // NOTE: Regarding the Technological Spreading Constant for Vapor Chambers (alpha), a constant value is directly used in the formula calculating the effective spreading efficiency (s_eff).
+            },
+            "graphite_or_graphene_layer": {
+              // Definition: High-conductivity carbon-based sheets (Natural/Synthetic Graphite or Graphene) used to spread heat laterally. Graphite is the industry standard, while Graphene offers higher thermal conductivity in thinner layers.
+              "value": "Multi-layer Graphite",
+              "source": "TBD",
+              "exact_extract": "Proof pending",
+              "alpha": 0.8,
+              "phi": 0.50,               
+              // GUIDELINE: Search for the graphite or graphene cooling technology that applies. Use the following exact strings present in the first column (from the lookup table below) for "value" with related "alpha" and "phi". Use "None (SoC Only)" if no dedicated sheets are present and set "source" and "exact_extract" to N/A.
+              // | Cooling Technology Class | alpha | phi  |
+              // | :------------------------| :---: | :--: |
+              // | None (SoC Only)          |  0.0  | 0.00 |
+              // | Standard Graphite Sheet  |  0.6  | 0.40 |
+              // | Multi-layer Graphite     |  0.8  | 0.50 |
+              // | Synthetic Graphene Film  |  1.2  | 0.50 |
+              //
+            },
+            "fan": {
+              // GUIDELINE: An integrated mechanical fan can be used to force airflow across internal heat sinks or through the device chassis to enhance convective heat dissipation.
+              "max_speed_rpm": {
+                "value": 0, 
+                "source": "TBD",
+                "exact_extract": "Proof pending"
+                // GUIDELINE: Fetch the maximum rated rotational speed of the internal fan in RPM. If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
+              },
+              "diameter_mm": {
+                "value": 0.0,
+                "source": "TBD",
+                "exact_extract": "Proof pending"
+                // GUIDELINE: Fetch the internal fan's diameter in millimeters (mm). If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
+              },
+              "h_fan": {
+                "value": 0,
+                "calculation_formula": "10 + 100 * (max_speed_rpm * diameter_mm / 240000)^0.8"
+                // GUIDELINE: Convective intensity within the cooling duct. If max_speed_rpm or diameter_mm are missing (set to "Not found") for a confirmed fan, use a default h_fan = 80 which is a slightly conservative value vs baseline fan (110). value = 0 if no fan is present.
+              },
+            },
           },
-          "back_material": {
-             "value": "Tier 3: Basic Glass",
-             "value_path": "1_design_and_build_quality.1_1_materials.back_material.value",
-             "s_0_baseline": 0.05,
-             "s_max_ceiling": 0.95
-              // SCORING GUIDELINE: s_0 and s_max defined by material class.
-              // Class 1 (Conductive Metal): s_0 = 0.60, s_max = 1.00
-              // Class 2 (Moderate Alloy): s_0 = 0.25, s_max = 1.00
-              // Class 3 (Insulating Glass/Polymer): s_0 = 0.05, s_max = 0.95
-          },
-          "back_spreading_efficiency_s_eff": {
-             "value": 0.693,
-             "calculation_formula": "s_0_baseline + (s_max_ceiling - s_0_baseline) * [ 1 - exp(-Sum(alpha_i * phi_i)) ]"
-             // SCORING GUIDELINE: Cumulate the efforts of all technologies in cooling_hardware_spreading.
-          },
-          "h_conv_back": {
-             "value": 10.0,
-             "calculation_formula": "Passive baseline = 10.0. Active fan = 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]"
+          "back_panel": { 
+            "material": {
+              "value": "Armor-Class Glass",
+              "value_path": "1_design_and_build_quality.1_1_materials.back_material.value",
+              "s_0": 0.05,
+              "s_max": 0.95
+              // SCORING GUIDELINE: s_0 and s_max are defined by material conductivity class.
+              // | Materials (Section 1.1)      | Material Class                | s_0  | s_max |
+              // | :--------------------------- | :-----------------------------| :--: | :---: |
+              // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+              // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+              // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+              // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+              // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.25 | 1.00  |
+              // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Armor-Class Glass**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Shield-Class Glass**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Reinforced Glass**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Standard Glass**           | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Flexible Membrane**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Composite Sheet**          | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              // | **Not Disclosed**            | Class 3 (Insulating Material) | 0.05 | 0.95  |
+              //
+              // GUIDELINE: Select the material class based on the back panel material identity. This determines the baseline spreading efficiency (s_0) and thermodynamic ceiling (s_max).
+            },
+            "s_eff": {
+              // GUIDELINE: s_eff is the effective spreading efficiency of the back panel.
+              "value": 0.6929,
+              "calculation_formula": "material.s_0 + (material.s_max - material.s_0) * [ 1 - exp(-2.7 * vapor_chamber.phi - graphite_or_graphene_layer.alpha * graphite_or_graphene_layer.phi)]"
+              // GUIDELINE: Continuous Saturation Model of thermal diffusion. Quantifies how effectively the internal spreaders (Vapor Chamber/Graphite/Graphene) utilize the back panel area for convection. The constant 2.7 represents the 'alpha' (spreading intensity) for Vapor Chambers, which is significantly higher than solid graphite due to the near-isothermal behavior of phase-change cycles.
+            },    
           },
           "r_path_1_back": {
-             "value": 11.26,
-             "calculation_formula": "1 / (h_conv_back * footprint_area_m2 * back_spreading_efficiency_s_eff)"
+            "value": 11.26,
+            "calculation_formula": "1 / [ footprint_area_m2 * ( fan.h_fan * f_fan + 10.0 * (back_panel.s_eff - f_fan) ) ]"
+            // GUIDELINE: Thermal resistance of the back panel path. Uses an Area Model to sum dissipation from the forced duct (fan.h_fan over f_fan) and the remaining passive spread surface (h = 10.0 over back_panel.s_eff - f_fan). 
+            // f_fan = 0.1 (meaning 10% of the back surface area) if fan.max_speed_rpm > 0, else f_fan = 0.
           },
           "r_path_2_front": {
-             "value": 31.25,
-             "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
-             // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
+            "value": 31.20,
+            "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
+            // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
           },
           "frame_material": {
-             "value": "Tier 2: Titanium Alloy",
-             "value_path": "1_design_and_build_quality.1_1_materials.frame_material.value",
-             "s_eff_frame": 0.40
-                 // SCORING GUIDELINE: Frame spreading efficiency depends strictly on material class:
-                 // Class 1 (Metal): 1.00
-                 // Class 2 (Alloy): 0.40
-                 // Class 3 (Polymer): 0.05
-               },
-               "area_active_m2": {
-                  "value": 0.00141,
-                  "calculation_formula": "frame_radiator_area_m2 * s_eff_frame"
+            "value": "Titanium Alloy",
+            "value_path": "1_design_and_build_quality.1_1_materials.frame_material.value",
+            "s_eff": 0.40
+            // SCORING GUIDELINE: Frame spreading efficiency depends strictly on material conductivity class:
+            // | Materials (Section 1.1)      | Material Class                | s_eff |
+            // | :--------------------------- | :---------------------------- | :---: |
+            // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
+            // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
+            // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 1.00  |
+            // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 1.00  |
+            // | **Magnesium Alloy**          | Class 1 (Conductive Metal)    | 1.00  |
+            // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.40  |
+            // | **Amorphous Alloy**          | Class 2 (Moderate Alloy)      | 0.40  |
+            // | **Titanium Alloy**           | Class 2 (Moderate Alloy)      | 0.40  |
+            // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05  |
+            // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05  |
+            // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05  |
+            // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05  |
+            // | **Material Not Disclosed**   | Class 3 (Insulating Material) | 0.05  |
+            //
+            // GUIDELINE: Select the frame material class based on the structural frame identity. Defines the lateral perimeter spreading ability.
           },
           "r_path_3_frame": {
-             "value": 70.92,
-             "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff_frame)"
+            "value": 70.82,
+            "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff)"
+            // GUIDELINE: Thermal resistance of the perimeter frame path (K/W).
           },
           "r_total": {
-             "value": 7.41,
-             "calculation_formula": "(1/r_path_1_back + 1/r_path_2_front + 1/r_path_3_frame)^-1"
-             // SCORING GUIDELINE: Parallel thermal resistance circuit combining Back, Front, and Mid-Frame paths.
+            "value": 7.41,
+            "calculation_formula": "(1/r_path_1_back + 1/r_path_2_front + 1/r_path_3_frame)^-1"
+            // GUIDELINE: Unified system thermal resistance (Parallel sum of Back, Front, and Mid-Frame paths). Defines the chassis's global ability to expel thermal wattage to the environment.
           },
 
           // --- [3] ENERGY BALANCE & TIME CONSTANT ---
-          "weight_g": {
-             "value": 232,
-             "value_path": "1_design_and_build_quality.1_5_weight.weight_g.value"
-             // GUIDELINE: Converted to kg in formula for SI (International System of Units) consistency.
-          },
           "pcm_buffer": {
-             "value": 0.0,
-             "value_details": ,
-             "source": "TBD",
-             "exact_extract": "Proof pending",
-             // GUIDELINE: Sigma = 0.75 for Advanced PCM Matrix, 0.50 for Basic PCM Pad, 0.0 otherwise (in that case set "source" and "exact_extract" to N/A). Represents Phase Change Material (PCM) Factor.
+            // SCORING GOAL: Evaluates the latent heat storage capacity of the device to buffer high-power transients.
+            // Phase Change Materials (PCM) (typically organic hydrocarbons/paraffin) absorb thermal energy during their solid-liquid phase transition, effectively increasing the system's thermal capacitance (C).
+            //
+            // SCORING GUIDELINE: Identify the PCM implementation strictly via the structural form factor (3D Matrix vs. 2D Interface). 
+            // Match the device's verified architecture to the corresponding Tier below. Use the following exact Tier Names for "value" and the related numerical factor for "subscore":
+            //
+            // • Tier 1: 3D Structural PCM Matrix                → subscore = 0.75
+            //   Physical Definition: The PCM (paraffin) is integrated into a 3D conductive lattice (e.g., metal honeycomb, graphene foam, or conductive pillar). This architecture allows for rapid volumetric heat absorption.
+            //   AI Detection Logic: Classify as Tier 1 ONLY if descriptions imply a 'structure', 'matrix', '3D foam', 'encapsulation', or 'volumetric pillar'.
+            //   Illustrative Examples: Xiaomi's "Honeycomb PCM", "PCM Matrix", "Graphene-PCM Foam", "Aerospace-grade PCM matrix", "Rapid-cooling Conductor (Pillar)".
+            //
+            // • Tier 2: 2D Interfacial PCM Layer                → subscore = 0.50
+            //   Physical Definition: The PCM is applied as a thin interfacial layer (gel, sheet, or film) to improve contact between the SoC (System-on-Chip) and the heat spreader. It lacks a 3D structural matrix.
+            //   AI Detection Logic: Classify as Tier 2 if the material is described as a 'gel', 'pad', 'sheet', 'film', 'paste', or 'thermal interface'.
+            //   Illustrative Examples: Realme's "Diamond Thermal Gel", "Phase-change gel", "Organic hydrocarbon pad/sheet", "Solid-liquid transition interface", "Paraffin wax sheet".
+            //
+            // • Tier 3: High-Temp PCM (Melting Point > 45°C)    → subscore = 0.00
+            //   Physical Definition: The material is a verified Phase Change Material but its melting point is above the 45°C safety threshold. Because it remains in a solid state throughout the ergonomic evaluation window, it provides zero latent heat capacitance benefit for this model.
+            //
+            // • Tier 4: None / Standard                         → subscore = 0.00
+            //   Physical Definition: No latent heat storage material is utilized beyond standard Thermal Paste (also known as TIM — Thermal Interface Material). Standard TIM fills microscopic air gaps between the SoC (System-on-Chip) and the heat spreader to improve conduction, but remains in a single state; it does not change phase at 40°C–45°C and thus provides no latent heat capacitance. Note: Only in this case (Tier 4) set "source" and "exact_extract" to "N/A".
+            //
+            // NEUTRALITY & DIFFERENTIATION RULES:
+            // 1. VC EXCLUSIVITY: A Vapor Chamber (VC) is a heat TRANSPORT mechanism (Phase Change: Liquid/Vapor). It is already accounted for in Spreading Efficiency (s_eff). 
+            //    A PCM Buffer is a heat STORAGE mechanism (Phase Change: Solid/Liquid). Categorizing a VC as a PCM Buffer constitutes double-counting and is strictly forbidden.
+            // 2. MELTING POINT CONSTRAINT: Credits only apply if the melting phase is verified to occur between ambient (25°C) and the safety threshold (45°C). Any melting within this window successfully absorbs the latent buffer and delays the thermal throttling point. Above 45°C (Tier 3), the benefit is zero.
+            //
+            "value": "Tier 4: None / Standard",
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "subscore": 0.00
           },
           "thermal_capacitance_c": {
-             "value": 197.2,
-             "calculation_formula": "((weight_g / 1000) * 850) + (pcm_buffer * 25)"
+            "value": 197.2,
+            "calculation_formula": "(1_design_and_build_quality.1_5_weight_g.value * 0.850) + (pcm_buffer.subscore * 25)"
+            // GUIDELINE: Unified system thermal capacitance (J/K). Defines the "soak capacity" or ability to buffer heat spikes. 850 J/kg-K is the standard bulk specific heat.
           },
           "time_constant_tau_s": {
-             "value": 1461,
-             "calculation_formula": "r_total * thermal_capacitance_c"
+            "value": 1461,
+            "calculation_formula": "r_total * thermal_capacitance_c"
+            // GUIDELINE: System time constant (seconds). Quantifies the transient lag before the system reaches steady-state equilibrium.
           },
           "p_adm": {
-             "value": 4.82,
-             "calculation_formula": "20 / (r_total * (1 - exp(-1200 / time_constant_tau_s)))"
-             // GUIDELINE: 20 is Delta_T_limit safety threshold (ergonomic limit). 1200 is evaluation window (20 minutes).
+            "value": 4.82,
+            "calculation_formula": "20 / (r_total * (1 - exp(-1200 / time_constant_tau_s)))"
+            // GUIDELINE: Total Admissible Thermal Power (Watts). The maximum wattage allowed for the entire system to reach exactly the safety threshold (20K rise) at the end of the 1200-second (20-minute) evaluation window. 
           },
 
           // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
-          "p_static": {
-             "value": 0.40
-             // GUIDELINE: Static system power consumption (Idle components excluding display).
-          },
           "p_base": {
-             "value": 1.25,
-             "k_display_heat_constant": 0.0075,
-             "calculation_formula": "p_static + (display_surface_area_cm2 * k_display_heat_constant)"
+            "value": 1.25,
+            "calculation_formula": "0.4 + (0.0075 * display_surface_area_cm2)"
+            // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
           },
           "p_adm_soc": {
-             "value": 3.57,
+            "value": 3.57,
             "calculation_formula": "p_adm - p_base"
+            // GUIDELINE: Net admissible wattage available exclusively for the SoC workload after accounting for baseline system heat.
           },
           "p_peak": {
-             "identifier": "Snapdragon 8 Gen 3",
-             // GUIDELINE: Standardized SoC identifier matching the record in identity.hardware_configuration.chipset.value
-             "reference_table": "SOC_PEAK_POWER_MATRIX",
-             // GUIDELINE: Path to the authoritative lookup table for mapping.
-             "lookup_parameter": "Peak Power (W)",
-             // GUIDELINE: Description of the column being retrieved.
-             "value": 14.0
-             // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`
-             //
-             // █ SOC_PEAK_POWER_MATRIX:
-             // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
-             // | :---------------------------------------- | :------------: | :---: | :-----: |
-             // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
-             // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
-             // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
-             // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
-             // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
-             // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
-             // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
-             // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
-             // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
-             // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
-             // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
-             // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
-             // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
-             // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
-             // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
-             // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
-             // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
-             // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
-             // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
-             // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
-             // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
-             // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
-             // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
-             // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
-             // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
-             // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
-             // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
-             // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
-             // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
-             // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
-             // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
-             // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
-             // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
-             // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
-             // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
-             // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
-             // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
+            // GUIDELINE: Peak SoC Thermal Power (Watts). Represents the maximum heat generated by the chipset during unrestricted high-performance workloads (intensive gaming/benchmarks).
+            "identifier": "Snapdragon 8 Gen 3",
+            // GUIDELINE: Standardized SoC identifier matching the record in identity.hardware_configuration.chipset.value
+            "reference_table": "SOC_PEAK_POWER_MATRIX",
+            // GUIDELINE: Path to the authoritative lookup table for mapping.
+            "lookup_parameter": "Peak Power (W)",
+            // GUIDELINE: Description of the column being retrieved.
+            "value": 14.0
+            // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the column disclosed in `lookup_parameter`
+            //
+            // █ SOC_PEAK_POWER_MATRIX:
+            // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
+            // | :---------------------------------------- | :------------: | :---: | :-----: |
+            // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
+            // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
+            // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
+            // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
+            // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
+            // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
+            // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
+            // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
+            // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
+            // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
+            // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
+            // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
+            // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
+            // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
+            // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
+            // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
+            // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
+            // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
+            // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
+            // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
+            // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
+            // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
+            // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
+            // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
+            // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
+            // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
+            // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
+            // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
+            // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
+            // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
+            // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
+            // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
+            // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
+            // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
+            // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
+            // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
+            // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
           },
           "power_ratio": {
-             "value": 0.255,
-             "calculation_formula": "p_adm_soc / p_peak"
-             // GUIDELINE: Capped at 1.0 (100% capacity).
+            "value": 0.255,
+            "calculation_formula": "p_adm_soc / p_peak"
+            // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (p_peak) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
           },
           "predicted_stability_percentage": {
-             "value": 63.4,
-             "calculation_formula": "(power_ratio ^ 0.333) * 100"
-             // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)).
+            "value": 63.4,
+            "calculation_formula": "100 * (power_ratio ^ 0.333) (Clamped 0-100)"
+            // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)). Capped at 100.
           },
           "predicted_tdsi_score": {
-             "value": 5.03,
-             "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min))"
+            "value": 5.03,
+            "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10."
+            // GUIDELINE: Final score mapping. Normalizes the predicted stability percentage against industry thresholds (Thermal_Stability_Min/Max).
           }
         },
 
@@ -3503,8 +3561,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_TDSI": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
-          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters (P_peak, C, R_path, etc.) defined in the thermodynamic model, excluding the target device itself.
-          //         Distance = Sqrt( 0.40*(%Diff_P_peak)^2 + 0.20*(%Diff_C)^2 + 0.15*(%Diff_R_path_back)^2 + 0.10*(%Diff_R_path_front)^2 + 0.10*(%Diff_R_path_frame)^2 + 0.05*(%Diff_P_base_heat)^2 )
+          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters defined in the thermodynamic model (Method C), excluding the target device itself.
+          //         Formula: Distance = Sqrt( 0.40 * %Diff(p_peak)^2 + 0.30 * %Diff(r_total)^2 + 0.20 * %Diff(thermal_capacitance_c)^2 + 0.10 * %Diff(p_base)^2 )
+          //         Where:
+          //         - %Diff(X) = abs(X_Target - X_Neighbor) / X_Target
+          //         - X: The exact parameter name from the thermodynamic model (Method C) defined above.
+          //         - Target: The device currently being scored (whose stability is being predicted).
+          //         - Neighbor: Any device in the database with a known benchmark score (Method A), except the Target itself.
           //         Search space: all phones that have a known 3DMark Wild Life Extreme score (Method A), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
@@ -3539,20 +3602,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "avg_benchmark_neighbors": 4.4667,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
           "correction_ratio": 1.0371,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.phase_d_net_soc_budget_and_prediction.predicted_tdsi_score.value / avg_predicted_neighbors.
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.predicted_tdsi_score.value / avg_predicted_neighbors.
           "interpolated_score": 4.63
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
           "predicted": 5.03,
-          "calculation_formula": "method_c_prediction_model_TDSI.phase_d_net_soc_budget_and_prediction.predicted_tdsi_score.value",
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_TDSI.predicted_tdsi_score.value.
           "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 4.24,
+            // SCORING GUIDELINE: Use Method A if method_a_benchmark_TDSI is available (method_a_benchmark_TDSI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_TDSI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_TDSI.predicted_tdsi_score.value).
             "method_used": "Benchmark (3DMark)",
+            // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+            //   • Benchmark (3DMark)     → Method A (documented 3DMark Wild Life Extreme stability score)
+            //   • Neighbor Interpolation → Method B (similar device benchmarks)
+            //   • Predictor              → Method C (thermodynamic RC calculation)
             "booster": "No",
+            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
             "confidence": "N/A"
+            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
           }
         }
       }

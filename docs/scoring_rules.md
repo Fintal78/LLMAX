@@ -90,6 +90,7 @@ Scores are derived from a **Structural Merit Index (StMI)** (calculated as 70% S
 | **Back Material Class**      | **Score** |
 | :----------------------------| :-------- |
 | **Specialized Ceramic**      | **10.00** |
+| **Stainless Steel**          | **9.10**  |
 | **7000 Series Aluminum**     | **8.55**  |
 | **6000 Series Aluminum**     | **8.33**  |
 | **Zinc Alloy (Zamak 3)**     | **8.25**  |
@@ -113,9 +114,10 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 2. **Fracture Toughness (50% weight):** Resistance to unstable crack propagation (shattering); calculated as the normalized logarithmic value of the material's Fracture Toughness.
 
 - **Specialized Ceramic (10.00)**: Zirconia/Alumina. The ultimate surface material, providing high-end scratch resistance (>1200 HV) and superior toughness to glass.
+- **Stainless Steel (9.10)**: Based on the Surface Merit Index (SMI), surgical-grade steel (~200 HV) is strictly superior to all aluminum alloys in both hardness and fracture toughness (125 MPa·m^0.5), making it physically impossible to shatter while offering superior scratch resistance.
 - **7000 / 6000 Aluminum (8.55–8.33)**: While softer than glass, metals are "fail-safe" due to extreme toughness. They simply do not shatter, making them a superior choice for drop-protection survival. Verified high-grade alloys.
 - **Zinc Alloy (Zamak 3) (8.25)**: Precision-cast alloy used for high-impact back-cladding or structural modules in rugged devices. While it offers superior impact resilience (shatter resistance) compared to all glasses, its lower surface hardness (~82 HV) and high density make it less efficient for premium flagship designs than aluminum alloys.
-- **Die-Cast Aluminum (ADC12) (8.20)**: Default for unbranded "Metal" or "Aluminum" back panels; assuming the hardness (80 HV) and structural integrity of economy cast alloys.
+- **Die-Cast Aluminum (ADC12) (8.20)**: Default for unbranded "Metal", "Aluminum", or "Metal Unibody" claims. While physically robust, it lacks the explicit alloying of 7000-series or the hardness of Stainless Steel, serving as the conservative baseline for generic metallic backs.
 - **Armor-Class Glass (6.41)**: The scratch-resistance peak for glass surfaces (Ref: Gorilla Armor). Its composition achieves a Vickers Hardness of 750 HV, outperforming Shield-Class (670 HV). While its absolute toughness is slightly lower than Shield-Class, its superior resilience against micro-abrasions secures its 6.41 tier.
 - **Shield-Class Glass (6.25)**: The impact-optimized flagship tier (Ref: Victus 2, Kunlun 2). It provides a ~38% leap in fracture toughness (1.05 MPa·m^0.5) over baseline Reinforced variants (0.76 MPa·m^0.5). While it offers the highest drop-protection in the glass category, it scores below Armor-Class (6.41) due to its lower audited surface hardness (670 HV vs 750 HV).
 - **Reinforced Glass (6.00)**: The baseline flagship glass (Ref: Victus, Gorilla Glass 6). It serves as the industrial anchor with verified properties (640 HV / 0.76 MPa·m^0.5). It lacks the advanced reinforcement of Shield-Class but remains significantly superior to standard soda-lime glass in both hardness and toughness.
@@ -2475,15 +2477,18 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 *   **Distance Metric:** Weighted Euclidean Distance in the 6-dimensional granular thermal feature space.
     > [!NOTE]
     > **Methodology Context:** These six components represent the fundamental thermodynamic variables calculated in the **Analytical RC Model (Method C)**. For a detailed breakdown of how each value (e.g., R_path, P_peak, C...) is physically derived from raw device specifications, refer to the extensive technical definitions provided in Section 6.10.C (Method C).
-    *   `Distance = Sqrt( 0.40*(%Diff_P_peak)^2 + 0.20*(%Diff_C)^2 + 0.15*(%Diff_R_path_back)^2 + 0.10*(%Diff_R_path_front)^2 + 0.10*(%Diff_R_path_frame)^2 + 0.05*(%Diff_P_base_heat)^2 )`
-    *   *Where %Diff_X = abs(X_Target - X_Neighbor) / X_Target*
-    *   **Scientific Rationale:** The distance metric considers different power components first, breaking down impactful factors (like P_adm) further to capture variations in material and cooling technologies. 
-        *   **P_peak (40%):** The primary engine heat load class.
-        *   **C (20%):** Thermal inertia (Mass and Phase Change Material buffers).
-        *   **R_path_back (15%):** Back panel efficiency (Chassis material + cooling technology).
-        *   **R_path_front (10%):** Baseline dissipation area (screen footprint).
-        *   **R_path_frame (10%):** Frame metallurgy and perimeter convection.
-        *   **P_base_heat (5%):** System overhead and display radiation adjustment.
+    *   `Distance = Sqrt( 0.40*%Diff(P_peak)^2 + 0.30*%Diff(R_total)^2 + 0.20*%Diff(C)^2 + 0.10*%Diff(P_base_heat)^2 )`
+    *   *Where:*
+        *   `%Diff(X) = abs(X_Target - X_Neighbor) / X_Target`
+        *   **Target:** The device currently being scored.
+        *   **Neighbor:** Any device in the search space with a known benchmark result.
+    *   **Scientific Rationale:** The 4-parameter model creates a perfect thermodynamic symmetry by balancing the **Heat Load (50%)** against the **Cooling Capacity (50%)**. This ensures that neighbor devices are matched based on their complete energy envelope.
+        *   **I. Heat Load (50%):** 
+            *   **P_peak (40%):** The Heat Source (SoC workload class).
+            *   **P_base_heat (10%):** Parasitic System Heat (Display, PMIC, and logic overhead).
+        *   **II. Cooling Capacity (50%):** 
+            *   **R_total (30%):** Steady-state Dissipation (The Radiator). Consolidated to represent the chassis's total ability to expel heat.
+            *   **C (20%):** Thermal Inertia (The Mass/Inertia). Represents the energy absorption capacity during the 1200s evaluation window.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 > [!NOTE]
@@ -2676,33 +2681,80 @@ Instead of discrete tiers, the spreading efficiency of the device chassis is mod
 > - **Extreme/XXL VC (> 10,000 mm²):** Also known as "Full-body" or "3D" Vapor Chambers. These massive units cover essentially the entire internal footprint. They ensure the back panel reaches an almost perfectly Isothermal state with maximum efficiency to expel heat.
 
 ###### 2.5 Active Cooling (Integrated Fan)
-Built-in fans create a highly efficient internal parallel exhaust path that forcibly ejects thermal wattage. Because we utilize a single-node lumped capacitance model, we **artificially model the fan** as a boost to the convective coefficient **h** precisely for the **Back Panel radiator area**. 
+Built-in fans create a highly efficient internal parallel exhaust path that forcibly ejects thermal wattage. Unlike passive spreaders, which enhance the **surface area** utilized for natural convection, internal fans provide a massive localized boost to the **convective intensity** within a dedicated cooling duct. To model this accurately, we divide the back panel into two distinct convective zones based on the device's physical architecture.
 
-**Step-by-Step Physical Proof of the h_eff Formula:**
-1.  **Duct Intensity (h_local):** Forced air movement in narrow internal cooling ducts at high RPM generates a focal heat transfer coefficient (**h_local**) of approximately **80 W/m²K** (at 20,000 RPM baseline).
-2.  **Area-Weighted Aggregation:** To transition this focal benefit into a system-wide average for our 1-node chassis model, we use the weighted sum formula: 
-    *   `h_eff = [ h_passive * (1 - Area_Ratio) ] + [ h_local * Area_Ratio ]`
-3.  **Static Gain at 20,000 RPM:** Assuming a standard **10%** internal radiator footprint (Area_Ratio = 0.10):
-    *   `h_eff = [ 10.0 * 0.90 ] + [ 80.0 * 0.10 ] = 9.0 + 8.0 = 17.0 W/m²K`.
-    *   This represents a total system-wide gain of **+7.0 units** over the passive baseline (10.0).
-4.  **Non-Linear Scaling (h ∝ RPM^0.8):** Cooling efficiency (Nusselt Number) scales with air velocity to the power of 0.8 according to the **Dittus-Boelter correlation**. This accounts for the diminishing returns of high-velocity airflow due to **Boundary Layer resistance** at the radiator surface—an industry standard in electronics cooling.
-5.  **Formula Synthesis:** By setting our calculation baseline at **20,000 RPM** (which defined h_local), the non-linear power factor becomes exactly 1.0. This allows our required system-wide gain (+7.0 units) to serve as the unified formula constant.
+**Parameter Definitions:**
+*   **h_fan (Forced Convective Intensity):** The heat transfer coefficient achieved within the cooling duct by the forced airflow. This represents the "intensity" of the active cooling path.
+*   **f_fan (Fan Engagement Factor):** The fraction of the total back panel footprint occupied by the internal fan-sink/duct. Based on high-performance gaming phone teardowns, this is standardized at **0.10 (10%)**.
+*   **h_passive (Natural Convection Baseline):** The standard baseline for natural convection in ambient air, standardized at **10.0 W/m²K**.
+*   **s_eff (Spreading Efficiency):** The fraction of the back panel area utilized for cooling, as derived from internal spreaders (Vapor Chamber/Graphite) in Section 2.4.
 
-**h_eff = 10.0 + [ 7.0 * (Fan_RPM / 20000)^0.8 ]**
+**Step-by-Step Physical Proof (Decoupled Area Model):**
+
+1.  **Total Back Dissipation (P_back):**
+    The total heat ejected is the sum of the power dissipated by the localized forced-air duct and the remaining spread surface area:
+    `P_back = P_forced + P_passive_remaining`
+
+2.  **Forced Convection (P_forced):**
+    The fan-sink/duct area (f_fan * A_panel) is cooled at the high-intensity forced convection coefficient (h_fan):
+    `P_forced = h_fan * (f_fan * A_panel) * Delta_T`
+
+3.  **Remaining Passive Dissipation (P_passive_remaining):**
+    The rest of the effectively spread area (A_panel * s_eff) that is NOT covered by the fan-sink is cooled via natural convection (h_passive):
+    `P_passive_remaining = h_passive * (A_panel * s_eff - f_fan * A_panel) * Delta_T`
+
+4.  **Refactoring for Thermal Resistance (R_back):**
+    Combining the terms and factoring out common variables (A_panel and Delta_T):
+    `P_back = A_panel * Delta_T * [ h_fan * f_fan + h_passive * (s_eff - f_fan) ]`
+
+By defining an **Effective Convection Coefficient (h_eff)** for the back panel:
+`h_eff = h_fan * f_fan + h_passive * (s_eff - f_fan)`
+`h_eff = h_fan * 0.10 + 10.0 * (s_eff - 0.10)`
+
+The resulting resistance formula is:
+`R_back = 1 / (A_panel * h_eff)`
 
 > [!NOTE]
-> **Ambient Consistency:** External ambient convection is not physically modified by the fan. The `h_eff` constant simply aggregates both the internal forced exhaust and the external passive paths into a unified coefficient for the back face ONLY.
+> **The `s_eff < f_fan` Edge Case (Thermodynamic Reality):**
+> Mathematically, the term `(s_eff - f_fan)` could yield a negative value if a device had an internal fan but an extremely poor spreading efficiency (e.g., bare glass with `s_eff = 0.05` and `f_fan = 0.10`). This would imply the fan occupies more area than the heat natively spreads to, creating a "negative" passive area. 
+> 
+> However, in the real world, this is a non-issue. Exhaustive teardowns of active-cooling smartphones (e.g., **ZTE Nubia RedMagic** series, **Lenovo Legion Phone Duel 2**) prove that mechanical fans are *always* paired with massive Vapor Chambers (often >10,000 mm²) and extensive graphite sheets to bridge the SoC to the duct. Therefore, any phone with a fan will inherently possess an `s_eff` (typically > 0.80) that vastly exceeds the 0.10 fan footprint, ensuring the formula remains physically and mathematically sound without the need for artificial limiters.
+
+**Physics of Forced Convection Scaling (h_fan):**
+
+To ensure high traceability and ease of use, we utilize a simplified semi-empirical model that anchors the cooling intensity boost to a standard high-performance gaming phone reference state.
+
+**Scaling Formula:**
+**`h_fan = 10 + 100 * (max_speed_rpm / 20000 * diameter_mm / 12)^0.8`**
+
+which leads to:
+**`h_fan = 10 + 100 * (max_speed_rpm * diameter_mm / 240000)^0.8`**
+
+**Justification of Components:**
+*   **10 (Natural Baseline):** Represents the standard natural convection baseline (h_passive) for air in ambient conditions, obtained when the fan does not rotate (RPM = 0).
+*   **100 (Forced Boost Factor):** The calibrated convective intensity boost provided by the through-flow air channel at the reference state.
+*   **Reference State (12 mm / 20,000 RPM):** The boost coefficient is anchored to a high-performance **12 mm** fan (the median size for leading gaming devices) running at a standard **20,000 RPM**.
+*   **Velocity Scaling (v^0.8):** Because the actual airflow velocity (v) is directly proportional to the fan blade’s rotational tip speed (v ~ D * RPM), the cooling intensity scales with the 0.8 power of this product. This follows established turbulent flow principles where heat transfer enhancement is non-linearly coupled to air velocity.
+
+*   **Example Case:** A flagship gaming phone with a 12 mm fan running at 20,000 RPM resolves to an effective convective capacity of **110 W/m²K**.
 
 ###### 2.6 Thermal Capacitance (C) 
 The "Thermal Sponge". `C = Mass(kg) * Specific Heat(J/kg·K)` (Where **Specific Heat** is the material's ability to store thermal energy). Heavier devices buffer intense heat spikes longer before surface temperatures rise.
 *   **Standard Bulk Specific Heat:** To simplify and ensure consistency, a standardized value of **850 J/kg·K** is used. *(Rationale: In a Lumped Parameter Model, the entire mass acts as a unified sponge. Because the lithium-ion battery and glass screen constitute the vast majority of the weight in all phones, the volumetric average specific heat converges tightly at ~850. Using this constant prevents minor backend material weight differences from skewing the total heat capacity unphysically).*
 *   **Advanced Modifier (Phase Change Materials - PCM):** Devices using internal wax-sleeves (paraffin composites) temporarily increase C during the "melting window," absorbing power spikes without temperature rise. 
-    *   **Standardized Thermal Buffer Constant (C_pcm = 25 J/K):** To ensure model consistency, we define a standardized **Latent Capacity Constant**. This represents a reference implementation of **~2.5g** of aerospace-grade organic paraffin. Given its **Latent Heat of Fusion** (the energy absorbed during the melting phase) of **200 J/g**, the total energy buffer provided is **500 J** (2.5g * 200 J/g = 500 J). Evaluated over our 20K safety window, this result yields a capacitance boost of **25 J/K** (500 J / 20 K).
-    *   **Phase-Change Utilization Factor (Sigma_pcm):** Because PCM is non-linear and only absorbs energy during the phase transition (melting), its efficiency depends on thermal contact quality. We apply a utilization factor:
-        *   **Sigma = 0.75 (Tier 1: Advanced PCM Composite):** PCM embedded in a conductive metal-graphite matrix for maximized melting uniformity. **AI Signatures:** *"Composite PCM"*, *"C-PCM"*, *"PCM Matrix"*, *"Graphene-PCM hybrid"*, *"Nanometer Carbon PCM"*.
-        *   **Sigma = 0.50 (Tier 2: Basic PCM Pad):** Standard paraffin pads with limited lateral interface. **AI Signatures:** *"Phase change pad"*, *"Organohydrocarbon interface"*, *"Solid-liquid transition interface"*.
-    *   **Effective Capacitance Formula:** `C = (Mass * 850) + (Sigma_pcm * 25)`
-    *   *(Melting Point Constraint: PCM credits are only applicable if the material's melting point is verified within the 40°C–45°C safety window. Above this, the material results in zero benefit for the sustained safety threshold).*
+    *   **Standardized Thermal Buffer Constant (C_pcm = 25 J/K):** Represents a reference implementation of **~2.5g** of organic paraffin with a **Latent Heat of Fusion** of **200 J/g**, providing a total energy buffer of **500 J** (2.5g * 200 J/g). This energy is mathematically linearized over the full **20K safety window** (from 25°C ambient to 45°C surface) to yield an effective average capacitance boost of **25 J/K** (500 J / 20 K).
+    *   *(Note: While paraffin melts over a narrower ~5K window, our specific transient solution for Thermal Impedance (Z_th(t)) requires a constant Capacitance value (C) to remain mathematically applicable. Linearizing the 500J over the entire 20K rise provides the most accurate 'Effective Average Capacitance' for this LTI (Linear Time-Invariant) approximation.*
+    *   **Phase-Change Utilization Factor (subscore_pcm):** Quantifies the thermal contact quality and structural integration of the material.
+        *   **subscore = 0.75 (Tier 1: 3D Structural PCM Matrix):** PCM integrated into a 3D conductive lattice (metal honeycomb, graphene foam) for rapid volumetric absorption.
+        *   **subscore = 0.50 (Tier 2: 2D Interfacial PCM Layer):** PCM applied as a thin interfacial layer (gel, sheet, or film) to improve contact, lacking a 3D structural matrix.
+        *   **subscore = 0.00 (Tier 3: High-Temp PCM):** The PCM is verified but its melting point is above 45°C. It remains solid during the evaluation and provides zero latent benefit.
+        *   **subscore = 0.00 (Tier 4: None / Standard TIM):** Standard Thermal Paste used to fill air gaps between the SoC (System-on-Chip) and the heat spreader. It does not change phase at 40°C–45°C and provides zero latent heat capacitance.
+    *   **Effective Capacitance Formula:** `C = (Mass * 850) + (subscore_pcm * 25)`
+    *   *(Melting Point Constraint: PCM credits are only applicable if the material's melting phase occurs between ambient (25°C) and the safety threshold (45°C). Any melting within this window successfully absorbs the 500J buffer and delays the thermal throttling point. Above 45°C (Tier 3), the material remains solid and provides zero benefit for the safety window).*
+
+> [!IMPORTANT]
+> **Neutrality & Differentiation (VC vs. PCM Buffer):** 
+> A **Vapor Chamber (VC)** is a heat **transport** mechanism accounted for in Spreading Efficiency (Section 2.4). While it uses phase change (Liquid/Vapor), it does not significantly increase thermal capacitance. A **PCM Buffer** is a heat **storage** mechanism (Solid/Liquid) designed to absorb energy transients. To ensure unbiased scoring, a VC must NEVER be categorized as a PCM Buffer; doing so constitutes double-counting.
 
 ###### 2.7 The Multi-Path Transient Solution
 The system calculates the **Admissible Thermal Power (P_adm)**—the maximum continuous wattage allowed to reach the safety threshold (Delta_T_limit) at the end of the 1200-second evaluation window. 
@@ -2720,7 +2772,7 @@ Heat escapes the device through three parallel thermal paths. We calculate the r
 *Rationale: The rate of heat storage (C * dT/dt) is the difference between the generated thermal power (P) and the heat dissipated into the ambient environment (Delta_T / R_total).*
 
 **Introduction of Thermal Impedance (Z_th):**
-The relationship between the temperature rise (Delta_T) and the input power (P) over time (t) is defined by the **Thermal Impedance (Z_th)**:
+The relationship between the temperature rise (Delta_T) and the input power (P) over time (t) is defined by the **Thermal Impedance (Z_th)**. This form assumes a **Step Input Power** (where a constant workload **P** is applied instantaneously at **t=0** and sustained for the duration of the evaluation):
 `Delta_T(t) = P * Z_th(t)`
 
 **Literal Solution (Transient RC Model):**
@@ -2795,7 +2847,7 @@ Once the exact heat Dissipation limits and the Heat Generation volume are locked
 
 3.  **Raw Power Ratio:** 
     `Power_Ratio = P_adm_soc / P_gen`
-    *(Note: Capped at 1.0 (100%), indicating the device possesses sufficient thermal headroom to sustain maximum performance throughout the 1200-second evaluation window without requiring thermal throttling).*
+    *(Note: Values greater than 1.0 indicate the device possesses a positive **thermal margin**, meaning its cooling system can dissipate more heat than the SoC generates at peak load).*
 
 4.  **The Physics of Dynamic Power (The Cube Root Law):** 
     The dynamic power consumption of any semiconductor is governed by the equation: `P = C * V^2 * f` (Where P is Power, C is parasitic capacitance, V is Voltage, and f is Frequency).
@@ -2814,7 +2866,8 @@ Once the exact heat Dissipation limits and the Heat Generation volume are locked
 
     By reversing the math: If a smartphone's cooler restricts the processor to a maximum amount of Power (P), the maximum Performance (f, which equals gaming FPS) it can achieve is the **Cube Root** of that power: `P^0.333`.
 
-    `Predicted_Stability_% = 100 * (Power_Ratio ^ 0.333)`
+    `Predicted_Stability_% = 100 * (Power_Ratio ^ 0.333)` (Clamped 0-100)
+    *(Note: Capped at 100%, indicating the device can sustain maximum performance throughout the 1200-second evaluation window without requiring thermal throttling).*
 
 5.  **Final TDSI Score:** 
     The `Predicted_Stability_%` is logarithmically normalized against minimum/maximum thresholds and scaled to a strict **0-10.0** outcome.
