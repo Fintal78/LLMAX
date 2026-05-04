@@ -2244,7 +2244,7 @@ The overall Section 6.4 score is a composite of the core processing engine capab
 
 1.  **AI System Score (75%):** Derived via the standard **Method A → B → C** priority hierarchy. This represents the "Active Speed" of the runtime environment.
 2.  **RAM Capacity Factor (10%):** **Predicted Score** from §6.6. This is the **Primary Residency Gate**. Large on-device models require ~8GB of memory to load; capacity is a hard binary constraint on whether an AI task can even start without immense performance-crushing swap activity. Geekbench AI's test models are small enough that RAM capacity rarely bottlenecks the benchmark — but for real-world use (loading local LLMs), it matters. *Note: excess RAM (e.g., 24 GB) doesn't make a small task faster, so this weight is limited to 10%.*
-3.  **Thermal Dissipation & Stability (7.5%):** **Predicted Score** from §6.10. Ensures performance does not throttle during sustained generative tasks (high heat generation). Geekbench AI is a burst test (30–90 seconds per workload). For real-world sustained AI usage (running a local LLM for 10+ minutes, continuous AI camera processing), the phone's complete thermal envelope matters: the chassis's ability to absorb heat (Part A), the internal cooling system such as vapor chamber or graphite sheet (Part B), and the process node efficiency — smaller nanometer = less heat generated (Part C).
+3.  **Thermal Dissipation & Stability (7.5%):** **Predicted Score** from §6.10. Ensures performance does not throttle during sustained generative tasks (high heat generation). Geekbench AI is a burst test (30–90 seconds per workload). For real-world sustained AI usage (running a local LLM for 10+ minutes, continuous AI camera processing), the phone's complete thermal envelope matters: the chassis's ability to absorb heat (Part A), the internal cooling system such as vapor chamber or graphite sheet (Part B), and the process node efficiency — smaller nanometer = less heat generated for the same level of performance (Captured in Part C via the empirical Peak Power measurement).
 4.  **Storage Capacity Factor (5.0%):** **Predicted Score** from §6.8. This is the **Secondary Residency Gate**. It determines the maximum size and variety of models the device can persist locally.
 5.  **Storage Technology Factor (2.5%):** **Predicted Score** from §6.7. Determines "Cold-start Latency"—the speed at which a model is fetched from disk to RAM.
 
@@ -2824,6 +2824,10 @@ Peak heat generation is computed by identifying the specific **Peak Package Powe
 **Calculated Peak Generation (P_gen):**
 `P_gen = P_peak`
 *(Note: Use the **P_peak** value from the Master SoC Matrix directly. This is the final wattage measured in laboratory tests, which already encompasses all manufacturing and node characteristics.)*
+
+> [!NOTE]
+> **Why Node Multipliers are Omitted:**
+> Readers may wonder why the model does not apply an additional "Efficiency Multiplier" based on the process node (e.g., 3nm vs. 4nm). In thermodynamics, a heat sink (the phone chassis) is agnostic to *how* heat is generated; it only responds to the absolute volume of heat (Watts) it must expel. Since **P_peak** is derived from empirical laboratory measurements (real-world Package Power), the node's efficiency — including leakage and voltage characteristics — is already **fully encompassed** in the measured wattage. Applying a secondary multiplier would constitute "double-counting" the node flaw and result in a physically incorrect heat generation value.
 
 ---
 
