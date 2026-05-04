@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "5.9",
+    "schema_version": "6.1",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-04-30"
+    "last_updated": "2026-05-04"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -3253,7 +3253,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_TDSI": {
           // SCORING GOAL: Predicts the Thermal Dissipation Stability Index (TDSI) using a multi-physics model.
-          // The model evaluates geometric bounds, three-path thermal resistance (R_total), and the net System-on-Chip (SoC) power budget.
+          // The model evaluates geometric bounds, three-path thermal resistance (resistance_total_k_w), and the net System-on-Chip (SoC) power budget.
           //
           // --- [1] GEOMETRIC BOUNDARY INPUTS ---
           "height_mm": {
@@ -3287,10 +3287,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "display_surface_area_cm2": {
             "value": 113.5,
             "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
-            // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat (P_base_heat).
+            // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat.
           },
 
-          // --- [2] THERMAL RESISTANCE PARAMETERS (R_total) ---
+          // --- [2] THERMAL RESISTANCE PARAMETERS ---
           "cooling_hardware": {
             // Inventory of passive and active cooling modules. Phase Change Materials (PCM) are excluded from this block as they function via heat absorption and are accounted for separately in the pcm_buffer field.
             "vapor_chamber": {
@@ -3381,13 +3381,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: Continuous Saturation Model of thermal diffusion. Quantifies how effectively the internal spreaders (Vapor Chamber/Graphite/Graphene) utilize the back panel area for convection. The constant 2.7 represents the 'alpha' (spreading intensity) for Vapor Chambers, which is significantly higher than solid graphite due to the near-isothermal behavior of phase-change cycles.
             },    
           },
-          "r_path_1_back": {
+          "resistance_back_k_w": {
             "value": 11.26,
             "calculation_formula": "1 / [ footprint_area_m2 * ( fan.h_fan * f_fan + 10.0 * (back_panel.s_eff - f_fan) ) ]"
             // GUIDELINE: Thermal resistance of the back panel path. Uses an Area Model to sum dissipation from the forced duct (fan.h_fan over f_fan) and the remaining passive spread surface (h = 10.0 over back_panel.s_eff - f_fan). 
             // f_fan = 0.1 (meaning 10% of the back surface area) if fan.max_speed_rpm > 0, else f_fan = 0.
           },
-          "r_path_2_front": {
+          "resistance_front_k_w": {
             "value": 31.20,
             "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
             // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
@@ -3415,14 +3415,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             //
             // GUIDELINE: Select the frame material class based on the structural frame identity. Defines the lateral perimeter spreading ability.
           },
-          "r_path_3_frame": {
+          "resistance_frame_k_w": {
             "value": 70.82,
             "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff)"
             // GUIDELINE: Thermal resistance of the perimeter frame path (K/W).
           },
-          "r_total": {
+          "resistance_total_k_w": {
             "value": 7.41,
-            "calculation_formula": "(1/r_path_1_back + 1/r_path_2_front + 1/r_path_3_frame)^-1"
+            "calculation_formula": "(1/resistance_back_k_w + 1/resistance_front_k_w + 1/resistance_frame_k_w)^-1"
             // GUIDELINE: Unified system thermal resistance (Parallel sum of Back, Front, and Mid-Frame paths). Defines the chassis's global ability to expel thermal wattage to the environment.
           },
 
@@ -3460,34 +3460,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "exact_extract": "Proof pending",
             "subscore": 0.00
           },
-          "thermal_capacitance_c": {
+          "thermal_capacitance_j_k": {
             "value": 197.2,
             "calculation_formula": "(1_design_and_build_quality.1_5_weight_g.value * 0.850) + (pcm_buffer.subscore * 25)"
             // GUIDELINE: Unified system thermal capacitance (J/K). Defines the "soak capacity" or ability to buffer heat spikes. 850 J/kg-K is the standard bulk specific heat.
           },
-          "time_constant_tau_s": {
+          "time_constant_s": {
             "value": 1461,
-            "calculation_formula": "r_total * thermal_capacitance_c"
+            "calculation_formula": "resistance_total_k_w * thermal_capacitance_j_k"
             // GUIDELINE: System time constant (seconds). Quantifies the transient lag before the system reaches steady-state equilibrium.
           },
-          "p_adm": {
+          "power_admissible_w": {
             "value": 4.82,
-            "calculation_formula": "20 / (r_total * (1 - exp(-1200 / time_constant_tau_s)))"
+            "calculation_formula": "20 / (resistance_total_k_w * (1 - exp(-1200 / time_constant_s)))"
             // GUIDELINE: Total Admissible Thermal Power (Watts). The maximum wattage allowed for the entire system to reach exactly the safety threshold (20K rise) at the end of the 1200-second (20-minute) evaluation window. 
           },
 
           // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
-          "p_base": {
+          "power_base_needs_w": {
             "value": 1.25,
             "calculation_formula": "0.4 + (0.0075 * display_surface_area_cm2)"
             // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
           },
-          "p_adm_soc": {
+          "power_admissible_soc_w": {
             "value": 3.57,
-            "calculation_formula": "p_adm - p_base"
+            "calculation_formula": "power_admissible_w - power_base_needs_w"
             // GUIDELINE: Net admissible wattage available exclusively for the SoC workload after accounting for baseline system heat.
           },
-          "p_peak": {
+          "power_peak_soc_w": {
             // GUIDELINE: Peak SoC Thermal Power (Watts). Represents the maximum heat generated by the chipset during unrestricted high-performance workloads (intensive gaming/benchmarks).
             "identifier": "Snapdragon 8 Gen 3",
             // GUIDELINE: Standardized SoC identifier matching the record in identity.hardware_configuration.chipset.value
@@ -3541,8 +3541,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "power_ratio": {
             "value": 0.255,
-            "calculation_formula": "p_adm_soc / p_peak"
-            // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (p_peak) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
+            "calculation_formula": "power_admissible_soc_w / power_peak_soc_w"
+            // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (power_peak_soc_w) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
           },
           "predicted_stability_percentage": {
             "value": 63.4,
@@ -3562,7 +3562,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "method_b_neighbor_interpolation_TDSI": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
           // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters defined in the thermodynamic model (Method C), excluding the target device itself.
-          //         Formula: Distance = Sqrt( 0.40 * %Diff(p_peak)^2 + 0.30 * %Diff(r_total)^2 + 0.20 * %Diff(thermal_capacitance_c)^2 + 0.10 * %Diff(p_base)^2 )
+          //         Formula: Distance = Sqrt( 0.40 * %Diff(power_peak_soc_w)^2 + 0.30 * %Diff(resistance_total_k_w)^2 + 0.20 * %Diff(thermal_capacitance_j_k)^2 + 0.10 * %Diff(power_base_needs_w)^2 )
           //         Where:
           //         - %Diff(X) = abs(X_Target - X_Neighbor) / X_Target
           //         - X: The exact parameter name from the thermodynamic model (Method C) defined above.

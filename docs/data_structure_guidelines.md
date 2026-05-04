@@ -298,7 +298,7 @@ The following sections (2 and 3) detail how to structure the components within e
 *   **Condition:** Hardware identifiers shared by multiple devices (e.g., SoC Model, GPU Model).
 *   **Action:**
     1.  **X.Y.0 Table:** Store the identifier.
-    2.  **Scoring Subsection:** Store derived scores using **Type C** (Architectural Mapping).
+    2.  **Scoring Subsection:** Store derived scores using **Type C** (Mapping).
 
 ---
 
@@ -475,9 +475,12 @@ In this particular case the fields are optional to enable flexibility. Use only 
     },
 ```
 
-### Type C: Architectural Mapping
-**Definition:** A derived constant or score determined by a hardware or software "architecture" identifier (e.g., CPU, GPU, Software Skin).
-**Usage:** GPU Scores, Reference Frequencies, Software Skin weights.
+### Type C: Mapping (Architectural & Constant)
+**Definition:** A derived constant or score determined by a hardware or software "architecture" identifier (e.g., CPU, GPU, Software Skin) or a physical material property.
+**Usage:** GPU Scores, Reference Frequencies, Thermal material constants.
+
+#### Type C1: Point Mapping (Single Constant)
+**Usage:** When an architecture maps to a single scorable value or physical constant.
 
 | Field              | Description                                                                                                |
 | :----------------- | :--------------------------------------------------------------------------------------------------------- |
@@ -486,8 +489,6 @@ In this particular case the fields are optional to enable flexibility. Use only 
 | `lookup_parameter` | **MUST** identify the specific column/constant name in the table (e.g., "Standard Graphics", "CPU Score"). |
 | `value`            | The specific numeric value or constant extracted from the reference table.                                 |
 
-**Multi-Constant Mapping:** If an architecture relates to multiple constants (e.g., Standard Graphics Score and Ref Freq), each constant **MUST** have its own self-contained Type C block to ensure automated parseability.
-
 **Example:**
 ```json
 "graphics_architecture_score": {
@@ -495,41 +496,30 @@ In this particular case the fields are optional to enable flexibility. Use only 
   "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
   "lookup_parameter": "Standard Graphics",
   "value": 10.00
-},
-"reference_frequency_mhz": {
-  "identifier": "Adreno 750",
-  "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-  "lookup_parameter": "Ref Freq (MHz)",
-  "value": 903
 }
 ```
 
-### Type D: Lookup Tables (Helper Blocks)
-**Definition:** Static reference tables embedded in the JSON strictly to assist the scoring process. They are NOT scored themselves.
-**Usage:** When a data point requires matching a marketing name or technical specification against a predefined list of tiers to determine the correct canonical name and score.
+#### Type C2: Multi-Variable Mapping (Efficient Lookup)
+**Usage:** When a single architecture or pointer relates to multiple distinct constants (e.g., a material name defining both `s_0` and `s_max`). This is the preferred "Efficient Lookup" pattern for physics models.
 
-> [!WARNING]
-> ### 🚨 STRICT LIMITATION ON LOOKUP TABLES 🚨
-> Do **NOT** use lookup tables (Type D) unless absolutely necessary. 
-> 
-> **Rationale:** JSON lookup tables were designed for rigid regex parsing. For AI agents (LLMs), reading massive JSON arrays of keywords is highly inefficient and creates significant bloat. LLMs possess semantic understanding and can interpret direct inline guidelines much more effectively. Creating a 100-line lookup table wastes thousands of tokens per device evaluation and increases the risk of "pointer logic" errors.
-> 
-> **Best Practice:** Instead of a `_lookup` block, write a concise inline `SCORING GUIDELINE` comment directly within the relevant subscore node. Simply state the tier name, the required keyword context, and the score. Only use a lookup table if the mapping logic is so vast or non-semantic that an inline comment becomes unreadable.
+| Field              | Description                                                                                      |
+| :----------------- | :----------------------------------------------------------------------------------------------- |
+| `value`            | The primary scorable tier or material name (either hardcoded or fetched via `value_path`).       |
+| `value_path`       | **[OPTIONAL]** Path to the source value if this block is a pointer (Type B hybrid).              |
+| `reference_table`  | **[OPTIONAL]** Name of the reference table if external. Omit if the mapping is defined in inline comments. |
+| `[constant_name]`  | One or more additional fields representing the mapped constants (e.g., `s_eff`, `s_max`).          |
 
-**Standardized Format (Only if strictly required):**
-All lookup tables MUST be suffixed with `_lookup` (e.g., `gpu_model_lookup`) and follow this structure:
+**Example (Section 6.10):**
 ```json
-"example_lookup": { // this is a lookup table, do not score here
-  "tier_key": {
-    "tier_name": "String to be copied to the target 'value' field.",
-    "score": 10.00, // Or "N/A" / descriptive string if not directly scored
-    "verification_rule": "Detailed, exhaustive explanation of what the scorer should look for in specs or reviews to select this tier. Abbreviations MUST be written in full words the FIRST time they are used in a data block (e.g., 'Liquid-Crystal Display' alongside 'LCD').",
-    "recognized_keywords": ["keyword 1", "keyword 2"] // [OPTIONAL] Specific terms to match against
-  }
+"material": {
+  "value": "Armor-Class Glass",
+  "value_path": "1_design_and_build_quality.1_1_materials.back_material.value",
+  "s_eff": 0.05,
+  "s_max": 0.95
 }
 ```
 
-### Type E: Benchmarks
+### Type D: Benchmarks
 Data structures for benchmark-derived scores follow specialized formats different from standard Predictor properties.
 
 **Example Structure:** See `"2_11_display_benchmark_final_scoring"` in `proposed_data_structure.md` for the canonical benchmark format.
