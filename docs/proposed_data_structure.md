@@ -1828,19 +1828,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "end_of_support_date": {
           "value": "2031-01-24",
-          "subscore": "[DYNAMIC_CALCULATION: Formula_Section_5_1]"
           // GUIDELINE: end_of_support_date.value = Max(os_end_date.value, security_end_date.value).
-          // SCORING RECIPE: 
-          //   1. Determine Remaining_Years: (end_of_support_date.value - Current_Date).
-          //   2. Calculate subscore: 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min)).
-          //   3. Clamping: Minimum 0, Maximum 10.
         },
         "scores": {
-          "predicted": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
-          // SCORING GUIDELINE: scores.predicted directly inherits end_of_support_date.subscore.
+          "predicted": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
+          // GUIDELINE: 
+          //   1. Determine Remaining_Years: end_of_support_date.value - Current_Date where Current_Date is the current date expressed in YYYY-MM-DD format.
+          //   2. Calculate the score: 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min)), clamped 0-10.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": "[DYNAMIC_CALCULATION: Section_5_1.end_of_support_date.subscore]",
+            "value": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
             "method_used": "Predictor",
             "booster": "No",
             "confidence": "N/A"
