@@ -1728,6 +1728,19 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Max Score (10.0):** ≥ CPU_STRS_Score_Max
 *   **Min Score (0.0):** ≤ CPU_STRS_Score_Min
 
+> [!IMPORTANT]
+> **Why Core Count is Omitted in Section 6.2**
+> Unlike Multi-Core throughput (§6.1), the Single-Core prediction model **strictly ignores the core count** of the strongest cluster.
+> *   **Single-Thread Physics:** Benchmarks like Geekbench 6 Single-Core execute a sequential workload on exactly **one physical core** at a time. The OS scheduler maps the task to the fastest core available, leaving other cores in the cluster idle or handling background tasks.
+> *   **Latency vs. Throughput:** Single-core performance measures *responsiveness* (how fast a single task finishes). Multiplying by the number of cores would measure *throughput* (how many tasks finish at once), which is the domain of Section 6.1.
+> *   **Modern Architectures:** Even in SoCs with multiple "Prime" cores (e.g., dual-core performance clusters in Apple or MediaTek designs), a single thread cannot "parallelize" across them. Performance is limited by the IPC and Frequency of a single core, not the quantity of cores.
+> 
+> **Scoring Rationale (Logarithmic vs. Linear)**
+> Section 6.2 utilizes a logarithmic scoring model to align with human perception of speed:
+> *   **Perceptual Consistency (Weber-Fechner Law):** User perception of latency is relative. A performance jump at the low end (e.g., eliminating UI stutter) is perceived as a massive improvement, whereas an identical raw jump at the high end is often imperceptible.
+> *   **Diminishing Returns:** Logarithmic scaling correctly compresses the high-end "vanity" gains while properly rewarding the foundational improvements that move a device from "laggy" to "snappy."
+> *   **Mathematical Stability:** A floor of `0.50` is enforced for all architectures in the lookup table to ensure the `log` calculation remains stable and valid for all devices.
+
 > **Example: Snapdragon 8 Gen 3 for Galaxy (Overclocked)**
 > *   **Specs:** Prime Core is Cortex-X4 at **3.4GHz**. Reference Frequency for X4 is **3.30GHz**.
 > *   **CAS:** Cortex-X4 = **8**
@@ -3427,7 +3440,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
         *   *Why it matters:* Process node (nm) is the biggest determinant of a chip's power efficiency. Smaller transistors require less voltage to switch. Foundry differences are also critical (e.g., TSMC vs Samsung).
         *   *Formula:* Use the **Process Node Score** from **Section 6.10 Part C** exclusively.
     
-    *   **B.1.2 Thermal Efficiency Correction (10% of SoC)**
+    *   **B.1.2 Thermal Efficiency Correction (10% of SoC  A REGULARISER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)**
         *   *Why it matters:* Batteries lose ~5% efficiency for every 10°C of internal heat. A phone with high thermal resistance (Section 6.10) runs its battery hotter, causing faster energy decay.
         *   *Formula:* `Efficiency_Modifier = 1.1 - (Section_6_10_Resistance / 500)` (Clamped 0.85 to 1.1)
         *   *Rationale:* A high-quality metal radiator actually *improves* battery chemistry retention, while an insulated leather/glass back penalizes it.

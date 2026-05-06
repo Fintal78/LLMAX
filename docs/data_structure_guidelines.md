@@ -475,47 +475,50 @@ In this particular case the fields are optional to enable flexibility. Use only 
     },
 ```
 
-### Type C: Mapping (Architectural & Constant)
+### Type C: Mapping
 **Definition:** A derived constant or score determined by a hardware or software "architecture" identifier (e.g., CPU, GPU, Software Skin) or a physical material property.
 **Usage:** GPU Scores, Reference Frequencies, Thermal material constants.
 
-#### Type C1: Point Mapping (Single Constant)
-**Usage:** When an architecture maps to a single scorable value or physical constant.
+#### █ Schema Definition
 
-| Field              | Description                                                                                                |
-| :----------------- | :--------------------------------------------------------------------------------------------------------- |
-| `identifier`       | The key string matching the authoritative reference table record.                                          |
-| `reference_table`  | Name of the authoritative reference table / object.                                                        |
-| `lookup_parameter` | **MUST** identify the specific column/constant name in the table (e.g., "Standard Graphics", "CPU Score"). |
-| `value`            | The specific numeric value or constant extracted from the reference table.                                 |
+*   **`identifier`**: The key string matching the authoritative reference table record.
+*   **Traceability Field**: **MUST** provide one of the following:
+    *   **Internal Source**: `identifier_path` (path to the source value).
+    *   **External Source**: `source` and `exact_extract` (verbatim proof).
+*   **`reference_table`** (Optional): Name of the authoritative reference table. Omit if the mapping is defined in inline comments.
+*   **`[target_variable_name]`**:
+    *   **Definition**: The specific property (score, constant, or technical value) retrieved from the `reference_table` by matching the `identifier`.
+    *   **Naming Rule**: The key MUST be the explicit name of the target variable (e.g., `alpha`, `s_0`, `power_peak_soc_w`). Multiple variables can be mapped within the same block if they share the same identifier.
 
-**Example:**
+**Example 1: Single Variable (Internal Reference):**
 ```json
-"graphics_architecture_score": {
-  "identifier": "Adreno 750",
-  "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-  "lookup_parameter": "Standard Graphics",
-  "value": 10.00
+"power_peak_soc_w": {
+  "identifier": "Snapdragon 8 Gen 3",
+  "identifier_path": "identity.hardware_configuration.chipset.value",
+  "reference_table": "SOC_PEAK_POWER_MATRIX",
+  "power_peak_soc_w": 14.0
+  // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the "Peak Power (W)" column.
 }
 ```
 
-#### Type C2: Multi-Variable Mapping (Efficient Lookup)
-**Usage:** When a single architecture or pointer relates to multiple distinct constants (e.g., a material name defining both `s_0` and `s_max`). This is the preferred "Efficient Lookup" pattern for physics models.
-
-| Field              | Description                                                                                      |
-| :----------------- | :----------------------------------------------------------------------------------------------- |
-| `value`            | The primary scorable tier or material name (either hardcoded or fetched via `value_path`).       |
-| `value_path`       | **[OPTIONAL]** Path to the source value if this block is a pointer (Type B hybrid).              |
-| `reference_table`  | **[OPTIONAL]** Name of the reference table if external. Omit if the mapping is defined in inline comments. |
-| `[constant_name]`  | One or more additional fields representing the mapped constants (e.g., `s_eff`, `s_max`).          |
-
-**Example (Section 6.10):**
+**Example 2: Multiple Variables (Internal Reference):**
 ```json
 "material": {
-  "value": "Armor-Class Glass",
-  "value_path": "1_design_and_build_quality.1_1_materials.back_material.value",
-  "s_eff": 0.05,
+  "identifier": "Armor-Class Glass",
+  "identifier_path": "1_design_and_build_quality.1_1_materials.back_material.value",
+  "s_0": 0.05,
   "s_max": 0.95
+}
+```
+
+**Example 3: External Source Variables:**
+```json
+"graphite_or_graphene_layer": {
+  "identifier": "Multi-layer Graphite",
+  "source": "https://example.com/specs",
+  "exact_extract": "Multi-layer Graphite",
+  "alpha": 0.8,
+  "phi": 0.50
 }
 ```
 
