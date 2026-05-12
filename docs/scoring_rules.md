@@ -2202,13 +2202,13 @@ The predicted AI System Score is a weighted sum of 5 system-level factors. Unlik
     *   **Rationale:** Two chips with identical hardware can differ 2–3× in benchmarks due to software optimization. Apple's Core ML is tightly integrated with the Neural Engine, extracting near-100% utilization. Qualcomm's QNN (Qualcomm Neural Network SDK) provides optimized NPU delegation. Meanwhile, some devices rely on generic NNAPI delegates that leave significant NPU capability untapped. This factor captures the *efficiency of OS-level hardware utilization*, completely orthogonal to the physical architecture generation.
 
 4.  **GPU Performance Score (15%) — The Compute Fallback**
-    *   **Source:** Retrieve the **Model C Predicted Score** from **Section 6.3** (Standard Graphics only).
-    *   **⚠️ IMPORTANT:** Use the rasterization-only score (`method_c_prediction_model_GPU.predicted_score`) and NOT the final composite score, as Ray Tracing hardware acceleration does not contribute to AI workloads.
-    *   **Rationale:** GPUs handle complex operators and floating-point tasks that many mobile NPUs avoid. A strong GPU ensures the phone handles complex fallback operations.
+    *   **Source:** Retrieve the **Final Standard Graphics Score** from **Section 6.3.A**.
+    *   **⚠️ IMPORTANT:** Use the rasterization-only score (SGS) and NOT the overall composite GPU score, as Ray Tracing hardware acceleration does not contribute to AI workloads.
+    *   **Rationale (Realized Capability):** GPUs handle complex operators and floating-point tasks that many mobile NPUs avoid. A strong GPU ensures the phone handles complex fallback operations. By using the Final Score, we capture the actual graphical throughput proven by benchmarks. This ensures the AI model reflects the real-world fallback capacity of the system rather than a theoretical silicon limit.
 
 5.  **CPU Single-Core Performance (10%) — The Task Scheduler**
-    *   **Source:** Retrieve **Predicted Score** from **Section 6.2**.
-    *   **Rationale:** Individual operator orchestration and serial fallback tasks rely on the CPU's IPC (Instructions Per Cycle). For budget devices with no dedicated NPU (e.g., Helio G85, Unisoc T606), the CPU is the *sole* processor running AI workloads. Even on flagships, certain unsupported model operators fall back to CPU. *Why §6.2 (Single-Core)?* AI inference pipelines are predominantly serial (one neural network layer feeds the next). Single-thread IPC is the primary determinant of CPU-executed AI operator speed.
+    *   **Source:** Retrieve the **Final Score** from **Section 6.2**.
+    *   **Rationale:** Individual operator orchestration and serial fallback tasks rely on the CPU's IPC (Instructions Per Cycle). For budget devices with no dedicated NPU (e.g., Helio G85, Unisoc T606), the CPU is the *sole* processor running AI workloads. Even on flagships, certain unsupported model operators fall back to CPU. *Why §6.2 (Single-Core)?* AI inference pipelines are predominantly serial (one neural network layer feeds the next). Single-thread IPC is the primary determinant of CPU-executed AI operator speed. Using the Final Score (which favors the benchmark score) captures the actual realized single-thread performance (including software/scheduling modifiers) which directly dictates the speed of CPU-executed AI operators.
 
 **AI Software Stack Scoring Guideline:**
 
@@ -3530,7 +3530,7 @@ Modern smartphones use either single-cell or dual-cell battery configurations:
 
 *   **B.4 Thermal Efficiency (10% of Layer B)**
     *   *Why it matters:* Heat increases internal resistance and leakage currents. Good cooling preserves battery efficiency.
-    *   *Formula:* `Thermal_Efficiency = TDSI_Score` (From **Section 6.10**)
+    *   *Formula:* `Thermal_Efficiency = Final TDSI Score` (From **Section 6.10**)
 
     > [!NOTE]
     > The **same TDSI score** is used in both contexts because thermal management capability is an objective hardware characteristic. The different impact on performance vs. battery efficiency is handled through **weighting**.
