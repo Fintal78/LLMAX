@@ -108,8 +108,7 @@
 *   `CPU_STRS_Score_Min` = 0.4 (Score 0), `CPU_STRS_Score_Max` = 10.0 (Score 10)
 
 ### 6.3 GPU Performance
-*   `GPU_SteelNomad_Score_Min` = 500 (Score 0), `GPU_SteelNomad_Score_Max` = 1800 (Score 10)
-*   `GPU_RC_Score_Min` = 0.5 (Score 0), `GPU_RC_Score_Max` = 12.5 (Score 10)
+*   `GPU_SteelNomad_Score_Min` = 40 (Score 0 | Helio G35 Baseline), `GPU_SteelNomad_Score_Max` = 3120 (Score 10 | D9500 Ceiling)
 
 ### 6.4 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 81600 (Score 10)

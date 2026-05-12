@@ -1765,34 +1765,54 @@ This table provides the authoritative GPU architecture scores used throughout th
 > 
 > **1. Standard Graphics (0-10):** Traditional 3D gaming performance
 > *   **Used in:** Section 6.3 (GPU Performance scoring)
-> *   Measures polygon rendering, texture processing, and shader execution
-> *   The foundation of all mobile games (Genshin Impact, PUBG, etc.)
-> *   Higher scores = smoother gameplay at higher settings
+> *   Measures polygon rendering, texture processing, and shader execution.
+> *   **HUMAN-PERCEPTUAL SCORING SYSTEM:** The Standard Graphics Score maps hardware not to a raw mathematical benchmark, but to the *Human-Perceptual Experience* of gameplay. 
+>     *   **The Logic:** To a human, the jump from 5 FPS (slideshow) to 30 FPS (playable) is a massive leap in utility, while the jump from 90 FPS to 120 FPS is a luxury. If we scored purely linearly (0–120 FPS), a smooth 30 FPS mid-range chip would only score a 2.5, which fails to reflect that it is already a fully capable gaming device. Our scale curves to ensure that hitting the "smooth 30/60 FPS" threshold is rewarded with a mid-to-high score, while higher scores are reserved for enthusiast-tier consistency.
+>     *   **0.0 - 2.0 (Entry Level):** Barebones 3D capability. Heavy stutters on modern 3D titles.
+>     *   **2.0 - 5.0 (Casual to Mid-Range):** Capable of playing most 3D games at 30fps on Medium settings.
+>     *   **5.0 - 8.0 (High-End):** Capable of smooth 60fps gameplay on High/Max settings.
+>     *   **8.0 - 10.0 (Enthusiast Flagship):** Elite performance, sustaining 120Hz, fully future-proofed.
+> *   **Note on Headroom:** Baseline values in the reference table are intentionally capped below 10.0 (e.g., 9.5 for Adreno 830) to leave statistical headroom for extreme overclocked variants (via Frequency Scaling Factor) to organically hit a perfect 10.0 without clamping.
 > 
 > **2. Ray Tracing (0-10):** Advanced realistic lighting, shadows, and reflections
 > *   **Used in:** Section 6.3 (GPU Performance scoring)
-> *   Ray tracing simulates how light bounces in the real world, creating photorealistic reflections (mirrors, water), accurate shadows, and global illumination
-> *   **Score 0:** No hardware support - GPU cannot accelerate ray tracing at all
-> *   **Score 1-5:** Basic hardware support - can run simple Ray Tracing (RT) effects but with significant performance cost
-> *   **Score 6-8:** Capable hardware - handles RT effects in modern games (e.g., Resident Evil Village Mobile) with acceptable framerates
-> *   **Score 9-10:** Flagship-tier - delivers smooth RT performance even in demanding scenarios
+> *   Ray tracing simulates how light bounces in the real world, creating photorealistic reflections (mirrors, water), accurate shadows, and global illumination.
+> *   **RAY TRACING PERCEPTUAL LOGIC:** The Ray Tracing Score (RTS) is normalized from 0.0 to 10.0 based on absolute mobile throughput. Because RTS currently lacks a frequency scaling factor in Method C, the reference table represents the absolute 100% potential of the architecture at its flagship clock.
+>     *   **The Logic:** To a human, the jump from a non-functional or unplayable RT experience (10 FPS) to a stable, playable one (30 FPS) is the most critical leap. Our scale ensures that reaching this "playable" threshold is rewarded with a mid-tier score, while top-end scores are reserved for true enthusiast-grade lighting fidelity.
+>     *   **0.0 - 2.0 (Entry Level / Legacy):** No hardware support or unplayable "slideshow" RT.
+>     *   **2.0 - 5.0 (Casual RT):** Capable of light RT effects or modern titles with heavy upscaling.
+>     *   **5.0 - 8.0 (Pro RT):** Solid RT throughput, capable of sustaining playable framerates in RT workloads.
+>     *   **8.0 - 10.0 (Enthusiast RT):** Elite performance; high-fidelity effects at competitive frame rates.
 > *   *Why the variation?* Ray tracing requires dedicated hardware units (RT cores). More cores + newer architecture = higher score. For example, Adreno 750 has more RT cores than Adreno 740, hence 10 vs 8.
 > 
 > **3. Efficiency (0-10):** Performance-per-watt (battery impact)
 > *   **Used in:** Section 8.1 (Battery Endurance calculations)
 > *   Measures how much performance you get per unit of power consumed
 > *   *Why separate from performance?* Some GPUs (e.g., Snapdragon 888's Adreno 660) have high Standard Graphics scores but terrible efficiency (overheats, drains battery). Others (e.g., Snapdragon 778G's Adreno 642L) have moderate performance but excellent efficiency.
-> *   **Process node benefits** (3nm vs 5nm) are scored separately in Section 6.10. This Efficiency score focuses on architectural design and thermal management.
-> 
+
 | GPU Model                 | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                                   |
 | :------------------------ | :---------------: | :---------: | :------------: | :--------: | :-------------------------------------- |
-| **Adreno 830**            |      **10.0**     |    **10.0** |    **1100**    |   **10.0** | Snapdragon 8 Elite                      |
-| **Immortalis-G925 MC12**  |      **10.0**     |    **10.0** |    **1626**    |   **10.0** | Dimensity 9400                          |
-| **Adreno 750**            |      **10.0**     |    **10.0** |    **903**     |    **9.0** | Snapdragon 8 Gen 3                      |
-| [...]                     | [...]             | [...]       | [...]          | [...]      | [...]                                   |
+| **Immortalis-G925 MC12**  |       **9.5**     |   **10.00** |    **1612**    |   **10.0** | Dimensity 9400                          |
+| **Adreno 830**            |       **9.5**     |    **9.80** |    **1100**    |   **10.0** | Snapdragon 8 Elite                      |
+| **Apple GPU (A18 Pro)**   |       **9.0**     |    **8.80** |    **1490**    |   **10.0** | iPhone 16 Pro                           |
+| **Adreno 750**            |       **8.9**     |    **8.50** |    **903**     |    **9.0** | Snapdragon 8 Gen 3                      |
+| [...]                     |       [...]       |    [...]    |     [...]      |    [...]   | [...]                                   |
 
 > [!IMPORTANT]
-> **Source of Truth:** For the full list of all 40+ supported GPU architectures and their authoritative scores, refer to the **GPU ARCHITECTURE SCORING TABLE** in [proposed_data_structure.md].
+> **Source of Truth:** For the full list of all supported GPU architectures and their authoritative scores, refer to the **GPU ARCHITECTURE SCORING TABLE** in [proposed_data_structure.md].
+
+> [!NOTE]
+> **The "Higher Number" Fallacy (Flagship vs. Mid-Range):** You may notice that an older **Adreno 660** (Score: 6.5) ranks higher than a newer **Adreno 720** (Score: 5.2). This is not an error. The Adreno 660 is the flagship GPU from the Snapdragon 888, possessing massive arrays of physical shader cores. The Adreno 720 is the budget/mid-range GPU from the newer Snapdragon 7s Gen 2, which is more efficient but possesses far fewer cores. In raw rasterization throughput, massive older flagships generally outmuscle newer mid-range chips, despite the nomenclature.
+
+> [!NOTE]
+> **Why Theoretical Specs (GFLOPS) Are Not Used For Baseline Scoring:** We use empirical benchmarks to establish this table rather than theoretical limits like GFLOPS (Giga Floating-Point Operations Per Second).
+> **Understanding Architectural Diversity (Why Frequencies Differ):** You may notice that GPUs with similar performance scores (e.g., Immortalis-G925 and Adreno 830) have vastly different **Reference Frequencies** (1612 MHz vs. 1100 MHz). This is coherent and reflects different architectural philosophies:
+> 1. **High-IPC Designs (e.g., Adreno):** Use fewer but "wider" cores that do more work per cycle, allowing them to achieve elite performance at lower clock speeds.
+> 2. **High-Frequency Designs (e.g., Mali/Apple):** Use "narrower" cores that are optimized to run at extremely high clock speeds to achieve the same throughput.
+> 
+> The **Standard Graphics Score** represents the *resultant* performance of the architecture. The **Reference Frequency** is strictly a normalization anchor used to calculate the **Frequency Scaling Factor (FSF)** for specific device variations; it is not a direct measure of performance.
+> 1. **Cross-Architecture Incomparability:** 1,000 GFLOPS on a Qualcomm Adreno chip does *not* equal 1,000 GFLOPS on an ARM Mali chip because their internal pipelines, cache hierarchies, and ALU designs process data differently. 
+> 2. **Opaque Specifications:** Manufacturers like Apple strictly conceal their GPU clock speeds, core configs, and theoretical GFLOPS. Therefore, only standardized physical testing ensures a level playing field.
 
 > [!NOTE]
 > **Understanding Mali/Immortalis "MC" Notation:** ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count. For example:
@@ -1802,15 +1822,20 @@ This table provides the authoritative GPU architecture scores used throughout th
 > More cores = higher performance. Always match the exact MC count from device specifications (found on GSMArena under "Chipset" details).
 
 
-### 🔹 6.3 GPU Performance (Graphics & Gaming)
-*Description:* Measures the graphical processing power for gaming, rendering, and compute tasks. This score reflects the device's ability to drive high-fidelity visuals at high frame rates.
-*   **Measurement:** Composite of Standard Graphics (90%) and Ray Tracing (10%).
+### 🔹 6.3 Graphics & Ray Tracing Performance
+*Description:* Measures the graphical processing power for gaming, professional rendering, and complex compute tasks. This section evaluates the **Instantaneous Burst Capability**—the maximum power the GPU can output for a short period.
+*   **Measurement:** Composite of Standard Graphics (85%) and Ray Tracing (15%).
 *   **Unit:** Points (0-10)
-*   **Significance:** Critical for AAA gaming, ray tracing, and UI smoothness on high-refresh-rate displays.
+*   **Significance:** Critical for high-end gaming, smooth UI animations on 120Hz displays, and future-proofing for next-gen apps.
 
-#### Part 1: Standard Graphics Score (SGS)
-*Focus:* Traditional rasterization performance (Geometry, Textures, Shaders) and API efficiency.
-*   **Primary Source:** 3DMark Steel Nomad Light.
+> [!WARNING]
+> **Separation of Concerns: Efficiency & Thermals**
+> To avoid double-counting, this section **strictly excludes** measurements of battery efficiency and thermal throttling.
+> *   **Sustained Performance (Thermal Throttling):** Evaluated strictly in **Section 6.10 (TDSI)**.
+> *   **GPU Energy Efficiency:** Evaluated strictly in **Section 8.1 (Battery)**.
+
+#### 6.3.A Standard Graphics Performance (SGS)
+*Focus:* Traditional "Raster" rendering (Geometry, Textures, and Shaders) and API efficiency. This represents 95% of current mobile gaming workloads.
 
 #### Method A: Benchmark (Primary)
 **Direct Benchmark Score**
@@ -1830,59 +1855,52 @@ This is the preferred method when real-world benchmark data is available.
 > [!NOTE]
 > **Why Logarithmic?** Graphics performance scales exponentially in user experience. The difference between 500 points (entry-level, struggles with basic games) and 900 points (smooth gameplay in most titles) is transformative. However, the difference between 1400 points (flagship) and 1800 points (top-tier flagship) shows diminishing returns - both deliver excellent performance, and the improvement is barely noticeable in real-world use.
 
-**Scoring Logic:**
-*   **Data Available:** `SGS = SGS_Bench`
-*   **No Data Available:** Proceed to Method B.
-
-#### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
+##### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 
-1.  **Identify Neighbors:** Find **3 distinct Reference Phones** that have benchmark scores (from 3DMark) and known specs. Select the ones with the smallest **Distance** to the target device, **excluding the target device** itself:
-    *   `Distance = abs(Diff_Predicted_SGS)`
-    *   *Where Diff_Predicted_SGS = Predicted_SGS_Target - Predicted_SGS_Neighbor*
-    *   *Note:* Based on **Predicted SGS** calculated via Method C.
-2.  **Calculate Correction Ratio:**
-    *   `Avg_Predicted_SGS_Neighbors = (Predicted_SGS_Neighbor1 + Predicted_SGS_Neighbor2 + Predicted_SGS_Neighbor3) / 3`
-        *   *Note:* `Predicted_SGS_Neighbor1/2/3` refers to the **Predicted SGS** (Method C) of each neighbor device.
-    *   `Correction_Ratio = Predicted_SGS_Target / Avg_Predicted_SGS_Neighbors`
-        *   *Note:* `Predicted_SGS_Target` is the **Predicted SGS** (Method C) of the target device.
-3.  **Apply to Benchmark:**
-    *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
-    *   `SGS = Correction_Ratio * Avg_Benchmark_Neighbors`
+**1. Identify Neighbors via Feature Distance (Minimum Variance)**
+Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the hardware sub-features that dictate graphical throughput.
+*   **Search Space:** All phones with known 3DMark Steel Nomad Light scores (Method A), **excluding the target device** itself.
+*   **Distance Metric:** Weighted Euclidean Distance in the 5-dimensional hardware feature space.
+    *   `Distance = Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.10*MTI_Diff² + 0.10*CPU_Diff² + 0.05*TDSI_Diff² )`
+    *   *Where "Diff" is the percentage difference in sub-scores from Method C:*
+        *   `CTI_Diff`: Compute Throughput Index (§6.3.C).
+        *   `AFM_Diff`: API & Feature Modifier (§6.3.C).
+        *   `MTI_Diff`: Memory Throughput Index (§6.5).
+        *   `CPU_Diff`: CPU Multi-Core Performance (§6.1).
+        *   `TDSI_Diff`: Thermal Dissipation Stability Index (§6.10).
+*   **Scientific Rationale:** GPU performance in a synthetic benchmark is primarily driven by core architecture (CTI) and API efficiency (AFM). However, the shared-memory nature of mobile SoCs and the overhead of command submission mean that memory bandwidth (MTI) and CPU orchestration (CPU) still create distinct bottleneck profiles. Weighting these dimensions ensures we match the target device with neighbors that share its specific performance limiters, maximizing interpolation precision.
+*   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
-> [!NOTE]
-> **Why Simple Proximity vs Euclidean Distance?**
-> Unlike Display or Battery where multiple independent factors (Brightness, Color, Refresh Rate) contribute equally to the score, GPU performance is dominated by a single factor: **Base Architecture Score (GAS)** (75% weight). Devices with similar Predicted SGS scores almost certainly share the same or immediate-neighbor GPU architecture. Therefore, selecting neighbors based on **Closest Predicted Score** is computationally efficient and effectively groups devices by hardware generation without needing complex multi-dimensional distance calculations.
+**2. Calculate Correction Ratio:**
+*   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
+    *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
+*   `Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors`
+    *   *Note:* `Predicted_Target` is the **overall Predicted Score** (Method C) of the target device.
 
-#### Method C: Predicted Standard Graphics (Tertiary)
+**3. Apply to Benchmark:**
+*   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
+*   `Interpolated_Score (SGS) = Correction_Ratio * Avg_Benchmark_Neighbors`
+
+##### Method C: Predicted Standard Graphics Performance (Tertiary)
 Used as a standalone fallback or as the **Predictor** for Method B.
 
-**Step 1: Get Base Scores (GAS)**
-*   **What is it?** The base capability of the GPU architecture.
-*   **Lookup:** Find the exact GPU Model in **Section 6.3.0 table** above. Use the **Standard Graphics** value.
-*   **Source:** GSMArena lists full GPU name under "Chipset" section.
+**Step 1: Compute Throughput Index (CTI) — 60% Weight**
+*   *What is it?* The total mathematical work the GPU cores can perform per second (peak theoretical throughput).
+*   **Formula:** `CTI = GAS * FSF`
+    *   **GAS (GPU Architecture Score):** The baseline performance potential for a specific GPU family (e.g., Adreno 700 series, Apple A17 GPU) as defined in the **Section 6.3.0 Reference Table**. Use the **Standard Graphics** value.
+    *   **FSF (Frequency Scaling Factor):** `Actual_Frequency_MHz / Reference_Freq_MHz`.
+        *   *Significance:* Scales the base architecture potential based on whether the specific device's GPU is overclocked or underclocked compared to the reference design.
+        *   *Why FSF?* Within the same architecture, performance scales almost linearly with clock speed. FSF ensures we capture the difference between a "standard" chip and a "Plus" or "For Galaxy" variant.
+        *   **Reference:** See **Section 6.3.0** for authoritative Reference Frequencies.
 
-**Step 2: Frequency Scaling Factor (FSF)**
-*   **What is it?** A multiplier for clock speed variations.
-*   **Formula:** `Actual_Frequency_MHz / Reference_Frequency_MHz`
-    *   *Significance:* Scales the base architecture score (GAS) based on whether the GPU is overclocked or underclocked relative to the reference design.
-    *   **Reference:** See **Section 6.3.0** for Reference Frequencies.
-    *   *Example:* Adreno 750 @ 903 MHz (reference) → `903 / 903 = 1.0`
-    *   *Example:* Adreno 750 @ 1000 MHz (overclocked) → `1000 / 903 = 1.11`
+**Step 2: API & Feature Modifier (AFM) — 15% Weight**
+*   *What is it?* A multiplier that rewards support for modern software instructions (Vulkan 1.3+, Metal 3.0+).
+*   **Score:** `AFM = API_Score` (Sourced from the **API Support Score Table** below).
+    *   *Significance:* Modern APIs allow developers to use "shorthand" commands (like Variable Rate Shading or Mesh Shaders) that deliver higher graphics quality with less hardware effort.
+    *   *Rationale:* A device supporting Vulkan 1.3 will often outperform an identical device on Vulkan 1.1 because it can use more efficient rendering paths, even if the raw silicon is the same.
 
-**Step 3: API & Feature Support Modifier (AFM - SGS Component)**
-*   **What is it?** A modifier focusing **exclusively on API Efficiency for Rasterization**.
-*   **Formula:** `0.75 + (0.25 * API_Score / 10)`
-    *   *Max Value:* 1.0 (Vulkan 1.3)
-    *   *Min Value:* 0.75 (Legacy OpenGL only)
-    *   *Why this formula?* Ranges from 0.75 (25% penalty relative to baseline) to 1.0 (0% penalty). The +0.75 ensures the API modifier doesn't overly crush the score of older capable hardware, while still rewarding modern efficiency.
-
-**API Support Score Table (Detailed)**
-*   **Measurement:** Highest supported Vulkan / OpenGL ES Version.
-*   **Unit:** Score (0-10)
-*   **Significance:** Modern APIs like Vulkan 1.3 allow developers to squeeze significantly more performance from the same hardware through advanced features like dynamic rendering and compute shader capabilities.
-
-**API Support Score Table (Detailed)**
+**API Support Score Table**
 *   **Measurement:** Highest supported Vulkan / Metal / OpenGL ES / DirectX Version.
 *   **Unit:** Score (0-10)
 *   **Significance:** Modern APIs allow developers to squeeze significantly more performance through advanced features like dynamic rendering and compute shaders.
@@ -1894,34 +1912,7 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 | [...]             | [...]          | [...]              | [...]                   | [...]     |
 
 > [!IMPORTANT]
-> **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, refer to the **GPU API Support Scoring Table** in [proposed_data_structure.md].
-
-**AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)**
-If the explicit API version is NOT disclosed on the primary spec sheet, use the following fallback matrices based on the device's OS generation and chipset era.
-
-**MATRIX 1: APPLE / iOS (Extract)**
-| Apple SoC Generation | Min iOS Version | Inferred API Version |
-| :------------------- | :-------------- | :------------------- |
-| **A18, M4, M5**      | iOS 18+         | Metal 4.0            | 
-| **A17 Pro**          | iOS 17.5+       | Metal 3.3            |
-| [...]                | [...]           | [...]                |
-
-> [!IMPORTANT]
-> **Source of Truth:** For the full OS/Architecture fallback matrices (Matrix 1, 2, and 3), refer to the **Ambiguous API Resolution** section in [proposed_data_structure.md].
-
-**MATRIX 2: ANDROID (Extract)**
-| Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
-| :------------------- | :----------------------------- | :------------ |
-| **Android 15+**      | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
-| **Android 13 - 14**  | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-| [...]                | [...]                          | [...]         |
-
-**MATRIX 3: WINDOWS MOBILE (Extract)**
-| Windows OS Version   | Era / Reference Hardware      | Inferred API  |
-| :------------------- | :---------------------------- | :------------ |
-| **Windows 11 (24H2)**| Snapdragon X Elite (Adreno X1)| D3D 12 (12_2) |
-| **Windows Phone 8.0**| Lumia 920 / 1020 (Baseline)   | D3D 9.3       |
-| [...]                | [...]                         | [...]         |
+> **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, as well as OS/Architecture fallback matrices, refer to the **GPU API Support Scoring Table** and **Ambiguous API Resolution** section in [proposed_data_structure.md].
 
 > [!IMPORTANT]
 > **Multi-API Support & Scoring Logic:**
@@ -1937,49 +1928,61 @@ If the explicit API version is NOT disclosed on the primary spec sheet, use the 
 > *   API Score: 10.0 (Vulkan takes priority as the better API)
 > *   *Rationale:* Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
 
-**Step 4: Calculate Predicted SGS**
-1.  **Raw Capability Score (RC):** `GAS * FSF * API_Modifier`
-2.  **Predicted SGS:** `10 * (log(RC) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min))`
-    *   **Max Score (10.0):** ≥ GPU_RC_Score_Max
-    *   **Min Score (0.0):** ≤ GPU_RC_Score_Min
+**Step 3: Memory Throughput Index (MTI) — 10% Weight**
+*   *What is it?* A measure of how fast data can travel between the phone's RAM and the GPU.
+*   **Score:** `MTI = MTEI_Score` (Inherited from **Section 6.5 RAM Technology**, use the predicted score as boosters can introduce some biases).
+    *   *Significance:* A powerful GPU (high CTI) is useless if it is "starved" of data by slow memory.
+    *   *Rationale:* High-resolution textures and complex shaders require massive data throughput. If the memory cannot keep up, the GPU must wait (stalls), significantly reducing actual performance regardless of its theoretical speed. While smartphones use shared system memory (iGPU architecture), modern SoCs employ large on-chip caches (L2/SLC) and texture compression (e.g., AFBC) to minimize RAM access. Research indicates that benchmark performance scales significantly slower than raw bandwidth gains, justifying a secondary (10%) weight for memory throughput in rasterization tasks.
 
-#### Part 2: Ray Tracing Score (RTS)
-*Focus:* Advanced lighting physics (Reflection, Refraction, Shadows).
-*   **Measurement:** Direct Hardware Capability.
-*   **Logic:** Retrieve **Ray Tracing** (0-10) score directly from **Section 6.3.0 Table** above.
-*   **Why no benchmark?** Ray Tracing is a specific hardware feature. Using the architectural capability score is the most accurate predictor of support and performance tier for this specific feature subset.
+**Step 4: CPU Multi-Core Orchestration — 10% Weight**
+*   *What is it?* Sourced from the **Final Score** of **Section 6.1 (CPU Multi-Core Performance)**.
+*   *Rationale (The Draw Call Bottleneck):* A GPU is a specialized processor that cannot render a single frame until the CPU calculates the game logic (physics, AI, input) and issues "Draw Calls" via the graphics API. If the CPU is slow, the GPU stays idle (starved), creating a "CPU bottleneck." 
+*   **Why Multi-Core (§6.1)?** Modern graphics engines are **highly parallelized**, meaning they split the heavy work of building "command lists" across all available CPU cores simultaneously. Because this task is shared, a chip with superior multi-core throughput can feed the GPU much faster than a chip with a single fast core but poor multi-thread scaling.
+*   **Data Priority (Realized Throughput):** By using the **Final Score**, we account for the **actual realized orchestration speed**, including the impact of scheduling efficiency and OS-level optimizations. This ensures the GPU prediction reflects the real-world bottleneck (as proven by benchmarks) rather than a theoretical silicon peak.
+
+**Step 5: Thermal Burst Stability Index — 5% Weight**
+*   *What is it?* Sourced from the **Final Score** of **Section 6.10 (TDSI)**.
+*   *Rationale (The Thermal Buffer):* Smartphones rely on passive cooling. High-performance GPUs generate massive heat spikes that can saturate a phone's thermal mass in seconds. A device with a high thermal stability score (superior 1200-second thermal state) possesses a much higher thermal mass and better spreading efficiency. This allows the chassis to absorb the 60-second burst of a 3DMark test without triggering the critical junction-temperature throttling that would otherwise drag down the average frame rate. 
+*   **Data Priority (Proven Cooling Reality):** While thermodynamic mass (§6.10 Method C) provides a baseline, the **Final Score** captures the **proven cooling reality**, including manufacturing tolerances, thermal paste quality, and software-induced throttling curves.
+
+**Step 6: Predicted Standard Graphics Score (SGS)**
+1.  **Weighted Sum:** `SGS_Predicted = (0.60 * CTI) + (0.15 * AFM) + (0.10 * MTI) + (0.10 * CPU_Multi) + (0.05 * TDSI)`, clamped 0-10.
+    *   *Weighting Rationale:* **GPU System Core (75%)** (60% Compute + 15% API) is the absolute primary determinant of rasterization benchmarks. **Memory Bandwidth (10%)** and **CPU Orchestration (10%)** are critical secondary factors that act as ceilings rather than linear drivers in modern SoC designs. **Thermal Burst Buffer (5%)** accounts for the impact of chassis design on average benchmark frame rates.
+2.  **Normalization & Clamping:**
+    *   *Significance:* This final result represents the "Predicted Standard Graphics Score" (SGS) based on a research-consolidated system-level analysis.
+    *   *Note on Accuracy:* Unlike the raw benchmark in Method A, the inputs here (**CTI**, **AFM**, **MTI**, **CPU_Multi**, and **TDSI**) are already normalized perceptual scores. Therefore, a direct weighted average correctly represents the final score without requiring a second logarithmic transformation, which would otherwise "deform" the already-adjusted sub-metrics.
+
+
+#### 6.3.B Ray Tracing Performance (RTS)
+*Focus:* Advanced light simulation (Reflections, realistic shadows, and lighting). Requires dedicated **RT Cores**.
+
+> [!NOTE]
+> **Methodology Decision:** Although benchmarks like **3DMark Solar Bay** exist to measure Ray Tracing performance, they have been discarded as primary scoring drivers. Since Ray Tracing currently accounts for only **10%** of the overall GPU score, the added complexity of a multi-method (A/B/C) model is not justified. Instead, a streamlined Predictive Model is used to assess a device's RT potential based on its architectural tier and memory bandwidth.
+
+##### Ray Tracing Performance (Predictive Model)
+The Ray Tracing Score (RTS) is calculated using a two-factor predictive model that accounts for hardware acceleration capability and memory bandwidth bottlenecks.
+
+**Step 1: Determine RT Hardware Tier (70%)**
+*   *What is it?* The baseline performance potential of the dedicated silicon blocks responsible for ray-triangle intersection tests.
+*   **Classification:** Sourced from **Section 6.3.0 Table** (Ray Tracing column).
+    *   *Significance:* This is the "Engine" for lighting. Without dedicated RT cores, the score is automatically 0, as software emulation is insufficient for real-time applications.
+    
+**Step 2: Inherit Memory Throughput Index (MTI - 30%)**
+*   *What is it?* The already-normalized memory performance score from Section 6.5.
+*   **Score:** `MTI = MTEI_Score` (Sourced from **Section 6.5**, use predicted score).
+    *   *Significance:* High-speed Ray Tracing requires constant, massive data fetches from RAM. MTI ensures the RT score reflects the hardware's true ability to feed the RT cores.
+    *   *Rationale:* **BVH (Bounding Volume Hierarchy)** traversal is essentially a large-scale memory search. Think of BVH as a "tree" of boxes: instead of checking every single triangle in a scene, the GPU first checks if a light ray hits a large box containing many objects. If it hits, it checks smaller boxes inside, and so on, until it finds the exact triangle. This "tree-searching" process requires massive, constant data fetches from RAM. If the memory bandwidth is low, the RT cores spend most of their time waiting for data (stalls), rendering a high hardware tier useless.
+
+**Step 3: Calculate Ray Tracing Score (RTS)**
+*   *Formula:* `RTS = (RT_Hardware_Tier * 0.70) + (MTI * 0.30)` (Clamped 0-10)
+    *   *Significance:* This represents the final predicted Ray Tracing capability based on the architectural balance of compute and bandwidth.
 
 #### Final Section 6.3 Score Calculation
 Weighted combination of Standard Graphics (Raster) and Ray Tracing.
-
 **Formula:** `Predicted_Score = (SGS * 0.9) + (RTS * 0.1)`
 
 > [!NOTE]
-> **Why 10% for Ray Tracing?** Ray Tracing (RT) is a technique where the phone's graphics chip simulates how light bounces off real surfaces — creating realistic reflections in mirrors and water, and accurate shadows. While only ~5–10% of current mobile games use it, this **10% weight is intentionally forward-looking**: manufacturers are investing heavily in RT hardware, just as they invested in 5G before streaming services caught up. Phones built today will use RT heavily within 2–3 years. The 90% on classic rendering keeps scores grounded in today's reality.
-
-> [!TIP]
-> **Example 1: Top-Tier Flagship (Snapdragon 8 Gen 3 / Adreno 750)**
-> *   **Step 1: Determine Standard Graphics Score (SGS)**
->     *   **Method A (Benchmark):** Available. Score = 1800+ → **SGS = 10.0**
->     *   *(For reference only: Method C Predictor would give ~9.3)*
-> *   **Step 2: Determine Ray Tracing Score (RTS)**
->     *   **Table Lookup:** Adreno 750 → **RTS = 10.0**
-> *   **Step 3: Calculate Final Score**
->     *   `Final = (SGS * 0.9) + (RTS * 0.1)`
->     *   `Final = (10.0 * 0.9) + (10.0 * 0.1) = 9.0 + 1.0 = 10.0`
->
-> **Example 2: Mid-Range Device (Snapdragon 778G / Adreno 642L)**
-> *   **Step 1: Determine Standard Graphics Score (SGS)**
->     *   **Method A (Benchmark):** Not Available in Database.
->     *   **Method B (Neighbors):** Found 3 similar devices (Galaxy A52s, Xiaomi 11 Lite, Moto Edge 20).
->         *   Avg Neighbor Benchmark: 750 points (Steel Nomad Light).
->         *   Correction Ratio: ~1.02 (Target has slightly higher clock).
->         *   Estimated Benchmark: `750 * 1.02 = 765`.
->         *   **SGS:** `10 * (log(765) - log(500)) / (log(1800) - log(500)) = 3.3`
-> *   **Step 2: Determine Ray Tracing Score (RTS)**
->     *   **Table Lookup:** Adreno 642L → **RTS = 0.0**
-> *   **Step 3: Calculate Final Score**
->     *   `Final = (3.3 * 0.9) + (0.0 * 0.1) = 2.97`
+> **Why 10% for Ray Tracing?** Ray Tracing (RT) is a technique where the phone's graphics chip simulates how light bounces off real surfaces — creating realistic reflections in mirrors and water, and accurate shadows. While only ~5–10% of current mobile games use it, this **10% weight is intentionally forward-looking**: manufacturers are investing heavily in RT hardware, just as they invested in 5G before streaming services caught up. Phones built today will use RT heavily within 2–3 years. 
 
 
 ### 🔹 6.4 AI Hardware Performance (Neural Processor)

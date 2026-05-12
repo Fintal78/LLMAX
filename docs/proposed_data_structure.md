@@ -2327,48 +2327,48 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // 
       // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
       // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
-      // | Adreno 830                 |      10.00        |    10.00    |      1100      |    10.00   |
-      // | Immortalis-G925 MC12       |      10.00        |    10.00    |      1626      |    10.00   |
-      // | Immortalis-G720 MC12       |      10.00        |    10.00    |      1300      |    10.00   |
-      // | Adreno 750                 |      10.00        |    10.00    |       903      |     9.00   |
-      // | Apple GPU (A18 Pro)        |       9.00        |     9.00    |      1398      |    10.00   |
-      // | Apple GPU (A18)            |       9.00        |     8.00    |      1398      |    10.00   |
-      // | Immortalis-G715 MC11       |       9.00        |     8.00    |       981      |     9.00   |
-      // | Xclipse 940                |       9.00        |     8.00    |      1100      |     7.00   |
-      // | Adreno 740                 |       9.00        |     8.00    |       680      |     9.00   |
-      // | Apple GPU (A17 Pro)        |       8.00        |     7.00    |      1398      |     9.00   |
-      // | Adreno 735                 |       8.00        |     6.00    |       950      |     8.00   |
-      // | Adreno 732                 |       8.00        |     6.00    |       900      |     8.00   |
-      // | Adreno 730                 |       8.00        |     6.00    |       900      |     7.00   |
-      // | Adreno 725                 |       8.00        |     5.00    |       580      |     9.00   |
-      // | Mali-G715 MC9              |       8.00        |     6.00    |       850      |     9.00   |
-      // | Apple GPU (A16 Bionic)     |       7.00        |     4.00    |      1398      |     8.00   |
-      // | Xclipse 920                |       7.00        |     5.00    |      1300      |     6.00   |
-      // | Mali-G710 MC10             |       7.00        |     5.00    |       850      |     8.00   |
-      // | Adreno 660                 |       7.00        |     0.00    |       840      |     5.00   |
-      // | Mali-G715 MC7              |       7.00        |     5.00    |       850      |     9.00   |
-      // | Mali-G715 (Tensor G3)      |       7.00        |     4.00    |       890      |     6.00   |
-      // | Apple GPU (A15 Bionic)     |       6.00        |     0.00    |      1296      |     8.00   |
-      // | Adreno 720                 |       6.00        |     0.00    |       800      |     8.00   |
-      // | Adreno 710                 |       6.00        |     0.00    |       800      |     8.00   |
-      // | Adreno 650                 |       6.00        |     0.00    |       587      |     6.00   |
-      // | Adreno 642L                |       6.00        |     0.00    |       490      |     8.00   |
-      // | Mali-G610 MC6              |       6.00        |     0.00    |       850      |     8.00   |
-      // | Mali-G77 MC9               |       6.00        |     0.00    |       850      |     6.00   |
-      // | Apple GPU (A14 Bionic)     |       5.00        |     0.00    |      1086      |     7.00   |
-      // | Apple GPU (A13 Bionic)     |       5.00        |     0.00    |       979      |     6.00   |
-      // | Adreno 640                 |       5.00        |     0.00    |       585      |     5.00   |
-      // | Mali-G610 MC4              |       5.00        |     0.00    |       850      |     7.00   |
-      // | Adreno 620                 |       4.00        |     0.00    |       625      |     6.00   |
-      // | Adreno 619                 |       4.00        |     0.00    |       825      |     6.00   |
-      // | Mali-G68 MC4               |       4.00        |     0.00    |       900      |     6.00   |
-      // | Adreno 618                 |       3.00        |     0.00    |       610      |     5.00   |
-      // | Mali-G57 MC3               |       3.00        |     0.00    |       950      |     5.00   |
-      // | Adreno 613                 |       3.00        |     0.00    |       955      |     6.00   |
-      // | Adreno 610                 |       2.00        |     0.00    |       600      |     8.00   |
-      // | Mali-G57 MC2               |       2.00        |     0.00    |       950      |     5.00   |
-      // | Mali-G52 MP2               |       1.00        |     0.00    |       850      |     4.00   |
-      // | PowerVR GE8320             |       0.00        |     0.00    |       680      |     2.00   |
+      // | Immortalis-G925 MC12       |       9.5         |    10.00    |      1612      |    10.00   |
+      // | Adreno 830                 |       9.5         |     9.80    |      1100      |    10.00   |
+      // | Apple GPU (A18 Pro)        |       9.0         |     8.80    |      1490      |    10.00   |
+      // | Adreno 750                 |       8.9         |     8.50    |       903      |     9.00   |
+      // | Immortalis-G720 MC12       |       8.8         |     8.40    |      1300      |    10.00   |
+      // | Apple GPU (A18)            |       8.7         |     8.20    |      1490      |    10.00   |
+      // | Immortalis-G715 MC11       |       8.5         |     7.60    |       981      |     9.00   |
+      // | Xclipse 940                |       8.5         |     8.00    |      1109      |     7.00   |
+      // | Adreno 740                 |       8.3         |     7.00    |       680      |     9.00   |
+      // | Apple GPU (A17 Pro)        |       8.1         |     7.50    |      1398      |     9.00   |
+      // | Adreno 735                 |       7.9         |     5.50    |       950      |     8.00   |
+      // | Adreno 732                 |       7.8         |     4.20    |       900      |     8.00   |
+      // | Adreno 730                 |       7.8         |     4.00    |       900      |     7.00   |
+      // | Adreno 725                 |       7.8         |     3.80    |       580      |     9.00   |
+      // | Apple GPU (A16 Bionic)     |       7.5         |     0.00    |      1398      |     8.00   |
+      // | Apple GPU (A15 Bionic)     |       6.8         |     0.00    |      1296      |     8.00   |
+      // | Mali-G715 MC9              |       6.8         |     2.20    |       850      |     9.00   |
+      // | Xclipse 920                |       6.5         |     2.50    |      1306      |     6.00   |
+      // | Mali-G710 MC10             |       6.5         |     0.00    |       850      |     8.00   |
+      // | Adreno 660                 |       6.5         |     0.00    |       840      |     5.00   |
+      // | Mali-G715 (Tensor G3)      |       6.2         |     2.00    |       890      |     6.00   |
+      // | Mali-G715 MC7              |       6.0         |     1.80    |       850      |     9.00   |
+      // | Apple GPU (A14 Bionic)     |       5.8         |     0.00    |      1086      |     7.00   |
+      // | Adreno 720                 |       5.2         |     0.00    |       800      |     8.00   |
+      // | Apple GPU (A13 Bionic)     |       5.0         |     0.00    |       979      |     6.00   |
+      // | Adreno 710                 |       4.8         |     0.00    |       800      |     8.00   |
+      // | Adreno 650                 |       4.8         |     0.00    |       587      |     6.00   |
+      // | Mali-G610 MC6              |       4.8         |     0.00    |       850      |     8.00   |
+      // | Mali-G77 MC9               |       4.8         |     0.00    |       850      |     6.00   |
+      // | Adreno 642L                |       4.5         |     0.00    |       490      |     8.00   |
+      // | Mali-G610 MC4              |       4.0         |     0.00    |       850      |     7.00   |
+      // | Adreno 640                 |       3.8         |     0.00    |       585      |     5.00   |
+      // | Adreno 620                 |       3.2         |     0.00    |       625      |     6.00   |
+      // | Mali-G68 MC4               |       3.2         |     0.00    |       900      |     6.00   |
+      // | Adreno 619                 |       3.0         |     0.00    |       825      |     6.00   |
+      // | Adreno 618                 |       2.8         |     0.00    |       610      |     5.00   |
+      // | Mali-G57 MC3               |       2.8         |     0.00    |       950      |     5.00   |
+      // | Adreno 613                 |       2.5         |     0.00    |       955      |     6.00   |
+      // | Adreno 610                 |       2.0         |     0.00    |       600      |     8.00   |
+      // | Mali-G57 MC2               |       1.8         |     0.00    |       950      |     5.00   |
+      // | Mali-G52 MP2               |       1.0         |     0.00    |       850      |     4.00   |
+      // | PowerVR GE8320             |       0.5         |     0.00    |       680      |     2.00   |
       // -------------------------------------------------------------------------
       // Understanding Mali/Immortalis "MC" Notation:
       // ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count.
@@ -2383,12 +2383,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // 3. Canonical Component Extraction: Extract the exact GPU model number from the search results.
       // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
       
-      "6_3_0_graphics_processing_unit_architecture_reference": {
+      "6_3_0_gpu_architecture_reference": {
         "value": "Snapdragon 8 Gen 3",
         // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
         "value_path": "identity.hardware_configuration.chipset.value",
         // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
-        "graphics_processing_unit_model": {
+        "gpu_model": {
           "value": "Adreno 750",
           // GUIDELINE: Must match a specific model from the GPU_ARCHITECTURE_LOOKUP_TABLE above. If the spec sheet assigns a generic family name without identifiers (e.g., "Adreno GPU"), the engine MUST execute the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure above to infer the canonical GPU architecture.
           "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
@@ -2397,7 +2397,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // GUIDELINE: The verbatim proof from the source confirming the GPU identifier.
         }
       },
-      "6_3_graphics_processing_unit_performance": {
+      "6_3_graphics_and_ray_tracing_performance": {
         // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2417,12 +2417,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Graphics Performance Prediction Model (Tertiary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_GPU": {
-          "graphics_processing_unit": {
+          "compute_throughput_index": {
             "architecture_mapping": {
               "identifier": "Adreno 750",
-              "identifier_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value",
+              "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
               "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-              "standard_graphics_score": 10.00,
+              "standard_graphics_score": 7.68,
               // GUIDELINE: Inherits the architecture performance index from the "Standard Graphics" column of the lookup table.
               "reference_frequency_mhz": 903.00
               // GUIDELINE: Inherits the baseline reference clock speed (MHz) from the "Ref Freq (MHz)" column of the lookup table.
@@ -2432,7 +2432,27 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
               "exact_extract": "Qualcomm® Adreno™ GPU [...] 1.1 GHz"
               // GUIDELINE: The maximum advertised frequency of the GPU in MHz (e.g., 1100).
-            }
+            },
+            "value": 9.3553,
+            "calculation_formula": "compute_throughput_index.architecture_mapping.standard_graphics_score * compute_throughput_index.actual_frequency_mhz.value / compute_throughput_index.architecture_mapping.reference_frequency_mhz"
+            // GUIDELINE: Represents the raw compute capability scaling based on frequency. Also referred to as CTI.
+          },
+          "memory_throughput_index": {
+            "value": 8.89,
+            "identifier_path": "6_5_memory_technology_efficiency_index.scores.final.value"
+            // GUIDELINE: Inherits the already-normalized memory performance score (MTI) from Section 6.5.
+          },
+          "cpu_orchestration_index": {
+            "value": 8.12,
+            "identifier_path": "6_1_central_processing_unit_multicore_performance.scores.final.value"
+            // GUIDELINE: PRIORITY: Use the Final Score (§6.1 Method A/B). FALLBACK: Use Predicted Score (§6.1 Method C).
+            // RATIONALE (Realized Throughput): Capture the actual command submission speed, including software/scheduling modifiers.
+          },
+          "thermal_burst_index": {
+            "value": 7.45,
+            "identifier_path": "6_10_thermal_dissipation_and_stability_index.scores.final.value"
+            // GUIDELINE: PRIORITY: Use the Final Score (§6.10 Method A/B). FALLBACK: Use Predicted Score (§6.10 Method C).
+            // RATIONALE (Proven Cooling Reality): Capture real-world assembly quality and assembly tolerances proven by stress tests.
           },
           "api_modifier": {
             // █ GPU_API_SUPPORT_LOOKUP_TABLE
@@ -2523,14 +2543,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "exact_extract": "Vulkan 1.3 support", 
             "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
             "score": 9.20
-            // GUIDELINE: Maps to the "score" column. If unspecified, execute AMBIGUOUS API RESOLUTION
+            // GUIDELINE: Maps to the "score" column. Also referred to as AFM. If unspecified, execute AMBIGUOUS API RESOLUTION
           },
-          "graphics_raw_score": {
-            "value": 11.9380,
-            "calculation_formula": "graphics_processing_unit.architecture_mapping.standard_graphics_score * graphics_processing_unit.actual_frequency_mhz.value / graphics_processing_unit.architecture_mapping.reference_frequency_mhz * (0.75 + 0.25 * api_modifier.score / 10.0)",
-          }, 
-          "predicted_score": 9.86
-          // SCORING GUIDELINE: predicted_score = 10 * (log(graphics_raw_score.value) - log(GPU_RC_Score_Min)) / (log(GPU_RC_Score_Max) - log(GPU_RC_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
+          "predicted_score": 9.07
+          // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.value) + (0.15 * api_modifier.score) + (0.10 * memory_throughput_index.value) + (0.10 * cpu_orchestration_index.value) + (0.05 * thermal_burst_index.value), clamped 0–10. This is the score used for Method B neighbors.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2538,7 +2554,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_GPU": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the 5-dimensional hardware feature space: Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.10*MTI_Diff² + 0.10*CPU_Diff² + 0.05*TDSI_Diff² ), excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
@@ -2579,7 +2595,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "ray_tracing": {
           // This measures dedicated hardware acceleration for lighting and reflections.
           "identifier": "Adreno 750",
-          "identifier_path": "6_3_0_graphics_processing_unit_architecture_reference.graphics_processing_unit_model.value",
+          "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
           "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
           "ray_tracing_score": 10.00
           // GUIDELINE: Maps to the "Ray Tracing" column.
@@ -2767,7 +2783,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu.npu_score",                 "weight_NPU": 0.40 },
             "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.20 },
             "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
-            "subscore_GPU":      { "subscore_path": "6_3_graphics_processing_unit_performance.method_c_prediction_model_GPU.predicted_score", "weight_GPU": 0.15 },
+            "subscore_GPU":      { "subscore_path": "6_3_graphics_and_ray_tracing_performance.method_c_prediction_model_GPU.predicted_score", "weight_GPU": 0.15 },
             "subscore_CPU":      { "subscore_path": "6_2_cpu_architecture_single_core.scores.predicted",                                      "weight_CPU": 0.10 },
             // These inputs are used to calculate the predicted score (Method C):
             "predicted": 9.21,
