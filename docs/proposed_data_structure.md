@@ -2384,13 +2384,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
       
       "6_3_0_gpu_architecture_reference": {
+        // SCORING GOAL: Serves as the authoritative hardware reference for the GPU architecture. Links the SoC to its specific GPU model.
         "value": "Snapdragon 8 Gen 3",
         // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
         "value_path": "identity.hardware_configuration.chipset.value",
         // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
         "gpu_model": {
           "value": "Adreno 750",
-          // GUIDELINE: Must match a specific model from the GPU_ARCHITECTURE_LOOKUP_TABLE above. If the spec sheet assigns a generic family name without identifiers (e.g., "Adreno GPU"), the engine MUST execute the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure above to infer the canonical GPU architecture.
+          // GUIDELINE: Must exactly match an entry in the `GPU_ARCHITECTURE_LOOKUP_TABLE` above. If the spec sheet uses a generic name (e.g. "Adreno GPU"), use the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure to identify the canonical model.
           "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
           // GUIDELINE: Direct source URL for GPU model data.
           "exact_extract": "Qualcomm® Adreno™ GPU"
@@ -2403,6 +2404,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // STANDARD GRAPHICS PERFORMANCE
         // ═══════════════════════════════════════════════════════════════════════════
         "standard_graphics": {
+          // SCORING GOAL: Focuses on traditional "Raster" rendering (Geometry, Textures, and Shaders) and API efficiency. This represents the vast majority of current mobile gaming workloads. A three-method hierarchy (A→B→C) is used.
           // ═══════════════════════════════════════════════════════════════════════════
           // METHOD A — Direct Benchmark (Primary)
           // ═══════════════════════════════════════════════════════════════════════════
@@ -2418,24 +2420,31 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
 
           // ═══════════════════════════════════════════════════════════════════════════
-          // METHOD C — Graphics Performance Prediction Model (Tertiary)
+          // METHOD C — Graphics Performance Prediction Model (Tertiary / baseline for Method B)
           // ═══════════════════════════════════════════════════════════════════════════
           "method_c_prediction_model_GPU": {
+            // SCORING RATIONALE: This model predicts rasterization performance by analyzing the hardware's peak theoretical throughput (CTI) modified by software efficiency (AFM), data availability (MTI), command orchestration speed (CPU), and chassis-level thermal burst capacity (TDSI).
             "compute_throughput_index": {
+              // SCORING GOAL: Captures the raw mathematical work the GPU cores can perform per second (CTI).
               "architecture_mapping": {
                 "identifier": "Adreno 750",
                 "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
                 "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
                 "standard_graphics_score": 7.68,
-                // GUIDELINE: Inherits the architecture performance index from the "Standard Graphics" column of the lookup table.
+                // GUIDELINE: Performance score from the "Standard Graphics" column of the lookup table.
                 "reference_frequency_mhz": 903.00
-                // GUIDELINE: Inherits the baseline reference clock speed (MHz) from the "Ref Freq (MHz)" column of the lookup table.
+                // GUIDELINE: Reference frequency from the "Ref Freq (MHz)" column of the lookup table.
               },
               "actual_frequency_mhz": {
                 "value": 1100,
                 "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
                 "exact_extract": "Qualcomm® Adreno™ GPU [...] 1.1 GHz"
-                // GUIDELINE: The maximum advertised frequency of the GPU in MHz (e.g., 1100).
+                // GUIDELINE: The maximum advertised frequency of the GPU in MHz.
+              },
+              "frequency_scaling_factor": {
+                "value": 1.1074,
+                "calculation_formula": "actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz"
+                // GUIDELINE: The Frequency Scaling Factor (FSF) represents the clock speed multiplier relative to the baseline architecture design.
               },
               "value": 9.3553,
               "calculation_formula": "compute_throughput_index.architecture_mapping.standard_graphics_score * compute_throughput_index.actual_frequency_mhz.value / compute_throughput_index.architecture_mapping.reference_frequency_mhz"
@@ -2444,7 +2453,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "memory_throughput_index": {
               "value": 8.89,
               "identifier_path": "6_5_memory_technology_efficiency_index.scores.final.value"
-              // GUIDELINE: Inherits the already-normalized memory performance score (MTI) from Section 6.5.
+              // GUIDELINE: Already-normalized score from Section 6.5.
             },
             "cpu_orchestration_index": {
               "value": 8.12,
@@ -2452,105 +2461,111 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: PRIORITY: Use the Final Score (§6.1 Method A/B). FALLBACK: Use Predicted Score (§6.1 Method C).
               // RATIONALE (Realized Throughput): Capture the actual command submission speed, including software/scheduling modifiers.
             },
-            "thermal_burst_index": {
+            "tdsi_index": {
               "value": 7.45,
               "identifier_path": "6_10_thermal_dissipation_and_stability_index.scores.final.value"
               // GUIDELINE: PRIORITY: Use the Final Score (§6.10 Method A/B). FALLBACK: Use Predicted Score (§6.10 Method C).
               // RATIONALE (Proven Cooling Reality): Capture real-world assembly quality and assembly tolerances proven by stress tests.
             },
             "api_modifier": {
-              // █ GPU_API_SUPPORT_LOOKUP_TABLE
-              // Defines the scoring for the highest supported graphics API (Vulkan/Metal/OpenGL ES/DirectX).
+              // GPU_API_SUPPORT_LOOKUP_TABLE
+               // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score    |
+               // | :---------------- | :------------- | :----------------- | :---------------------- | :------: |
+               // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | **10.0** |
+               // | —                 | Metal 3.3      | —                  | —                       | **9.8**  |
+               // | —                 | Metal 3.2      | —                  | —                       | **9.6**  |
+               // | —                 | Metal 3.1      | —                  | —                       | **9.4**  |
+               // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_1)        | **9.2**  |
+               // | —                 | Metal 2.4      | —                  | —                       | **8.8**  |
+               // | —                 | Metal 2.3      | —                  | —                       | **8.6**  |
+               // | Vulkan 1.2        | —              | —                  | D3D 12 (FL 12_0)        | **8.5**  |
+               // | —                 | Metal 2.2      | —                  | —                       | **8.4**  |
+               // | —                 | Metal 2.1      | —                  | —                       | **8.2**  |
+               // | —                 | Metal 2.0      | —                  | —                       | **8.0**  |
+               // | Vulkan 1.1        | Metal 1.2      | —                  | D3D 12 (FL 11_1)        | **7.5**  |
+               // | —                 | Metal 1.1      | —                  | —                       | **7.2**  |
+               // | Vulkan 1.0        | Metal 1.0      | —                  | D3D 12 (FL 11_0)        | **7.0**  |
+               // | —                 | —              | —                  | D3D 11.2                | **6.8**  |
+               // | —                 | —              | —                  | D3D 11.1                | **6.5**  |
+               // | —                 | —              | —                  | D3D 11.0                | **6.0**  |
+               // | —                 | —              | —                  | D3D 10.1                | **5.5**  |
+               // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | **5.0**  |
+               // | —                 | —              | —                  | D3D 9.3                 | **4.0**  |
+               // | —                 | —              | —                  | D3D 9.2                 | **3.5**  |
+               // | —                 | —              | OpenGL ES 3.1      | —                       | **3.0**  |
+               // | —                 | —              | —                  | D3D 9.1                 | **2.5**  |
+               // | —                 | —              | —                  | D3D 9.0c                | **2.0**  |
+               // | —                 | —              | OpenGL ES 3.0      | —                       | **1.0**  |
+               // | —                 | —              | OpenGL ES 2.0      | —                       | **0.0**  |
+               // | —                 | —              | OpenGL ES 1.1      | —                       | **0.0**  |
               //
-              // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | score     |
-              // | :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
-              // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | 10.0      |
-              // | —                 | Metal 3.3      | —                  | —                       | 9.8       |
-              // | —                 | Metal 3.2      | —                  | D3D 12 (FL 12_1)        | 9.6       |
-              // | —                 | Metal 3.1      | —                  | —                       | 9.4       |
-              // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_0)        | 9.2       |
-              // | —                 | Metal 2.4      | —                  | D3D 11.2                | 8.5       |
-              // | Vulkan 1.2        | Metal 2.3      | —                  | D3D 11.1                | 8.0       |
-              // | —                 | Metal 2.2      | —                  | —                       | 7.5       |
-              // | —                 | Metal 2.1      | —                  | —                       | 7.0       |
-              // | Vulkan 1.1        | Metal 2.0      | —                  | D3D 11.0                | 6.5       |
-              // | Vulkan 1.0        | —              | —                  | D3D 10.1                | 6.0       |
-              // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | 5.0       |
-              // | —                 | Metal 1.2      | —                  | —                       | 4.5       |
-              // | —                 | Metal 1.1      | —                  | —                       | 4.2       |
-              // | —                 | Metal 1.0      | —                  | D3D 9.3                 | 4.0       |
-              // | —                 | —              | —                  | D3D 9.2                 | 3.5       |
-              // | —                 | —              | OpenGL ES 3.1      | —                       | 3.0       |
-              // | —                 | —              | —                  | D3D 9.1                 | 2.5       |
-              // | —                 | —              | —                  | D3D 9.0c                | 2.0       |
-              // | —                 | —              | —                  | —                       | 1.5       |
-              // | —                 | —              | OpenGL ES 3.0      | —                       | 1.0       |
-              // | —                 | —              | OpenGL ES 2.0      | —                       | 0.5       |
-              // | —                 | —              | OpenGL ES 1.x      | —                       | 0.0       |
-              //
-              // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
-              // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
-              //
-              // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
-              // | Apple SoC Generation | Min iOS Version | Inferred API Version |
-              // | :------------------- | :-------------- | :------------------- |
-              // | A18, M4, M5          | iOS 18+         | Metal 4.0            | 
-              // | A17 Pro, M3          | iOS 17.5+       | Metal 3.3            |
-              // | A15, A16, M2         | iOS 17.0+       | Metal 3.2            | 
-              // | A14, M1              | iOS 16.4+       | Metal 3.1            |
-              // | A13 (Apple Family 6) | iOS 16.0+       | Metal 3.0            |
-              // | A12 Bionic           | iOS 15.x        | Metal 2.4            |
-              // | A11 Bionic           | iOS 14.x        | Metal 2.3            |
-              // | A10 Fusion           | iOS 13.x        | Metal 2.2            |
-              // | A9 / A9X             | iOS 12.x        | Metal 2.1            |
-              // | A8 / A8X             | iOS 11.x        | Metal 2.0            | 
-              // | A7 (64-bit Baseline) | iOS 10.x        | Metal 1.2            |
-              // | A7 (64-bit Baseline) | iOS 9.x         | Metal 1.1            |
-              // | A7 (64-bit Baseline) | iOS 8.x         | Metal 1.0            |
-              // | A4, A5, A6           | iOS 6.x - 10.x  | OpenGL ES 2.0        |
-              // | iPhone 1st Gen / 3G  | iPhone OS 1 - 3 | OpenGL ES 1.1        |
-              //
-              // MATRIX 2: ANDROID (Deep Coverage Mirror)
-              // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
-              // | :------------------- | :----------------------------- | :------------ |
-              // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
-              // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-              // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
-              // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
-              // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
-              // | Android 6.0          | Adreno 4xx, Mali-T8xx          | OpenGL ES 3.2 |
-              // | Android 5.0          | Adreno 3xx (Newer), Mali-T7xx  | OpenGL ES 3.1 |
-              // | Android 4.3          | Adreno 3xx (Older), Mali-T6xx  | OpenGL ES 3.0 |
-              // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
-              // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.x | 
-              //
-              // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
-              // | Windows OS Version   | Era / Reference Hardware       | Inferred API  |
-              // | :------------------- | :----------------------------- | :------------ |
-              // | Windows 11 (24H2)    | Snapdragon X Elite (Adreno X1) | D3D 12 (12_2) |
-              // | Windows 11 (22H2)    | Snapdragon 8cx Gen 3           | D3D 12 (12_1) |
-              // | Windows 10/11 ARM    | Snapdragon 850 / 8cx Gen 1/2   | D3D 12 (12_0) |
-              // | Windows 10 Mobile    | Lumia 950 / 950 XL             | D3D 11.2      |
-              // | Windows Phone 8.1    | Lumia 930 / 1520               | D3D 11.1      |
-              // | Windows Phone 8 GDR  | Snapdragon 800 / 400 (Late WP8)| D3D 11.0      |
-              // | Windows Phone 8.0    | Lumia 520 / 620 (Entry Adreno) | D3D 10.1      |
-              // | Windows Phone 8.0    | Early Surface RT / Tegra 3     | D3D 10.0      |
-              // | Windows Phone 8.0    | Lumia 920 / 1020 (Baseline)    | D3D 9.3       |
-              // | Windows Phone 8.0    | Early builds / Dev hardware    | D3D 9.2       |
-              // | Windows Phone 7.x    | Lumia 800 / 900                | D3D 9.1       |
-              // | Windows Phone 7.0    | Samsung Focus / LG Quantum     | D3D 9.0c      |
-              // | Pre-WP7 Legacy       | Pre-2010 HTC / Samsung         | OpenGL ES 1.x |
-              // ------------------------------------------------------------------------- 
+               // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
+               // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
+               //
+               // RATIONALE ON HARDWARE VS OS: Can identical SoCs have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
+               //
+               // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
+               // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
+               // | :------------------ | :------------------- | :------------------- |
+               // | iOS 19+             | A19, M5 (Future)     | Metal 4.0            |
+               // | iOS 18.x            | A18, M4              | Metal 3.3            |
+               // | iOS 17.x            | A17 Pro, M3          | Metal 3.2            |
+               // | iOS 16.x            | A16, M2              | Metal 3.1            |
+               // | iOS 15.x            | A14 - A15, M1        | Metal 3.0            |
+               // | iOS 14.x            | A12 - A13            | Metal 2.4            |
+               // | iOS 13.x            | A11 Bionic           | Metal 2.3            |
+               // | iOS 12.x            | A10 / A10X Fusion    | Metal 2.2            |
+               // | iOS 11.x            | A9 / A9X             | Metal 2.1            |
+               // | iOS 10.x            | A8 / A8X             | Metal 2.0            |
+               // | iOS 10.x - 12.x     | A7 (64-bit Baseline) | Metal 1.2            |
+               // | iOS 9.x             | A7 (64-bit Baseline) | Metal 1.1            |
+               // | iOS 8.x             | A7 (64-bit Baseline) | Metal 1.0            |
+               // | iOS 7.x             | A7 (64-bit Baseline) | OpenGL ES 3.0        |
+               // | iOS 6.x             | A6 / A6X             | OpenGL ES 2.0        |
+               // | iOS 4.x - 5.x       | A4 / A5 / A5X        | OpenGL ES 2.0        |
+               // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
+               //
+               // MATRIX 2: ANDROID (Deep Coverage Mirror)
+               // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
+               // | :------------------- | :----------------------------- | :------------ |
+               // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
+               // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
+               // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
+               // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
+               // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
+               // | Android 6.0          | Adreno 430 (Snapdragon 810)    | OpenGL ES 3.2 |
+               // | Android 5.0 - 5.1    | Adreno 405/418/420, Mali-T7xx  | OpenGL ES 3.1 |
+               // | Android 4.3 - 4.4    | Adreno 3xx, Mali-T6xx          | OpenGL ES 3.0 |
+               // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
+               // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.1 |
+               //
+               // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
+               // | Windows OS Version   | Era / Reference Hardware       | Inferred API      |
+               // | :------------------- | :----------------------------- | :---------------- |
+               // | Windows 11 (24H2)    | Snapdragon X Elite (Adreno X1) | D3D 12 (FL 12_2)  |
+               // | Windows 11 (22H2)    | Snapdragon 8cx Gen 3           | D3D 12 (FL 12_1)  |
+               // | Windows 10/11 ARM    | Snapdragon 850 / 8cx Gen 1/2   | D3D 12 (FL 12_0)  |
+               // | Windows 10 Mobile    | Lumia 950 / 950 XL             | D3D 11.2          |
+               // | Windows Phone 8.1    | Lumia 930 / 1520               | D3D 11.1          |
+               // | Windows Phone 8 GDR  | Snapdragon 800 / 400 (Late WP8)| D3D 11.0          |
+               // | Windows Phone 8.0    | Lumia 520 / 620 (Entry Adreno) | D3D 10.1          |
+               // | Windows Phone 8.0    | Early Surface RT / Tegra 3     | D3D 10.0          |
+               // | Windows Phone 8.0    | Lumia 920 / 1020 (Baseline)    | D3D 9.3           |
+               // | Windows Phone 8.0    | Early builds / Dev hardware    | D3D 9.2           |
+               // | Windows Phone 7.x    | Lumia 800 / 900                | D3D 9.1           |
+               // | Windows Phone 7.0    | Samsung Focus / LG Quantum     | D3D 9.0c          |
+               // | Pre-WP7 Legacy       | Pre-2010 HTC / Samsung         | OpenGL ES 1.1     |
+               // ----------------------------------------------------------------------------- 
               "identifier": "Vulkan 1.3",
-              // GUIDELINE: Standardized API version supported by the GPU as found in technical specifications.
+              // GUIDELINE: Standardized API version supported by the GPU.
               "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
               "exact_extract": "Vulkan 1.3 support", 
               "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
               "score": 9.20
-              // GUIDELINE: Maps to the "score" column. Also referred to as AFM. If unspecified, execute AMBIGUOUS API RESOLUTION
+              // GUIDELINE: Performance score from the "Score" column of the lookup table. If unspecified, execute AMBIGUOUS API RESOLUTION
             },
             "predicted_score": 9.07
-            // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.value) + (0.15 * api_modifier.score) + (0.10 * memory_throughput_index.value) + (0.10 * cpu_orchestration_index.value) + (0.05 * thermal_burst_index.value), clamped 0–10. This is the score used for Method B neighbors.
+            // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.value) + (0.15 * api_modifier.score) + (0.15 * memory_throughput_index.value) + (0.0625 * tdsi_index.value) + (0.0375 * cpu_orchestration_index.value), clamped 0–10. This is the score used for Method B neighbors.
           },
 
           // ═══════════════════════════════════════════════════════════════════════════
@@ -2558,7 +2573,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // ═══════════════════════════════════════════════════════════════════════════
           "method_b_neighbor_interpolation_GPU": {
             // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-            // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the 5-dimensional hardware feature space: Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.10*MTI_Diff² + 0.10*CPU_Diff² + 0.05*TDSI_Diff² ), excluding the target device itself.
+            // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the 5-dimensional hardware feature space: Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.15*MTI_Diff² + 0.0625*TDSI_Diff² + 0.0375*CPU_Diff² ), excluding the target device itself.
             // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
             "neighbors": [
               {

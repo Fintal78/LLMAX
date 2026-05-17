@@ -1824,7 +1824,7 @@ This table provides the authoritative GPU architecture scores used throughout th
 
 ### 🔹 6.3 Graphics & Ray Tracing Performance
 *Description:* Measures the graphical processing power for gaming, professional rendering, and complex compute tasks. This section evaluates the **Instantaneous Burst Capability**—the maximum power the GPU can output for a short period.
-*   **Measurement:** Composite of Standard Graphics (85%) and Ray Tracing (15%).
+*   **Measurement:** Composite of Standard Graphics (90%) and Ray Tracing (10%).
 *   **Unit:** Points (0-10)
 *   **Significance:** Critical for high-end gaming, smooth UI animations on 120Hz displays, and future-proofing for next-gen apps.
 
@@ -1853,7 +1853,7 @@ This is the preferred method when real-world benchmark data is available.
     *   **Min Score (0.0):** ≤ GPU_SteelNomad_Score_Min
 
 > [!NOTE]
-> **Why Logarithmic?** Graphics performance scales exponentially in user experience. The difference between 500 points (entry-level, struggles with basic games) and 900 points (smooth gameplay in most titles) is transformative. However, the difference between 1400 points (flagship) and 1800 points (top-tier flagship) shows diminishing returns - both deliver excellent performance, and the improvement is barely noticeable in real-world use.
+> **Why Logarithmic?** Graphics performance scales exponentially in user experience. The difference between 500 points (entry-level, struggles with basic games) and 900 points (smooth gameplay in most titles) is transformative. However, the difference between 1400 points and 1800 points shows diminishing returns - both deliver excellent performance, and the improvement is barely noticeable in real-world use.
 
 ##### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
@@ -1862,14 +1862,14 @@ Method B is populated for **all** phones (even if Method A is available) to eval
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the hardware sub-features that dictate graphical throughput.
 *   **Search Space:** All phones with known 3DMark Steel Nomad Light scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Weighted Euclidean Distance in the 5-dimensional hardware feature space.
-    *   `Distance = Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.10*MTI_Diff² + 0.10*CPU_Diff² + 0.05*TDSI_Diff² )`
+    *   `Distance = Sqrt( 0.60*CTI_Diff² + 0.15*AFM_Diff² + 0.15*MTI_Diff² + 0.0625*TDSI_Diff² + 0.0375*CPU_Diff² )`
     *   *Where "Diff" is the percentage difference in sub-scores from Method C:*
         *   `CTI_Diff`: Compute Throughput Index (§6.3.C).
         *   `AFM_Diff`: API & Feature Modifier (§6.3.C).
-        *   `MTI_Diff`: Memory Throughput Index (§6.5).
-        *   `CPU_Diff`: CPU Multi-Core Performance (§6.1).
-        *   `TDSI_Diff`: Thermal Dissipation Stability Index (§6.10).
-*   **Scientific Rationale:** GPU performance in a synthetic benchmark is primarily driven by core architecture (CTI) and API efficiency (AFM). However, the shared-memory nature of mobile SoCs and the overhead of command submission mean that memory bandwidth (MTI) and CPU orchestration (CPU) still create distinct bottleneck profiles. Weighting these dimensions ensures we match the target device with neighbors that share its specific performance limiters, maximizing interpolation precision.
+        *   `MTI_Diff`: Memory Throughput Index (§6.5, predicted score).
+        *   `CPU_Diff`: CPU Multi-Core Performance (§6.1, final score).
+        *   `TDSI_Diff`: Thermal Dissipation Stability Index (§6.10, final score).
+*   **Scientific Rationale:** GPU performance in a synthetic benchmark is primarily driven by core architecture (CTI) and API efficiency (AFM). However, the shared-memory nature of mobile SoCs, the overhead of command submission, and thermal mass limitations mean that memory bandwidth (MTI), CPU orchestration (CPU), and thermal stability (TDSI) still create distinct bottleneck profiles. Weighting these dimensions ensures we match the target device with neighbors that share its specific performance limiters, maximizing interpolation precision.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 **2. Calculate Correction Ratio:**
@@ -1886,18 +1886,42 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Compute Throughput Index (CTI) — 60% Weight**
-*   *What is it?* The total mathematical work the GPU cores can perform per second (peak theoretical throughput).
+*   *What is it?* The total mathematical work the GPU cores can perform per second, normalized for human perception.
 *   **Formula:** `CTI = GAS * FSF`
-    *   **GAS (GPU Architecture Score):** The baseline performance potential for a specific GPU family (e.g., Adreno 700 series, Apple A17 GPU) as defined in the **Section 6.3.0 Reference Table**. Use the **Standard Graphics** value.
-    *   **FSF (Frequency Scaling Factor):** `Actual_Frequency_MHz / Reference_Freq_MHz`.
-        *   *Significance:* Scales the base architecture potential based on whether the specific device's GPU is overclocked or underclocked compared to the reference design.
-        *   *Why FSF?* Within the same architecture, performance scales almost linearly with clock speed. FSF ensures we capture the difference between a "standard" chip and a "Plus" or "For Galaxy" variant.
-        *   **Reference:** See **Section 6.3.0** for authoritative Reference Frequencies.
+    *   **GAS (GPU Architecture Score):** The baseline performance potential for a specific GPU family (e.g., Adreno 700 series) from the **Section 6.3.0 Reference Table**. Use the **Standard Graphics** value.
+    *   **FSF (Frequency Scaling Factor):** This term represents the perception-normalized clock speed multiplier.
+        *   *Significance:* Scales the base architecture potential (GAS) based on whether the specific device's GPU is overclocked or underclocked compared to the reference design. 
+        *   *Mechanics:* It is calculated using the **Unified Psycho-Physical Model**:
+        *   **Formula:** `FSF = (Actual_Frequency / Reference_Frequency) ^ Exponent`
+        *   **Exponent Calculation:** `CLAMP(0.15, 1.00, Perceptual_Baseline + (Headroom * 0.12))`
+            1.  **Perceptual Baseline:** `0.85 - (GAS / 18)`
+            2.  **Headroom Modifier:** `Headroom * 0.12` (where `Headroom = SSI - GAS`)
+        *   **The System Support Index (SSI):** `(0.60 * MTI) + (0.25 * TDSI) + (0.15 * CPU_Multi)`
+
+        *   **Unified Psycho-Physical Model: Technical Rationales**
+            *   **Theme 1: Human Perception (Psychology)**
+                *   *The Weber-Fechner Law:* Human perception of frame rate fluidity is not linear. Improving from 120 Frames Per Second (FPS) to 130 FPS (a 10 FPS delta) is far less "valuable" to a user than improving from 25 to 35 FPS. 
+                *   *The Perceptual Baseline:* This encodes diminishing returns. The constant `18` anchors the curve so that flagships (SGS ~9.0) receive a lower baseline (0.35) while budget chips (SGS ~2.0) receive a high baseline (0.74), ensuring the final score reflects the real-world gaming experience.
+            *   **Theme 2: Hardware Interdependency (Physics)**
+                *   *The SSI (System Support Index):* An aggregate metric of the non-GPU components that physically enable the GPU to reach its potential.
+                *   *Weighting Selection:* **Memory Bandwidth (60%)** is the absolute primary ceiling; a GPU cannot process data it doesn't have. **Cooling (25%)** is the secondary limit; overclocks generate exponential heat spikes that induce throttling. **CPU (15%)** is the orchestration limit; it must issue Draw Calls fast enough to keep the GPU busy.
+            *   **Theme 3: Bottleneck Dynamics**
+                *   *The Headroom Modifier:* Defines the "bottleneck state." If the system support (SSI) exceeds the GPU demand (GAS), the `Headroom` is positive. By multiplying this by `0.12`, we ensure that the physical chassis (Cooling/Memory) has a **significant and noticeable impact** on the final score. A gaming phone with active cooling will yield a perceptibly higher score boost from the same overclock than a thermally-choked foldable.
+                *   *The "Linear Extreme" (1.0 Ceiling):* The value of 1.0 represents perfect linear scaling (1% freq = 1% score). In our model, this is an extreme case only reached by the lowest-end devices paired with maximum system headroom.
+            *   **Theme 4: Simulation & Sensitivity Analysis**
+                *   *Goal:* To ensure the model reflects reality across all phone tiers (2016-2026).
+                *   *Case A (Budget Chip - GAS 2.0):* An Adreno 610 (+10% overclock) in a balanced phone yields an exponent of **0.74** (**+7.3%** boost). In an over-fed phone with high RAM/Cooling (SSI 4.0), the exponent reaches **0.98** (**+9.8%** boost), showing high sensitivity to hardware support at the low end.
+                *   *Case B (Flagship Chip - GAS 8.3):* An Adreno 740 (+10% overclock) in a gaming phone (SSI 8.8) yields an exponent of **0.45** (**+4.4%** boost). In a choked, compact chassis (SSI 6.5), the exponent scales down to **0.17** (**+1.6%** boost). This delta is highly significant, validating the physical advantage of superior cooling and ensuring high mathematical "resolution" for mismatched systems.
+                *   *Significance:* Unlike a raw frequency ratio, the **FSF** accounts for the psychological and physical reality that frequency is only one part of the performance equation. It captures the difference between a "standard" chip and an overclocked "Plus" variant while respecting the physical reality of system bottlenecks and the psychological reality of diminishing utility at high frame rates.
+                *   **Reference:** See **Section 6.3.0** for authoritative Reference Frequencies.
 
 **Step 2: API & Feature Modifier (AFM) — 15% Weight**
 *   *What is it?* A multiplier that rewards support for modern software instructions (Vulkan 1.3+, Metal 3.0+).
 *   **Score:** `AFM = API_Score` (Sourced from the **API Support Score Table** below).
     *   *Significance:* Modern APIs allow developers to use "shorthand" commands (like Variable Rate Shading or Mesh Shaders) that deliver higher graphics quality with less hardware effort.
+    *   *Rationale (Perceptual API Utility):* Unlike raw compute, API scores reflect "Efficiency & Fluidity."
+        1.  **The Perceptual Cliff:** Legacy APIs (OpenGL ES) suffer from massive driver overhead and poor frame pacing. Humans perceive this as "stutter," even if average FPS is high. Moving to low-overhead APIs (Vulkan/Metal) provides a transformative jump in smoothness. This is the primary driver behind the gap between OpenGL ES 3.2 and Vulkan 1.1.
+        2.  **The Efficiency Plateau:** Modern APIs offer diminishing perceptual returns; features like Mesh Shaders are technically impressive but offer marginal visual utility to the average user compared to the leap from GLES to Vulkan. This is why the delta between Vulkan 1.3 and 1.4 is kept low.
     *   *Rationale:* A device supporting Vulkan 1.3 will often outperform an identical device on Vulkan 1.1 because it can use more efficient rendering paths, even if the raw silicon is the same.
 
 **API Support Score Table**
@@ -1905,11 +1929,11 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 *   **Unit:** Score (0-10)
 *   **Significance:** Modern APIs allow developers to squeeze significantly more performance through advanced features like dynamic rendering and compute shaders.
 
-| Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score     |
-| :---------------- | :------------- | :----------------- | :---------------------- | :-------: |
-| **Vulkan 1.4**    | **Metal 4.0**  | —                  | **D3D 12 (FL 12_2)**    | **10.0**  |
-| **Vulkan 1.3**    | **Metal 3.0**  | —                  | **D3D 12 (FL 12_0)**    | **9.2**   |
-| [...]             | [...]          | [...]              | [...]                   | [...]     |
+| Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score    |
+| :---------------- | :------------- | :----------------- | :---------------------- | :------: |
+| **Vulkan 1.4**    | **Metal 4.0**  | —                  | **D3D 12 (FL 12_2)**    | **10.0** |
+| **Vulkan 1.3**    | **Metal 3.1**  | —                  | **D3D 12 (FL 12_1)**    | **9.4**  |
+| [...]             | [...]          | [...]              | [...]                   | [...]    |
 
 > [!IMPORTANT]
 > **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, as well as OS/Architecture fallback matrices, refer to the **GPU API Support Scoring Table** and **Ambiguous API Resolution** section in [proposed_data_structure.md].
@@ -1921,37 +1945,36 @@ Used as a standalone fallback or as the **Predictor** for Method B.
 >
 > **ANGLE Translation Layer:** Some modern devices (e.g., certain Exynos chipsets) run OpenGL ES on top of Vulkan using the ANGLE translation layer. This **does not** make OpenGL ES better - ANGLE adds translation overhead, making it slower than native Vulkan. It simply means the device doesn't need separate OpenGL ES drivers.
 >
-> **Scoring Rule:** When a device supports multiple graphics APIs, **use the highest-scoring API** for the predicted score.
+> **Scoring Rule:** When a device supports multiple graphics APIs, **use the highest-scoring API** for the predicted score. Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
 >
-> *Example:*
-> *   Device supports: Vulkan 1.3 (score 10.0) + OpenGL ES 3.2 (score 5.0)
-> *   API Score: 10.0 (Vulkan takes priority as the better API)
-> *   *Rationale:* Developers will always use the most advanced API available to maximize graphics quality and efficiency. A device with Vulkan 1.3 will run games using Vulkan, not OpenGL ES, regardless of whether OpenGL ES is available.
-
-**Step 3: Memory Throughput Index (MTI) — 10% Weight**
+**Step 3: Memory Throughput Index (MTI) — 15% Weight**
 *   *What is it?* A measure of how fast data can travel between the phone's RAM and the GPU.
 *   **Score:** `MTI = MTEI_Score` (Inherited from **Section 6.5 RAM Technology**, use the predicted score as boosters can introduce some biases).
     *   *Significance:* A powerful GPU (high CTI) is useless if it is "starved" of data by slow memory.
-    *   *Rationale:* High-resolution textures and complex shaders require massive data throughput. If the memory cannot keep up, the GPU must wait (stalls), significantly reducing actual performance regardless of its theoretical speed. While smartphones use shared system memory (iGPU architecture), modern SoCs employ large on-chip caches (L2/SLC) and texture compression (e.g., AFBC) to minimize RAM access. Research indicates that benchmark performance scales significantly slower than raw bandwidth gains, justifying a secondary (10%) weight for memory throughput in rasterization tasks.
+    *   *Rationale (The Primary Ceiling):* Mobile GPUs use shared system memory (iGPU architecture). High-resolution textures and complex shaders require massive data throughput. If you clock the GPU 10% faster, it demands 10% more texture data per second. If the memory bandwidth (MTI) is already saturated, the GPU must wait (stalls), significantly reducing actual performance regardless of its theoretical speed. Modern SoCs employ large on-chip caches (L2/SLC) and texture compression (e.g., AFBC) to minimize RAM access, but MTI remains the absolute primary determinant of whether a GPU can actually reach its theoretical potential.
 
-**Step 4: CPU Multi-Core Orchestration — 10% Weight**
-*   *What is it?* Sourced from the **Final Score** of **Section 6.1 (CPU Multi-Core Performance)**.
-*   *Rationale (The Draw Call Bottleneck):* A GPU is a specialized processor that cannot render a single frame until the CPU calculates the game logic (physics, AI, input) and issues "Draw Calls" via the graphics API. If the CPU is slow, the GPU stays idle (starved), creating a "CPU bottleneck." 
-*   **Why Multi-Core (§6.1)?** Modern graphics engines are **highly parallelized**, meaning they split the heavy work of building "command lists" across all available CPU cores simultaneously. Because this task is shared, a chip with superior multi-core throughput can feed the GPU much faster than a chip with a single fast core but poor multi-thread scaling.
-*   **Data Priority (Realized Throughput):** By using the **Final Score**, we account for the **actual realized orchestration speed**, including the impact of scheduling efficiency and OS-level optimizations. This ensures the GPU prediction reflects the real-world bottleneck (as proven by benchmarks) rather than a theoretical silicon peak.
-
-**Step 5: Thermal Burst Stability Index — 5% Weight**
+**Step 4: Thermal Dissipation Stability Index (TDSI) — 6.25% Weight**
 *   *What is it?* Sourced from the **Final Score** of **Section 6.10 (TDSI)**.
-*   *Rationale (The Thermal Buffer):* Smartphones rely on passive cooling. High-performance GPUs generate massive heat spikes that can saturate a phone's thermal mass in seconds. A device with a high thermal stability score (superior 1200-second thermal state) possesses a much higher thermal mass and better spreading efficiency. This allows the chassis to absorb the 60-second burst of a 3DMark test without triggering the critical junction-temperature throttling that would otherwise drag down the average frame rate. 
-*   **Data Priority (Proven Cooling Reality):** While thermodynamic mass (§6.10 Method C) provides a baseline, the **Final Score** captures the **proven cooling reality**, including manufacturing tolerances, thermal paste quality, and software-induced throttling curves.
+    *   *Rationale (The Thermal Ceiling):* Smartphones rely on passive cooling. High-performance GPUs generate massive heat spikes that can saturate a phone's thermal mass in seconds. Overclocking increases power consumption disproportionately: pushing a chip to higher speeds requires significantly more voltage, which generates a massive, non-linear spike in heat. Even in a 60-second burst benchmark, a device with poor thermal mass and spreading efficiency (low TDSI) will hit junction temperature limits mid-test, triggering aggressive throttling that drags down the average frame rate. A device with a high thermal stability score possesses a much higher thermal mass, allowing the chassis to absorb the burst without triggering throttling.
+    *   *Methodology Note:* While Section 6.10 measures long-term stability (20 minutes), TDSI serves as a highly accurate first-level predictor for short-burst headroom. Future model updates could integrate dedicated 60-second benchmarks and thermal studies to further refine this prediction.
+    *   *Data Priority (Proven Cooling Reality):* While thermodynamic mass (§6.10 Method C) provides a baseline, the **Final Score** captures the **proven cooling reality**, including manufacturing tolerances, thermal paste quality, and software-induced throttling curves.
+
+**Step 5: CPU Orchestration Index — 3.75% Weight**
+*   *What is it?* Sourced from the **Final Score** of **Section 6.1 (CPU Multi-Core Performance)**.
+    *   *Rationale (The Orchestration Role):* The CPU issues "Draw Calls" to the GPU. Modern graphics engines are **highly parallelized**, meaning they split the heavy work of building "command lists" across all available CPU cores simultaneously. If the CPU is slow, the GPU stays idle (starved), creating a "CPU bottleneck."
+    *   **Why Multi-Core (§6.1)?** Because this task is shared, a chip with superior multi-core throughput can feed the GPU much faster than a chip with a single fast core but poor multi-thread scaling.
+    *   *Context (GPU Bound):* Modern benchmarks (like Steel Nomad Light) are deliberately designed to be GPU-bound, meaning the CPU is rarely the primary bottleneck. However, a minimal level of multi-core throughput is required to keep the command lists populated without stalls.
+    *   **Data Priority (Realized Throughput):** By using the **Final Score**, we account for the **actual realized orchestration speed**, including the impact of scheduling efficiency and OS-level optimizations. This ensures the GPU prediction reflects the real-world bottleneck rather than a theoretical silicon peak.
 
 **Step 6: Predicted Standard Graphics Score (SGS)**
-1.  **Weighted Sum:** `SGS_Predicted = (0.60 * CTI) + (0.15 * AFM) + (0.10 * MTI) + (0.10 * CPU_Multi) + (0.05 * TDSI)`, clamped 0-10.
-    *   *Weighting Rationale:* **GPU System Core (75%)** (60% Compute + 15% API) is the absolute primary determinant of rasterization benchmarks. **Memory Bandwidth (10%)** and **CPU Orchestration (10%)** are critical secondary factors that act as ceilings rather than linear drivers in modern SoC designs. **Thermal Burst Buffer (5%)** accounts for the impact of chassis design on average benchmark frame rates.
+1.  **Weighted Sum:**
+    `SGS_Predicted = (0.60 * CTI) + (0.15 * AFM) + (0.15 * MTI) + (0.0625 * TDSI) + (0.0375 * CPU_Multi)`, clamped 0-10.
+    *   *Weighting Rationale:* **GPU Core System (75%)** remains the dominant factor. **Supporting Hardware (25%)** is weighted to be perfectly coherent with the System Support Index (SSI): **Memory (15%)**, **Thermal Stability (6.25%)**, and **CPU Orchestration (3.75%)**.
 2.  **Normalization & Clamping:**
-    *   *Significance:* This final result represents the "Predicted Standard Graphics Score" (SGS) based on a research-consolidated system-level analysis.
-    *   *Note on Accuracy:* Unlike the raw benchmark in Method A, the inputs here (**CTI**, **AFM**, **MTI**, **CPU_Multi**, and **TDSI**) are already normalized perceptual scores. Therefore, a direct weighted average correctly represents the final score without requiring a second logarithmic transformation, which would otherwise "deform" the already-adjusted sub-metrics.
+    *   *Significance:* This represents the "Predicted Standard Graphics Score" (SGS).
+    *   *Note on Human Perception:* Unlike raw benchmarks, this model uses perceptual scores. A 10% raw performance delta at the high end (e.g., 120 to 132 FPS) is weighted significantly lower than a 10% delta at the low end (e.g., 25 to 27.5 FPS), ensuring the final score reflects how humans actually experience graphics. This perceptual logic is the fundamental reason why **Method A also employs log-normalization** for its raw benchmark inputs, ensuring that empirical measurements (Method A) and predictive modeling (Method C) are aligned.
 
+---
 
 #### 6.3.B Ray Tracing Performance (RTS)
 *Focus:* Advanced light simulation (Reflections, realistic shadows, and lighting). Requires dedicated **RT Cores**.

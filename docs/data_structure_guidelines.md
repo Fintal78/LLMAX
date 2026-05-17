@@ -446,8 +446,8 @@ In this particular case the fields are optional to enable flexibility. Use only 
 | :-------------------- | :----------------------------------------------------------------------------------------------------------------- |
 | `value`               | The literal parameter value extracted from `value_path`.                                                           |
 | `value_path`          | Path to the source value: `"Section_Subsection.parameter.value"`.                                                  |
-| `subscore`            | The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated.                     |
-| `subscore_path`       | Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                                             |
+| `subscore`            | **[OPTIONAL]** The literal parameter subscore extracted from `subscore_path`, if there is one, or calculated.      |
+| `subscore_path`       | **[OPTIONAL]** Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                              |
 | `calculation_formula` | **[OPTIONAL]** The formula used to derive `subscore`. Omit if `subscore_path` is present. Placed after `subscore`. |
 
 **Example where the path `subscore_path` is not used:**
