@@ -1886,34 +1886,50 @@ Instead of just matching the overall predicted score, we find the 3 devices that
 Used as a standalone fallback or as the **Predictor** for Method B.
 
 **Step 1: Compute Throughput Index (CTI) — 60% Weight**
-*   *What is it?* The total mathematical work the GPU cores can perform per second, normalized for human perception.
-*   **Formula:** `CTI = GAS * FSF`
-    *   **GAS (GPU Architecture Score):** The baseline performance potential for a specific GPU family (e.g., Adreno 700 series) from the **Section 6.3.0 Reference Table**. Use the **Standard Graphics** value.
-    *   **FSF (Frequency Scaling Factor):** This term represents the perception-normalized clock speed multiplier.
-        *   *Significance:* Scales the base architecture potential (GAS) based on whether the specific device's GPU is overclocked or underclocked compared to the reference design. 
-        *   *Mechanics:* It is calculated using the **Unified Psycho-Physical Model**:
-        *   **Formula:** `FSF = (Actual_Frequency / Reference_Frequency) ^ Exponent`
-        *   **Exponent Calculation:** `CLAMP(0.15, 1.00, Perceptual_Baseline + (Headroom * 0.12))`
-            1.  **Perceptual Baseline:** `0.85 - (GAS / 18)`
-            2.  **Headroom Modifier:** `Headroom * 0.12` (where `Headroom = SSI - GAS`)
-        *   **The System Support Index (SSI):** `(0.60 * MTI) + (0.25 * TDSI) + (0.15 * CPU_Multi)`
+*   *What is it?* The total mathematical work the GPU (Graphics Processing Unit) cores can perform per second, normalized for human perception and range-clamped to maintain physical and mathematical consistency.
+*   **Macro Overview & Architectural Context:**
+    In mobile gaming and graphics rendering, a hardware chip's raw theoretical speed rarely translates directly into a smooth real-world experience. The **Compute Throughput Index (CTI)** serves as the authoritative metric for a device's actual realized graphics processing capability. Instead of looking at raw speed alone, the model balances physical hardware potential against human sensory limits and platform constraints.
 
-        *   **Unified Psycho-Physical Model: Technical Rationales**
-            *   **Theme 1: Human Perception (Psychology)**
-                *   *The Weber-Fechner Law:* Human perception of frame rate fluidity is not linear. Improving from 120 Frames Per Second (FPS) to 130 FPS (a 10 FPS delta) is far less "valuable" to a user than improving from 25 to 35 FPS. 
-                *   *The Perceptual Baseline:* This encodes diminishing returns. The constant `18` anchors the curve so that flagships (SGS ~9.0) receive a lower baseline (0.35) while budget chips (SGS ~2.0) receive a high baseline (0.74), ensuring the final score reflects the real-world gaming experience.
-            *   **Theme 2: Hardware Interdependency (Physics)**
-                *   *The SSI (System Support Index):* An aggregate metric of the non-GPU components that physically enable the GPU to reach its potential.
-                *   *Weighting Selection:* **Memory Bandwidth (60%)** is the absolute primary ceiling; a GPU cannot process data it doesn't have. **Cooling (25%)** is the secondary limit; overclocks generate exponential heat spikes that induce throttling. **CPU (15%)** is the orchestration limit; it must issue Draw Calls fast enough to keep the GPU busy.
-            *   **Theme 3: Bottleneck Dynamics**
-                *   *The Headroom Modifier:* Defines the "bottleneck state." If the system support (SSI) exceeds the GPU demand (GAS), the `Headroom` is positive. By multiplying this by `0.12`, we ensure that the physical chassis (Cooling/Memory) has a **significant and noticeable impact** on the final score. A gaming phone with active cooling will yield a perceptibly higher score boost from the same overclock than a thermally-choked foldable.
-                *   *The "Linear Extreme" (1.0 Ceiling):* The value of 1.0 represents perfect linear scaling (1% freq = 1% score). In our model, this is an extreme case only reached by the lowest-end devices paired with maximum system headroom.
-            *   **Theme 4: Simulation & Sensitivity Analysis**
-                *   *Goal:* To ensure the model reflects reality across all phone tiers (2016-2026).
-                *   *Case A (Budget Chip - GAS 2.0):* An Adreno 610 (+10% overclock) in a balanced phone yields an exponent of **0.74** (**+7.3%** boost). In an over-fed phone with high RAM/Cooling (SSI 4.0), the exponent reaches **0.98** (**+9.8%** boost), showing high sensitivity to hardware support at the low end.
-                *   *Case B (Flagship Chip - GAS 8.3):* An Adreno 740 (+10% overclock) in a gaming phone (SSI 8.8) yields an exponent of **0.45** (**+4.4%** boost). In a choked, compact chassis (SSI 6.5), the exponent scales down to **0.17** (**+1.6%** boost). This delta is highly significant, validating the physical advantage of superior cooling and ensuring high mathematical "resolution" for mismatched systems.
-                *   *Significance:* Unlike a raw frequency ratio, the **FSF** accounts for the psychological and physical reality that frequency is only one part of the performance equation. It captures the difference between a "standard" chip and an overclocked "Plus" variant while respecting the physical reality of system bottlenecks and the psychological reality of diminishing utility at high frame rates.
-                *   **Reference:** See **Section 6.3.0** for authoritative Reference Frequencies.
+    The model is designed around two foundational concepts:
+    1.  **Diminishing Perceptual Returns (Human Psychology)**: Human perception of frame rate fluidity is non-linear. Increasing a game's performance from 30 Frames Per Second (FPS) to 60 FPS is a massive, immediately noticeable improvement. However, increasing it from 90 FPS to 120 FPS—while requiring the same hardware effort—is far less perceptible to the human eye. The model uses a calibrated logarithmic curve to model these diminishing returns.
+    2.  **Platform Bottlenecks (Hardware Physics)**: A Graphics Processing Unit (GPU) cannot run at peak speed without external support. It relies on the phone's shared system memory (Random Access Memory, or RAM) to load textures, and it relies on the phone's chassis to dissipate the intense heat generated during gameplay. If the system's memory is slow, or if the cooling system is poor, the GPU will stall or throttle. The model evaluates whether the device has enough system headroom to support its graphics engine.
+
+    To achieve this, the CTI evaluation is broken down into a three-step pipeline:
+    -   **Step 1: Input Verification (Fail-Fast and alert)**: Asserts that all baseline performance metrics are structurally valid before running any formulas.
+    -   **Step 2: Perceptual Scaling Calculation (`CTI_raw`)**: Establishes the raw perceptual score of the GPU under ideal conditions by applying clock-frequency scaling to the base **Graphics Architecture Score (GAS)**.
+    -   **Step 3: System Support Index (SSI) Bottleneck Evaluation**: Dynamically evaluates the raw score against the **System Support Index (SSI)**—which aggregates **Memory Throughput Index (MTI)**, **Thermal Dissipation Stability Index (TDSI)**, and **CPU Orchestration Index (CPU)**—to model real-world thermal and bandwidth bottlenecks.
+
+*   **Unified ODE-Derived CTI Model Pipeline:**
+    1.  **Input Verification (Fail-Fast):**
+        *   Assert `0.0 <= GAS <= 10.0` (Graphics Architecture Score). If false, halt and raise a critical anomaly alert.
+        *   Assert `0.0 <= SSI <= 10.0` (System Support Index). If false, halt and raise a critical anomaly alert.
+    2.  **Calculate Range-Clamped Perceptual Scaling (`CTI_raw`):**
+        *   `CTI_raw = CLAMP(0.0, 10.0, R * GAS / (1.0 + k * GAS * (R - 1.0)))`
+        *   *Where:*
+            *   `GAS (GPU Architecture Score):` Sourced from the **Section 6.3.0 Reference Table** (Standard Graphics column).
+            *   `R (Frequency Ratio):` `Actual_Frequency / Reference_Frequency`. Sourced from **Section 6.3.0** for authoritative reference frequencies.
+            *   `k = 0.075` (Diminishing perceptual constant calibrated from 30 FPS to 120 FPS gaming anchors).
+    3.  **Evaluate System Bottlenecks (`CTI`):**
+        Compare the System Support Index (`SSI`) against `CTI_raw` to evaluate platform resource headroom and physical chassis bottlenecks:
+        *   `SSI (System Support Index):` An aggregate metric of non-GPU platform resource headroom that physically supports the graphics processor to prevent hardware bottlenecks:
+            `SSI = (0.60 * MTI) + (0.25 * TDSI) + (0.15 * CPU_Multi)`
+            *   **MTI (Memory Throughput Index):** Sourced from **Section 6.5 (RAM Technology)**. Retrieve and use the **Predicted Score** (to ensure raw memory technology capabilities are captured before system-level boosters are applied).
+                *   *Weighting Rationale (60% Weight):* Memory bandwidth is the primary ceiling; a GPU cannot process data it does not have, making memory throughput the most critical enabler.
+            *   **TDSI (Thermal Dissipation Stability Index):** Sourced from **Section 6.10 (TDSI)**. Retrieve and use the **Final Score** (capturing the absolute real-world cooling assembly and chassis thermal tolerances).
+                *   *Weighting Rationale (25% Weight):* Cooling acts as the thermal stability limit, protecting the processor from thermal throttling under sustained gameplay or overclock spikes.
+            *   **CPU_Multi (CPU Multi-Core Orchestration Index):** Sourced from **Section 6.1 (CPU Multi-Core Performance)**. Retrieve and use the **Final Score** (capturing actual realized orchestration and command submission scheduling speed).
+                *   *Weighting Rationale (15% Weight):* CPU orchestration dictates the rate of command submission (draw calls).
+
+        *   **Scenario A: Sufficient System Support (`SSI >= CTI_raw`):**
+            *   `CTI = CTI_raw`
+        *   **Scenario B: Insufficient System Support (`SSI < CTI_raw`):**
+            *   `Transmission_Factor = 1.0 - (CTI_raw - SSI) / 10.0`
+            *   `CTI = GAS + (CTI_raw - GAS) * Transmission_Factor`
+
+        *   **Architecture & Bottleneck Physics:**
+            *   **Operating-Point Demand:** Rather than evaluating system bottlenecks against a static baseline (`GAS`), bottlenecks are assessed against the GPU's actual active operating demand (`CTI_raw`). This ensures that the bottleneck evaluation dynamically adapts to the specific operating-point state of the device.
+            *   **Dynamic Transmission Scaling:** When shared system resources are insufficient to support active demand (`SSI < CTI_raw`), the discrepancy acts as a physical bottleneck. The transmission of performance changes is scaled by the bounded `Transmission_Factor`, simulating how platform limitations mask or scale the realized performance impact of GPU frequency variations.
+            *   **Reference:** See **Section 6.3.0** for authoritative Reference Frequencies.
 
 **Step 2: API & Feature Modifier (AFM) — 15% Weight**
 *   *What is it?* A multiplier that rewards support for modern software instructions (Vulkan 1.3+, Metal 3.0+).
