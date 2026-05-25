@@ -251,8 +251,8 @@ def calc_soc_performance_score(geekbench_multi):
     import math
     if geekbench_multi <= 0: return 0
     
-    gb_min = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Min', 1500)
-    gb_max = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Max', 7500)
+    gb_min = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Min', 150)
+    gb_max = SCORING_CONSTANTS.get('CPU_GB6_Multi_Score_Max', 10500)
     
     score = 10 * (math.log(geekbench_multi) - math.log(gb_min)) / (math.log(gb_max) - math.log(gb_min))
     return clamp(score, 0, 10)
@@ -345,6 +345,8 @@ def calc_layer_b(data):
     # Try to fetch pre-calculated AES from 3.1
     # Try to fetch pre-calculated AES from 5.1
     batt_endurance = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance", {})
+    if not batt_endurance:
+        batt_endurance = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance_score", {})
     layer_b = batt_endurance.get("layer_b_hardware_efficiency", {})
     b_1_soc = layer_b.get("b_1_soc_efficiency", {})
     breakdown = b_1_soc.get("breakdown", {})
@@ -354,12 +356,12 @@ def calc_layer_b(data):
         cpu_score = aes_stored
     else:
         # Fallback: Calculate if not present (Test Script Logic)
+        facs_list = []
         clusters = data.get("6_processing_power_and_performance", {}).get("3_0_cpu_architecture_reference", {}).get("clusters", [])
         total_score = 0
         total_cores = 0
         
         if clusters and len(clusters) > 0:
-            facs_list = []
             for cluster in clusters:
                 # Handle name extraction
                 raw_name = cluster.get("name", {})
@@ -673,7 +675,17 @@ def main():
         return
     
     json_str = json_match.group(1)
-    data = json.loads(json_str)
+    # Strip comments starting with // but preserve http:// and https:// links
+    clean_json_lines = []
+    for line in json_str.splitlines():
+        line_no_comment = re.sub(r'(?<!http:)(?<!https:)//.*$', '', line)
+        clean_json_lines.append(line_no_comment)
+    clean_json_str = '\n'.join(clean_json_lines)
+    
+    # Strip trailing commas inside arrays and objects
+    clean_json_str = re.sub(r',\s*([\}\]])', r'\1', clean_json_str)
+    
+    data = json.loads(clean_json_str)
     
     # --- Calculations ---
     
@@ -712,7 +724,9 @@ def main():
     
     # --- Update Data Structure ---
     
-    battery_section = data["8_battery_and_charging"]["8_1_battery_endurance"]
+    battery_section = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance", {})
+    if not battery_section:
+        battery_section = data.get("8_battery_and_charging", {}).get("8_1_battery_endurance_score", {})
     
     # Update computed scores in their respective layers
     if "layer_a_energy" not in battery_section: battery_section["layer_a_energy"] = {}

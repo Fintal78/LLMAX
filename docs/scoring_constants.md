@@ -100,8 +100,9 @@
 **6. Processing Power**
 
 ### 6.1 CPU Multi-Core
-*   `CPU_GB6_Multi_Score_Min` = 500 (Score 0), `CPU_GB6_Multi_Score_Max` = 11000 (Score 10)
-*   `CPU_PTS_Score_Min` = 5 (Score 0), `CPU_PTS_Score_Max` = 80 (Score 10)
+*   `CPU_GB6_Multi_Score_Min` = 150 (Score 0 | Dual-core Cortex-A7 @ 1.0 GHz floor), `CPU_GB6_Multi_Score_Max` = 10500 (Score 10 | Snapdragon 8 Elite Ceiling)
+*   `CPU_RCTS_Min` = 0.5487 (Score 0 | Dual-core Cortex-A7 @ 1.0 GHz floor), `CPU_RCTS_Max` = 55.6302 (Score 10 | Snapdragon 8 Elite Ceiling)
+*   `CPU_CFEI_Min` = 0.5000 (Score 0 | Legacy Cortex-A53 clusters without shared cache floor. *Why 0.5 and not 0:* Mathematically, setting the minimum bound to 0 is impossible as log(0) is undefined, causing critical division-by-zero or negative-infinity system errors. Physically, even the most basic heterogeneous multi-core layouts since 2016 feature at least a 512 KB/0.5 MB cache segment, establishing it as the true real-world performance floor.), `CPU_CFEI_Max` = 32 (Score 10 | Apple A15 Bionic 32 MB SLC Ceiling)
 
 ### 6.2 CPU Architecture & Single-Core Efficiency
 *   `CPU_GB6_Single_Score_Min` = 150 (Score 0), `CPU_GB6_Single_Score_Max` = 3500 (Score 10)

@@ -1604,10 +1604,18 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 
 #### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
-1.  **Identify Neighbors:** Find **3 distinct Reference Phones** that have **BOTH** Geekbench scores and known specs. Select the ones with the smallest **Distance** to the target device, **excluding the target device** itself:
-    *   `Distance = abs(Diff_Predicted)`
-    *   *Where Diff_Predicted = Predicted_Target - Predicted_Neighbor*
-    *   *Note:* Based on **Predicted Score** calculated via Method C.
+1.  **Identify Neighbors via Feature Distance (Minimum Variance):** Find the 3 devices that are statistically closest across **all** CPU-relevant hardware components.
+    *   **Search Space:** All phones with known Geekbench 6 Multi-Core scores (Method A), **excluding the target device** itself.
+    *   **Distance Metric:** Weighted Euclidean Distance.
+        *   `Distance = Sqrt( 0.50*(RCTS_norm_Diff)² + 0.24*(MTI_Diff)² + 0.15*(TDSI_Diff)² + 0.06*(Scheduler_Diff)² + 0.05*(CFEI_Diff)² )`
+        *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
+            *   `RCTS_norm` (Raw CPU Throughput Score, normalized, see Method C).
+            *   `MTI` (§6.5): Use the **Predicted Score** (to isolate the raw memory technology capabilities before system-level boosters are applied).
+            *   `TDSI` (§6.10): Use the **Final Score** (to capture the actual real-world physical cooling assembly capabilities proven by benchmark testing).
+            *   `Scheduler` (Scheduler Tier, see Method C): Use the **Scheduler Grade** (to match OS-level thread orchestration efficiency and heterogeneous big.LITTLE core scaling logic — an architecture combining large high-performance "big" cores with small energy-efficient "LITTLE" cores).
+            *   `CFEI` (Cache & Fabric Efficiency Index, see Method C): Use the **Cache Index Score** (to capture the shared L3 and System Level Cache memory capacity that minimizes external DRAM latency).
+        *   **Scientific Rationale:** Weights are mathematically normalized to mirror the proportions of the Method C deficit penalty system (MTI: 0.20, TDSI: 0.12, Scheduler: 0.05, CFEI: 0.04). With core compute performance (`RCTS_norm`) held at a robust 0.50 anchor weight, the remaining 0.50 is allocated proportionally to the support subsystems, ensuring neighbors have highly compatible hardware performance profiles.
+    *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
         *   *Note:* `Predicted_Neighbor1/2/3` refers to the **overall Predicted Score** (Method C) of each neighbor device.
@@ -1617,56 +1625,276 @@ Method B is populated for **all** phones (even if Method A is available) to eval
     *   `Avg_Benchmark_Neighbors = (Benchmark_Neighbor1 + Benchmark_Neighbor2 + Benchmark_Neighbor3) / 3`
     *   `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 
-> [!NOTE]
-> **Why Simple Proximity vs Euclidean Distance?**
-> Euclidean distance calculation would be particularly tricky here as it requires to have the same amount of dimensions, which is very often not the case as the core count varies significantly per architecture (e.g., Apple 6-core vs Android 8-core configurations).
-> Since Geekbench Multi-Core is a total throughput metric and the Predicted Score itself models total throughput (Sum of all clusters), the scalar difference between Predicted Scores correctly identifies performance neighbors without the complexity of mapping mismatched cluster topologies.
-
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
+> ### 📖 Executive Summary & Roadmap: CPU Multi-Core Modeling
+> Evaluating mobile CPU performance requires much more than simply adding up core speeds or counting cores. Modern smartphones utilize highly complex, **heterogeneous multi-cluster CPU complexes** configured to balance high-burst speeds with strict thermal and battery limitations.
+> 
+> To model this physical reality with accuracy, **Method C** uses a **5-Step Pipeline** that transforms raw silicon specifications into a realistic, human-perceptual performance score.
+> 
+> #### 🧭 The 5-Step Performance Pipeline Map
+> Below is the mathematical journey a device's raw CPU specifications take through the modeling framework:
+> 
+> 1. **Step 1: Core Frequency Soft-Saturation (γ)** 
+>    * *What it does:* Analyzes each CPU core's clock speed. High overclocked frequencies are scaled down using a core-count-based **γ (gamma)** exponent to model voltage walls and latency overhead.
+> 2. **Step 2: Local Intra-Cluster Scaling (α)** 
+>    * *What it does:* Groups identical cores into their respective hardware clusters. A parallel-scaling **α (alpha)** exponent is applied to model diminishing parallel returns (cores competing for local L2 cache).
+> 3. **Step 3: Raw Throughput Aggregation (RCTS)**
+>    * *What it does:* Sums the parallel-adjusted capacities of all clusters to compute the total raw processing throughput demand of the CPU.
+> 4. **Step 4: Global Perceptual Normalization (RCTS_norm)**
+>    * *What it does:* Converts the raw throughput into a 0.0 to 10.0 scale using a **logarithmic function** to match human sensory perception (diminishing return utility).
+> 5. **Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
+>    * *What it does:* Evaluates four support subsystems (Memory, Cooling Thermals, OS Scheduling, and Cache), subtracts non-linear penalties from the normalized demand to compute the final score, and halts execution via a strict **Process Abort Protocol** if the score falls outside `[0.00, 10.00]`.
+> 
+> ---
+> 
+> ### 🧠 The Physics of CPU Architecture & Heterogeneity
+> Modern System-on-Chip (SoC) architectures do not use identical cores. Instead, they group different types of specialized cores into **Clusters** to optimize performance:
+> *   **Prime Cores:** Large, extreme-performance cores dedicated to brief, heavy single-threaded bursts (like launching an app).
+> *   **Performance Cores (P-Cores):** Medium-high speed workhorse cores that handle active multitasking, heavy browsing, and gaming physics.
+> *   **Efficiency Cores (E-Cores):** Small, ultra-low power cores that run background syncing, OS maintenance, and music playback while preserving battery.
+> 
+> #### Layer 1: Local Intra-Cluster Scaling (Local Silicon Contention)
+> *   *The Constraint:* Cores within the same cluster are placed next to each other on the silicon die, sharing a local L2 cache and cluster-level fabric. As more cores run concurrently, they contend for L2 cache access and generate local thread synchronization overhead.
+> *   *How we model it:* In **Step 2**, we apply the **Parallel-Adjusted Core Count (PACC)** (`CoreCount^α`), using a decaying alpha exponent to reduce the incremental value added by each additional core.
+> 
+> #### Layer 2: Global Inter-Cluster Scaling (Systemic Platform Support)
+> *   *The Constraint:* Even if individual clusters are efficient internally, they must communicate via the DynamIQ Shared Unit (DSU) interconnect. They compete for bandwidth on the LPDDR RAM memory bus, share the physical thermal dissipation limits of the phone's chassis, and share a common shared L3/SLC cache.
+> *   *How we model it:* In **Step 5**, we evaluate these platform-wide dependencies using a non-linear deficit penalty model, treating Memory, Thermals, Scheduling, and Cache as strict constraints rather than optional bonuses.
+>
+> **Method C** calculates performance by scoring every cluster found in the device's SOC reference (§6.1.0) individually before aggregating them into a system-wide throughput model.
+
+**Step 1: Core Frequency Soft-Saturation (γ)**
+Before assessing how cores behave in parallel, we must first determine the physical yield of each individual core at its given operating frequency. While frequency scaling is generally linear near a core's sweet spot, pushing cores to extreme frequencies (overclocking) hits a "voltage wall" where heat and power scale exponentially but performance does not. Furthermore, at high clock speeds, internal CPU caches (L2/L3) and memory buses cannot scale in tandem, resulting in nanosecond-level latency mismatches that waste clock cycles.
+
+We model this sub-linear frequency scaling using a soft-saturation exponent **γ (gamma)**.
+1.  **Frequency Ratio (R_i):** `Actual_Frequency_i / Reference_Frequency_i`
+2.  **Core Yield (CY_i):** `CY_i = CAS_i * (R_i ^ γ)`
+    *   `CAS_i`: CPU Architecture Score from the **§6.1.0 Reference Table**.
+    *   `γ` is determined by the **number of cores in the cluster**, which serves as a highly accurate proxy for the core's architectural class and typical operating range:
+        *   `γ(1 core) = 0.93`: Prime cores pushed to extreme frequencies. High voltage wall impact.
+        *   `γ(2 cores) = 0.95`: Performance clusters at moderate-high frequencies.
+        *   `γ(3 cores) = 0.96`: Performance clusters.
+        *   `γ(4 cores) = 0.97`: Mixed Performance/Efficiency clusters near the linear sweet spot.
+        *   `γ(5-6 cores) = 0.98`: Efficiency clusters at conservative frequencies.
+        *   `γ(7-8 cores) = 0.99`: Large efficiency clusters. Scaling is nearly linear, but a perfect 1.00 is physically impossible due to cache latency mismatches at any speed.
+
+**Step 2: Per-Cluster Effective Throughput (CET)**
+Core scaling is sub-linear. Doubling the cores does not double the performance due to synchronization overhead, cache contention, and shared memory pressure (Amdahl's Law). We model this physical constraint by calculating a Parallel-Adjusted Core Count before applying the base architecture score.
+
+1.  **Parallel-Adjusted Core Count (PACC):** `PACC_i = CoreCount_i ^ α`
+    *   Where **α is determined by core count**, ensuring robust scaling for any cluster topology.
+    *   `α(1 core)`  = 1.000 (Identity)
+    *   `α(2 cores)` = 0.940 (Minimal overhead)
+    *   `α(3 cores)` = 0.900
+    *   `α(4 cores)` = 0.870
+    *   `α(5 cores)` = 0.850
+    *   `α(6 cores)` = 0.830
+    *   `α(7 cores)` = 0.810
+    *   `α(8 cores)` = 0.800 (Heavy overhead)
 > [!NOTE]
-> **Understanding Core Clusters (The "Prime, Performance, Efficiency" Split)**
-> Modern smartphone processors (like Snapdragon or Dimensity) do not use identical cores. Instead, they group different types of cores into **Clusters** to balance speed and battery life:
-> *   **Prime Cores:** The most powerful cores (e.g., Cortex-X series). Usually appearing as a single core (1x) dedicated to extreme bursts of speed, like launching a heavy app.
-> *   **Performance Cores (P-Cores):** High-speed "workhorse" cores (e.g., Cortex-A700 series). These handle the daily heavy lifting like web browsing, gaming, and multitasking.
-> *   **Efficiency Cores (E-Cores):** Low-power cores (e.g., Cortex-A500 series). These stay active during background tasks (syncing, standby) to ensure the phone uses as little battery as possible when not in active heavy use.
->
-> **Method C** calculates performance by scoring every identified cluster found in the device's SOC reference (§6.1.0) individually before summing them up. This structure works for all phones: a single-core phone has one cluster, while a modern flagship has three or more.
+    > **Scientific Rationale for α (Local Core Scaling Physics):** 
+    > This specific sequence defines a **smooth, monotonic decay** in parallel efficiency *within* a cluster. To see the direct relationship between the exponent **α** and the real-world efficiency of the cluster, we look at the **Total Core Yield** (CoreCount^α), the **Average Scaling Efficiency** (Total Yield / Core Count), and the **Incremental Value** added by each additional core (Yield_N - Yield_N-1):
+    > * **Alpha Core Scaling Reference Table:**
+    > 
+    > | Cores (N) | Alpha (α) | Total Core Yield (N^α) | Average Cluster Efficiency | Incremental Efficiency of Last Core |
+    > | :-------: | :-------: | :--------------------: | :------------------------: | :---------------------------------: |
+    > |   **1**   |   1.000   |    **1.000** cores     |           100.0%           |         100.0% (Base Core)          |
+    > |   **2**   |   0.940   |    **1.919** cores     |           95.9%            |           +0.919 (91.9%)            |
+    > |   **3**   |   0.900   |    **2.688** cores     |           89.6%            |           +0.769 (76.9%)            |
+    > |   **4**   |   0.870   |    **3.340** cores     |           83.5%            |           +0.652 (65.2%)            |
+    > |   **5**   |   0.850   |    **3.924** cores     |           78.5%            |           +0.584 (58.4%)            |
+    > |   **6**   |   0.830   |    **4.444** cores     |           74.1%            |           +0.520 (52.0%)            |
+    > |   **7**   |   0.810   |    **4.908** cores     |           70.1%            |           +0.464 (46.4%)            |
+    > |   **8**   |   0.800   |    **5.278** cores     |           66.0%            |           +0.370 (37.0%)            |
+    >  
+    > *Physical Ceiling Rationale:* 
+    > As more cores are grouped together in a single homogeneous cluster, synchronization overhead (contending for the same shared local L2 cache and cluster-level bus) rises. The incremental value of each core decays smoothly from **91.9%** to **37.0%**. The 5.278x yield for an 8-core cluster represents the maximum physical ceiling of homogeneous scaling in the absence of external system bottlenecks. This aligns well with modern computer science literature on non-SMT parallel scaling (where 8 identical cores typically achieve a maximum scaling factor of ~4.1x to ~5.3x depending on power limits and virtual thread capabilities).
+    
+    > * *Note on SMT (Simultaneous Multithreading):* Simultaneous Multithreading is a CPU design technique that allows a single physical processor core to execute two software threads at the same time. While extremely common in desktop computers (often marketed as "Hyper-Threading"), it is absent in mobile chips where each physical core can only execute a single thread.
 
-**Step 1: Frequency-Adjusted Core Score (FACS)**
-Instead of calculating a raw score and then scaling it globally, we calculate the throughput for **each cluster** individually.
+2.  **Cluster Effective Throughput (CET):** `CET_i = CY_i * PACC_i`
+    *   This combines the frequency-adjusted core yield (`CY_i`) with the parallel cluster overhead (`PACC_i`).
 
-*   **Frequency Scaling Factor (FSF) Formula:** `Actual_Freq / Ref_Freq`
-    *   *Significance:* Scales the base architecture score based on whether the specific cluster is overclocked or underclocked.
-    *   **Reference:** See **Section 6.1.0** for Reference Frequencies.
-*   **Frequency-Adjusted Core Score (FACS) Formula:** `Core_Architecture_Score * Core_Count * FSF`
-    *   *Significance:* Represents the total throughput contribution of a specific core cluster, accounting for its architecture, count, and clock speed.
-    *   **Core_Architecture_Score (CAS):** The baseline performance score for the specific core architecture as defined in the **Master Scoring Table (§6.1.0)**.
-    *   **Core_Count:** The number of identical physical cores within the specific processing cluster (e.g., 1 prime, 5 performance).
+**Step 3: Raw CPU Throughput Score (RCTS)**
+Sum all cluster contributions to find the total theoretical silicon demand:
+`RCTS = SUM(CET_i)` for all clusters.
 
-**Step 2: Calculate Predicted Score**
-1.  **Raw Performance Throughput Score (PTS):** Sum of `FACS` from all clusters in the SoC configuration.
-2.  **Predicted Score:** `10 * (log(PTS) - log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) - log(CPU_PTS_Score_Min))`
-    *   **Max Score (10.0):** ≥ CPU_PTS_Score_Max
-    *   **Min Score (0.0):** ≤ CPU_PTS_Score_Min
+**Step 4: Global Perceptual Normalization**
+Before evaluating systemic bottlenecks, we normalize the raw throughput to our 0-10 perceptual scale.
+`RCTS_norm = 10 * (log(RCTS) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min))` (Clamped 0.0 - 10.0)
 
-> **Example: Snapdragon 8 Gen 3**
-> *   **Ref Freqs:** X4=3.3GHz, A720=2.8GHz, A520=2.0GHz (from Section 6.1.0)
-> *   **Actual Specs:** 1x X4 @ 3.3GHz, 5x A720 @ 3.2GHz, 2x A520 @ 2.3GHz
->
-> 1.  **Prime Cluster (Cortex-X4):**
->     *   FSF: `3.3 / 3.3` = 1.0
->     *   FACS: `8 (CAS) * 1 (Count) * 1.0 (FSF)` = **8.0**
-> 2.  **Performance Cluster (Cortex-A720):**
->     *   FSF: `3.2 / 2.8` = 1.14
->     *   FACS: `5 (CAS) * 5 (Count) * 1.14 (FSF)` = **28.5**
-> 3.  **Efficiency Cluster (Cortex-A520):**
->     *   FSF: `2.3 / 2.0` = 1.15
->     *   FACS: `1 (CAS) * 2 (Count) * 1.15 (FSF)` = **2.3**
->
-> *   **Raw Performance Throughput Score (PTS):** `8.0 + 28.5 + 2.3` = **38.8**
-> *   **Predicted Score:** `10 * (log(38.8) - log(5)) / (log(80) - log(5))` ≈ **7.4/10**
+*   *Note:* The logarithmic scale ensures our scoring model accurately reflects human perception (Weber-Fechner Law), where performance gains at the low end (usability) are weighted heavily, while extreme flagship gains yield diminishing perceptual returns. We normalize the *entire* SoC collectively, rather than per-cluster, because the user perceives the fluidity of the system as a whole.
+
+**Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
+Even if the core CPU complex is exceptionally powerful, it cannot deliver that performance if the rest of the smartphone's hardware acts as a bottleneck. We model these systemic constraints (Memory, Thermals, Scheduling, and Cache) using a non-linear deficit penalty system. 
+Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts the final score if it fails to meet the demand generated by the CPU (`RCTS_norm`). 
+
+1.  **Identify Deficits:**
+    For each supporting subsystem `S` {MTI, TDSI, Scheduler, CFEI}, we calculate the deficit relative to the CPU's normalized demand (`RCTS_norm`):
+    `Deficit_S = max(0, RCTS_norm - S)`
+
+2.  **Apply Exponential Penalties:**
+    When a bottleneck occurs, its severity compounds non-linearly. We apply specific weights and exponents (`β`) based on the architectural impact of each subsystem:
+    `Penalty_S = Weight_S * (Deficit_S ^ β)`
+
+    *   **Memory (MTI - 0.20 Weight, β=1.4):** Modern cooperative workloads are fundamentally memory-bound. If the CPU requests data faster than the RAM can supply it, the cores stall. Sourced from the **Predicted Score** of **Section 6.5 (Memory Technology & Bandwidth)** to isolate the raw hardware capabilities of the memory bus and RAM technology before downstream boosters are applied.
+        `Penalty_MTI = 0.20 * (Deficit_MTI ^ 1.4)`
+    *   **Thermals (TDSI - 0.12 Weight, β=1.4):** Sustained multi-core saturation generates immense heat. Insufficient cooling will forcibly throttle the CPU regardless of its theoretical peak speed. Sourced from the **Final Score** of **Section 6.10 (Thermal Dissipation Stability Index)** to capture the actual, real-world physical cooling assembly capabilities as proven by sustained hardware performance testing.
+        `Penalty_TDSI = 0.12 * (Deficit_TDSI ^ 1.4)`
+    *   **OS Thread Scheduler (Scheduler - 0.05 Weight, β=1.3):** In heterogeneous CPU designs (known as big.LITTLE architectures, which combine powerful, power-hungry "big" cores with smaller, energy-efficient "LITTLE" cores), the Operating System (OS) must carefully orchestrate thread distribution. Poor scheduling leaves prime cores idle while overloading efficiency cores, causing massive performance stutters. Sourced from the **Scheduler Grade** lookup table (§6.1.C) to match OS-level thread orchestration maturity.
+        `Penalty_Sched = 0.05 * (Deficit_Sched ^ 1.3)`
+    *   **Cache & Fabric Efficiency (CFEI - 0.04 Weight, β=1.3):** Evaluates the shared on-chip memory (L3 + SLC). A smaller shared cache forces the CPU to rely more heavily on external RAM, increasing latency. Sourced from the **Cache Index Score** derived from the continuous Cache & Fabric Efficiency Index (CFEI) logarithmic scaling formula (§6.1.C) to represent the capacity that minimizes latency-heavy fetches from the external DRAM (Dynamic Random Access Memory).
+        `Penalty_CFEI = 0.04 * (Deficit_CFEI ^ 1.3)`
+
+3.  **Compute Final Score & Validate Safety Limits:**
+    The final performance score is the normalized demand minus all active system penalties:
+    `Predicted_Score_6.1 = RCTS_norm - SUM(Penalty_S)`
+
+> [!NOTE]
+> **Mathematical Design of the Penalty System:**
+> The non-linear exponents (`β = 1.3 to 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score. 
+> The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **9.83** (`0.20*(10^1.4) + 0.12*(10^1.4) + 0.05*(10^1.3) + 0.04*(10^1.3)`). 
+> While this design keeps the penalty system naturally self-limiting under high-performance scenarios, it does not guarantee absolute safety under all possible imbalanced or low-to-mid performance configurations. For example, if an entry-level CPU achieves a moderate `RCTS_norm` (e.g., 4.00) but suffers from severe subsystem bottlenecks that sum to a total penalty greater than 4.00, the raw mathematical result would drop below 0. 
+
+> [!CAUTION]
+> ⚠️ **CRITICAL PHYSICAL RANGE VIOLATION — PROCESS ABORT RULE!**
+> Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. 
+> If the raw calculation `Predicted_Score_6.1 = RCTS_norm - SUM(Penalty_S)` yields a value outside the physical standard range of `[0, 10]` (e.g., less than 0 or greater than 10), **the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY.** 
+> The system must immediately raise the following standardized exception alert and halt execution:
+> 
+> `CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process.`
+> 
+> An out-of-bounds score indicates a structural model breakdown, mathematical overflow, or a highly anomalous physical SoC configuration. The compilation pipeline must throw a high-priority system exception, halt database generation for that device, and emit a detailed error log detailing all pre-clamped coefficients and subsystem deficits. This triggers immediate engineering examination for a potential model update.
+
+> [!TIP]
+> 🚀 **POTENTIAL FUTURE MODEL IMPROVEMENTS:**
+> To capture cluster-specific dependencies even more precisely, subsequent model revisions may evaluate replacing the global `RCTS_norm` baseline with targeted physical demand functions. These proposed formulations are options to isolate core-type sensitivities:
+> *   **Thermal Demand Function (Proposed Option):** Models thermal load by factoring in high-burst single-core power draw:
+>     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * PrimeClusterStrength`
+>     *(Rationale: Extremely clocked Prime cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
+> *   **Memory Demand Function (Proposed Option):** Models memory bus contention by factoring in cooperative background efficiency workloads:
+>     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * EfficiencyClusterLoad`
+>     *(Rationale: High concurrency of background threads on Efficiency clusters generates heavy random RAM fetches, saturating the system bus and starving fast performance clusters.)*
+
+> ### 🧠 Cache & Fabric Efficiency Index (CFEI)
+> The Cache & Fabric Efficiency Index measures the capacity of the SoC's shared on-chip memory. 
+> 
+> **Understanding the Cache Hierarchy:**
+> *   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
+> *   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
+> 
+> **Scoring (Cache & Fabric Efficiency Index - CFEI):**
+> For most SoCs, the effective shared cache capacity is calculated as: `L3 Cache (MB) + SLC (MB)`.
+> 
+> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the CFEI subscore is calculated continuously:
+> 
+> `CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
+> 
+> *   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
+> 
+> **Worked Continuous Benchmarks:**
+> *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
+> *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
+> *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
+> *   `12 MB` (e.g., Snapdragon 8 Gen 3 L3 / Exynos 2400) -> **`7.6416`**
+> *   `8 MB` (e.g., Snapdragon 8 Gen 2 L3) -> **`6.6667`**
+> *   `6 MB` (e.g., Snapdragon 8 Gen 1 L3) -> **`5.9749`**
+> *   `4 MB` (e.g., Tensor G3 L3 / Dimensity 8300) -> **`5.0000`**
+> *   `2 MB` (e.g., Snapdragon 7s Gen 2 L3) -> **`3.3333`**
+> *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
+> *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
+> 
+> **Ambiguity & Edge-Case Architecture Rules:**
+> 1.  **Combined Manufacturer Reporting:**
+>     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly.
+> 2.  **Apple SLC-Only Architecture:**
+>     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CAS) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
+> 3.  **Snapdragon 8 Elite Latency Penalty:**
+>     The Snapdragon 8 Elite uses a unique architecture with large private L2 caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no L3 cache. Its cache capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`. However, because it lacks a unified L3 cache, cross-cluster cache coherency incurs a latency penalty. Thus, a flat penalty of `-0.5000` is deducted from its final CFEI score, yielding `9.5000`.
+>     *   **Exhaustive Architectural Isolation:** This is the **single, unique case** in modern mobile SoC history (2016–2026) where an L2 cache is integrated into the shared cache capacity calculation. In all other standard SoCs (e.g., ARM DynamIQ setups), L2 caches are strictly private to individual cores or small duos and cannot serve as a shared last-level repository, meaning they are completely discarded and captured solely by the CPU Architecture Score (CAS).
+>     *   **Why L2 is treated as L3 (Capacity Equivalence):** Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip SRAM pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external DRAM (RAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool.
+>     *   **Why it incurs a Coherency Penalty:** In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 ns). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 ns.
+>     *   **Justification for the -0.5000 Calibration:** On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
+> 4.  **Entry-Level and Legacy SoCs (No L3, No SLC):**
+>     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no L3 cache and no SLC. Their L2 caches are strictly private to individual cores or clusters and cannot act as a shared LLC across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5000` MB (the minimum baseline of our continuous logarithmic model), yielding a `CFEI` score of `0`.
+> 
+
+> ### 🧠 OS Thread Scheduler Grade
+> The OS Thread Scheduler Grade measures the system-level capability of the Operating System (OS) scheduler to intelligently distribute and coordinate software threads across a heterogeneous multi-cluster CPU complex. 
+> 
+> Heterogeneous complexes (combining high-burst, power-hungry cores with ultra-efficient background cores) rely heavily on scheduling capability. Without advanced, high-frequency thread orchestration, demanding threads will stall on low-power efficiency cores, while lightweight background tasks will run on high-power cores. This results in frame drops, increased latency, and severe micro-stutters (brief, noticeable stutters in visual fluidity).
+> 
+> #### 1. Exhaustive OS Scheduling Lookup Table
+> To ensure absolute architectural neutrality and eliminate ambiguity, the lookup table below maps operating system families (including those running on ARM — Advanced RISC Machines, the standard low-power processor architecture used in smartphones), version thresholds, and hardware telemetry prerequisites directly to scheduling Tiers and Grades. Graders can resolve the score of any device using these objective system attributes:
+> 
+> > [!IMPORTANT]
+> > **Canonical Source:** All OS version labels used in this table **MUST** match the exact labels defined in [os_version_reference.md]. That file is the single source of truth.
+> 
+> [!NOTE]
+> **Perception-Based Normalization:**
+> To ensure consistent alignment with other perceptual penalty-based sub-systems in our benchmark, the OS Thread Scheduler Grade is strictly normalized on a 0 to 10 scale representing **human-perceptual fluidness and micro-stutter tracking**, rather than raw scheduling queue execution throughput:
+> - **10** (Perfect fluidness, zero perceived frame drops or UI stutters under heavy heterogeneous thread switching).
+> - **8** (Exceptional fluidness, with rare and imperceptible micro-stutters during core transition boundaries).
+> - **6** (Highly fluid overall, with occasional noticeable micro-stutters during dynamic thread shifting).
+> - **3** (Acceptable, but frequent stuttering and frame stumbles are visible during cluster thread migration).
+> - **0** (Constant stuttering, lag spikes, and heavy thread stalls due to basic load migration).
+> 
+> | Canonical OS Versions Covered                           | Classification Tier                  | Grade       |
+> | :------------------------------------------------------ | :----------------------------------- | :---------- |
+> | **iOS 15.x – iOS 27+**                                  | **Tier 1**: Vertically Integrated    | **10.0000** |
+> | **iOS 10.x – iOS 14.x**                                 | **Tier 2**: Hardware-Telemetry EAS   | **8.0000**  |
+> | **Android 10.0 – Android 17.0**                         | **Tier 2**: Hardware-Telemetry EAS   | **8.0000**  |
+> | **Android 8.0 – Android 9.0**                           | **Tier 3**: Static Software EAS      | **6.0000**  |
+> | **HarmonyOS 1.0 – HarmonyOS 6.0**                       | **Tier 3**: Static Software EAS      | **6.0000**  |
+> | **HyperOS 1.0 – HyperOS 3.0**                           | **Tier 3**: Static Software EAS      | **6.0000**  |
+> | **Android 5.0 – Android 7.1**                           | **Tier 4**: Asymmetric Load-Balanced | **3.0000**  |
+> | **Windows 10 Mobile (1511) – Windows 10 Mobile (1709)** | **Tier 4**: Asymmetric Load-Balanced | **3.0000**  |
+> | **iPhone OS 1.0 – iOS 9.x**                             | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
+> | **Android 1.0 – Android 4.4**                           | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
+> | **Windows Mobile 5.0 – Windows Phone 8.1**              | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
+> 
+> #### 2. Technical Characteristics & Classification Traits
+> *   **Tier 1: Vertically Integrated Co-Designed [Grade: 10.0000]**
+>     *   *Characteristics:* Highly proprietary closed operating systems designed by the same manufacturer who engineers the custom CPU microarchitecture. Routing utilizes dedicated hardware registers and microsecond-level feedback loops to immediately route high-priority User Interface (UI) threads to performance cores with zero user-space abstraction overhead.
+> *   **Tier 2: Hardware-Telemetry Guided Energy-Aware Scheduler (EAS) [Grade: 8.0000]**
+>     *   *Characteristics:* Heterogeneous complexes utilizing real-time hardware telemetry feedback (e.g., Qualcomm Thread Predictor, MediaTek CorePilot, or silicon Hardware Feedback Interface [HFI] thread directors) that supply hardware counters directly to the kernel scheduler to assist in dynamic task placement.
+> *   **Tier 3: Static Software Model Energy-Aware Scheduler (EAS) [Grade: 6.0000]**
+>     *   *Characteristics:* pure software-driven Energy-Aware Scheduling (EAS — a technology modeling core cluster energy costs) utilizing a static kernel Energy Model (EM) lookup table and task load tracking (such as Per-Entity Load Tracking [PELT] or Window-Assist Load Tracking [WALT]) without real-time hardware telemetry counters.
+> *   **Tier 4: Asymmetric Load-Balanced (Non-EAS) [Grade: 3.0000]**
+>     *   *Characteristics:* Asymmetric layouts running standard Completely Fair Scheduler (CFS — the default general-purpose software scheduler) or generic kernel load balancers distributing tasks based on queue lengths and thread priority, without any active energy or performance modeling.
+> *   **Tier 5: Legacy Cluster-Switching / Global Migration [Grade: 0.0000]**
+>     *   *Characteristics:* Outdated architectures lacking fine-grained thread-level scheduling across asymmetric cores. Instead, threads are migrated in bulk as a single cluster-block between low-power and high-power clusters (Heterogeneous Multi-Processing [HMP] or hardware-level cluster-switching), incurring high latency and thread stalls.
+> 
+> #### 3. Ambiguity & Custom Optimization Guidelines
+> 1.  **Proprietary OEM Kernel-Level Boosters:** If a device manufacturer implements a documented, proprietary background scheduling daemon or kernel-level thread dispatcher (e.g., custom firmware-level game-mode dispatchers or core-affinity optimization layers) that is active during high-performance workloads, a booster of `+0.5000` may be added to the device's baseline scheduler grade, capped strictly at a maximum score of `9.0000` (to prevent software-only schedulers from claiming Tier 1 vertical co-design status).
+> 2.  **OS Distributions and Forks:** All operating system distributions, vendor skins, or custom forks default to the baseline capability of their underlying operating system kernel (e.g., a standard Android fork inherits Tier 3 or Tier 2 depending on the underlying chip features) unless the manufacturer explicitly proves and documents custom, low-level microkernel modifications or dedicated hardware-assisted thread scheduling telemetry.
+
+
+> **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**
+> *   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
+> *   **Actual Specs:** 1x X4 @ 3.3000 GHz, 5x A720 @ 3.2000 GHz, 2x A520 @ 2.3000 GHz
+> *   **Step 1 (Core Yields with Soft-Saturation):**
+>     *   Prime (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 8.0000 * (1.0000^0.9300) = 8.0000`
+>     *   Perf (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
+>     *   Eff (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
+> *   **Step 2 (CET with PACC):**
+>     *   Prime: `PACC = 1^1.0000 = 1.0000`. `CET = 8.0000 * 1.0000 = 8.0000`
+>     *   Perf: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
+>     *   Eff: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
+> *   **Step 3 (RCTS):** `8.0000 + 22.3840 + 2.1909 = 32.5749`
+> *   **Step 4 (Global Normalization):**
+>     *   `RCTS_norm = 10.0000 * (log(32.5749) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (3.4835 - (-0.6002)) / (4.0187 - (-0.6002)) = 8.8413`
+> *   **Step 5 (Penalties, Final Score & Safety Check):**
+>     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `Scheduler = 8.0000`, `CFEI = 7.0000`.
+>     *   `Deficit_MTI = max(0.0000, 8.8413 - 8.0000) = 0.8413`. `Penalty_MTI = 0.2000 * (0.8413^1.4000) = 0.1570`
+>     *   `Deficit_Sched = max(0.0000, 8.8413 - 8.0000) = 0.8413`. `Penalty_Sched = 0.0500 * (0.8413^1.3000) = 0.0400`
+>     *   `Deficit_TDSI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_TDSI = 0.1200 * (1.8413^1.4000) = 0.2818`
+>     *   `Deficit_CFEI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_CFEI = 0.0400 * (1.8413^1.3000) = 0.0887`
+>     *   `Total Penalty = 0.1570 + 0.2818 + 0.0400 + 0.0887 = 0.5675`
+>     *   `Final Score = 8.8413 - 0.5675 = 8.2738` (Bounds Check: 8.2738 is within `[0.0000, 10.0000]` → Pass)
+
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
 *Description:* Measures the responsiveness of the CPU for immediate tasks like app launching, web browsing, and UI navigation. This isolates architectural efficiency and single-thread speed.
