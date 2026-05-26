@@ -1740,8 +1740,10 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 
     *   **Memory (MTI - 0.20 Weight, β=1.4):** Modern cooperative workloads are fundamentally memory-bound. If the CPU requests data faster than the RAM can supply it, the cores stall. Sourced from the **Predicted Score** of **Section 6.5 (Memory Technology & Bandwidth)** to isolate the raw hardware capabilities of the memory bus and RAM technology before downstream boosters are applied.
         `Penalty_MTI = 0.20 * (Deficit_MTI ^ 1.4)`
+
     *   **Thermals (TDSI - 0.12 Weight, β=1.4):** Sustained multi-core saturation generates immense heat. Insufficient cooling will forcibly throttle the CPU regardless of its theoretical peak speed. Sourced from the **Final Score** of **Section 6.10 (Thermal Dissipation Stability Index)** to capture the actual, real-world physical cooling assembly capabilities as proven by sustained hardware performance testing.
         `Penalty_TDSI = 0.12 * (Deficit_TDSI ^ 1.4)`
+        
     *   **Cache & Fabric Efficiency (CFEI - 0.04 Weight, β=1.3):** Evaluates the shared on-chip memory (L3 + SLC). A smaller shared cache forces the CPU to rely more heavily on external RAM, increasing latency. Sourced from the **Cache Index Score** derived from the continuous Cache & Fabric Efficiency Index (CFEI) logarithmic scaling formula (§6.1.C) to represent the capacity that minimizes latency-heavy fetches from the external DRAM (Dynamic Random Access Memory).
         `Penalty_CFEI = 0.04 * (Deficit_CFEI ^ 1.3)`
 
@@ -1798,18 +1800,17 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
 > *   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
 > 
-> ### 🔹 1. Baseline Capacity Score (Base_CFEI)
-> For most Systems on Chip (SoCs), the baseline cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
+> For most Systems on Chip (SoCs), the cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
 > 
 > `Effective_Shared_Cache = L3 Cache (MB) + SLC (MB)`
 > 
-> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the baseline cache efficiency subscore is calculated continuously:
+> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the cache efficiency score is calculated continuously:
 > 
-> `Base_CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
+> `CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
 > 
 > *   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
 > 
-> **Worked Continuous Benchmarks (Baseline Cache Scores [Base_CFEI]):**
+> **Worked Continuous Benchmarks (Cache Scores [CFEI]):**
 > *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
 > *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
 > *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
@@ -1821,73 +1822,70 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
 > *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
 > 
-> #### 🔹 Base_CFEI Capacity Calculation & Edge-Case Rules
-> When calculating the baseline capacity score (`Base_CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
+> #### 🔹 CFEI Capacity Calculation & Edge-Case Rules
+> When calculating the cache efficiency score (`CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
 > 
 > 1.  **Combined Manufacturer Reporting:**
 >     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly as the `Effective_Shared_Cache` capacity.
+>
 > 2.  **Apple SLC-Only Architecture:**
 >     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CPU Architecture Score [CAS]) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
-> 3.  **Snapdragon 8 Elite Capacity Rules:**
+>
+> 3.  **Snapdragon 8 Elite Capacity & Coherency Rules:**
 >     The Snapdragon 8 Elite uses a unique architecture with large private Level 2 (L2) caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no Level 3 (L3) cache.
->     *   *Exhaustive Architectural Isolation:* This is a unique or at least very rare case where a Level 2 (L2) cache is integrated into the shared cache capacity calculation. In all other standard SoCs (e.g., Advanced RISC Machines [ARM] DynamIQ setups), Level 2 (L2) caches are strictly private to individual cores or small duos and cannot serve as a shared last-level repository, meaning they are completely discarded from the capacity calculation and captured solely by the CPU Architecture Score (CAS).
->     *   *Why L2 is treated as L3 (Capacity Equivalence):* Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip Static Random-Access Memory (SRAM) pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external Dynamic Random-Access Memory (DRAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool. Hence, its baseline capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`, which resolves to a baseline score of `Base_CFEI = 10.0000`. But this configuration leads to a penalty (see FTM section).
+>     *   *Capacity Equivalence:* Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip Static Random-Access Memory (SRAM) pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external Dynamic Random-Access Memory (DRAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool. Hence, its baseline capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`, which resolves to a baseline score of `10`.
+>     *   *Coherency Penalty:* Because these L2 caches are physically split per cluster and lack a unified L3 cache, cross-cluster cache coherency incurs a significant latency penalty over the Network on Chip (NoC). To reflect this microarchitectural routing latency, a flat penalty of **`-0.5000`** is applied directly to the calculated score, yielding a final score of **`9.5000`**.
+>     *   *Justification for the -0.5000 Calibration (order of magnitude):* On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a ~25% effective reduction of the 24 MB L2 cache pool (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
+>
 > 4.  **Entry-Level and Legacy SoCs (No L3, No SLC):**
->     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no Level 3 (L3) cache and no SLC. Their Level 2 (L2) caches are strictly private to individual cores or clusters and cannot act as a shared Last Level Cache (LLC) across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5` MB (the minimum baseline of our continuous logarithmic model), yielding a `Base_CFEI` score of `0`.
+>     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no Level 3 (L3) cache and no SLC. Their Level 2 (L2) caches are strictly private to individual cores or clusters and cannot act as a shared Last Level Cache (LLC) across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5` MB (the minimum baseline of our continuous logarithmic model), yielding a `CFEI` score of `0`.
 > 
-> ### 🔹 2. Fabric Topology Modifier (FTM)
+> [!NOTE]
+> **Note on Future Modifications:** Additional fabric topology edge cases could be added in the future to fine-tune the model for other architectures (e.g., standard DSU ring-bus variations), but they are not considered for now due to their low overall impact on the final system score.
 
-> While effective shared cache capacity determines the theoretical maximum hit rate of the on-chip memory pool, capacity alone is an incomplete predictor of real-world performance. The physical layout and routing architecture of the interconnect fabric—which bridges the processor core clusters, the cache slices, and the main system bus—dictate the latency cost of retrieving that cached data. A large shared cache pool connected via a high-latency, multi-stage network-on-chip or physically partitioned into split blocks will stall CPU (Central Processing Unit) execution waiting for coherency handshakes, behaving practically like a much smaller cache.
+> #### 🔹 Master Cache Capacity Lookup Table (2016-2026)
+> This table is the authoritative reference for resolving shared cache capacities for CFEI scoring. It overrides any general vendor marketing materials.
 > 
-> To reconcile this capacity-versus-latency reality, we introduce the **Fabric Topology Modifier (FTM)**. This modifier acts as a microarchitectural penalty (or correction factor) applied to the capacity-derived baseline score, adjusting it downwards based on the routing latency and synchronization overhead of the System-on-Chip (SoC) interconnect topology. 
-> 
-> To ensure grading consistency and prevent architectural ambiguity, the lookup table below maps fabric layout topologies directly to their performance scaling modifiers:
-> 
-> | Fabric Architecture Category           | Interconnect Modifier (FTM) | Key Silicon Examples                                             |
-> | :------------------------------------- | :-------------------------: | :--------------------------------------------------------------- |
-> | **Unified low-latency LLC**            |          `+0.0000`          | Apple A15–A17 Pro, Apple M-series                                |
-> | **Standard DynamIQ DSU**               |          `-0.1000`          | Snapdragon 8 Gen 1/2/3, Dimensity 9300, Exynos 2400              |
-> | **Ringbus multi-cluster**              |          `-0.2000`          | Multi-cluster server/desktop bridges, specialized system fabrics |
-> | **Split LLC / split-L2**               |          `-0.5000`          | Snapdragon 8 Elite (split Oryon cluster L2)                      |
-> | **Legacy non-coherent cluster fabric** |          `-1.0000`          | Helio G99, Snapdragon 680, legacy big.LITTLE SoCs                |
-> 
-> #### Detailed Technical Definitions & Grader Guidelines:
->
-> *   **Unified low-latency LLC (`+0.0000`):**
->     A single unified, centralized Last Level Cache (LLC) directly integrated into the main system bus/interconnect with minimal translation routing overhead, serving all CPU clusters under equal priority.
->     *(e.g., Apple A-series/M-series chips bypass standard L3 caches, utilizing massive cluster-private L2 caches and a giant centralized System Level Cache [SLC] directly on the high-speed bus).*
->
-> *   **Standard DynamIQ DSU (`-0.1000`):**
->     All cores (Performance, Medium, and Efficiency) reside in a single coherent CPU cluster and share a unified Level 3 (L3) cache housed directly inside the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) or cluster-shared unit.
->     *(e.g., Snapdragon 8 Gen 1/2/3, Dimensity 9200/9300, Exynos 2200/2400 share a single centralized DSU L3 pool).*
->
-> *   **Ringbus multi-cluster (`-0.2000`):**
->     CPU clusters communicate via an on-chip coherent system interconnect, ring bus, or crossbar fabric, where cross-cluster cache snooping or shared memory controller access introduces moderate routing overhead.
->     *(e.g., separate cluster complexes connected via a coherent System Fabric / Network on Chip [NoC]).*
->
-> *   **Split LLC / split-L2 (`-0.5000`):**
->     The primary shared cache capacity is physically partitioned into separate, cluster-private caches (such as massive Level 2 [L2] caches per cluster) with no centralized Level 3 (L3) cache. Cross-cluster data sharing requires high-latency coherency snooping over the Network on Chip (NoC).
->     *(e.g., Snapdragon 8 Elite split 12 megabytes [MB] L2 per Oryon cluster, 24 MB total L2 + 8 MB System Level Cache [SLC]; incurs coherency snoop penalty over the system fabric).*
-        > [!NOTE]
-        > **Case Study: Snapdragon 8 Elite Latency and Coherency Penalty**
-        > 
-        > **1. The Rule:**
-        > While the Snapdragon 8 Elite's capacity is combined at 32 megabytes (MB) under the Base Cache & Fabric Efficiency Index (Base_CFEI) capacity rules, its split physical layout lacks a unified Level 3 (L3) cache, meaning cross-cluster cache coherency incurs a latency penalty. Thus, a flat Fabric Topology Modifier (FTM) of `-0.5000` (the penalty for Split Last Level Cache [LLC] / split-L2) is applied directly to its baseline capacity score.
-        > 
-        > **2. Why it incurs a Coherency Penalty:**
-        > In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 nanoseconds [ns]). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 nanoseconds (ns).
-        > 
-        > **3. Justification for the -0.5000 Calibration:**
-        > On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
-> 
-> *   **Legacy non-coherent cluster fabric (`-1.0000`):**
->     Outdated architectures (such as pre-DynamIQ big.LITTLE designs) where separate clusters reside in isolated hardware blocks and communicate over a legacy non-coherent or weakly coherent interconnect. Data sharing requires slow inter-cluster traversal or writing back to external DRAM.
->     *(e.g., Helio G99, Snapdragon 680, legacy fabrics with high cross-cluster synchronization overhead).*
-> 
-> ### 🔹 3. Final realized CFEI Score Calculation
-> The final realized Cache & Fabric Efficiency Index (CFEI) score integrates both baseline cache capacity and interconnect topology penalties. It is calculated by adding the Fabric Topology Modifier (FTM) to the baseline capacity score:
-> 
-> `CFEI = Base_CFEI + FTM (Clamped 0-10)`
+> | SoC Family / Processor Model | L3 Cache (MB) | System Level Cache (SLC) (MB) | Effective Shared Cache (MB) | Final CFEI Score | Notes / Custom Rules |
+> | :--- | :---: | :---: | :---: | :---: | :--- |
+> | **Apple A18 / A18 Pro** | `0` | `32.0` | `32.0` | **`10.0000`** | Unified low-latency proprietary SLC fabric. |
+> | **Apple A17 Pro / A16 Bionic** | `0` | `24.0` | `24.0` | **`9.3082`** | 24MB SLC bypasses standard L3. |
+> | **Apple A15 Bionic** | `0` | `32.0` | `32.0` | **`10.0000`** | Large 32MB SLC (Pro / standard configs). |
+> | **Apple A14 / A13 Bionic** | `0` | `16.0` | `16.0` | **`8.3333`** | Mid-era Apple unified SLC. |
+> | **Apple A12 Bionic** | `0` | `8.0` | `8.0` | **`6.6667`** | Early A-series custom SLC. |
+> | **Apple M1 / M2 / M3 / M4** | `0` | `32.0 - 48.0` | `32.0 - 48.0` | **`10.0000`** | Desktop-class unified SLC (Clamps to 10.0). |
+> | **Qualcomm Snapdragon 8 Elite** | `0` | `8.0` | `32.0` | **`9.5000`** | Custom Rule: 24MB L2 + 8MB SLC. Incurs **-0.5000 coherency penalty**. |
+> | **Qualcomm Snapdragon 8 Gen 3** | `12.0` | `6.0` | `18.0` | **`8.6165`** | 12MB DSU L3 + 6MB System SLC. |
+> | **Qualcomm Snapdragon 8 Gen 2** | `8.0` | `6.0` | `14.0` | **`8.0122`** | 8MB DSU L3 + 6MB System SLC. |
+> | **Qualcomm Snapdragon 8 Gen 1 / 8+ Gen 1** | `6.0` | `4.0` | `10.0` | **`7.2032`** | 6MB DSU L3 + 4MB System SLC. |
+> | **Qualcomm Snapdragon 888 / 888+** | `4.0` | `3.0` | `7.0` | **`6.3456`** | 4MB DSU L3 + 3MB System SLC. |
+> | **Qualcomm Snapdragon 865 / 865+** | `4.0` | `3.0` | `7.0` | **`6.3456`** | Standard 865 platform configuration. |
+> | **Qualcomm Snapdragon 855 / 855+** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Early DynamIQ platform. |
+> | **Qualcomm Snapdragon 845** | `2.0` | `3.0` | `5.0` | **`5.5367`** | 1st-Gen DSU L3 + System Cache. |
+> | **Qualcomm Snapdragon 7+ Gen 3** | `4.0` | `3.5` | `7.5` | **`6.5115`** | High-tier sub-flagship. |
+> | **Qualcomm Snapdragon 7+ Gen 2** | `4.0` | `3.0` | `7.0` | **`6.3456`** | Excellent cache provision for mid-range. |
+> | **Qualcomm Snapdragon 7 Gen 3 / 7s Gen 2** | `2.0` | `1.5` | `3.5` | **`4.6789`** | standard sub-flagship. |
+> | **Qualcomm Snapdragon 778G / 780G** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Symmetric DSU + System Cache. |
+> | **Qualcomm Snapdragon 695** | `1.0` | `0` | `1.0` | **`1.6667`** | DSU-only L3 cache. |
+> | **Qualcomm Snapdragon 680 / 660 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
+> | **MediaTek Dimensity 9400** | `12.0` | `10.0` | `22.0` | **`9.0990`** | Massive 12MB L3 + 10MB SLC. |
+> | **MediaTek Dimensity 9300 / 9300+** | `8.0` | `10.0` | `18.0` | **`8.6165`** | 8MB L3 + 10MB SLC. |
+> | **MediaTek Dimensity 9200 / 9000** | `8.0` | `6.0` | `14.0` | **`8.0122`** | Standard Dimensity flagship bus. |
+> | **MediaTek Dimensity 8300 / 8200 / 8100** | `4.0` | `4.0` | `8.0` | **`6.6667`** | Symmetric 4MB L3 + 4MB SLC. |
+> | **MediaTek Dimensity 7200** | `2.0` | `2.0` | `4.0` | **`5.0000`** | 2MB L3 + 2MB SLC. |
+> | **MediaTek Dimensity 1080 / 920** | `2.0` | `0` | `2.0` | **`3.3333`** | No SLC, 2MB DSU L3. |
+> | **MediaTek Helio G99 / G96 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
+> | **Samsung Exynos 2400** | `8.0` | `8.0` | `16.0` | **`8.3333`** | Symmetric 8MB L3 + 8MB SLC. |
+> | **Samsung Exynos 2200** | `4.0` | `4.0` | `8.0` | **`6.6667`** | 4MB L3 + 4MB SLC. |
+> | **Samsung Exynos 2100** | `4.0` | `6.0` | `10.0` | **`7.2032`** | 4MB L3 + 6MB SLC. |
+> | **Samsung Exynos 990 / 9820** | `4.0` | `4.0` | `8.0` | **`6.6667`** | Custom L3 + System SLC. |
+> | **Samsung Exynos 1480** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Midrange custom shared bus. |
+> | **Samsung Exynos 1380 / 1280** | `1.5` | `0` | `1.5` | **`2.6416`** | 1.5MB L3 cache, no SLC. |
+> | **Google Tensor G4 / G3 / G2 / G1** | `4.0` | `8.0` | `12.0` | **`7.6416`** | All Tensor chips feature 4MB L3 + 8MB SLC. |
+> | **HiSilicon Kirin 9010 / 9000S / 9000** | `4.0` | `8.0` | `12.0` | **`7.6416`** | 4MB L3 + 8MB System Cache. |
+> | **HiSilicon Kirin 990** | `4.0` | `4.0` | `8.0` | **`6.6667`** | 4MB L3 + 4MB System Cache. |
+> | **HiSilicon Kirin 980** | `4.0` | `2.0` | `6.0` | **`5.9749`** | 4MB L3 + 2MB System Cache. |
+> | **HiSilicon Kirin 970 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
 > 
 
 > **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**
