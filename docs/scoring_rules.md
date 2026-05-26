@@ -1852,29 +1852,37 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > | **Legacy non-coherent cluster fabric** |          `-1.0000`          | Helio G99, Snapdragon 680, legacy big.LITTLE SoCs                |
 > 
 > #### Detailed Technical Definitions & Grader Guidelines:
+>
 > *   **Unified low-latency LLC (`+0.0000`):**
 >     A single unified, centralized Last Level Cache (LLC) directly integrated into the main system bus/interconnect with minimal translation routing overhead, serving all CPU clusters under equal priority.
 >     *(e.g., Apple A-series/M-series chips bypass standard L3 caches, utilizing massive cluster-private L2 caches and a giant centralized System Level Cache [SLC] directly on the high-speed bus).*
+>
 > *   **Standard DynamIQ DSU (`-0.1000`):**
 >     All cores (Performance, Medium, and Efficiency) reside in a single coherent CPU cluster and share a unified Level 3 (L3) cache housed directly inside the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) or cluster-shared unit.
 >     *(e.g., Snapdragon 8 Gen 1/2/3, Dimensity 9200/9300, Exynos 2200/2400 share a single centralized DSU L3 pool).*
+>
 > *   **Ringbus multi-cluster (`-0.2000`):**
 >     CPU clusters communicate via an on-chip coherent system interconnect, ring bus, or crossbar fabric, where cross-cluster cache snooping or shared memory controller access introduces moderate routing overhead.
 >     *(e.g., separate cluster complexes connected via a coherent System Fabric / Network on Chip [NoC]).*
+>
 > *   **Split LLC / split-L2 (`-0.5000`):**
->     The primary shared cache capacity is physically partitioned into separate, cluster-private caches (such as massive L2 caches per cluster) with no centralized L3. Cross-cluster data sharing requires high-latency coherency snooping over the Network on Chip (NoC).
->     *(e.g., Snapdragon 8 Elite split 12 MB L2 per Oryon cluster, 24 MB total L2 + 8 MB SLC; incurs coherency snoop penalty over the system fabric).*
+>     The primary shared cache capacity is physically partitioned into separate, cluster-private caches (such as massive Level 2 [L2] caches per cluster) with no centralized Level 3 (L3) cache. Cross-cluster data sharing requires high-latency coherency snooping over the Network on Chip (NoC).
+>     *(e.g., Snapdragon 8 Elite split 12 megabytes [MB] L2 per Oryon cluster, 24 MB total L2 + 8 MB System Level Cache [SLC]; incurs coherency snoop penalty over the system fabric).*
+        > [!NOTE]
+        > **Case Study: Snapdragon 8 Elite Latency and Coherency Penalty**
+        > 
+        > **1. The Rule:**
+        > While the Snapdragon 8 Elite's capacity is combined at 32 megabytes (MB) under the Base Cache & Fabric Efficiency Index (Base_CFEI) capacity rules, its split physical layout lacks a unified Level 3 (L3) cache, meaning cross-cluster cache coherency incurs a latency penalty. Thus, a flat Fabric Topology Modifier (FTM) of `-0.5000` (the penalty for Split Last Level Cache [LLC] / split-L2) is applied directly to its baseline capacity score.
+        > 
+        > **2. Why it incurs a Coherency Penalty:**
+        > In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 nanoseconds [ns]). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 nanoseconds (ns).
+        > 
+        > **3. Justification for the -0.5000 Calibration:**
+        > On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
+> 
 > *   **Legacy non-coherent cluster fabric (`-1.0000`):**
 >     Outdated architectures (such as pre-DynamIQ big.LITTLE designs) where separate clusters reside in isolated hardware blocks and communicate over a legacy non-coherent or weakly coherent interconnect. Data sharing requires slow inter-cluster traversal or writing back to external DRAM.
 >     *(e.g., Helio G99, Snapdragon 680, legacy fabrics with high cross-cluster synchronization overhead).*
-> 
-> #### 🔹 Fabric Topology & Latency Modifier Edge-Case Rules
-> When grading specific interconnect implementations, researchers must evaluate latency penalties and topology layouts according to the following guidelines:
-> 
-> 1.  **Split LLC / Split-L2 Latency and Coherency Penalty (Case Study: Snapdragon 8 Elite):**
->     *   *The Rule:* While the Snapdragon 8 Elite's capacity is combined at `32 MB` under the Base_CFEI capacity rules, its split physical layout lacks a unified L3 cache, meaning cross-cluster cache coherency incurs a latency penalty. Thus, a flat FTM of `-0.5000` (the penalty for Split LLC / split-L2) is applied directly to its baseline capacity score, yielding a final CFEI of `9.5000` (after clamping).
->     *   *Why it incurs a Coherency Penalty:* In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 nanoseconds [ns]). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 nanoseconds (ns).
->     *   *Justification for the -0.5000 Calibration:* On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
 > 
 > ### 🔹 3. Final realized CFEI Score Calculation
 > The final realized Cache & Fabric Efficiency Index (CFEI) score integrates both baseline cache capacity and interconnect topology penalties. It is calculated by adding the Fabric Topology Modifier (FTM) to the baseline capacity score:
@@ -1897,13 +1905,12 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   **Step 4 (Global Normalization):**
 >     *   `RCTS_norm = 10.0000 * (log(32.5749) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (3.4835 - (-0.6002)) / (4.0187 - (-0.6002)) = 8.8413`
 > *   **Step 5 (Penalties, Final Score & Safety Check):**
->     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `Scheduler = 8.0000`, `CFEI = 7.0000`.
+>     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `CFEI = 7.0000`.
 >     *   `Deficit_MTI = max(0.0000, 8.8413 - 8.0000) = 0.8413`. `Penalty_MTI = 0.2000 * (0.8413^1.4000) = 0.1570`
->     *   `Deficit_Sched = max(0.0000, 8.8413 - 8.0000) = 0.8413`. `Penalty_Sched = 0.0500 * (0.8413^1.3000) = 0.0400`
 >     *   `Deficit_TDSI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_TDSI = 0.1200 * (1.8413^1.4000) = 0.2818`
 >     *   `Deficit_CFEI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_CFEI = 0.0400 * (1.8413^1.3000) = 0.0887`
->     *   `Total Penalty = 0.1570 + 0.2818 + 0.0400 + 0.0887 = 0.5675`
->     *   `Final Score = 8.8413 - 0.5675 = 8.2738` (Bounds Check: 8.2738 is within `[0.0000, 10.0000]` → Pass)
+>     *   `Total Penalty = 0.1570 + 0.2818 + 0.0887 = 0.5275`
+>     *   `Final Score = 8.8413 - 0.5275 = 8.3138` (Bounds Check: 8.3138 is within `[0.0000, 10.0000]` → Pass)
 
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
