@@ -8,9 +8,8 @@
 > **Consumers of this file:**
 > - §5.1 Support Longevity (OS cadence calculations)
 > - §5.2 System Cleanliness & Control (skin lookup)
-> - §6.1 CPU Multi-Core → OS Thread Scheduler Grade
 > - §6.3 GPU Performance → API Modifier (Ambiguous API Resolution Matrices 1, 2, 3)
-> - §6.8 AI System → Software Stack Scoring (OS-based boolean rules)
+> - §6.4 AI System → Software Stack Scoring (OS-based boolean rules)
 > - §8.1 Battery Endurance → Layer C: Software Optimization Index (OS Power Management Architecture)
 
 ---

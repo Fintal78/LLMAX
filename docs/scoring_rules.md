@@ -1607,14 +1607,13 @@ Method B is populated for **all** phones (even if Method A is available) to eval
 1.  **Identify Neighbors via Feature Distance (Minimum Variance):** Find the 3 devices that are statistically closest across **all** CPU-relevant hardware components.
     *   **Search Space:** All phones with known Geekbench 6 Multi-Core scores (Method A), **excluding the target device** itself.
     *   **Distance Metric:** Weighted Euclidean Distance.
-        *   `Distance = Sqrt( 0.50*(RCTS_norm_Diff)² + 0.24*(MTI_Diff)² + 0.15*(TDSI_Diff)² + 0.06*(Scheduler_Diff)² + 0.05*(CFEI_Diff)² )`
+        *   `Distance = Sqrt( 0.55*(RCTS_norm_Diff)² + 0.25*(MTI_Diff)² + 0.15*(TDSI_Diff)² + 0.05*(CFEI_Diff)² )`
         *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
             *   `RCTS_norm` (Raw CPU Throughput Score, normalized, see Method C).
             *   `MTI` (§6.5): Use the **Predicted Score** (to isolate the raw memory technology capabilities before system-level boosters are applied).
             *   `TDSI` (§6.10): Use the **Final Score** (to capture the actual real-world physical cooling assembly capabilities proven by benchmark testing).
-            *   `Scheduler` (Scheduler Tier, see Method C): Use the **Scheduler Grade** (to match OS-level thread orchestration efficiency and heterogeneous big.LITTLE core scaling logic — an architecture combining large high-performance "big" cores with small energy-efficient "LITTLE" cores).
             *   `CFEI` (Cache & Fabric Efficiency Index, see Method C): Use the **Cache Index Score** (to capture the shared L3 and System Level Cache memory capacity that minimizes external DRAM latency).
-        *   **Scientific Rationale:** Weights are mathematically normalized to mirror the proportions of the Method C deficit penalty system (MTI: 0.20, TDSI: 0.12, Scheduler: 0.05, CFEI: 0.04). With core compute performance (`RCTS_norm`) held at a robust 0.50 anchor weight, the remaining 0.50 is allocated proportionally to the support subsystems, ensuring neighbors have highly compatible hardware performance profiles.
+        *   **Scientific Rationale:** Weights are mathematically normalized to mirror the proportions of the Method C deficit penalty system. Core compute performance (`RCTS_norm`) is held at a strong 0.55 anchor weight, while the remaining 0.45 support subsystem weight is distributed in a 5:3:1 ratio (0.25 for MTI, 0.15 for TDSI, and 0.05 for CFEI) to align with their relative physical impact.
     *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
@@ -1645,7 +1644,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 > 4. **Step 4: Global Perceptual Normalization (RCTS_norm)**
 >    * *What it does:* Converts the raw throughput into a 0.0 to 10.0 scale using a **logarithmic function** to match human sensory perception (diminishing return utility).
 > 5. **Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
->    * *What it does:* Evaluates four support subsystems (Memory, Cooling Thermals, OS Scheduling, and Cache), subtracts non-linear penalties from the normalized demand to compute the final score, and halts execution via a strict **Process Abort Protocol** if the score falls outside `[0.00, 10.00]`.
+>    * *What it does:* Evaluates three support subsystems (Memory, Cooling Thermals and Cache), subtracts non-linear penalties from the normalized demand to compute the final score, and halts execution via a strict **Process Abort Protocol** if the score falls outside `[0.00, 10.00]`.
 > 
 > ---
 > 
@@ -1660,8 +1659,8 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 > *   *How we model it:* In **Step 2**, we apply the **Parallel-Adjusted Core Count (PACC)** (`CoreCount^α`), using a decaying alpha exponent to reduce the incremental value added by each additional core.
 > 
 > #### Layer 2: Global Inter-Cluster Scaling (Systemic Platform Support)
-> *   *The Constraint:* Even if individual clusters are efficient internally, they must communicate via the DynamIQ Shared Unit (DSU) interconnect. They compete for bandwidth on the LPDDR RAM memory bus, share the physical thermal dissipation limits of the phone's chassis, and share a common shared L3/SLC cache.
-> *   *How we model it:* In **Step 5**, we evaluate these platform-wide dependencies using a non-linear deficit penalty model, treating Memory, Thermals, Scheduling, and Cache as strict constraints rather than optional bonuses.
+> *   *The Constraint:* Even if individual clusters are efficient internally, they must communicate via the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) interconnect. They compete for bandwidth on the LPDDR (Low Power Double Data Rate) RAM memory bus, share the physical thermal dissipation limits of the phone's chassis, and share a common shared L3/SLC (Level 3 / System Level Cache) cache.
+> *   *How we model it:* In **Step 5**, we evaluate these platform-wide dependencies using a non-linear deficit penalty model, treating Memory, Thermals and Cache as strict constraints rather than optional bonuses.
 >
 > **Method C** calculates performance by scoring every cluster found in the device's SOC reference (§6.1.0) individually before aggregating them into a system-wide throughput model.
 
@@ -1728,11 +1727,11 @@ Before evaluating systemic bottlenecks, we normalize the raw throughput to our 0
 *   *Note:* The logarithmic scale ensures our scoring model accurately reflects human perception (Weber-Fechner Law), where performance gains at the low end (usability) are weighted heavily, while extreme flagship gains yield diminishing perceptual returns. We normalize the *entire* SoC collectively, rather than per-cluster, because the user perceives the fluidity of the system as a whole.
 
 **Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
-Even if the core CPU complex is exceptionally powerful, it cannot deliver that performance if the rest of the smartphone's hardware acts as a bottleneck. We model these systemic constraints (Memory, Thermals, Scheduling, and Cache) using a non-linear deficit penalty system. 
+Even if the core CPU complex is exceptionally powerful, it cannot deliver that performance if the rest of the smartphone's hardware acts as a bottleneck. We model these systemic constraints (Memory, Thermals and Cache) using a non-linear deficit penalty system. 
 Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts the final score if it fails to meet the demand generated by the CPU (`RCTS_norm`). 
 
 1.  **Identify Deficits:**
-    For each supporting subsystem `S` {MTI, TDSI, Scheduler, CFEI}, we calculate the deficit relative to the CPU's normalized demand (`RCTS_norm`):
+    For each supporting subsystem `S` {MTI, TDSI, CFEI}, we calculate the deficit relative to the CPU's normalized demand (`RCTS_norm`):
     `Deficit_S = max(0, RCTS_norm - S)`
 
 2.  **Apply Exponential Penalties:**
@@ -1743,8 +1742,6 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
         `Penalty_MTI = 0.20 * (Deficit_MTI ^ 1.4)`
     *   **Thermals (TDSI - 0.12 Weight, β=1.4):** Sustained multi-core saturation generates immense heat. Insufficient cooling will forcibly throttle the CPU regardless of its theoretical peak speed. Sourced from the **Final Score** of **Section 6.10 (Thermal Dissipation Stability Index)** to capture the actual, real-world physical cooling assembly capabilities as proven by sustained hardware performance testing.
         `Penalty_TDSI = 0.12 * (Deficit_TDSI ^ 1.4)`
-    *   **OS Thread Scheduler (Scheduler - 0.05 Weight, β=1.3):** In heterogeneous CPU designs (known as big.LITTLE architectures, which combine powerful, power-hungry "big" cores with smaller, energy-efficient "LITTLE" cores), the Operating System (OS) must carefully orchestrate thread distribution. Poor scheduling leaves prime cores idle while overloading efficiency cores, causing massive performance stutters. Sourced from the **Scheduler Grade** lookup table (§6.1.C) to match OS-level thread orchestration maturity.
-        `Penalty_Sched = 0.05 * (Deficit_Sched ^ 1.3)`
     *   **Cache & Fabric Efficiency (CFEI - 0.04 Weight, β=1.3):** Evaluates the shared on-chip memory (L3 + SLC). A smaller shared cache forces the CPU to rely more heavily on external RAM, increasing latency. Sourced from the **Cache Index Score** derived from the continuous Cache & Fabric Efficiency Index (CFEI) logarithmic scaling formula (§6.1.C) to represent the capacity that minimizes latency-heavy fetches from the external DRAM (Dynamic Random Access Memory).
         `Penalty_CFEI = 0.04 * (Deficit_CFEI ^ 1.3)`
 
@@ -1755,7 +1752,7 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > [!NOTE]
 > **Mathematical Design of the Penalty System:**
 > The non-linear exponents (`β = 1.3 to 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score. 
-> The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **9.83** (`0.20*(10^1.4) + 0.12*(10^1.4) + 0.05*(10^1.3) + 0.04*(10^1.3)`). 
+> The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **8.84** (`0.20*(10^1.4) + 0.12*(10^1.4) + 0.04*(10^1.3)`). 
 > While this design keeps the penalty system naturally self-limiting under high-performance scenarios, it does not guarantee absolute safety under all possible imbalanced or low-to-mid performance configurations. For example, if an entry-level CPU achieves a moderate `RCTS_norm` (e.g., 4.00) but suffers from severe subsystem bottlenecks that sum to a total penalty greater than 4.00, the raw mathematical result would drop below 0. 
 
 > [!CAUTION]
@@ -1770,31 +1767,49 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 
 > [!TIP]
 > 🚀 **POTENTIAL FUTURE MODEL IMPROVEMENTS:**
-> To capture cluster-specific dependencies even more precisely, subsequent model revisions may evaluate replacing the global `RCTS_norm` baseline with targeted physical demand functions. These proposed formulations are options to isolate core-type sensitivities:
-> *   **Thermal Demand Function (Proposed Option):** Models thermal load by factoring in high-burst single-core power draw:
+> To capture physical hardware dependencies even more precisely, subsequent model revisions may evaluate replacing the global `RCTS_norm` baseline with targeted physical demand functions and new component integrations:
+> 
+> #### A. Physical Subsystem Demand Functions (Proposed Options)
+> These proposed formulations isolate core-type sensitivities by replacing flat global demands with specialized physical demand curves:
+> *   **Thermal Demand Function:** Models thermal load by factoring in high-burst single-core power draw:
 >     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * PrimeClusterStrength`
 >     *(Rationale: Extremely clocked Prime cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
-> *   **Memory Demand Function (Proposed Option):** Models memory bus contention by factoring in cooperative background efficiency workloads:
+> *   **Memory Demand Function:** Models memory bus contention by factoring in cooperative background efficiency workloads:
 >     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * EfficiencyClusterLoad`
 >     *(Rationale: High concurrency of background threads on Efficiency clusters generates heavy random RAM fetches, saturating the system bus and starving fast performance clusters.)*
+> *   **Cache Demand Function:** Models cache demand as a function of workload complexity, core asymmetry, and concurrent task parallelism:
+>     `Cache_Demand = 0.65 * RCTS_norm + 0.20 * Core_Asymmetry_Index + 0.15 * Parallelism_Index`
+>     `Deficit_Cache = max(0, Cache_Demand - CFEI)`
+>     *(Rationale: Cache only becomes critical when active threads exceed private caches and memory synchronization pressure increases. A weaker midrange CPU has fewer cores running less demanding tasks, meaning its data fits easily in private caches and it has very little real-world need for a massive shared cache pool. In contrast, an 8-core flagship running highly parallel threads generates heavy shared-data pressure, making a large cache essential.)*
+> 
+> #### B. Dynamic Thread Scheduler Integration (Proposed Option)
+> A comprehensive structural refinement could introduce the OS (Operating System) thread scheduler not as an independent score, but as a dynamic **scheduler efficiency coefficient** applied to a **Core Asymmetry Index (CAI)**.
+> *   *Context and Physical Impact:* In highly asymmetric CPU layouts, the thread scheduler acts as the physical "traffic cop" of the processor. If the scheduler places a high-priority, time-critical thread on a tiny Efficiency core, or a trivial background thread on a power-hungry Prime core, the CPU stalls (causing UI micro-stutters) and wastes power (triggering thermal throttling). An inefficient scheduler directly prevents highly capable flagship core complexes from ever realizing their theoretical multi-core throughput.
+> *   *Core Asymmetry Index (CAI) Formulation:* `CAI = Cluster_Count_Factor * IPC_Disparity * Frequency_Disparity` (where IPC is Instructions Per Cycle). This index mathematically models the physical asymmetry and layout complexity of the CPU core clusters.
+> *   *Physical System Demand:* `Scheduler_Demand = RCTS_norm * CAI` (scaling the physical scheduling workload demand directly by silicon asymmetry).
+> *   *Software Scheduler Capability:* `Scheduler_Capability` represents the OS (Operating System) scheduling capability scored on a granular `[0, 10]` scale (evaluating Base OS Tiers, Hardware Telemetry Bonuses like Qualcomm Thread Director or ARM Hardware Feedback Interface [HFI], and OEM scheduling engines).
+> *   *Penalty and Final Score Integration:* Similar to other physical subsystems, the software scheduling capability is compared directly against the physical hardware demand to calculate a deficit: `Deficit_Scheduler = max(0, Scheduler_Demand - Scheduler_Capability)`. If a deficit exists (meaning the OS scheduler is too weak to efficiently orchestrate the physical cluster asymmetry), an exponential penalty is applied (`Penalty_Scheduler = Weight_Scheduler * (Deficit_Scheduler ^ 1.3)`) to directly discount the final multi-core CPU performance score.
+> 
 
 > ### 🧠 Cache & Fabric Efficiency Index (CFEI)
-> The Cache & Fabric Efficiency Index measures the capacity of the SoC's shared on-chip memory. 
+> The Cache & Fabric Efficiency Index (CFEI) measures the capacity and physical layout efficiency of the System on Chip (SoC) shared on-chip memory.
 > 
 > **Understanding the Cache Hierarchy:**
 > *   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
 > *   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
 > 
-> **Scoring (Cache & Fabric Efficiency Index - CFEI):**
-> For most SoCs, the effective shared cache capacity is calculated as: `L3 Cache (MB) + SLC (MB)`.
+> ### 🔹 1. Baseline Capacity Score (Base_CFEI)
+> For most Systems on Chip (SoCs), the baseline cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
 > 
-> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the CFEI subscore is calculated continuously:
+> `Effective_Shared_Cache = L3 Cache (MB) + SLC (MB)`
 > 
-> `CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
+> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the baseline cache efficiency subscore is calculated continuously:
+> 
+> `Base_CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
 > 
 > *   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
 > 
-> **Worked Continuous Benchmarks:**
+> **Worked Continuous Benchmarks (Baseline Cache Scores [Base_CFEI]):**
 > *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
 > *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
 > *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
@@ -1806,71 +1821,66 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
 > *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
 > 
-> **Ambiguity & Edge-Case Architecture Rules:**
+> #### 🔹 Base_CFEI Capacity Calculation & Edge-Case Rules
+> When calculating the baseline capacity score (`Base_CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
+> 
 > 1.  **Combined Manufacturer Reporting:**
->     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly.
+>     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly as the `Effective_Shared_Cache` capacity.
 > 2.  **Apple SLC-Only Architecture:**
->     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CAS) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
-> 3.  **Snapdragon 8 Elite Latency Penalty:**
->     The Snapdragon 8 Elite uses a unique architecture with large private L2 caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no L3 cache. Its cache capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`. However, because it lacks a unified L3 cache, cross-cluster cache coherency incurs a latency penalty. Thus, a flat penalty of `-0.5000` is deducted from its final CFEI score, yielding `9.5000`.
->     *   **Exhaustive Architectural Isolation:** This is the **single, unique case** in modern mobile SoC history (2016–2026) where an L2 cache is integrated into the shared cache capacity calculation. In all other standard SoCs (e.g., ARM DynamIQ setups), L2 caches are strictly private to individual cores or small duos and cannot serve as a shared last-level repository, meaning they are completely discarded and captured solely by the CPU Architecture Score (CAS).
->     *   **Why L2 is treated as L3 (Capacity Equivalence):** Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip SRAM pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external DRAM (RAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool.
->     *   **Why it incurs a Coherency Penalty:** In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 ns). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 ns.
->     *   **Justification for the -0.5000 Calibration:** On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
+>     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CPU Architecture Score [CAS]) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
+> 3.  **Snapdragon 8 Elite Capacity Rules:**
+>     The Snapdragon 8 Elite uses a unique architecture with large private Level 2 (L2) caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no Level 3 (L3) cache.
+>     *   *Exhaustive Architectural Isolation:* This is a unique or at least very rare case where a Level 2 (L2) cache is integrated into the shared cache capacity calculation. In all other standard SoCs (e.g., Advanced RISC Machines [ARM] DynamIQ setups), Level 2 (L2) caches are strictly private to individual cores or small duos and cannot serve as a shared last-level repository, meaning they are completely discarded from the capacity calculation and captured solely by the CPU Architecture Score (CAS).
+>     *   *Why L2 is treated as L3 (Capacity Equivalence):* Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip Static Random-Access Memory (SRAM) pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external Dynamic Random-Access Memory (DRAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool. Hence, its baseline capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`, which resolves to a baseline score of `Base_CFEI = 10.0000`. But this configuration leads to a penalty (see FTM section).
 > 4.  **Entry-Level and Legacy SoCs (No L3, No SLC):**
->     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no L3 cache and no SLC. Their L2 caches are strictly private to individual cores or clusters and cannot act as a shared LLC across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5000` MB (the minimum baseline of our continuous logarithmic model), yielding a `CFEI` score of `0`.
+>     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no Level 3 (L3) cache and no SLC. Their Level 2 (L2) caches are strictly private to individual cores or clusters and cannot act as a shared Last Level Cache (LLC) across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5` MB (the minimum baseline of our continuous logarithmic model), yielding a `Base_CFEI` score of `0`.
 > 
+> ### 🔹 2. Fabric Topology Modifier (FTM)
 
-> ### 🧠 OS Thread Scheduler Grade
-> The OS Thread Scheduler Grade measures the system-level capability of the Operating System (OS) scheduler to intelligently distribute and coordinate software threads across a heterogeneous multi-cluster CPU complex. 
+> While effective shared cache capacity determines the theoretical maximum hit rate of the on-chip memory pool, capacity alone is an incomplete predictor of real-world performance. The physical layout and routing architecture of the interconnect fabric—which bridges the processor core clusters, the cache slices, and the main system bus—dictate the latency cost of retrieving that cached data. A large shared cache pool connected via a high-latency, multi-stage network-on-chip or physically partitioned into split blocks will stall CPU (Central Processing Unit) execution waiting for coherency handshakes, behaving practically like a much smaller cache.
 > 
-> Heterogeneous complexes (combining high-burst, power-hungry cores with ultra-efficient background cores) rely heavily on scheduling capability. Without advanced, high-frequency thread orchestration, demanding threads will stall on low-power efficiency cores, while lightweight background tasks will run on high-power cores. This results in frame drops, increased latency, and severe micro-stutters (brief, noticeable stutters in visual fluidity).
+> To reconcile this capacity-versus-latency reality, we introduce the **Fabric Topology Modifier (FTM)**. This modifier acts as a microarchitectural penalty (or correction factor) applied to the capacity-derived baseline score, adjusting it downwards based on the routing latency and synchronization overhead of the System-on-Chip (SoC) interconnect topology. 
 > 
-> #### 1. Exhaustive OS Scheduling Lookup Table
-> To ensure absolute architectural neutrality and eliminate ambiguity, the lookup table below maps operating system families (including those running on ARM — Advanced RISC Machines, the standard low-power processor architecture used in smartphones), version thresholds, and hardware telemetry prerequisites directly to scheduling Tiers and Grades. Graders can resolve the score of any device using these objective system attributes:
+> To ensure grading consistency and prevent architectural ambiguity, the lookup table below maps fabric layout topologies directly to their performance scaling modifiers:
 > 
-> > [!IMPORTANT]
-> > **Canonical Source:** All OS version labels used in this table **MUST** match the exact labels defined in [os_version_reference.md]. That file is the single source of truth.
+> | Fabric Architecture Category           | Interconnect Modifier (FTM) | Key Silicon Examples                                             |
+> | :------------------------------------- | :-------------------------: | :--------------------------------------------------------------- |
+> | **Unified low-latency LLC**            |          `+0.0000`          | Apple A15–A17 Pro, Apple M-series                                |
+> | **Standard DynamIQ DSU**               |          `-0.1000`          | Snapdragon 8 Gen 1/2/3, Dimensity 9300, Exynos 2400              |
+> | **Ringbus multi-cluster**              |          `-0.2000`          | Multi-cluster server/desktop bridges, specialized system fabrics |
+> | **Split LLC / split-L2**               |          `-0.5000`          | Snapdragon 8 Elite (split Oryon cluster L2)                      |
+> | **Legacy non-coherent cluster fabric** |          `-1.0000`          | Helio G99, Snapdragon 680, legacy big.LITTLE SoCs                |
 > 
-> [!NOTE]
-> **Perception-Based Normalization:**
-> To ensure consistent alignment with other perceptual penalty-based sub-systems in our benchmark, the OS Thread Scheduler Grade is strictly normalized on a 0 to 10 scale representing **human-perceptual fluidness and micro-stutter tracking**, rather than raw scheduling queue execution throughput:
-> - **10** (Perfect fluidness, zero perceived frame drops or UI stutters under heavy heterogeneous thread switching).
-> - **8** (Exceptional fluidness, with rare and imperceptible micro-stutters during core transition boundaries).
-> - **6** (Highly fluid overall, with occasional noticeable micro-stutters during dynamic thread shifting).
-> - **3** (Acceptable, but frequent stuttering and frame stumbles are visible during cluster thread migration).
-> - **0** (Constant stuttering, lag spikes, and heavy thread stalls due to basic load migration).
+> #### Detailed Technical Definitions & Grader Guidelines:
+> *   **Unified low-latency LLC (`+0.0000`):**
+>     A single unified, centralized Last Level Cache (LLC) directly integrated into the main system bus/interconnect with minimal translation routing overhead, serving all CPU clusters under equal priority.
+>     *(e.g., Apple A-series/M-series chips bypass standard L3 caches, utilizing massive cluster-private L2 caches and a giant centralized System Level Cache [SLC] directly on the high-speed bus).*
+> *   **Standard DynamIQ DSU (`-0.1000`):**
+>     All cores (Performance, Medium, and Efficiency) reside in a single coherent CPU cluster and share a unified Level 3 (L3) cache housed directly inside the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) or cluster-shared unit.
+>     *(e.g., Snapdragon 8 Gen 1/2/3, Dimensity 9200/9300, Exynos 2200/2400 share a single centralized DSU L3 pool).*
+> *   **Ringbus multi-cluster (`-0.2000`):**
+>     CPU clusters communicate via an on-chip coherent system interconnect, ring bus, or crossbar fabric, where cross-cluster cache snooping or shared memory controller access introduces moderate routing overhead.
+>     *(e.g., separate cluster complexes connected via a coherent System Fabric / Network on Chip [NoC]).*
+> *   **Split LLC / split-L2 (`-0.5000`):**
+>     The primary shared cache capacity is physically partitioned into separate, cluster-private caches (such as massive L2 caches per cluster) with no centralized L3. Cross-cluster data sharing requires high-latency coherency snooping over the Network on Chip (NoC).
+>     *(e.g., Snapdragon 8 Elite split 12 MB L2 per Oryon cluster, 24 MB total L2 + 8 MB SLC; incurs coherency snoop penalty over the system fabric).*
+> *   **Legacy non-coherent cluster fabric (`-1.0000`):**
+>     Outdated architectures (such as pre-DynamIQ big.LITTLE designs) where separate clusters reside in isolated hardware blocks and communicate over a legacy non-coherent or weakly coherent interconnect. Data sharing requires slow inter-cluster traversal or writing back to external DRAM.
+>     *(e.g., Helio G99, Snapdragon 680, legacy fabrics with high cross-cluster synchronization overhead).*
 > 
-> | Canonical OS Versions Covered                           | Classification Tier                  | Grade       |
-> | :------------------------------------------------------ | :----------------------------------- | :---------- |
-> | **iOS 15.x – iOS 27+**                                  | **Tier 1**: Vertically Integrated    | **10.0000** |
-> | **iOS 10.x – iOS 14.x**                                 | **Tier 2**: Hardware-Telemetry EAS   | **8.0000**  |
-> | **Android 10.0 – Android 17.0**                         | **Tier 2**: Hardware-Telemetry EAS   | **8.0000**  |
-> | **Android 8.0 – Android 9.0**                           | **Tier 3**: Static Software EAS      | **6.0000**  |
-> | **HarmonyOS 1.0 – HarmonyOS 6.0**                       | **Tier 3**: Static Software EAS      | **6.0000**  |
-> | **HyperOS 1.0 – HyperOS 3.0**                           | **Tier 3**: Static Software EAS      | **6.0000**  |
-> | **Android 5.0 – Android 7.1**                           | **Tier 4**: Asymmetric Load-Balanced | **3.0000**  |
-> | **Windows 10 Mobile (1511) – Windows 10 Mobile (1709)** | **Tier 4**: Asymmetric Load-Balanced | **3.0000**  |
-> | **iPhone OS 1.0 – iOS 9.x**                             | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
-> | **Android 1.0 – Android 4.4**                           | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
-> | **Windows Mobile 5.0 – Windows Phone 8.1**              | **Tier 5**: Legacy Cluster-Migration | **0.0000**  |
+> #### 🔹 Fabric Topology & Latency Modifier Edge-Case Rules
+> When grading specific interconnect implementations, researchers must evaluate latency penalties and topology layouts according to the following guidelines:
 > 
-> #### 2. Technical Characteristics & Classification Traits
-> *   **Tier 1: Vertically Integrated Co-Designed [Grade: 10.0000]**
->     *   *Characteristics:* Highly proprietary closed operating systems designed by the same manufacturer who engineers the custom CPU microarchitecture. Routing utilizes dedicated hardware registers and microsecond-level feedback loops to immediately route high-priority User Interface (UI) threads to performance cores with zero user-space abstraction overhead.
-> *   **Tier 2: Hardware-Telemetry Guided Energy-Aware Scheduler (EAS) [Grade: 8.0000]**
->     *   *Characteristics:* Heterogeneous complexes utilizing real-time hardware telemetry feedback (e.g., Qualcomm Thread Predictor, MediaTek CorePilot, or silicon Hardware Feedback Interface [HFI] thread directors) that supply hardware counters directly to the kernel scheduler to assist in dynamic task placement.
-> *   **Tier 3: Static Software Model Energy-Aware Scheduler (EAS) [Grade: 6.0000]**
->     *   *Characteristics:* pure software-driven Energy-Aware Scheduling (EAS — a technology modeling core cluster energy costs) utilizing a static kernel Energy Model (EM) lookup table and task load tracking (such as Per-Entity Load Tracking [PELT] or Window-Assist Load Tracking [WALT]) without real-time hardware telemetry counters.
-> *   **Tier 4: Asymmetric Load-Balanced (Non-EAS) [Grade: 3.0000]**
->     *   *Characteristics:* Asymmetric layouts running standard Completely Fair Scheduler (CFS — the default general-purpose software scheduler) or generic kernel load balancers distributing tasks based on queue lengths and thread priority, without any active energy or performance modeling.
-> *   **Tier 5: Legacy Cluster-Switching / Global Migration [Grade: 0.0000]**
->     *   *Characteristics:* Outdated architectures lacking fine-grained thread-level scheduling across asymmetric cores. Instead, threads are migrated in bulk as a single cluster-block between low-power and high-power clusters (Heterogeneous Multi-Processing [HMP] or hardware-level cluster-switching), incurring high latency and thread stalls.
+> 1.  **Split LLC / Split-L2 Latency and Coherency Penalty (Case Study: Snapdragon 8 Elite):**
+>     *   *The Rule:* While the Snapdragon 8 Elite's capacity is combined at `32 MB` under the Base_CFEI capacity rules, its split physical layout lacks a unified L3 cache, meaning cross-cluster cache coherency incurs a latency penalty. Thus, a flat FTM of `-0.5000` (the penalty for Split LLC / split-L2) is applied directly to its baseline capacity score, yielding a final CFEI of `9.5000` (after clamping).
+>     *   *Why it incurs a Coherency Penalty:* In standard layouts, a unified L3 cache allows cores from any cluster to access shared data in a single centralized pool with low latency (typically 20–25 nanoseconds [ns]). In the Snapdragon 8 Elite's split-L2 layout, data modified in Cluster A's L2 must be snooped and synchronized by Cluster B over the Network on Chip (NoC). This cross-cluster cache-coherency traversal practically doubles access latency for shared data to approximately 45–50 nanoseconds (ns).
+>     *   *Justification for the -0.5000 Calibration:* On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a **~25% effective reduction of the 24 MB L2 cache pool** (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
 > 
-> #### 3. Ambiguity & Custom Optimization Guidelines
-> 1.  **Proprietary OEM Kernel-Level Boosters:** If a device manufacturer implements a documented, proprietary background scheduling daemon or kernel-level thread dispatcher (e.g., custom firmware-level game-mode dispatchers or core-affinity optimization layers) that is active during high-performance workloads, a booster of `+0.5000` may be added to the device's baseline scheduler grade, capped strictly at a maximum score of `9.0000` (to prevent software-only schedulers from claiming Tier 1 vertical co-design status).
-> 2.  **OS Distributions and Forks:** All operating system distributions, vendor skins, or custom forks default to the baseline capability of their underlying operating system kernel (e.g., a standard Android fork inherits Tier 3 or Tier 2 depending on the underlying chip features) unless the manufacturer explicitly proves and documents custom, low-level microkernel modifications or dedicated hardware-assisted thread scheduling telemetry.
-
+> ### 🔹 3. Final realized CFEI Score Calculation
+> The final realized Cache & Fabric Efficiency Index (CFEI) score integrates both baseline cache capacity and interconnect topology penalties. It is calculated by adding the Fabric Topology Modifier (FTM) to the baseline capacity score:
+> 
+> `CFEI = Base_CFEI + FTM (Clamped 0-10)`
+> 
 
 > **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**
 > *   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
