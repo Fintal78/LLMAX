@@ -92,6 +92,14 @@ Qualcomm chipsets utilize standard ARM DynamIQ Shared Unit (DSU) interconnect ar
 
 (*) **Note:** The Snapdragon 8 Elite's Cache & Fabric Efficiency Index (CFEI) includes a custom Oryon Gen 2 Level 2 (L2) cluster fabric penalty of `-0.5000` to reflect interconnect latency overhead between the physically separated CPU core clusters.
 
+> [!NOTE]
+> **Architectural Note on Snapdragon 6 Gen 3 and Mid-Range Cache Allocations:**
+> The Snapdragon 6 Gen 3 (2024) is designed for entry-to-midrange smartphones, prioritizing silicon die-cost minimization and low active power consumption over extreme high-bandwidth data routing. 
+> To achieve these commercial targets, it utilizes a highly optimized physical silicon platform based on the Snapdragon 6 Gen 1 (2022). It equips the DynamIQ Shared Unit (DSU) processor interconnect with a compact **2.0 MB Level 3 (L3) cache** and completely omits a dedicated **System Level Cache (SLC)**.
+>
+> While this cache constraint mathematically dictates a lower **Cache & Fabric Efficiency Index (CFEI)** score (`3.3333`) compared to flagship-tier SoCs of the same year (such as the Snapdragon 8 Elite's `9.5000`), this is an intentional structural choice rather than an error. 
+> Modern mid-range platforms leverage optimized L1/L2 private caches and advanced system-scheduler task allocation to ensure excellent day-to-day fluidity for general tasks, making their lower raw shared cache score a normal characteristic of their market tier.
+
 ---
 
 ## 3. MediaTek Dimensity & Helio Series
