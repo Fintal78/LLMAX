@@ -1843,49 +1843,10 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > [!NOTE]
 > **Note on Future Modifications:** Additional fabric topology edge cases could be added in the future to fine-tune the model for other architectures (e.g., standard DSU ring-bus variations), but they are not considered for now due to their low overall impact on the final system score.
 
-> #### 🔹 Master Cache Capacity Lookup Table (2016-2026)
-> This table is the authoritative reference for resolving shared cache capacities for CFEI scoring. It overrides any general vendor marketing materials.
+> #### 🔹 Master Cache Capacity Reference
+> To eliminate redundancy and ensure a single canonical source of truth, the complete, exhaustive database of all shared cache capacities and fabric routing details for mobile chipsets from 2016 to 2026 is maintained in the [System on Chip (SoC) Reference (references/soc_reference.md)]. 
 > 
-> | SoC Family / Processor Model | L3 Cache (MB) | System Level Cache (SLC) (MB) | Effective Shared Cache (MB) | Final CFEI Score | Notes / Custom Rules |
-> | :--- | :---: | :---: | :---: | :---: | :--- |
-> | **Apple A18 / A18 Pro** | `0` | `32.0` | `32.0` | **`10.0000`** | Unified low-latency proprietary SLC fabric. |
-> | **Apple A17 Pro / A16 Bionic** | `0` | `24.0` | `24.0` | **`9.3082`** | 24MB SLC bypasses standard L3. |
-> | **Apple A15 Bionic** | `0` | `32.0` | `32.0` | **`10.0000`** | Large 32MB SLC (Pro / standard configs). |
-> | **Apple A14 / A13 Bionic** | `0` | `16.0` | `16.0` | **`8.3333`** | Mid-era Apple unified SLC. |
-> | **Apple A12 Bionic** | `0` | `8.0` | `8.0` | **`6.6667`** | Early A-series custom SLC. |
-> | **Apple M1 / M2 / M3 / M4** | `0` | `32.0 - 48.0` | `32.0 - 48.0` | **`10.0000`** | Desktop-class unified SLC (Clamps to 10.0). |
-> | **Qualcomm Snapdragon 8 Elite** | `0` | `8.0` | `32.0` | **`9.5000`** | Custom Rule: 24MB L2 + 8MB SLC. Incurs **-0.5000 coherency penalty**. |
-> | **Qualcomm Snapdragon 8 Gen 3** | `12.0` | `6.0` | `18.0` | **`8.6165`** | 12MB DSU L3 + 6MB System SLC. |
-> | **Qualcomm Snapdragon 8 Gen 2** | `8.0` | `6.0` | `14.0` | **`8.0122`** | 8MB DSU L3 + 6MB System SLC. |
-> | **Qualcomm Snapdragon 8 Gen 1 / 8+ Gen 1** | `6.0` | `4.0` | `10.0` | **`7.2032`** | 6MB DSU L3 + 4MB System SLC. |
-> | **Qualcomm Snapdragon 888 / 888+** | `4.0` | `3.0` | `7.0` | **`6.3456`** | 4MB DSU L3 + 3MB System SLC. |
-> | **Qualcomm Snapdragon 865 / 865+** | `4.0` | `3.0` | `7.0` | **`6.3456`** | Standard 865 platform configuration. |
-> | **Qualcomm Snapdragon 855 / 855+** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Early DynamIQ platform. |
-> | **Qualcomm Snapdragon 845** | `2.0` | `3.0` | `5.0` | **`5.5367`** | 1st-Gen DSU L3 + System Cache. |
-> | **Qualcomm Snapdragon 7+ Gen 3** | `4.0` | `3.5` | `7.5` | **`6.5115`** | High-tier sub-flagship. |
-> | **Qualcomm Snapdragon 7+ Gen 2** | `4.0` | `3.0` | `7.0` | **`6.3456`** | Excellent cache provision for mid-range. |
-> | **Qualcomm Snapdragon 7 Gen 3 / 7s Gen 2** | `2.0` | `1.5` | `3.5` | **`4.6789`** | standard sub-flagship. |
-> | **Qualcomm Snapdragon 778G / 780G** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Symmetric DSU + System Cache. |
-> | **Qualcomm Snapdragon 695** | `1.0` | `0` | `1.0` | **`1.6667`** | DSU-only L3 cache. |
-> | **Qualcomm Snapdragon 680 / 660 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
-> | **MediaTek Dimensity 9400** | `12.0` | `10.0` | `22.0` | **`9.0990`** | Massive 12MB L3 + 10MB SLC. |
-> | **MediaTek Dimensity 9300 / 9300+** | `8.0` | `10.0` | `18.0` | **`8.6165`** | 8MB L3 + 10MB SLC. |
-> | **MediaTek Dimensity 9200 / 9000** | `8.0` | `6.0` | `14.0` | **`8.0122`** | Standard Dimensity flagship bus. |
-> | **MediaTek Dimensity 8300 / 8200 / 8100** | `4.0` | `4.0` | `8.0` | **`6.6667`** | Symmetric 4MB L3 + 4MB SLC. |
-> | **MediaTek Dimensity 7200** | `2.0` | `2.0` | `4.0` | **`5.0000`** | 2MB L3 + 2MB SLC. |
-> | **MediaTek Dimensity 1080 / 920** | `2.0` | `0` | `2.0` | **`3.3333`** | No SLC, 2MB DSU L3. |
-> | **MediaTek Helio G99 / G96 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
-> | **Samsung Exynos 2400** | `8.0` | `8.0` | `16.0` | **`8.3333`** | Symmetric 8MB L3 + 8MB SLC. |
-> | **Samsung Exynos 2200** | `4.0` | `4.0` | `8.0` | **`6.6667`** | 4MB L3 + 4MB SLC. |
-> | **Samsung Exynos 2100** | `4.0` | `6.0` | `10.0` | **`7.2032`** | 4MB L3 + 6MB SLC. |
-> | **Samsung Exynos 990 / 9820** | `4.0` | `4.0` | `8.0` | **`6.6667`** | Custom L3 + System SLC. |
-> | **Samsung Exynos 1480** | `2.0` | `2.0` | `4.0` | **`5.0000`** | Midrange custom shared bus. |
-> | **Samsung Exynos 1380 / 1280** | `1.5` | `0` | `1.5` | **`2.6416`** | 1.5MB L3 cache, no SLC. |
-> | **Google Tensor G4 / G3 / G2 / G1** | `4.0` | `8.0` | `12.0` | **`7.6416`** | All Tensor chips feature 4MB L3 + 8MB SLC. |
-> | **HiSilicon Kirin 9010 / 9000S / 9000** | `4.0` | `8.0` | `12.0` | **`7.6416`** | 4MB L3 + 8MB System Cache. |
-> | **HiSilicon Kirin 990** | `4.0` | `4.0` | `8.0` | **`6.6667`** | 4MB L3 + 4MB System Cache. |
-> | **HiSilicon Kirin 980** | `4.0` | `2.0` | `6.0` | **`5.9749`** | 4MB L3 + 2MB System Cache. |
-> | **HiSilicon Kirin 970 / Legacy** | `0` | `0` | `0.5` | **`0.0000`** | Clamped to minimum floor (No shared cache). |
+> Researchers and models **must** refer directly to that document to resolve the Level 3 (L3) cache, System Level Cache (SLC) capacity, effective shared cache, and final `CFEI` score for any given SoC model.
 > 
 
 > **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**

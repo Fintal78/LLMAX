@@ -3516,7 +3516,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
             // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
             // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
-            // | **Apple A19 Pro (Est.)**                  | **15.0**       | 2nm   | TSMC    |
+            // | **Apple A19 Pro**                         | **15.0**       | 3nm   | TSMC    |
             // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
             // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
             // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
