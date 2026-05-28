@@ -87,7 +87,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "value": "Snapdragon 8 Gen 3",
         "source": "TBD",
         "exact_extract": "Proof pending"
-        // GUIDELINE: System-on-Chip (SoC) name as marketed (e.g. "Snapdragon 8 Gen 3", "Apple A18 Pro", "Exynos 2400"). Include the brand prefix. Use the variant that matches the region/carrier of this record.
+        // GUIDELINE: System-on-Chip (SoC) name as marketed (e.g. "Snapdragon 8 Gen 3", "Apple A18 Pro", "Exynos 2400"). Include the brand prefix. Use the variant that matches the region/carrier of this record. VERY IMPORTANT: Verify that the name is present in the SoC reference tables listed in references/soc_reference.md. If it is not present, then add a line to the matching table with a mention "To be completed" and raise an alert.  
       }
     },
     "release_date": {
@@ -1983,11 +1983,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     "6_processing_power_and_performance": {
 
       // █ CPU_CORE_ARCHITECTURE_LOOKUP_TABLE
-      // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency).
+      // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency in Gigahertz [GHz]).
       // 
-      // SCORING RATIONALE (Logarithmic): Single-core performance scales logarithmically to match human perception (Weber-Fechner Law). 
-      // Performance gains at the low end (usability) are weighted more heavily than vanity gains at the ultra-high end.
-      // A floor of 0.50 is enforced for legacy/efficiency cores to ensure mathematical stability for log calculations.
+      // SCORING RATIONALE (Linear IPC): The CAS (Core Architecture Score) values in this table are linear performance scores representing relative IPC (Instructions Per Cycle) capabilities, anchored to a 10.00 ceiling for top-tier modern cores (Oryon Gen 2 / Apple Everest). 
+      // • WHY LINEAR? The scores must remain linear to ensure mathematically valid multi-core scaling in Step 3, where cluster effective throughputs are summed to compute the aggregate RCTS (Raw CPU Throughput Score). 
+      // • AVOID DOUBLE LOGARITHMS: Because the global logarithmic normalization to map human perception (Weber-Fechner Law) is performed later in Step 4, keeping these base architecture scores strictly linear prevents a mathematically incorrect "double logarithmic" compression, which would otherwise flatten the final scoring spectrum and penalize high-performance flagships.
+      // • MATH FLOOR: A floor of 0.50 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
       // 
       // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  |
       // |:-----------------------------|:-----------------------:|:------------------------:|
@@ -2060,7 +2061,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_1_cpu_multi_core_performance": {
-        // SCORING GOAL: Measures the actual delivered CPU performance during intense, multi-threaded workloads to ensure the device can handle heavy multitasking, gaming physics, and background processing. A three-method hierarchy (A→B→C) is used. Method A uses the Geekbench 6 Multi-Core benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback predicted score.
+        // SCORING GOAL: Measures the actual delivered CPU performance during intense, multi-threaded workloads to ensure the device can handle heavy multitasking, gaming physics, and background processing. A three-method hierarchy (A→B→C) is used. Method A uses the Geekbench 6 Multi-Core benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback predicted score based on physical core scaling parameters.
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2069,9 +2070,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 7200,
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
-          "subscore": 8.63
-          // SCORING GUIDELINE: primary benchmark is Geekbench 6 Multi-Core.
-          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
+          "subscore": 9.11
+          // SCORING GUIDELINE: Primary benchmark is Geekbench 6 (GB6) Multi-Core.
+          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
           // • EXTRACTION RULE: Use the "Multi-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Single-Core scores.
           // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_multi.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
         },
@@ -2080,20 +2081,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Throughput Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_CPU_multi": {
-          // GUIDELINE: The number of cluster objects is FIXED at 4 to maintain structural parity with §6.1.0. Do NOT add or remove blocks. If a SoC uses fewer than 4 clusters (e.g., 2 for Apple, 3 for most Snapdragon), then for the remaining unused cluster block(s):
-          // - leave the fields "identifier_path", "reference_table" and "calculation_formula" unchanged
-          // - set "frequency_adjusted_core_score" to 0 
+          // SCORING GOAL: Predicts the CPU (Central Processing Unit) Multi-Core Performance score using the 5-Step Performance Pipeline. The model accounts for core-frequency soft-saturation, local intra-cluster scaling, Raw CPU Throughput Score (RCTS) aggregation, global logarithmic normalization, and dynamic non-linear deficit penalties from adjacent physical subsystems.
+          // GUIDELINE: The number of cluster objects is FIXED at 4 to maintain structural parity with Section 6.1.0 SoC (System on Chip) Reference. Do NOT add or remove blocks. If a SoC uses fewer than 4 clusters (e.g., 2 for Apple, 3 for most Snapdragon), then for the remaining unused cluster block(s):
+          // - leave the fields containing internal paths or calculation formula unchanged ("identifier_path", "reference_table", "value_path", "calculation_formula") as these always remain valid
+          // - set the Cluster Effective Throughput (cluster_effective_throughput.value) to 0
           // - set all remaining fields to "N/A"
           "clusters": {
             "prime": {
               "architecture_mapping": {
                 "identifier": "Cortex-X4",
-                "identifier_path": "6_1_0_system_on_chip_reference.clusters.prime.architecture",
+                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 "core_architecture_score": 8.00,
-                // GUIDELINE: Performance score from the lookup table.
+                // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
                 "reference_frequency_ghz": 3.30
-                // GUIDELINE: Reference frequency from the lookup table.
+                // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
+              },
+              "core_count": {
+                "value": 1,
+                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.count"
+                // GUIDELINE: Number of physical CPU cores in this specific cluster.
               },
               "actual_frequency_ghz": {
                 "value": 3.3,
@@ -2101,19 +2108,43 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "exact_extract": "1x 3.3 GHz"
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": 8.0000,
-              "calculation_formula": "IF(clusters.prime.architecture_mapping.identifier != 'N/A', clusters.prime.architecture_mapping.core_architecture_score * 6_1_0_system_on_chip_reference.clusters.prime.count * clusters.prime.actual_frequency_ghz.value / clusters.prime.architecture_mapping.reference_frequency_ghz, 0)"
-              // GUIDELINE: Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+              "soft_saturation_exponent": {
+                "value": 0.9300,
+                "calculation_formula": "gamma = Look up based on cluster core count (prime.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+                // GUIDELINE: Saturation factor (gamma) modeling frequency scaling dimishing returns.
+              },
+              "core_yield": {
+                "value": 8.0000,
+                "calculation_formula": "prime.architecture_mapping.core_architecture_score * ((prime.actual_frequency_ghz.value / prime.architecture_mapping.reference_frequency_ghz) ^ prime.soft_saturation_exponent.value)"
+                // GUIDELINE: Yield = CAS (Core Architecture Score) * ((Actual Freq / Ref Freq) ^ gamma). Models frequency scaling soft-saturation. Keep 4 decimal places.
+              },
+              "pacc_decay_exponent": {
+                "value": 1.0000,
+                "calculation_formula": "Look up based on cluster core count (prime.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+                // GUIDELINE: Cluster scaling exponent (alpha) modeling thread communication and resource contention decay.
+              },
+              "parallel_adjusted_core_count": {
+                "value": 1.0000,
+                "calculation_formula": "prime.core_count.value ^ prime.pacc_decay_exponent.value"
+                // GUIDELINE: Models cluster multi-thread capability.
+              },
+              "cluster_effective_throughput": {
+                "value": 8.0000,
+                "calculation_formula": "prime.core_yield.value * prime.parallel_adjusted_core_count.value"
+                // GUIDELINE: Cluster Effective Throughput = Core Yield * Parallel-Adjusted Core Count. Total multi-core contribution of this cluster. Keep 4 decimal places.
+              }
             },
             "performance": {
               "architecture_mapping": {
                 "identifier": "Cortex-A720",
-                "identifier_path": "6_1_0_system_on_chip_reference.clusters.performance.architecture",
+                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.performance.architecture",
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 "core_architecture_score": 5.00,
-                // GUIDELINE: Performance score from the lookup table.
                 "reference_frequency_ghz": 2.80
-                // GUIDELINE: Reference frequency from the lookup table.
+              },
+              "core_count": {
+                "value": 5,
+                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.performance.count"
               },
               "actual_frequency_ghz": {
                 "value": 3.2,
@@ -2121,19 +2152,38 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "exact_extract": "5x 3.2 GHz"
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": 28.5714,
-              "calculation_formula": "IF(clusters.performance.architecture_mapping.identifier != 'N/A', clusters.performance.architecture_mapping.core_architecture_score * 6_1_0_system_on_chip_reference.clusters.performance.count * clusters.performance.actual_frequency_ghz.value / clusters.performance.architecture_mapping.reference_frequency_ghz, 0)"
-              // GUIDELINE: Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+              "soft_saturation_exponent": {
+                "value": 0.9800,
+                "calculation_formula": "gamma = Look up based on cluster core count (performance.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+              },
+              "core_yield": {
+                "value": 5.6990,
+                "calculation_formula": "performance.architecture_mapping.core_architecture_score * ((performance.actual_frequency_ghz.value / performance.architecture_mapping.reference_frequency_ghz) ^ performance.soft_saturation_exponent.value)"
+              },
+              "pacc_decay_exponent": {
+                "value": 0.8500,
+                "calculation_formula": "Look up based on cluster core count (performance.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+              },
+              "parallel_adjusted_core_count": {
+                "value": 3.9276,
+                "calculation_formula": "performance.core_count.value ^ performance.pacc_decay_exponent.value"
+              },
+              "cluster_effective_throughput": {
+                "value": 22.3834,
+                "calculation_formula": "performance.core_yield.value * performance.parallel_adjusted_core_count.value"
+              }
             },
             "efficiency": {
               "architecture_mapping": {
                 "identifier": "Cortex-A520",
-                "identifier_path": "6_1_0_system_on_chip_reference.clusters.efficiency.architecture",
+                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.efficiency.architecture",
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 "core_architecture_score": 1.00,
-                // GUIDELINE: Performance score from the lookup table.
                 "reference_frequency_ghz": 2.00
-                // GUIDELINE: Reference frequency from the lookup table.
+              },
+              "core_count": {
+                "value": 2,
+                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.efficiency.count"
               },
               "actual_frequency_ghz": {
                 "value": 2.3,
@@ -2141,19 +2191,38 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "exact_extract": "2x 2.3 GHz"
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": 2.3000,
-              "calculation_formula": "IF(clusters.efficiency.architecture_mapping.identifier != 'N/A', clusters.efficiency.architecture_mapping.core_architecture_score * 6_1_0_system_on_chip_reference.clusters.efficiency.count * clusters.efficiency.actual_frequency_ghz.value / clusters.efficiency.architecture_mapping.reference_frequency_ghz, 0)"
-              // GUIDELINE: Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
-            },
+              "soft_saturation_exponent": {
+                "value": 0.9500,
+                "calculation_formula": "gamma = Look up based on cluster core count (efficiency.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+              },
+              "core_yield": {
+                "value": 1.1420,
+                "calculation_formula": "efficiency.architecture_mapping.core_architecture_score * ((efficiency.actual_frequency_ghz.value / efficiency.architecture_mapping.reference_frequency_ghz) ^ efficiency.soft_saturation_exponent.value)"
+              },
+              "pacc_decay_exponent": {
+                "value": 0.9400,
+                "calculation_formula": "Look up based on cluster core count (efficiency.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+              },
+              "parallel_adjusted_core_count": {
+                "value": 1.9185,
+                "calculation_formula": "efficiency.core_count.value ^ efficiency.pacc_decay_exponent.value"
+              },
+              "cluster_effective_throughput": {
+                "value": 2.1909,
+                "calculation_formula": "efficiency.core_yield.value * efficiency.parallel_adjusted_core_count.value"
+              }
+            },    
             "secondary": {
               "architecture_mapping": {
                 "identifier": "N/A",
-                "identifier_path": "6_1_0_system_on_chip_reference.clusters.secondary.architecture",
+                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.secondary.architecture",
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
                 "core_architecture_score": "N/A",
-                // GUIDELINE: Performance score from the lookup table.
                 "reference_frequency_ghz": "N/A"
-                // GUIDELINE: Reference frequency from the lookup table.
+              },
+              "core_count": {
+                "value": "N/A",
+                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.secondary.count"
               },
               "actual_frequency_ghz": {
                 "value": "N/A",
@@ -2161,31 +2230,103 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "exact_extract": "N/A"
                 // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
               },
-              "frequency_adjusted_core_score": 0,
-              "calculation_formula": "IF(clusters.secondary.architecture_mapping.identifier != 'N/A', clusters.secondary.architecture_mapping.core_architecture_score * 6_1_0_system_on_chip_reference.clusters.secondary.count * clusters.secondary.actual_frequency_ghz.value / clusters.secondary.architecture_mapping.reference_frequency_ghz, 0)"
-              // GUIDELINE: Total throughput contribution of this cluster. Keep 4 decimal places (e.g. 9.5478) to preserve precision.
+              "soft_saturation_exponent": {
+                "value": "N/A",
+                "calculation_formula": "gamma = Look up based on cluster core count (secondary.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+              },
+              "core_yield": {
+                "value": "N/A",
+                "calculation_formula": "secondary.architecture_mapping.core_architecture_score * ((secondary.actual_frequency_ghz.value / secondary.architecture_mapping.reference_frequency_ghz) ^ secondary.soft_saturation_exponent.value)"
+              },
+              "pacc_decay_exponent": {
+                "value": "N/A",
+                "calculation_formula": "Look up based on cluster core count (secondary.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+              },
+              "parallel_adjusted_core_count": {
+                "value": "N/A",
+                "calculation_formula": "secondary.core_count.value ^ secondary.pacc_decay_exponent.value"
+              },
+              "cluster_effective_throughput": {
+                "value": 0.0000,
+                "calculation_formula": "secondary.core_yield.value * secondary.parallel_adjusted_core_count.value"
+              }
             }
           },
           "raw_performance_throughput_score": {
-            "value": 38.8714,
-            "calculation_formula": "clusters.prime.frequency_adjusted_core_score + clusters.performance.frequency_adjusted_core_score + clusters.efficiency.frequency_adjusted_core_score + clusters.secondary.frequency_adjusted_core_score"
+            "value": 32.5744,
+            "calculation_formula": "clusters.prime.cluster_effective_throughput.value + clusters.performance.cluster_effective_throughput.value + clusters.efficiency.cluster_effective_throughput.value + clusters.secondary.cluster_effective_throughput.value"
+            // GUIDELINE: RCTS (Raw CPU Throughput Score) = Sum of all Cluster Effective Throughputs (CET). Keep 4 decimal places.
           },
-          "predicted_score": 7.40
-          // SCORING GUIDELINE: predicted_score = 10 * (log(raw_performance_throughput_score.value) − log(CPU_PTS_Score_Min)) / (log(CPU_PTS_Score_Max) − log(CPU_PTS_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
+          "normalized_throughput_score": {
+            "value": 8.8413,
+            "calculation_formula": "10.0 * (log(raw_performance_throughput_score.value) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min)), clamped [0.0, 10.0]."
+          },
+          "memory_subsystem_penalty": {
+            "deficit": {
+              "value": 0,
+              "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
+            },
+            "penalty": {
+              "value": 0,
+              "calculation_formula": "0.2000 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+            },
+            // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.20 * (Deficit ^ 1.4). Keep 4 decimal places.
+          },
+          "thermal_subsystem_penalty": {
+            "deficit": {
+              "value": 4.6013,
+              "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
+            },
+            "penalty": {
+              "value": 1.0167,
+              "calculation_formula": "0.1200 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+            },
+            // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.12 * (Deficit ^ 1.4). Keep 4 decimal places.
+          },
+          "cache_subsystem_penalty": {
+            "identifier": "Snapdragon 8 Gen 3",
+            "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.value",
+            "reference_table": "references/soc_reference.md",
+            "CFEI": 8.6165,
+            // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is fetched from references/soc_reference.md.
+            "deficit": {
+              "value": 0.2248,
+              "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
+            },
+            "penalty": {
+              "value": 0.0057,
+              "calculation_formula": "0.0400 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
+            },
+            // GUIDELINE: Cache Penalty = 0.04 * (Deficit ^ 1.3). Keep 4 decimal places.
+            // CFEI FALLBACK RULE: If the SoC has no CFEI score (indicated by '?') or is missing, consider a penalty of exactly 0 by setting deficit to 0.0000 and penalty to 0.0000.
+          }, 
+          "predicted_score": 7.82,
+          "calculation_formula": "normalized_throughput_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value + cache_subsystem_penalty.penalty.value)"
+          // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the raw normalized throughput score through the subtraction of the active dynamic penalties from the memory, thermal and cache supporting subsystems.
+          // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
         },
+
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_CPU_multi": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Neighbor Selection): Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 (GB6) Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, excluding the target device itself. Distance is calculated as:
+          // Distance = Sqrt( (RCTS_norm_Diff)^2 + (Penalty_MTI_Diff)^2 + (Penalty_TDSI_Diff)^2 + (Penalty_CFEI_Diff)^2 )
+          // Where the metric component differences are defined by the following precise value paths:
+          // • RCTS_norm_Diff = (target.method_c_prediction_model_CPU_multi.normalized_throughput_score.value) - (neighbor.method_c_prediction_model_CPU_multi.normalized_throughput_score.value)
+          // • Penalty_MTI_Diff = (target.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value)
+          // • Penalty_TDSI_Diff = (target.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value)
+          // • Penalty_CFEI_Diff = (target.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value)
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "predicted_score_1": 7.40,
+              "euclidean_distance_1": 0.2315,
+              // GUIDELINE: Euclidean distance from Step 1. Keep 4 decimal places.
+              "predicted_score_1": 7.94,
               // GUIDELINE: The neighbor's own Method C predicted score (overall Multi-Core).
               "benchmark_score_1": 8.60
               // GUIDELINE: The neighbor's Method A subscore.
@@ -2193,31 +2334,33 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             {
               // Neighbor2
               "device_id_2": "oneplus_12",
-              "predicted_score_2": 7.38,
+              "euclidean_distance_2": 0.1482,
+              "predicted_score_2": 7.86,
               "benchmark_score_2": 8.55
             },
             {
               // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
-              "predicted_score_3": 7.42,
+              "euclidean_distance_3": 0.5230,
+              "predicted_score_3": 8.32,
               "benchmark_score_3": 8.65
             }
           ],
-          "avg_predicted_neighbors": 7.4000,
-          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          "avg_predicted_neighbors": 8.0400,
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
           "avg_benchmark_neighbors": 8.6000,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 8.60
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
+          "correction_ratio": 0.9726,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
+          "interpolated_score": 8.36
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
 
         "scores": {
-          "predicted": 7.40,
+          "predicted": 7.82,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
           "final": {
-            "value": 8.63,
+            "value": 9.11,
             // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_multi is available (method_a_benchmark_CPU_multi.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_multi.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_multi.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:

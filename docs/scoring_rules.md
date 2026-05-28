@@ -1578,12 +1578,12 @@ This table provides the authoritative CPU core architecture scores used througho
 
 **Scoring Basis:** Based on IPC (Instructions Per Cycle—the number of instructions a processor executes in a single clock cycle) performance and modern architecture capabilities.
 
-| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Generation | Notes                                      |
-|------------------------------|:---------:|:--------------:|:----------:|--------------------------------------------|
-| **Apple Everest (A18/Pro)**  | **10**    | **4.05**       | 2024-2025  | Highest mobile IPC, 3nm (N3E)              |
-| **Oryon Gen 2 (SD 8 Elite)** | **10**    | **4.32**       | 2024-2025  | Qualcomm custom, massive IPC/Freq leap     |
-| **Cortex-X925 / Lumex Ultra**| **9**     | **3.60**       | 2024-2025  | ARM Blackhawk, desktop-class IPC           |
-| **Apple A17 Pro Cores**      | **9**     | **3.78**       | 2023       | 3nm (N3B), predecessor to Everest          |
+| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | 
+|------------------------------|:---------:|:--------------:|
+| **Apple Everest (A18/Pro)**  | **10**    | **4.05**       | 
+| **Oryon Gen 2 (SD 8 Elite)** | **10**    | **4.32**       | 
+| **Cortex-X925 / Lumex Ultra**| **9**     | **3.60**       |
+| **Apple A17 Pro Cores**      | **9**     | **3.78**       |
 - [...] *(See full list in [proposed_data_structure.md])*
 
 
@@ -1606,14 +1606,14 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
 1.  **Identify Neighbors via Feature Distance (Minimum Variance):** Find the 3 devices that are statistically closest across **all** CPU-relevant hardware components.
     *   **Search Space:** All phones with known Geekbench 6 Multi-Core scores (Method A), **excluding the target device** itself.
-    *   **Distance Metric:** Weighted Euclidean Distance.
-        *   `Distance = Sqrt( 0.55*(RCTS_norm_Diff)² + 0.25*(MTI_Diff)² + 0.15*(TDSI_Diff)² + 0.05*(CFEI_Diff)² )`
-        *   *Where "Diff" is the difference between Target and Neighbor scores for each component:*
-            *   `RCTS_norm` (Raw CPU Throughput Score, normalized, see Method C).
-            *   `MTI` (§6.5): Use the **Predicted Score** (to isolate the raw memory technology capabilities before system-level boosters are applied).
-            *   `TDSI` (§6.10): Use the **Final Score** (to capture the actual real-world physical cooling assembly capabilities proven by benchmark testing).
-            *   `CFEI` (Cache & Fabric Efficiency Index, see Method C): Use the **Cache Index Score** (to capture the shared L3 and System Level Cache memory capacity that minimizes external DRAM latency).
-        *   **Scientific Rationale:** Weights are mathematically normalized to mirror the proportions of the Method C deficit penalty system. Core compute performance (`RCTS_norm`) is held at a strong 0.55 anchor weight, while the remaining 0.45 support subsystem weight is distributed in a 5:3:1 ratio (0.25 for MTI, 0.15 for TDSI, and 0.05 for CFEI) to align with their relative physical impact.
+    *   **Distance Metric:** Euclidean Distance.
+        *   `Distance = Sqrt( (RCTS_norm_Diff)² + (Penalty_MTI_Diff)² + (Penalty_TDSI_Diff)² + (Penalty_CFEI_Diff)² )`
+        *   *Where "Diff" is the difference between Target and Neighbor values for each component:*
+            *   `RCTS_norm` (Raw CPU Throughput Score, normalized, see Method C): The core active compute capability.
+            *   `Penalty_MTI` (§6.1 Step 5): The Memory (MTI [Memory Technology Index]) bandwidth starvation penalty. This isolates the actual active memory bottleneck impact on performance.
+            *   `Penalty_TDSI` (§6.1 Step 5): The Thermals (TDSI [Thermal Dissipation Stability Index]) thermodynamic cooling throttle penalty. This captures the active thermal bottleneck currently restricting core capability.
+            *   `Penalty_CFEI` (§6.1 Step 5): The Cache & Fabric Efficiency Index (CFEI) penalty. This represents the active fabric latency bottleneck.
+        *   **Scientific & Mathematical Rationale:** Since the 5-Step Performance Pipeline from Method C defines the overall performance score as a direct linear subtraction of the penalties from the core compute capacity (`Predicted_Score = RCTS_norm - Sum(Penalty_S)`), every single component enters the final performance metric with an absolute weight of exactly 1.0. While in the vast majority of cases the core compute difference squared (`(RCTS_norm_Diff)²`) will be much greater than the penalty differences, keeping all components allows the model to catch and correctly group highly unbalanced outlier devices that suffer from exceptionally high dynamic penalties.
     *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 2.  **Calculate Correction Ratio:**
     *   `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
