@@ -1989,38 +1989,41 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // • WHY LINEAR? The scores must remain linear to ensure mathematically valid multi-core scaling in Step 3, where cluster effective throughputs are summed to compute the aggregate RCTS (Raw CPU Throughput Score). 
       // • AVOID DOUBLE LOGARITHMS: Because the global logarithmic normalization to map human perception (Weber-Fechner Law) is performed later in Step 4, keeping these base architecture scores strictly linear prevents a mathematically incorrect "double logarithmic" compression, which would otherwise flatten the final scoring spectrum and penalize high-performance flagships.
       // • MATH FLOOR: A floor of 0.50 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
+      // • TYPICAL L2 KB: The standardized Level 2 cache capacity assigned to this specific core architecture across the majority of SoC implementations. This is used strictly by the Single-Core Method C penalty module. 
+      // • ISA GEN: The Instruction Set Architecture generation of the core. Used to apply a hardware efficiency multiplier.
+      // • ISA GEN SCORE: The numerical multiplier (0.96 to 1.08) assigned to the specific ISA generation, representing its physical hardware efficiency.
       // 
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  |
-      // |:-----------------------------|:-----------------------:|:------------------------:|
-      // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |
-      // | Oryon Gen 2 (SD 8 Elite)     |          10.00          |           4.32           |
-      // | Cortex-X925                  |           9.00          |           3.60           |
-      // | Lumex Ultra                  |           9.00          |           3.60           |
-      // | Apple A17 Pro Cores          |           9.00          |           3.78           |
-      // | Apple A16 Bionic             |           8.00          |           3.46           |
-      // | Cortex-X4                    |           8.00          |           3.30           |
-      // | Apple A15 Bionic             |           7.00          |           3.22           |
-      // | Cortex-X3                    |           7.00          |           3.20           |
-      // | Apple A14 Bionic             |           6.00          |           3.10           |
-      // | Cortex-X2                    |           6.00          |           3.00           |
-      // | Cortex-X1                    |           5.00          |           2.84           |
-      // | Cortex-A725                  |           5.00          |           2.80           |
-      // | Cortex-A720                  |           5.00          |           2.80           |
-      // | Cortex-A715                  |           4.00          |           2.50           |
-      // | Cortex-A710                  |           4.00          |           2.50           |
-      // | Cortex-A78                   |           3.00          |           2.40           |
-      // | Cortex-A77                   |           3.00          |           2.40           |
-      // | Cortex-A76                   |           2.00          |           2.20           |
-      // | Cortex-A75                   |           1.00          |           2.00           |
-      // | Cortex-A73                   |           1.00          |           2.00           |
-      // | Cortex-A525                  |           1.00          |           2.00           |
-      // | Cortex-A520                  |           1.00          |           2.00           |
-      // | Cortex-A510                  |           1.00          |           2.00           |
-      // | Cortex-A55                   |           0.50          |           1.80           |
-      // | Cortex-A53                   |           0.50          |           1.80           |
-      // | Apple A9                     |           0.50          |           1.50           |
-      // | Apple A7                     |           0.50          |           1.50           |
-      // -------------------------------------------------------------------------------------
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb | isa_gen          | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:-----------------|:-------------:|
+      // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |      4096     | Custom Ultra     |      1.08     |
+      // | Oryon Gen 2 (SD 8 Elite)     |          10.00          |           4.32           |     12288     | Custom Ultra     |      1.08     |
+      // | Cortex-X925                  |           9.00          |           3.60           |      3072     | ARMv9.2          |      1.08     |
+      // | Lumex Ultra                  |           9.00          |           3.60           |      3072     | ARMv9.2          |      1.08     |
+      // | Apple A17 Pro Cores          |           9.00          |           3.78           |      4096     | Custom Ultra     |      1.08     |
+      // | Apple A16 Bionic             |           8.00          |           3.46           |     16384     | Custom Advanced  |      1.04     |
+      // | Cortex-X4                    |           8.00          |           3.30           |      2048     | ARMv9.2          |      1.08     |
+      // | Apple A15 Bionic             |           7.00          |           3.22           |     12288     | Custom Advanced  |      1.04     |
+      // | Cortex-X3                    |           7.00          |           3.20           |      1024     | ARMv9            |      1.04     |
+      // | Apple A14 Bionic             |           6.00          |           3.10           |      8192     | Custom           |      1.00     |
+      // | Cortex-X2                    |           6.00          |           3.00           |      1024     | ARMv9            |      1.04     |
+      // | Cortex-X1                    |           5.00          |           2.84           |      1024     | ARMv8.2 Advanced |      1.00     |
+      // | Cortex-A725                  |           5.00          |           2.80           |       512     | ARMv9.2          |      1.08     |
+      // | Cortex-A720                  |           5.00          |           2.80           |       512     | ARMv9.2          |      1.08     |
+      // | Cortex-A715                  |           4.00          |           2.50           |       512     | ARMv9            |      1.04     |
+      // | Cortex-A710                  |           4.00          |           2.50           |       512     | ARMv9            |      1.04     |
+      // | Cortex-A78                   |           3.00          |           2.40           |       512     | ARMv8.2 Advanced |      1.00     |
+      // | Cortex-A77                   |           3.00          |           2.40           |       512     | ARMv8.2 Advanced |      1.00     |
+      // | Cortex-A76                   |           2.00          |           2.20           |       512     | ARMv8.2 Advanced |      1.00     |
+      // | Cortex-A75                   |           1.00          |           2.00           |       512     | ARMv8 Legacy     |      0.96     |
+      // | Cortex-A73                   |           1.00          |           2.00           |       256     | ARMv8 Legacy     |      0.96     |
+      // | Cortex-A525                  |           1.00          |           2.00           |       128     | ARMv9.2          |      1.08     |
+      // | Cortex-A520                  |           1.00          |           2.00           |       128     | ARMv9.2          |      1.08     |
+      // | Cortex-A510                  |           1.00          |           2.00           |       128     | ARMv9            |      1.04     |
+      // | Cortex-A55                   |           0.50          |           1.80           |       128     | ARMv8 Legacy     |      0.96     |
+      // | Cortex-A53                   |           0.50          |           1.80           |       128     | ARMv8 Legacy     |      0.96     |
+      // | Apple A9                     |           0.50          |           1.50           |      3072     | Custom Legacy    |      0.96     |
+      // | Apple A7                     |           0.50          |           1.50           |      1024     | Custom Legacy    |      0.96     |
+      // ---------------------------------------------------------------------------------------------------------------------------------------
 
       "6_1_0_system_on_chip_reference": {
         // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts and architectural types.
@@ -2395,13 +2398,60 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Single-Thread Efficiency Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_CPU_single": {
-          "raw_performance_single_core_score": {
-            "value": 8.0000,
-            "calculation_formula": "6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.prime.frequency_adjusted_core_score / 6_1_0_system_on_chip_reference.clusters.prime.count",
-            // GUIDELINE: Compact derivative score. By dividing the Prime cluster's total throughput (§6.1) by its core count (§6.1.0), we isolate the peak performance of exactly one core. This ensures 100% synchronization with the Multi-Core model and parity with single-threaded benchmark (Method A).
+          "architecture_mapping": {
+            "identifier": "Cortex-X4",
+            "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
+            "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+            "core_architecture_score": 8.00,
+            // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
+            "reference_frequency_ghz": 3.30,
+            // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
+            "typical_l2_kb": 2048,
+            // GUIDELINE: Standardized L2 cache capacity (KB) from the lookup table.
+            "isa_gen": "ARMv9.2",
+            // GUIDELINE: Instruction Set Architecture generation from the lookup table.
+            "isa_gen_score": 1.08
+            // GUIDELINE: ISA hardware efficiency multiplier from the lookup table.
           },
-          "predicted_score": 9.31
-          // SCORING GUIDELINE: predicted_score = 10 * (log(raw_performance_single_core_score) − log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) − log(CPU_STRS_Score_Min)), clamped 0–10. This is the score used for Method B neighbors.
+          "core_yield": {
+            "value": 8.8690,
+            "calculation_formula": "6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.core_architecture_score * ((6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.prime.actual_frequency_ghz.value / 6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.reference_frequency_ghz) ^ 0.9300) * 6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.isa_gen_score",
+            // GUIDELINE: Core Yield = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core soft-saturation factor gamma of 0.93. Keep 4 decimal places.
+          },
+          "normalized_core_yield": {
+            "value": 9.0725,
+            "calculation_formula": "10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped [0.0, 10.0]."
+          },
+          "cache_subsystem_penalty": {
+            "typical_l2_kb": 2048,
+            "identifier_path": "6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.typical_l2_kb",
+            "l2cs_score": {
+              "value": 6.1315,
+              "calculation_formula": "10 * (log(cache_subsystem_penalty.typical_l2_kb) - log(CPU_L2_KB_Min)) / (log(CPU_L2_KB_Max) - log(CPU_L2_KB_Min))"
+            },
+            "deficit": {
+              "value": 2.9410,
+              "calculation_formula": "max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2cs_score.value)"
+            },
+            "penalty": {
+              "value": 0.2715,
+              "calculation_formula": "0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
+            }
+          },
+          "memory_subsystem_penalty": {
+            "deficit": {
+              "value": 0,
+              "calculation_formula": "max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
+            },
+            "penalty": {
+              "value": 0,
+              "calculation_formula": "0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
+            }
+          },
+          "predicted_score": 8.80,
+          "calculation_formula": "normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)"
+          // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the normalized core yield through the subtraction of the active dynamic penalties from the cache and memory supporting subsystems.
+          // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2409,14 +2459,21 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_CPU_single": {
           // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest absolute difference in Predicted Score from Method C (|Predicted_Target − Predicted_Neighbor|), excluding the target device itself.
+          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, excluding the target device itself. Distance is calculated as:
+          // Distance = Sqrt( (STRS_norm_Diff)^2 + (Penalty_L2CS_Diff)^2 + (Penalty_MTI_Diff)^2 )
+          // Where the metric component differences are defined by the following precise value paths:
+          // • STRS_norm_Diff = (target.method_c_prediction_model_CPU_single.normalized_core_yield.value) - (neighbor.method_c_prediction_model_CPU_single.normalized_core_yield.value)
+          // • Penalty_L2CS_Diff = (target.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value)
+          // • Penalty_MTI_Diff = (target.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value)
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "predicted_score_1": 9.31,
+              "euclidean_distance_1": 0.2315,
+              // GUIDELINE: Euclidean distance from Step 1. Keep 4 decimal places.
+              "predicted_score_1": 8.24,
               // GUIDELINE: The neighbor's own Method C predicted score (overall Single-Core).
               "benchmark_score_1": 8.49
               // GUIDELINE: The neighbor's Method A subscore.
@@ -2424,23 +2481,25 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             {
               // Neighbor2
               "device_id_2": "oneplus_12",
-              "predicted_score_2": 9.29,
+              "euclidean_distance_2": 0.1482,
+              "predicted_score_2": 8.12,
               "benchmark_score_2": 8.45
             },
             {
               // Neighbor3
               "device_id_3": "asus_rog_phone_8_pro",
-              "predicted_score_3": 9.33,
+              "euclidean_distance_3": 0.5230,
+              "predicted_score_3": 8.32,
               "benchmark_score_3": 8.57
             }
           ],
-          "avg_predicted_neighbors": 9.3100,
+          "avg_predicted_neighbors": 8.2267,
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 8.5033,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0000,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 8.50
+          "correction_ratio": 0.9919,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
+          "interpolated_score": 8.43
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {

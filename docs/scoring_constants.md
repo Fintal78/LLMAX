@@ -106,7 +106,8 @@
 
 ### 6.2 CPU Architecture & Single-Core Efficiency
 *   `CPU_GB6_Single_Score_Min` = 150 (Score 0), `CPU_GB6_Single_Score_Max` = 3500 (Score 10)
-*   `CPU_STRS_Score_Min` = 0.4 (Score 0), `CPU_STRS_Score_Max` = 10.0 (Score 10)
+*   `CPU_STRS_Score_Min` = 0.4 (Score 0), `CPU_STRS_Score_Max` = 11.5 (Score 10)
+*   `CPU_L2_KB_Min` = 128 (Score 0 | Cortex-A53/A55 private cache floor), `CPU_L2_KB_Max` = 16384 (Score 10 | Apple A16 Bionic cluster L2 ceiling)
 
 ### 6.3 GPU Performance
 *   `GPU_SteelNomad_Score_Min` = 40 (Score 0 | Helio G35 Baseline), `GPU_SteelNomad_Score_Max` = 3120 (Score 10 | D9500 Ceiling)
