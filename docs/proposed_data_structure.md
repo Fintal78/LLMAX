@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.2",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-05-18"
+    "last_updated": "2026-05-29"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -2035,7 +2035,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // GUIDELINE: The cluster structure is FIXED with 4 named keys to cover all modern SoC architectures. Do NOT add or remove keys. If a SoC uses fewer than 4 clusters, set all fields in the unused keys to "N/A".
           "prime": {
             "architecture": "Cortex-X4",
-            // GUIDELINE: The specific CPU core architecture name. The value MUST exactly match one of the entries in the `CPU_CORE_ARCHITECTURE_LOOKUP_TABLE` above to enable mapping (e.g., "Cortex-X4").
+            // GUIDELINE: The specific CPU core architecture name. The value MUST exactly match one of the entries in the `CPU_CORE_ARCHITECTURE_LOOKUP_TABLE` above to enable mapping (e.g., "Cortex-X4"). VERY IMPORTANT: The prime cluster is characterized by having the highest computational throughput, hence among the different clusters of the SoC this cluster MUST always be the one with the highest core_architecture_score.
             "count": 1,
             // GUIDELINE: The number of cores contained in this specific cluster.
             "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
@@ -2378,7 +2378,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       },
       "6_2_cpu_architecture_single_core": {
-        // SCORING GOAL: Evaluates individual core capability and IPC efficiency(Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick), representing the snappiness of the interface and single-threaded application speed.
+        // SCORING GOAL: Evaluates individual CPU (Central Processing Unit) core capability and IPC efficiency (Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick), representing the perceived snappiness of the UI (User Interface) and single-threaded application speed.
         
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD A — Direct Benchmark (Primary)
@@ -2388,10 +2388,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "source": "https://browser.geekbench.com/android-benchmarks",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
           "subscore": 8.53
-          // SCORING GUIDELINE: primary benchmark is Geekbench 6 Single-Core.
-          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC or exact device model.
-          // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Multi-Core scores.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_single.value) − log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) − log(CPU_GB6_Single_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          // SCORING GUIDELINE: The primary benchmark is Geekbench 6 (GB6) Single-Core.
+          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
+          // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use older versions (e.g. Geekbench 4 or 5) or Multi-Core scores.
+          // • SCORING GUIDELINE: subscore = 10 * (log(value) - log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) - log(CPU_GB6_Single_Score_Min)), clamped 0–10.
+          // If no benchmark score is available, set value to "Not found" and source, exact_extract, and subscore to "N/A".
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
@@ -2403,78 +2404,87 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
             "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
             "core_architecture_score": 8.00,
-            // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
+            // GUIDELINE: The CAS (Core Architecture Score) retrieved from the lookup table representing linear IPC (Instructions Per Cycle) capability. VERY IMPORTANT: Ensure this core architecture score is the highest among all the core architecture scores of the SoC.
             "reference_frequency_ghz": 3.30,
-            // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
+            // GUIDELINE: The reference frequency in GHz (Gigahertz) from the lookup table.
             "typical_l2_kb": 2048,
-            // GUIDELINE: Standardized L2 cache capacity (KB) from the lookup table.
+            // GUIDELINE: The standardized private Level 2 (L2) cache capacity in KB (Kilobytes) from the lookup table.
             "isa_gen": "ARMv9.2",
-            // GUIDELINE: Instruction Set Architecture generation from the lookup table.
+            // GUIDELINE: The ISA (Instruction Set Architecture) generation from the lookup table.
             "isa_gen_score": 1.08
-            // GUIDELINE: ISA hardware efficiency multiplier from the lookup table.
+            // GUIDELINE: The ISA hardware efficiency multiplier from the lookup table.
+          },
+          "actual_frequency_ghz": {
+            "value": 3.3,
+            "value_path": "6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.prime.actual_frequency_ghz.value"
+            // GUIDELINE: The maximum advertised actual clock frequency in GHz (Gigahertz) of the prime core cluster from Section 6.1.
           },
           "core_yield": {
-            "value": 8.8690,
-            "calculation_formula": "6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.core_architecture_score * ((6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.prime.actual_frequency_ghz.value / 6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.reference_frequency_ghz) ^ 0.9300) * 6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.isa_gen_score",
-            // GUIDELINE: Core Yield = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core soft-saturation factor gamma of 0.93. Keep 4 decimal places.
+            "value": 8.6400,
+            "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.9300) * architecture_mapping.isa_gen_score",
+            // GUIDELINE: Core Yield (CY) = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core frequency scaling soft-saturation exponent (gamma) of 0.93 representing the extreme burst behavior of the prime core pushed to physical limits. Keep 4 decimal places.
           },
           "normalized_core_yield": {
-            "value": 9.0725,
-            "calculation_formula": "10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped [0.0, 10.0]."
+            "value": 9.1486,
+            "calculation_formula": "normalized_core_yield.value = 10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped 0–10."
+            // GUIDELINE: Converts Core Yield into a human-perceptual score (STRS_norm [Single-Threaded Raw Score Normalized]) utilizing logarithmic scaling to model the Weber-Fechner Law. Keep 4 decimal places.
           },
           "cache_subsystem_penalty": {
-            "typical_l2_kb": 2048,
-            "identifier_path": "6_processing_power_and_performance.6_2_cpu_single_core_performance.method_c_prediction_model_CPU_single.architecture_mapping.typical_l2_kb",
-            "l2cs_score": {
-              "value": 6.1315,
-              "calculation_formula": "10 * (log(cache_subsystem_penalty.typical_l2_kb) - log(CPU_L2_KB_Min)) / (log(CPU_L2_KB_Max) - log(CPU_L2_KB_Min))"
+            "l2_cache_score": {
+              "value": 5.7143,
+              "calculation_formula": "l2_cache_score.value = 10.0 * (log(architecture_mapping.typical_l2_kb) - log(CPU_L2_KB_Min)) / (log(CPU_L2_KB_Max) - log(CPU_L2_KB_Min)), clamped 0–10."
+              // GUIDELINE: L2CS Score represents the standardized L2 Cache Subsystem capability normalized logarithmically between CPU_L2_KB_Min (128 KB) and CPU_L2_KB_Max (16384 KB). Keep 4 decimal places.
             },
             "deficit": {
-              "value": 2.9410,
-              "calculation_formula": "max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2cs_score.value)"
+              "value": 3.4343,
+              "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
+              // GUIDELINE: Calculates the deficit between the normalized CPU core requirements (normalized_core_yield) and the cache subsystem capability (l2_cache_score). Keep 4 decimal places.
             },
             "penalty": {
-              "value": 0.2715,
-              "calculation_formula": "0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
+              "value": 0.3375,
+              "calculation_formula": "penalty.value = 0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
+              // GUIDELINE: Models non-linear memory-stall performance penalties caused by cache capacity constraints using a scaling factor of 0.06 and exponent of 1.4. Keep 4 decimal places.
             }
           },
           "memory_subsystem_penalty": {
             "deficit": {
-              "value": 0,
-              "calculation_formula": "max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
+              "value": 0.0000,
+              "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
+              // GUIDELINE: Calculates the deficit between normalized CPU core requirements and the supporting system DRAM (Dynamic Random-Access Memory) Technology score (from Section 6.5). Keep 4 decimal places.
             },
             "penalty": {
-              "value": 0,
-              "calculation_formula": "0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
+              "value": 0.0000,
+              "calculation_formula": "penalty.value = 0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
+              // GUIDELINE: Models fabric latency and transfer bandwidth bottlenecks under peak single-core throughput using a scaling factor of 0.03 and exponent of 1.3. Keep 4 decimal places.
             }
           },
-          "predicted_score": 8.80,
-          "calculation_formula": "normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)"
-          // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the normalized core yield through the subtraction of the active dynamic penalties from the cache and memory supporting subsystems.
-          // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
+          "predicted_score": 8.81,
+          "calculation_formula": "predicted_score = normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)",
+          // SCORING GUIDELINE: The predicted CPU single-core score, computed by subtracting both private cache and memory subsystem penalties from the normalized core yield.
+          // BOUNDS CHECK ABORT PROCEDURE: If the predicted score is outside the physical standard bounds of [0.00, 10.00] (less than 0.00 or greater than 10.00), the scoring system MUST HALT execution immediately to prevent data pollution. The engine MUST raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process."
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_CPU_single": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, excluding the target device itself. Distance is calculated as:
+          // SCORING GUIDELINE: Method B is calculated for ALL phones (even if Method A is available) for precision validation. The interpolation search space includes all distinct phones in the database with a verified Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST utilize exactly 3 distinct neighbor devices.
+          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, calculated as:
           // Distance = Sqrt( (STRS_norm_Diff)^2 + (Penalty_L2CS_Diff)^2 + (Penalty_MTI_Diff)^2 )
-          // Where the metric component differences are defined by the following precise value paths:
-          // • STRS_norm_Diff = (target.method_c_prediction_model_CPU_single.normalized_core_yield.value) - (neighbor.method_c_prediction_model_CPU_single.normalized_core_yield.value)
-          // • Penalty_L2CS_Diff = (target.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value)
-          // • Penalty_MTI_Diff = (target.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value)
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // Where the metric component differences are derived from the following paths:
+          // • STRS_norm_Diff (Single-Threaded Raw Score Normalized Difference) = (target.method_c_prediction_model_CPU_single.normalized_core_yield.value) - (neighbor.method_c_prediction_model_CPU_single.normalized_core_yield.value)
+          // • Penalty_L2CS_Diff (Level 2 Cache Subsystem Penalty Difference) = (target.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value)
+          // • Penalty_MTI_Diff (Memory Technology Index Penalty Difference) = (target.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value)
+          // Step 2: Compute the average predicted and average benchmark scores of the neighbors, calculate the correction ratio, and apply it to derive the final interpolated score.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
               "euclidean_distance_1": 0.2315,
-              // GUIDELINE: Euclidean distance from Step 1. Keep 4 decimal places.
+              // GUIDELINE: Calculated Euclidean distance between the target device and the neighbor (Step 1). Keep 4 decimal places.
               "predicted_score_1": 8.24,
-              // GUIDELINE: The neighbor's own Method C predicted score (overall Single-Core).
+              // GUIDELINE: The neighbor's Method C predicted single-core CPU score.
               "benchmark_score_1": 8.49
               // GUIDELINE: The neighbor's Method A subscore.
             },
@@ -2497,22 +2507,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 8.5033,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 0.9919,
+          "correction_ratio": 1.0709,
           // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-          "interpolated_score": 8.43
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+          "interpolated_score": 9.11
+          // SCORING GUIDELINE: The final interpolated score. Formula: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 9.31,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_single.predicted_score.
+          "predicted": 8.81,
+          // SCORING GUIDELINE: Directly inherits method_c_prediction_model_CPU_single.predicted_score.
           "final": {
             "value": 8.53,
-            // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_single is available (method_a_benchmark_CPU_single.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_single.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_single.predicted_score).
+            // SCORING GUIDELINE: Resolved strictly by the A->B->C hierarchy: Use Method A if method_a_benchmark_CPU_single is available (method_a_benchmark_CPU_single.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_single.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_single.predicted_score).
             "method_used": "Benchmark (Geekbench 6)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
-            //   • Neighbor Interpolation  → Method B (similar device benchmarks)
-            //   • Predictor               → Method C (spec calculation)
+            //   • "Benchmark (Geekbench 6)" → Method A (documented Geekbench 6 score)
+            //   • "Neighbor Interpolation"  → Method B (similar device benchmarks)
+            //   • "Predictor"               → Method C (spec calculation)
             "booster": "No",
             // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
             "confidence": "N/A"
