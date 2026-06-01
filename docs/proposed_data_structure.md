@@ -1988,41 +1988,100 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // SCORING RATIONALE (Linear IPC): The CAS (Core Architecture Score) values in this table are linear performance scores representing relative IPC (Instructions Per Cycle) capabilities, anchored to a 10.00 ceiling for top-tier modern cores (Oryon Gen 2 / Apple Everest). 
       // • WHY LINEAR? The scores must remain linear to ensure mathematically valid multi-core scaling in Step 3, where cluster effective throughputs are summed to compute the aggregate RCTS (Raw CPU Throughput Score). 
       // • AVOID DOUBLE LOGARITHMS: Because the global logarithmic normalization to map human perception (Weber-Fechner Law) is performed later in Step 4, keeping these base architecture scores strictly linear prevents a mathematically incorrect "double logarithmic" compression, which would otherwise flatten the final scoring spectrum and penalize high-performance flagships.
-      // • MATH FLOOR: A floor of 0.50 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
+      // • MATH FLOOR: A floor of ~0.5 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
       // • TYPICAL L2 KB: The standardized Level 2 cache capacity assigned to this specific core architecture across the majority of SoC implementations. This is used strictly by the Single-Core Method C penalty module. 
       // • ISA GEN: The Instruction Set Architecture generation of the core. Used to apply a hardware efficiency multiplier.
-      // • ISA GEN SCORE: The numerical multiplier (0.96 to 1.08) assigned to the specific ISA generation, representing its physical hardware efficiency.
+      // • ISA GEN SCORE: The numerical multiplier assigned to the specific ISA generation, representing its physical hardware efficiency.
+      // • INFERRED FIELDS: The `reference_frequency_ghz`, `typical_l2_kb`, and internal core codenames act as internal mathematical normalization anchors for the model's baseline framework, not universally authoritative public vendor specifications.
       // 
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb | isa_gen          | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:-----------------|:-------------:|
-      // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |      4096     | Custom Ultra     |      1.08     |
-      // | Oryon Gen 2 (SD 8 Elite)     |          10.00          |           4.32           |     12288     | Custom Ultra     |      1.08     |
-      // | Cortex-X925                  |           9.00          |           3.60           |      3072     | ARMv9.2          |      1.08     |
-      // | Lumex Ultra                  |           9.00          |           3.60           |      3072     | ARMv9.2          |      1.08     |
-      // | Apple A17 Pro Cores          |           9.00          |           3.78           |      4096     | Custom Ultra     |      1.08     |
-      // | Apple A16 Bionic             |           8.00          |           3.46           |     16384     | Custom Advanced  |      1.04     |
-      // | Cortex-X4                    |           8.00          |           3.30           |      2048     | ARMv9.2          |      1.08     |
-      // | Apple A15 Bionic             |           7.00          |           3.22           |     12288     | Custom Advanced  |      1.04     |
-      // | Cortex-X3                    |           7.00          |           3.20           |      1024     | ARMv9            |      1.04     |
-      // | Apple A14 Bionic             |           6.00          |           3.10           |      8192     | Custom           |      1.00     |
-      // | Cortex-X2                    |           6.00          |           3.00           |      1024     | ARMv9            |      1.04     |
-      // | Cortex-X1                    |           5.00          |           2.84           |      1024     | ARMv8.2 Advanced |      1.00     |
-      // | Cortex-A725                  |           5.00          |           2.80           |       512     | ARMv9.2          |      1.08     |
-      // | Cortex-A720                  |           5.00          |           2.80           |       512     | ARMv9.2          |      1.08     |
-      // | Cortex-A715                  |           4.00          |           2.50           |       512     | ARMv9            |      1.04     |
-      // | Cortex-A710                  |           4.00          |           2.50           |       512     | ARMv9            |      1.04     |
-      // | Cortex-A78                   |           3.00          |           2.40           |       512     | ARMv8.2 Advanced |      1.00     |
-      // | Cortex-A77                   |           3.00          |           2.40           |       512     | ARMv8.2 Advanced |      1.00     |
-      // | Cortex-A76                   |           2.00          |           2.20           |       512     | ARMv8.2 Advanced |      1.00     |
-      // | Cortex-A75                   |           1.00          |           2.00           |       512     | ARMv8 Legacy     |      0.96     |
-      // | Cortex-A73                   |           1.00          |           2.00           |       256     | ARMv8 Legacy     |      0.96     |
-      // | Cortex-A525                  |           1.00          |           2.00           |       128     | ARMv9.2          |      1.08     |
-      // | Cortex-A520                  |           1.00          |           2.00           |       128     | ARMv9.2          |      1.08     |
-      // | Cortex-A510                  |           1.00          |           2.00           |       128     | ARMv9            |      1.04     |
-      // | Cortex-A55                   |           0.50          |           1.80           |       128     | ARMv8 Legacy     |      0.96     |
-      // | Cortex-A53                   |           0.50          |           1.80           |       128     | ARMv8 Legacy     |      0.96     |
-      // | Apple A9                     |           0.50          |           1.50           |      3072     | Custom Legacy    |      0.96     |
-      // | Apple A7                     |           0.50          |           1.50           |      1024     | Custom Legacy    |      0.96     |
+      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      // │ PERFORMANCE / PRIME CORES — Flagship tier (highest IPC, used in prime and high-performance clusters)             │
+      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+      // | C1-Ultra (Lumex)             |          10.00          |           4.21           |      2048     |  ARMv9.3  |      1.10     |
+      // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |     16384     |  ARMv9.2  |      1.08     |
+      // | Oryon Gen 2                  |           9.80          |           4.32           |     12288     |  ARMv8.7  |      1.05     |
+      // | Apple A17 Pro Cores          |           9.10          |           3.78           |     16384     |  ARMv8.6  |      1.04     |
+      // | Cortex-X925                  |           9.00          |           3.60           |      3072     |  ARMv9.2  |      1.08     |
+      // | C1-Premium (Lumex)           |           8.45          |           3.50           |      1024     |  ARMv9.3  |      1.10     |
+      // | Apple A16 Bionic             |           8.25          |           3.46           |     16384     |  ARMv8.6  |      1.04     |
+      // | Cortex-X4                    |           7.95          |           3.30           |      2048     |  ARMv9.2  |      1.08     |
+      // | Apple A15 Bionic             |           7.30          |           3.22           |     12288     |  ARMv8.6  |      1.04     |
+      // | Cortex-X3                    |           7.15          |           3.20           |      1024     |  ARMv9.0  |      1.06     |
+      // | Apple A14 Bionic             |           6.70          |           3.10           |      8192     |  ARMv8.4  |      1.02     |
+      // | Cortex-X2                    |           6.40          |           3.00           |      1024     |  ARMv9.0  |      1.06     |
+      // | Apple A13 Lightning          |           5.80          |           2.65           |      8192     |  ARMv8.4  |      1.02     |
+      // | Cortex-X1                    |           5.60          |           2.84           |      1024     |  ARMv8.2  |      1.00     |
+      // | Apple A12 Vortex             |           4.95          |           2.49           |      8192     |  ARMv8.3  |      1.01     |
+      // | Apple A11 Monsoon            |           4.15          |           2.39           |      8192     |  ARMv8.2  |      1.00     |
+      // | Qualcomm Kryo 585            |           3.60          |           2.84           |       512     |  ARMv8.2  |      1.00     |
+      // | Exynos M5 (Lion)             |           3.30          |           2.73           |       512     |  ARMv8.2  |      1.00     |
+      // | Qualcomm Kryo 485            |           3.00          |           2.84           |       512     |  ARMv8.2  |      1.00     |
+      // | Apple A10 Hurricane          |           2.90          |           2.34           |      3072     |  ARMv8.1  |      0.97     |
+      // | Exynos M4 (Cheetah)          |           2.65          |           2.73           |       512     |  ARMv8.2  |      1.00     |
+      // | Qualcomm Kryo 385            |           2.30          |           2.80           |      2048     |  ARMv8.2  |      1.00     |
+      // | Exynos M3 (Meerkat)          |           2.20          |           2.70           |       512     |  ARMv8.0  |      0.96     |
+      // | Qualcomm Kryo 280            |           1.90          |           2.45           |      2048     |  ARMv8.0  |      0.96     |
+      // | Exynos M2                    |           1.80          |           2.30           |      2048     |  ARMv8.0  |      0.96     |      
+      // | Exynos M1 (Mongoose)         |           1.70          |           2.30           |      2048     |  ARMv8.0  |      0.96     |
+      // | Qualcomm Kryo (2.40 GHz)     |           1.76          |           2.40           |      1024     |  ARMv8.0  |      0.96     |
+      // | Qualcomm Kryo (2.15 GHz)     |           1.60          |           2.15           |      1024     |  ARMv8.0  |      0.96     |
+      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      // │ PERFORMANCE / MID CORES — Used in performance clusters (high IPC but lower than prime cores)                     │
+      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+      // | C1-Pro (Lumex)               |           5.35          |           2.70           |       512     |  ARMv9.3  |      1.10     |
+      // | Cortex-A725                  |           5.25          |           2.80           |       512     |  ARMv9.2  |      1.08     |
+      // | Cortex-A720                  |           5.00          |           2.80           |       512     |  ARMv9.2  |      1.08     |
+      // | Cortex-A715                  |           4.40          |           2.50           |       512     |  ARMv9.0  |      1.06     |
+      // | Cortex-A710                  |           4.15          |           2.50           |       512     |  ARMv9.0  |      1.06     |
+      // | Cortex-A78                   |           3.80          |           2.40           |       512     |  ARMv8.2  |      1.00     |
+      // | Cortex-A77                   |           3.55          |           2.40           |       512     |  ARMv8.2  |      1.00     |
+      // | Cortex-A76                   |           2.90          |           2.20           |       512     |  ARMv8.2  |      1.00     |
+      // | Cortex-A75                   |           2.20          |           2.00           |       512     |  ARMv8.2  |      1.00     |
+      // | Cortex-A73                   |           1.80          |           2.00           |      1024     |  ARMv8.0  |      0.96     |
+      // | Cortex-A72                   |           1.60          |           2.50           |      1024     |  ARMv8.0  |      0.96     |
+      // | Cortex-A57                   |           1.45          |           2.00           |      2048     |  ARMv8.0  |      0.96     |
+      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      // │ EFFICIENCY CORES — ARM standard efficiency cores (low IPC, optimized for power savings)                          │
+      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+      // | C1-Nano (Lumex)              |           1.00          |           2.00           |       128     |  ARMv9.3  |      1.10     |
+      // | Cortex-A525                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
+      // | Cortex-A520                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
+      // | Cortex-A510                  |           1.00          |           2.00           |       128     |  ARMv9.0  |      1.06     |
+      // | Cortex-A55                   |           0.60          |           1.80           |       128     |  ARMv8.2  |      1.00     |
+      // | Cortex-A53                   |           0.50          |           1.80           |       512     |  ARMv8.0  |      0.96     |
+      // | Cortex-A35                   |           0.45          |           1.50           |       512     |  ARMv8.0  |      0.96     |
+      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      // │ APPLE EFFICIENCY CORES — Apple custom efficiency cores (used in the efficiency cluster of Apple SoCs)            │
+      // │ NOTE: Apple efficiency cores differ substantially from their performance counterparts in IPC and pipeline        │
+      // │ width. They MUST be listed separately to ensure correct multi-core throughput calculations for all iPhones.      │
+      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+      // | Apple A18 E-core (Sawtooth)  |           1.00          |           2.42           |      4096     |  ARMv9.2  |      1.08     |
+      // | Apple A17 Pro E-core         |           1.00          |           2.11           |      4096     |  ARMv8.6  |      1.04     |
+      // | Apple A16 E-core (Sawtooth)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
+      // | Apple A15 E-core (Blizzard)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
+      // | Apple A14 E-core (Icestorm)  |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
+      // | Apple A13 E-core (Thunder)   |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
+      // | Apple A12 E-core (Tempest)   |           0.60          |           1.60           |      2048     |  ARMv8.3  |      1.01     |
+      // | Apple A11 E-core (Mistral)   |           0.55          |           1.42           |      1024     |  ARMv8.2  |      1.00     |
+      // | Apple A10 E-core (Zephyr)    |           0.45          |           1.05           |      3072     |  ARMv8.1  |      0.97     |
+      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      // │ LEGACY APPLE PERFORMANCE CORES — Pre-2016 borderline entries retained for completeness                           │
+      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+      // | Apple A9 (Twister)           |           0.50          |           1.85           |      3072     |  ARMv8.0  |      0.96     |
       // ---------------------------------------------------------------------------------------------------------------------------------------
 
       "6_1_0_system_on_chip_reference": {
@@ -2095,7 +2154,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 "identifier": "Cortex-X4",
                 "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
                 "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-                "core_architecture_score": 8.00,
+                "core_architecture_score": 7.95,
                 // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
                 "reference_frequency_ghz": 3.30
                 // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
@@ -2117,7 +2176,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: Saturation factor (gamma) modeling frequency scaling dimishing returns.
               },
               "core_yield": {
-                "value": 8.0000,
+                "value": 7.9500,
                 "calculation_formula": "prime.architecture_mapping.core_architecture_score * ((prime.actual_frequency_ghz.value / prime.architecture_mapping.reference_frequency_ghz) ^ prime.soft_saturation_exponent.value)"
                 // GUIDELINE: Yield = CAS (Core Architecture Score) * ((Actual Freq / Ref Freq) ^ gamma). Models frequency scaling soft-saturation. Keep 4 decimal places.
               },
@@ -2132,7 +2191,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
                 // GUIDELINE: Models cluster multi-thread capability.
               },
               "cluster_effective_throughput": {
-                "value": 8.0000,
+                "value": 7.9500,
                 "calculation_formula": "prime.core_yield.value * prime.parallel_adjusted_core_count.value"
                 // GUIDELINE: Cluster Effective Throughput = Core Yield * Parallel-Adjusted Core Count. Total multi-core contribution of this cluster. Keep 4 decimal places.
               }
@@ -2256,32 +2315,32 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           },
           "raw_performance_throughput_score": {
-            "value": 32.5744,
+            "value": 32.5243,
             "calculation_formula": "clusters.prime.cluster_effective_throughput.value + clusters.performance.cluster_effective_throughput.value + clusters.efficiency.cluster_effective_throughput.value + clusters.secondary.cluster_effective_throughput.value"
             // GUIDELINE: RCTS (Raw CPU Throughput Score) = Sum of all Cluster Effective Throughputs (CET). Keep 4 decimal places.
           },
           "normalized_throughput_score": {
-            "value": 8.8413,
+            "value": 8.8379,
             "calculation_formula": "10.0 * (log(raw_performance_throughput_score.value) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min)), clamped [0.0, 10.0]."
           },
           "memory_subsystem_penalty": {
             "deficit": {
-              "value": 0,
+              "value": 0.0000,
               "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
             },
             "penalty": {
-              "value": 0,
+              "value": 0.0000,
               "calculation_formula": "0.2000 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
             },
             // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.20 * (Deficit ^ 1.4). Keep 4 decimal places.
           },
           "thermal_subsystem_penalty": {
             "deficit": {
-              "value": 4.6013,
+              "value": 4.5979,
               "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
             },
             "penalty": {
-              "value": 1.0167,
+              "value": 1.0156,
               "calculation_formula": "0.1200 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
             },
             // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.12 * (Deficit ^ 1.4). Keep 4 decimal places.
@@ -2293,11 +2352,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "CFEI": 8.6165,
             // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is fetched from references/soc_reference.md.
             "deficit": {
-              "value": 0.2248,
+              "value": 0.2214,
               "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
             },
             "penalty": {
-              "value": 0.0057,
+              "value": 0.0056,
               "calculation_formula": "0.0400 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
             },
             // GUIDELINE: Cache Penalty = 0.04 * (Deficit ^ 1.3). Keep 4 decimal places.
@@ -2403,7 +2462,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "identifier": "Cortex-X4",
             "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
             "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-            "core_architecture_score": 8.00,
+            "core_architecture_score": 7.95,
             // GUIDELINE: The CAS (Core Architecture Score) retrieved from the lookup table representing linear IPC (Instructions Per Cycle) capability. VERY IMPORTANT: Ensure this core architecture score is the highest among all the core architecture scores of the SoC.
             "reference_frequency_ghz": 3.30,
             // GUIDELINE: The reference frequency in GHz (Gigahertz) from the lookup table.
@@ -2420,12 +2479,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: The maximum advertised actual clock frequency in GHz (Gigahertz) of the prime core cluster from Section 6.1.
           },
           "core_yield": {
-            "value": 8.6400,
+            "value": 8.5860,
             "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.9300) * architecture_mapping.isa_gen_score",
             // GUIDELINE: Core Yield (CY) = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core frequency scaling soft-saturation exponent (gamma) of 0.93 representing the extreme burst behavior of the prime core pushed to physical limits. Keep 4 decimal places.
           },
           "normalized_core_yield": {
-            "value": 9.1486,
+            "value": 9.1300,
             "calculation_formula": "normalized_core_yield.value = 10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped 0–10."
             // GUIDELINE: Converts Core Yield into a human-perceptual score (STRS_norm [Single-Threaded Raw Score Normalized]) utilizing logarithmic scaling to model the Weber-Fechner Law. Keep 4 decimal places.
           },
@@ -2436,12 +2495,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: L2CS Score represents the standardized L2 Cache Subsystem capability normalized logarithmically between CPU_L2_KB_Min (128 KB) and CPU_L2_KB_Max (16384 KB). Keep 4 decimal places.
             },
             "deficit": {
-              "value": 3.4343,
+              "value": 3.4157,
               "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
               // GUIDELINE: Calculates the deficit between the normalized CPU core requirements (normalized_core_yield) and the cache subsystem capability (l2_cache_score). Keep 4 decimal places.
             },
             "penalty": {
-              "value": 0.3375,
+              "value": 0.3350,
               "calculation_formula": "penalty.value = 0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
               // GUIDELINE: Models non-linear memory-stall performance penalties caused by cache capacity constraints using a scaling factor of 0.06 and exponent of 1.4. Keep 4 decimal places.
             }
@@ -2458,7 +2517,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: Models fabric latency and transfer bandwidth bottlenecks under peak single-core throughput using a scaling factor of 0.03 and exponent of 1.3. Keep 4 decimal places.
             }
           },
-          "predicted_score": 8.81,
+          "predicted_score": 8.79,
           "calculation_formula": "predicted_score = normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)",
           // SCORING GUIDELINE: The predicted CPU single-core score, computed by subtracting both private cache and memory subsystem penalties from the normalized core yield.
           // BOUNDS CHECK ABORT PROCEDURE: If the predicted score is outside the physical standard bounds of [0.00, 10.00] (less than 0.00 or greater than 10.00), the scoring system MUST HALT execution immediately to prevent data pollution. The engine MUST raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process."
@@ -2507,13 +2566,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
           "avg_benchmark_neighbors": 8.5033,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0709,
+          "correction_ratio": 1.0685,
           // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-          "interpolated_score": 9.11
+          "interpolated_score": 9.09
           // SCORING GUIDELINE: The final interpolated score. Formula: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 8.81,
+          "predicted": 8.79,
           // SCORING GUIDELINE: Directly inherits method_c_prediction_model_CPU_single.predicted_score.
           "final": {
             "value": 8.53,

@@ -1580,11 +1580,18 @@ This table provides the authoritative CPU core architecture scores used througho
 
 | CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Typical L2 (KB) | ISA Gen          | ISA Gen Score |
 |:-----------------------------|:---------:|:--------------:|:---------------:|:-----------------|:-------------:|
-| **Apple Everest (A18/Pro)**  |   10.00   |      4.05      |      4096       | Custom Ultra     |     1.08      |
-| **Oryon Gen 2 (SD 8 Elite)** |   10.00   |      4.32      |      12288      | Custom Ultra     |     1.08      |
-| **Cortex-X925 / Lumex Ultra**|   9.00    |      3.60      |      3072       | ARMv9.2          |     1.08      |
-| **Apple A17 Pro Cores**      |   9.00    |      3.78      |      4096       | Custom Ultra     |     1.08      |
+| **C1-Ultra (Lumex)**         |   10.00   |      4.21      |      2048       | ARMv9.3          |     1.10      |
+| **Apple Everest (A18/Pro)**  |   10.00   |      4.05      |     16384       | ARMv9.2          |     1.08      |
+| **Qualcomm Oryon Gen 2**     |   9.80    |      4.32      |     12288       | ARMv8.7          |     1.05      |
+| **Cortex-X925**              |   9.00    |      3.60      |      3072       | ARMv9.2          |     1.08      |
+| **Apple A17 Pro Cores**      |   9.10    |      3.78      |     16384       | ARMv8.6          |     1.04      |
 - [...] *(See full list in [proposed_data_structure.md])*
+
+> [!NOTE]
+> **Internal Normalization Anchors vs. Vendor Specs**
+> The `reference_frequency_ghz` and `typical_l2_kb` columns, as well as several internal core codenames (e.g., Apple's "Sawtooth" or "Blizzard"), act as **internal mathematical normalization anchors** for the scoring model. They are inferred or approximated fields used to establish a consistent mathematical baseline across vastly different architectures. They should **not** be interpreted as universally authoritative public vendor specifications. 
+> 
+> For example: Apple does not officially publish a canonical "reference frequency" or private L2 cache capacity for individual A-series cores, and Qualcomm's Snapdragon 8 Elite documentation explicitly notes that its maximum CPU speed varies depending on the platform version (including a 4.32 GHz variant). These fields exist strictly within this framework to provide a stable mathematical baseline for the `Actual_Frequency / Reference_Frequency` normalization ratio and the penalty prediction modules.
 
 
 ### 🔹 6.1 CPU Multi-Core Performance (Sustained Outcome)
@@ -1853,23 +1860,23 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
 > *   **Actual Specs:** 1x X4 @ 3.3000 GHz, 5x A720 @ 3.2000 GHz, 2x A520 @ 2.3000 GHz
 > *   **Step 1 (Core Yields with Soft-Saturation):**
->     *   Prime (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 8.0000 * (1.0000^0.9300) = 8.0000`
+>     *   Prime (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 7.9500 * (1.0000^0.9300) = 7.9500`
 >     *   Perf (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
 >     *   Eff (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
 > *   **Step 2 (CET with PACC):**
->     *   Prime: `PACC = 1^1.0000 = 1.0000`. `CET = 8.0000 * 1.0000 = 8.0000`
+>     *   Prime: `PACC = 1^1.0000 = 1.0000`. `CET = 7.9500 * 1.0000 = 7.9500`
 >     *   Perf: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
 >     *   Eff: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
-> *   **Step 3 (RCTS):** `8.0000 + 22.3840 + 2.1909 = 32.5749`
+> *   **Step 3 (RCTS):** `7.9500 + 22.3840 + 2.1909 = 32.5249`
 > *   **Step 4 (Global Normalization):**
->     *   `RCTS_norm = 10.0000 * (log(32.5749) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (3.4835 - (-0.6002)) / (4.0187 - (-0.6002)) = 8.8413`
+>     *   `RCTS_norm = 10.0000 * (log(32.5249) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (3.4820 - (-0.6002)) / (4.0187 - (-0.6002)) = 8.8380`
 > *   **Step 5 (Penalties, Final Score & Safety Check):**
 >     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `CFEI = 7.0000`.
->     *   `Deficit_MTI = max(0.0000, 8.8413 - 8.0000) = 0.8413`. `Penalty_MTI = 0.2000 * (0.8413^1.4000) = 0.1570`
->     *   `Deficit_TDSI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_TDSI = 0.1200 * (1.8413^1.4000) = 0.2818`
->     *   `Deficit_CFEI = max(0.0000, 8.8413 - 7.0000) = 1.8413`. `Penalty_CFEI = 0.0400 * (1.8413^1.3000) = 0.0887`
->     *   `Total Penalty = 0.1570 + 0.2818 + 0.0887 = 0.5275`
->     *   `Final Score = 8.8413 - 0.5275 = 8.3138` (Bounds Check: 8.3138 is within `[0.0000, 10.0000]` → Pass)
+>     *   `Deficit_MTI = max(0.0000, 8.8380 - 8.0000) = 0.8380`. `Penalty_MTI = 0.2000 * (0.8380^1.4000) = 0.1561`
+>     *   `Deficit_TDSI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_TDSI = 0.1200 * (1.8380^1.4000) = 0.2811`
+>     *   `Deficit_CFEI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_CFEI = 0.0400 * (1.8380^1.3000) = 0.0885`
+>     *   `Total Penalty = 0.1561 + 0.2811 + 0.0885 = 0.5257`
+>     *   `Final Score = 8.8380 - 0.5257 = 8.3123` (Bounds Check: 8.3123 is within `[0.0000, 10.0000]` → Pass)
 
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
@@ -1942,10 +1949,16 @@ To accurately predict this real-world responsiveness without relying on subjecti
 1. **Identify the Prime Core:** Select the core with the highest CAS.
 2. **Frequency Ratio (R):** `Actual_Frequency / Reference_Frequency`
 3. **ISA Multiplier:** Sourced from the ISA Gen column:
-   * **ARMv8 Legacy / Custom Legacy (A53/A55/A73/A75/A9):** `0.96`
-   * **ARMv8.2 Advanced / Custom (A76/A77/A78/X1/A14):** `1.00`
-   * **ARMv9 / Custom Advanced (X2/X3/A710/A715/A510/A15/A16):** `1.04`
-   * **ARMv9.2 / Custom Ultra (X4/X925/A720/A520/Oryon/A17/A18):** `1.08`
+   * **ARMv8.0 (Cortex-A53/A72/A73, Apple A9, Exynos M1/M2/M3):** `0.96`
+   * **ARMv8.1 (Apple A10):** `0.97` (adds LSE atomic operations, improving multi-core thread scaling)
+   * **ARMv8.2 (Cortex-A55/A75/A76/A77/A78/X1, Apple A11, Exynos M4/M5):** `1.00` (adds native FP16 and dot-product, a massive boost for modern float/int math workloads)
+   * **ARMv8.3 (Apple A12):** `1.01` (adds pointer authentication and complex number math instructions)
+   * **ARMv8.4 (Apple A13/A14):** `1.02` (adds matrix multiplication helper instructions, SHA-512, and LDAPR memory consistency controls)
+   * **ARMv8.6 (Apple A15/A16/A17 Pro, Oryon Gen 1):** `1.04` (adds BFloat16 floating-point formats and dedicated matrix math acceleration instructions)
+   * **ARMv8.7 (Oryon Gen 2):** `1.05` (adds enhanced pointer authentication and refined WFI/WFE low-power wait efficiency)
+   * **ARMv9.0 (Cortex-X2/X3/A710/A715/A510):** `1.06` (introduces SVE2 and hardware-assisted Memory Tagging Extension [MTE])
+   * **ARMv9.2 (Cortex-X4/X925/A720/A725/A520/A525, Apple A18):** `1.08` (introduces SME and dynamic SVE2 enhancements)
+   * **ARMv9.3 (ARM C1-series / Lumex):** `1.10` (introduces SME2, offering high-throughput 2D matrix compute)
    
    > [!NOTE]
    > **What is the ISA Multiplier? (Non-Technical Explanation)**
@@ -1976,7 +1989,7 @@ To accurately predict this real-world responsiveness without relying on subjecti
 > Section 6.2 utilizes a logarithmic scoring model to align with human perception of speed:
 > *   **Perceptual Consistency (Weber-Fechner Law):** User perception of latency is relative. A performance jump at the low end (e.g., eliminating UI stutter) is perceived as a massive improvement, whereas an identical raw jump at the high end is often imperceptible.
 > *   **Diminishing Returns:** Logarithmic scaling correctly compresses the high-end "vanity" gains while properly rewarding the foundational improvements that move a device from "laggy" to "snappy."
-> *   **Mathematical Stability:** A floor of `0.50` is enforced for all architectures in the lookup table to ensure the `log` calculation remains stable and valid for all devices.
+> *   **Mathematical Stability:** A floor of ~ `0.5` is enforced for all architectures in the lookup table to ensure the `log` calculation remains stable and valid for all devices.
 
 **Step 3: Subsystem Penalties (L2 Cache, Memory)**
 Single-core tasks are highly sensitive to private cache latency, but demand far less system memory bandwidth and generate negligible heat compared to multi-core workloads. Specifically, the Thermal Subsystem Penalty (TDSI) is completely omitted (0.00 weight) from the Single-Core CPU scoring framework. Standard single-core benchmarks (such as Geekbench 6 Single-Core, which represents Method A) execute workloads in short, transient bursts (typically lasting 1 to 5 seconds per subtest) separated by idle intervals. Due to the smartphone's transient thermal mass (thermal inertia), the chassis absorbs these brief spikes before reaching saturation, preventing the processor from hitting thermal limits. Since burst single-core execution experiences 0.0% physical thermal throttling, omitting the thermal penalty ensures maximum predictive precision and alignment between Method C and the empirical benchmark scores of Method A.
@@ -1989,11 +2002,11 @@ The remaining two subsystem penalties are calibrated as follows:
     `Penalty_L2CS = 0.06 * (Deficit_L2CS ^ 1.4)`
     
     > [!NOTE]
-    > **Architectural Justification: Why do older CPUs sometimes have higher L2 capacities?**
-    > Non-technical readers may notice that older chips (e.g., Apple A16 Bionic with `16384 KB` or A15 Bionic with `12288 KB`) possess higher L2 capacities than state-of-the-art architectures (e.g., Apple A18 Pro with `4096 KB` or Cortex-X925 with `3072 KB`). This is a physical design trade-off:
-    > *   **Shared L2 (Older Architectures):** Older chips utilized a **cluster-shared** L2 cache where all performance cores shared a single massive pool. In a single-core workload, the inactive cores leave the entire shared capacity (e.g., 16 MB) accessible to the single running core, preventing cache misses at the expense of silicon space and higher latency (~16-20 cycles) due to complex arbitration logic.
-    > *   **Private L2 (Modern Architectures):** Modern designs utilize dedicated **private** L2 caches per core. A single core can only access its own private block (e.g., 4 MB for A18, 3 MB for X925). While this reduces the absolute capacity available to a single active thread, it physically places the cache closer to the core execution engine, reducing latency to a blazing ~10-12 clock cycles and eliminating multi-core arbitration contention.
-    > *   **Scoring Alignment:** The latency and IPC benefits of the private L2 design are captured in the core's higher **Core Architecture Score (CAS)** (§6.1.0), while the **L2CS** penalty safely identifies the capacity deficit relative to extreme compute speeds.
+    > **Architectural Justification: Cache Topologies (Shared vs. Private)**
+    > Non-technical readers may notice extreme variances in `typical_l2_kb` across different architectures, where some state-of-the-art cores (e.g., ARM Cortex-X925 with `3072 KB` or Cortex-X4 with `2048 KB`) appear to have significantly less L2 cache than Apple designs (e.g., Apple A18 Pro with `16384 KB`) or even some older efficiency cores (e.g., Apple A10 Zephyr sharing a `3072 KB` pool). This reflects two distinct physical design philosophies:
+    > *   **Shared L2 Clusters:** Architectures like Apple's P-cores or Qualcomm's Oryon utilize a **cluster-shared** L2 cache where all performance cores share a single massive pool. In a single-core workload, the inactive cores leave the entire shared capacity (e.g., 16 MB) accessible to the single running core. This minimizes cache misses at the expense of higher physical latency (due to complex routing and arbitration logic).
+    > *   **Private L2 Cores:** Standard ARM designs (like the Cortex-X or Cortex-A700 series) utilize dedicated **private** L2 caches per core. A single core can only access its own private block (e.g., 2 MB for Cortex-X4, 3 MB for Cortex-X925). While this reduces the absolute capacity available to a single active thread, it physically places the cache immediately adjacent to the core's execution engine, reducing latency to a blazing ~10-12 clock cycles and eliminating cluster contention.
+    > *   **Scoring Alignment:** The latency and IPC benefits of the private L2 design are naturally captured in the core's baseline **Core Architecture Score (CAS)** (§6.1.0), while the **L2CS** penalty safely identifies pure capacity deficits relative to peak compute demands.
 
 *   **Memory Subsystem Penalty (MTI) — Weight: 0.03:**
     `Deficit_MTI = max(0, STRS_norm - MTI_Score)` (MTI from §6.5 Predicted)
