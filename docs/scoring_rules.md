@@ -1696,6 +1696,10 @@ We model this sub-linear frequency scaling using a soft-saturation exponent **γ
         *   `γ(5-6 cores) = 0.98`: High-efficiency clusters running at conservative, highly efficient clock speeds.
         *   `γ(7-8 cores) = 0.99`: Large efficiency clusters or homogeneous budget processors operating in low-frequency bands. Scaling is nearly linear, but a perfect 1.00 is physically impossible due to silicon interconnect and cache latency overheads.
 
+    > [!NOTE]
+    > **Why the Instruction Set Architecture (ISA) Multiplier is Omitted in Section 6.1**
+    > Instruction Set Architecture (ISA) is the core "dictionary" of hardware commands a Central Processing Unit (CPU) understands. While the ISA multiplier is included in Section 6.2 to model single-threaded peak efficiency, it is omitted in Section 6.1 because multi-core throughput is heavily dominated by systemic hardware limits—specifically memory bandwidth, cache capacity, and thermal stability—rather than individual instruction execution rates. A compressed multi-core ISA modifier (with a small 1% to 3% spread) could be introduced in future revisions of the model, but it is currently neglected due to this extremely low physical impact, which becomes even less significant after the global logarithmic normalization is applied.
+
 **Step 2: Per-Cluster Effective Throughput (CET)**
 Core scaling is sub-linear. Doubling the cores does not double the performance due to synchronization overhead, cache contention, and shared memory pressure (Amdahl's Law). We model this physical constraint by calculating a Parallel-Adjusted Core Count before applying the base architecture score.
 
