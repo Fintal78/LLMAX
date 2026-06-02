@@ -1657,9 +1657,19 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 > 
 > ### 🧠 The Physics of CPU Architecture & Heterogeneity
 > Modern System-on-Chip (SoC) architectures do not use identical cores. Instead, they group different types of specialized cores into **Clusters** to optimize performance:
-> *   **Prime Cores:** Large, extreme-performance cores dedicated to brief, heavy single-threaded bursts (like launching an app).
-> *   **Performance Cores (P-Cores):** Medium-high speed workhorse cores that handle active multitasking, heavy browsing, and gaming physics.
-> *   **Efficiency Cores (E-Cores):** Small, ultra-low power cores that run background syncing, OS maintenance, and music playback while preserving battery.
+> *   **Best Performing Cores:** Large, extreme-performance cores dedicated to brief, heavy single-threaded bursts (like launching an app).
+> *   **Second Best Performing Cores:** Medium-high speed workhorse cores that handle active multitasking, heavy browsing, and gaming physics.
+> *   **Third Best / Fourth Best Performing Cores:** Small, ultra-low power cores that run background syncing, OS maintenance, and music playback while preserving battery.
+> 
+> #### 🧪 Standardized Rank-Based CPU Cluster Nomenclature
+> To enable robust, automated parsing and maintain microarchitectural neutrality across all hardware platforms, this scoring framework adopts a strictly standardized, rank-based nomenclature for CPU core clusters: `best`, `second_best`, `third_best`, and `fourth_best`.
+> 
+> These cluster designations are defined in absolute terms of relative peak computing capability (Instructions Per Cycle multiplied by maximum clock frequency) rather than vendor-specific marketing terms like "Prime", "Performance", or "Efficiency".
+> 
+> ##### Rationale for Rank-Based Nomenclature
+> 1. **Elimination of Schema Ambiguity:** High-performance mobile CPU layouts are highly heterogeneous and vary widely between vendors. For example, some custom architectures (such as Apple Silicon) utilize a symmetric dual-cluster configuration comprising only high-performance cores and highly efficient cores. Under marketing-biased schemas, mapping these designs forces arbitrary decisions—such as classifying the performance cluster as a "Prime" cluster and leaving the "Performance" schema key completely empty or unmapped. This structural asymmetry creates parsing exceptions and data schema fragility.
+> 2. **Prevention of Parsing & Validation Errors:** Automated database parsers and verification loops rely on strict path-referenced JSON hooks. By standardizing the clusters strictly by their relative performance ranking from highest to lowest (`best` to `fourth_best`), the database schemas maintain total structural consistency across all chipsets. The single-core predictive model can always query the highest-performing cluster uniformly via the static path `clusters.best.architecture`, completely avoiding vendor-specific mapping logic and potential parsing failures.
+> 3. **Microarchitectural Neutrality:** Modern designs frequently blur the lines between traditional cluster definitions (e.g., integrating a mix of medium and high cores in a 1+3+4 or 1+5+2 layout). Rank-based neutral naming provides a robust mathematical classification that fits any physical topology, from dual-cluster Apple architectures to complex quad-cluster Snapdragon platforms.
 > 
 > #### Layer 1: Local Intra-Cluster Scaling (Local Silicon Contention)
 > *   *The Constraint:* Cores within the same cluster are placed next to each other on the silicon die, sharing a local L2 cache and cluster-level fabric. As more cores run concurrently, they contend for L2 cache access and generate local thread synchronization overhead.
@@ -1679,12 +1689,12 @@ We model this sub-linear frequency scaling using a soft-saturation exponent **γ
 2.  **Core Yield (CY_i):** `CY_i = CAS_i * (R_i ^ γ)`
     *   `CAS_i`: CPU Architecture Score from the **§6.1.0 Reference Table**.
     *   `γ` is determined by the **number of cores in the cluster**, which serves as a highly accurate proxy for the core's architectural class and typical operating range:
-        *   `γ(1 core) = 0.93`: Prime cores pushed to extreme frequencies. High voltage wall impact.
-        *   `γ(2 cores) = 0.95`: Performance clusters at moderate-high frequencies.
-        *   `γ(3 cores) = 0.96`: Performance clusters.
-        *   `γ(4 cores) = 0.97`: Mixed Performance/Efficiency clusters near the linear sweet spot.
-        *   `γ(5-6 cores) = 0.98`: Efficiency clusters at conservative frequencies.
-        *   `γ(7-8 cores) = 0.99`: Large efficiency clusters. Scaling is nearly linear, but a perfect 1.00 is physically impossible due to cache latency mismatches at any speed.
+        *   `γ(1 core) = 0.93`: Ultra-high performance cores (typically the "best" cluster) pushed to maximum frequency limits, where frequency scaling is highly saturated due to the physical voltage wall.
+        *   `γ(2 cores) = 0.95`: High-performance clusters operating at moderate-to-high frequency bands (often the "best" cluster in dual-prime layouts, or "second_best" cluster).
+        *   `γ(3 cores) = 0.96`: Mid-to-high performance clusters operating under standard frequency envelopes.
+        *   `γ(4 cores) = 0.97`: Mid-range clusters (typically the "second_best" or "third_best" cluster) operating near the physical linear scaling sweet spot.
+        *   `γ(5-6 cores) = 0.98`: High-efficiency clusters running at conservative, highly efficient clock speeds.
+        *   `γ(7-8 cores) = 0.99`: Large efficiency clusters or homogeneous budget processors operating in low-frequency bands. Scaling is nearly linear, but a perfect 1.00 is physically impossible due to silicon interconnect and cache latency overheads.
 
 **Step 2: Per-Cluster Effective Throughput (CET)**
 Core scaling is sub-linear. Doubling the cores does not double the performance due to synchronization overhead, cache contention, and shared memory pressure (Amdahl's Law). We model this physical constraint by calculating a Parallel-Adjusted Core Count before applying the base architecture score.
@@ -1781,11 +1791,11 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > #### A. Physical Subsystem Demand Functions (Proposed Options)
 > These proposed formulations isolate core-type sensitivities by replacing flat global demands with specialized physical demand curves:
 > *   **Thermal Demand Function:** Models thermal load by factoring in high-burst single-core power draw:
->     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * PrimeClusterStrength`
->     *(Rationale: Extremely clocked Prime cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
+>     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * BestClusterStrength`
+>     *(Rationale: Extremely clocked best performing cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
 > *   **Memory Demand Function:** Models memory bus contention by factoring in cooperative background efficiency workloads:
->     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * EfficiencyClusterLoad`
->     *(Rationale: High concurrency of background threads on Efficiency clusters generates heavy random RAM fetches, saturating the system bus and starving fast performance clusters.)*
+>     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * WorstClusterStrength`
+>     *(Rationale: High concurrency of background threads on the lowest-performing active cluster (the worst cluster) generates heavy random RAM fetches, saturating the system bus and starving fast high-performance clusters.)*
 > *   **Cache Demand Function:** Models cache demand as a function of workload complexity, core asymmetry, and concurrent task parallelism:
 >     `Cache_Demand = 0.65 * RCTS_norm + 0.20 * Core_Asymmetry_Index + 0.15 * Parallelism_Index`
 >     `Deficit_Cache = max(0, Cache_Demand - CFEI)`
@@ -1793,7 +1803,7 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > 
 > #### B. Dynamic Thread Scheduler Integration (Proposed Option)
 > A comprehensive structural refinement could introduce the OS (Operating System) thread scheduler not as an independent score, but as a dynamic **scheduler efficiency coefficient** applied to a **Core Asymmetry Index (CAI)**.
-> *   *Context and Physical Impact:* In highly asymmetric CPU layouts, the thread scheduler acts as the physical "traffic cop" of the processor. If the scheduler places a high-priority, time-critical thread on a tiny Efficiency core, or a trivial background thread on a power-hungry Prime core, the CPU stalls (causing UI micro-stutters) and wastes power (triggering thermal throttling). An inefficient scheduler directly prevents highly capable flagship core complexes from ever realizing their theoretical multi-core throughput.
+> *   *Context and Physical Impact:* In highly asymmetric CPU layouts, the thread scheduler acts as the physical "traffic cop" of the processor. If the scheduler places a high-priority, time-critical thread on a tiny lower-performance core, or a trivial background thread on a power-hungry best performing core, the CPU stalls (causing UI micro-stutters) and wastes power (triggering thermal throttling). An inefficient scheduler directly prevents highly capable flagship core complexes from ever realizing their theoretical multi-core throughput.
 > *   *Core Asymmetry Index (CAI) Formulation:* `CAI = Cluster_Count_Factor * IPC_Disparity * Frequency_Disparity` (where IPC is Instructions Per Cycle). This index mathematically models the physical asymmetry and layout complexity of the CPU core clusters.
 > *   *Physical System Demand:* `Scheduler_Demand = RCTS_norm * CAI` (scaling the physical scheduling workload demand directly by silicon asymmetry).
 > *   *Software Scheduler Capability:* `Scheduler_Capability` represents the OS (Operating System) scheduling capability scored on a granular `[0, 10]` scale (evaluating Base OS Tiers, Hardware Telemetry Bonuses like Qualcomm Thread Director or ARM Hardware Feedback Interface [HFI], and OEM scheduling engines).
@@ -1860,13 +1870,13 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
 > *   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
 > *   **Actual Specs:** 1x X4 @ 3.3000 GHz, 5x A720 @ 3.2000 GHz, 2x A520 @ 2.3000 GHz
 > *   **Step 1 (Core Yields with Soft-Saturation):**
->     *   Prime (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 7.9500 * (1.0000^0.9300) = 7.9500`
->     *   Perf (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
->     *   Eff (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
+>     *   Best (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 7.9500 * (1.0000^0.9300) = 7.9500`
+>     *   Second Best (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
+>     *   Third Best (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
 > *   **Step 2 (CET with PACC):**
->     *   Prime: `PACC = 1^1.0000 = 1.0000`. `CET = 7.9500 * 1.0000 = 7.9500`
->     *   Perf: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
->     *   Eff: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
+>     *   Best: `PACC = 1^1.0000 = 1.0000`. `CET = 7.9500 * 1.0000 = 7.9500`
+>     *   Second Best: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
+>     *   Third Best: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
 > *   **Step 3 (RCTS):** `7.9500 + 22.3840 + 2.1909 = 32.5249`
 > *   **Step 4 (Global Normalization):**
 >     *   `RCTS_norm = 10.0000 * (log(32.5249) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (3.4820 - (-0.6002)) / (4.0187 - (-0.6002)) = 8.8380`
@@ -1941,12 +1951,12 @@ To accurately predict this real-world responsiveness without relying on subjecti
 > [!IMPORTANT]
 > **Why Core Count is Omitted in Section 6.2**
 > Unlike Multi-Core throughput (§6.1), the Single-Core prediction model **strictly ignores the core count** of the strongest cluster.
-> *   **Single-Thread Physics (The Indivisible Task):** A single-threaded task is, by definition, a single sequential chain of instructions. It is mathematically impossible to split this indivisible chain across multiple cores. Therefore, even if a processor has two identical, equally strong "Prime" cores (like Apple's A-series or the Snapdragon 8 Elite), the OS scheduler must assign that specific thread to just **one** of them.
+> *   **Single-Thread Physics (The Indivisible Task):** A single-threaded task is, by definition, a single sequential chain of instructions. It is mathematically impossible to split this indivisible chain across multiple cores. Therefore, even if a processor has two identical, equally strong "best" cores (like Apple's A-series or the Snapdragon 8 Elite), the OS scheduler must assign that specific thread to just **one** of them.
 > *   **What happens to the second identical core?** The second strong core cannot help execute that single thread. Instead, it is left idle, or the OS uses it to handle completely separate background tasks (like fetching notifications). It contributes absolutely nothing to the "snappiness" of the main foreground task being measured.
 > *   **Latency vs. Throughput:** Single-core performance measures *responsiveness* (how fast one single task finishes). Multiplying by the number of cores measures *throughput* (how many separate tasks finish at once), which is handled exclusively in Section 6.1.
 
 **Step 1: Core Yield with Frequency Soft-Saturation & ISA Modifier**
-1. **Identify the Prime Core:** Select the core with the highest CAS.
+1. **Identify the Best Core:** Select the core with the highest CAS.
 2. **Frequency Ratio (R):** `Actual_Frequency / Reference_Frequency`
 3. **ISA Multiplier:** Sourced from the ISA Gen column:
    * **ARMv8.0 (Cortex-A53/A72/A73, Apple A9, Exynos M1/M2/M3):** `0.96`
@@ -1959,7 +1969,7 @@ To accurately predict this real-world responsiveness without relying on subjecti
    * **ARMv9.0 (Cortex-X2/X3/A710/A715/A510):** `1.06` (introduces SVE2 and hardware-assisted Memory Tagging Extension [MTE])
    * **ARMv9.2 (Cortex-X4/X925/A720/A725/A520/A525, Apple A18):** `1.08` (introduces SME and dynamic SVE2 enhancements)
    * **ARMv9.3 (ARM C1-series / Lumex):** `1.10` (introduces SME2, offering high-throughput 2D matrix compute)
-   
+
    > [!NOTE]
    > **What is the ISA Multiplier? (Non-Technical Explanation)**
    > ISA stands for "Instruction Set Architecture." Think of it as the core "dictionary" or "language" of commands the processor understands. Newer dictionaries (like ARMv9) allow the CPU to perform complex tasks using fewer, more efficient commands. 
@@ -1968,16 +1978,16 @@ To accurately predict this real-world responsiveness without relying on subjecti
 
 4. **Core Yield (CY):** `CY = CAS * (R ^ γ) * ISA_Multiplier`
    * **γ (Soft-Saturation Exponent):** Fixed at `0.93`.
-   
+
    > [!IMPORTANT]
    > **Why is γ fixed at 0.93 for Single-Core performance?**
-   > In a multi-core workload (§6.1), the soft-saturation exponent `γ` varies depending on the cluster size as a proxy for the core's architectural class and clock speed envelope (with efficiency cores clocked conservatively having nearly linear scaling, i.e., `γ = 0.99`).
+   > In a multi-core workload (§6.1), the soft-saturation exponent `γ` varies depending on the cluster size as a proxy for the core's architectural class and clock speed envelope (with third best/fourth best clusters clocked conservatively having nearly linear scaling, i.e., `γ = 0.99`).
    > 
    > However, in a **single-core workload**, only **exactly one physical core** is running the execution thread. Thus, cluster-level contention is non-existent. Instead, the performance scaling is dictated entirely by two physical CPU limits:
    > 1. **The Memory Wall:** As a single high-performance core's clock speed is pushed past its sweet spot into extreme ranges, memory access latencies (which remain constant in absolute nanoseconds) require an exponentially increasing number of CPU clock cycles. The CPU spends more clock cycles stalled waiting for cache misses, causing frequency scaling to saturate sub-linearly.
    > 2. **The Voltage Wall:** Pushing single-core frequencies to their absolute limits requires exponential voltage increases, causing severe leakage and thermal constraints.
    > 
-   > Since single-core scoring *always* evaluates the single highest-performing core on the SoC (the Prime Core) pushed to its absolute burst frequency limits, it is fundamentally pinned to the extreme high-performance saturation profile. Therefore, `γ` is fixed at `0.93` (the saturation constant for a single Prime Core pushed to its limit), completely decoupling single-thread performance from multi-threaded cluster scaling models.
+   > Since single-core scoring *always* evaluates the single highest-performing core on the SoC (the best core) pushed to its absolute burst frequency limits, it is fundamentally pinned to the extreme high-performance saturation profile. Therefore, `γ` is fixed at `0.93` (the saturation constant for a single best core pushed to its limit), completely decoupling single-thread performance from multi-threaded cluster scaling models.
 
 **Step 2: Raw Single-Thread Score & Perceptual Normalization (STRS_norm)**
 `STRS_norm = 10 * (log(CY) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min))` (Clamped 0.0–10.0)
@@ -2032,7 +2042,7 @@ The remaining two subsystem penalties are calibrated as follows:
 > *   *In Single-Core (6.2):* There is no fighting. A single thread relies entirely on having its data immediately accessible. L2 cache misses introduce devastating pipeline bubbles: the CPU must stall for **100 to 200+ cycles** waiting to fetch data from L3 or system RAM, reducing execution efficiency by **over 50%** in memory-bound threads. The heavier weight of `0.06` and exponent of `1.4` (giving a maximum deficit penalty of **`1.51` points**) mathematically reflects this massive latency penalty. We isolate and evaluate the **Private L2 Cache** capacity rather than other memory hierarchy levels for key architectural reasons:
 >     *   **Exclusion of Level 1 (L1) Cache:** Although Level 1 cache offers the lowest access latency, its extremely restricted capacity (typically 64KB to 128KB) is tightly integrated directly within the core's execution pipeline. Its latency impact is constant across platforms and is therefore inherently captured by the core's baseline Compute Architecture Score (CAS).
 >     *   **Exclusion of Shared Level 3 (L3) / System Level Cache (SLC):** The shared L3/SLC pool resides outside the core boundary, requiring data requests to traverse the chip's interconnect fabric. This fabric traversal introduces variable cross-silicon latency penalty cycles that degrade the immediate, deterministic response speed required for snappy single-threaded user interface (UI) loops.
->     *   **Selection of Private Level 2 (L2) Cache:** Private L2 cache represents the largest memory buffer tightly coupled to a specific CPU core or cluster. Massive L2 allocations (e.g., 16MB on Apple A16 or 12MB on Qualcomm Oryon) allow the prime core to retain working sets locally, bypassing fabric transaction delays entirely. L2 capacity therefore serves as the primary hardware-configurable bottleneck dictating single-core IPC scaling and UI fluid responsiveness.
+>     *   **Selection of Private Level 2 (L2) Cache:** Private L2 cache represents the largest memory buffer tightly coupled to a specific CPU core or cluster. Massive L2 allocations (e.g., 16MB on Apple A16 or 12MB on Qualcomm Oryon) allow the best core to retain working sets locally, bypassing fabric transaction delays entirely. L2 capacity therefore serves as the primary hardware-configurable bottleneck dictating single-core IPC scaling and UI fluid responsiveness.
 
 *   *Private Level 2 Cache Subsystem (L2CS) Calibration & Physical Verification:*
 

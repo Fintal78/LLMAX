@@ -357,64 +357,68 @@ def calc_layer_b(data):
     else:
         # Fallback: Calculate if not present (Test Script Logic)
         facs_list = []
-        clusters = data.get("6_processing_power_and_performance", {}).get("3_0_cpu_architecture_reference", {}).get("clusters", [])
+        soc_ref = data.get("6_processing_power_and_performance", {}).get("6_1_0_system_on_chip_reference", {})
+        clusters_dict = soc_ref.get("clusters", {})
         total_score = 0
         total_cores = 0
         
-        if clusters and len(clusters) > 0:
-            for cluster in clusters:
-                # Handle name extraction
-                raw_name = cluster.get("name", {})
-                c_name = raw_name.get("value") if isinstance(raw_name, dict) else raw_name
-                if not isinstance(c_name, str): c_name = ""
+        for key in ["best", "second_best", "third_best", "fourth_best"]:
+            cluster = clusters_dict.get(key)
+            if not cluster or not isinstance(cluster, dict):
+                continue
                 
-                # Handle count extraction
-                raw_count = cluster.get("count", {})
-                c_count = raw_count.get("value") if isinstance(raw_count, dict) else raw_count
-                if not isinstance(c_count, (int, float)): c_count = 0
+            # Handle name extraction
+            c_name = cluster.get("architecture", "")
+            if c_name == "N/A" or not c_name:
+                continue
                 
-                # Handle frequency extraction
-                raw_freq = cluster.get("freq_ghz", {})
-                c_freq = raw_freq.get("value") if isinstance(raw_freq, dict) else raw_freq
-                if not isinstance(c_freq, (int, float)): c_freq = 0
+            # Handle count extraction
+            c_count = cluster.get("count", 0)
+            if not isinstance(c_count, (int, float)):
+                c_count = 0
+                
+            # Handle frequency extraction
+            raw_freq = cluster.get("actual_frequency_ghz", {})
+            c_freq = raw_freq.get("value") if isinstance(raw_freq, dict) else raw_freq
+            if not isinstance(c_freq, (int, float)):
+                c_freq = 0
 
-                # Lookup score & ref freq
-                c_data = get_best_match(c_name, CPU_SCORES, default=(5, 2.0))
-                if isinstance(c_data, tuple):
-                    c_score = c_data[0]
+            # Lookup score & ref freq
+            ref_freq = cluster.get("reference_frequency_ghz", 2.0)
+            c_data = get_best_match(c_name, CPU_SCORES, default=(5, 2.0))
+            if isinstance(c_data, tuple):
+                c_score = c_data[0]
+                if ref_freq <= 0:
                     ref_freq = c_data[1]
-                else:
-                    c_score = c_data
+            else:
+                c_score = c_data
+                if ref_freq <= 0:
                     ref_freq = 2.0 # Default if tuple not found
 
-                # Calculate FSF
-                fsf = 1.0
-                if c_freq > 0 and ref_freq > 0:
-                    fsf = c_freq / ref_freq
-                
-                # Clamp FSF for safety (0.5x to 1.5x)
-                if fsf < 0.5: fsf = 0.5
-                if fsf > 1.5: fsf = 1.5
+            # Calculate FSF
+            fsf = 1.0
+            if c_freq > 0 and ref_freq > 0:
+                fsf = c_freq / ref_freq
+            
+            # Clamp FSF for safety (0.5x to 1.5x)
+            if fsf < 0.5: fsf = 0.5
+            if fsf > 1.5: fsf = 1.5
 
-                # Apply FSF to score
-                fsf_adjusted_score_per_core = c_score * fsf
-                total_cluster_score = fsf_adjusted_score_per_core * c_count
-                
-                # Update data structure with adjusted score
-                if "adjusted_score" in cluster:
-                    del cluster["adjusted_score"] # Remove from 3.0 if present from previous run
+            # Apply FSF to score
+            fsf_adjusted_score_per_core = c_score * fsf
+            total_cluster_score = fsf_adjusted_score_per_core * c_count
 
-                # Add to FACS list for 3.1
-                facs_entry = {
-                    "name": c_name,
-                    "value": round(total_cluster_score, 2),
-                    "description": "Frequency-Adjusted Core Score (Section 3.1 Method C)"
-                }
-                facs_list.append(facs_entry)
-                
-                total_score += total_cluster_score
-                total_cores += c_count
-                
+            # Add to FACS list for 3.1
+            facs_entry = {
+                "name": c_name,
+                "value": round(total_cluster_score, 2),
+                "description": "Frequency-Adjusted Core Score (Section 3.1 Method C)"
+            }
+            facs_list.append(facs_entry)
+            
+            total_score += total_cluster_score
+            total_cores += c_count
+            
         cpu_score = (total_score / total_cores) if total_cores > 0 else 5
 
         # Update 3.1 Scoring Components with FACS
@@ -788,35 +792,52 @@ def main():
     
     battery_section["final_score"] = round(final_score, 2)
     
-    # --- Write Back ---
+    # --- Print Calculations (Write-Back Disabled to Preserve Comments) ---
     
-    new_json_str = json.dumps(data, indent=2)
+    print("\n" + "="*80)
+    print("      BATTERY ENDURANCE SCORE CALCULATOR - TEST MODE SUMMARY")
+    print("="*80)
+    print(f"{'Component / Metric':<40} | {'Calculated Value / Score':<35}")
+    print("-"*80)
     
-    # Post-processing to compact short arrays
-    # Matches arrays of primitives (strings, numbers, bools, null)
-    def compact_arrays(match):
-        content = match.group(0)
-        if len(content) > 120: return content # Keep very long arrays expanded
-        # Collapse whitespace to single space
-        compacted = re.sub(r'\s+', ' ', content)
-        # Clean up spaces inside brackets: [ "A", "B" ] -> ["A", "B"]
-        compacted = compacted.replace('[ ', '[').replace(' ]', ']')
-        return compacted
-
-    # Regex to match arrays containing only primitives (no objects/nested arrays)
-    # Matches: [ followed by (values separated by commas) followed by ]
-    # Value pattern: "string" OR number OR true/false/null
-    # We use a simplified check: content inside [] does not contain { or [
-    new_json_str = re.sub(r'\[\s*([^\[\]\{\}]*?)\s*\]', compact_arrays, new_json_str, flags=re.DOTALL)
-
-    new_content = content.replace(json_str, new_json_str)
+    # Layer A
+    print(f"{'Layer A: Raw Battery Energy (Wh)':<40} | {layer_a['wh']:>5.2f} Wh (Score: {layer_a['score']:>5.2f}/10)")
     
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(new_content)
-        
-    print(f"Successfully updated {file_path}")
-    print(f"Predicted Score: {predicted_score:.2f}")
-    print(f"Final Score: {final_score:.2f}")
+    # Layer B
+    print(f"{'Layer B.1: SoC Efficiency Score':<40} | {layer_b['soc_efficiency']['total_soc_score']:>5.2f}/10")
+    print(f"{'  - Process Node Score':<40} | {layer_b['soc_efficiency']['process_node_score']:>5.2f}/10")
+    print(f"{'  - CPU Architecture Score (AES)':<40} | {layer_b['soc_efficiency']['cpu_architecture_score']:>5.2f}/10")
+    print(f"{'  - GPU Efficiency Score':<40} | {layer_b['soc_efficiency']['gpu_efficiency_score']:>5.2f}/10")
+    
+    print(f"{'Layer B.2: Display Efficiency Score':<40} | {layer_b['display_efficiency']['total_display_score']:>5.2f}/10")
+    print(f"{'  - Panel Tech Score':<40} | {layer_b['display_efficiency']['panel_technology_score']:>5.2f}/10")
+    print(f"{'  - Refresh Efficiency Score':<40} | {layer_b['display_efficiency']['refresh_efficiency_score']:>5.2f}/10")
+    print(f"{'  - Resolution Efficiency Score':<40} | {layer_b['display_efficiency']['resolution_efficiency_score']:>5.2f}/10")
+    
+    print(f"{'Layer B.3: Connectivity Efficiency Score':<40} | {layer_b['connectivity_efficiency']['total_connectivity_score']:>5.2f}/10")
+    print(f"{'Layer B.4: Thermal Efficiency (TDSI)':<40} | {layer_b['thermal_efficiency']['tdsi_score']:>5.2f}/10")
+    print(f"{'Unified Hardware Efficiency Index (HEI)':<40} | {layer_b['total_hei_score']:>5.2f}/10")
+    
+    # Layer C
+    print(f"{'Layer C.1: OS / Skin Efficiency Score':<40} | {layer_c['os_skin_score']:>5.2f}/10")
+    print(f"{'Layer C.2: Cleanliness & Control (SCC)':<40} | {layer_c['scc_score']:>5.2f}/10")
+    print(f"{'Unified Software Optimization Index (SOI)':<40} | {layer_c['total_soi_score']:>5.2f}/10")
+    
+    print("-"*80)
+    
+    # Final Predictor & Benchmarks
+    print(f"{'Unified Predicted Score (HEI + SOI)':<40} | {predicted_score:>5.2f}/10")
+    print(f"{'GSMArena Active Use Hours':<40} | {benchmarks['gsmarena_active_use']['hours']:>5.1f}h (Score: {benchmarks['gsmarena_active_use']['normalized_score']:>5.2f}/10)")
+    print(f"{'PhoneArena Battery Life Hours':<40} | {benchmarks['phonearena_battery_life']['hours']:>5.1f}h (Score: {benchmarks['phonearena_battery_life']['normalized_score']:>5.2f}/10)")
+    
+    print("-"*80)
+    print(f"{'Booster Adjustment Ratio':<40} | {booster:>5.3f}")
+    print(f"{'Final Calculated Score':<40} | {final_score:>5.2f}/10")
+    print(f"{'Scoring Source':<40} | {source}")
+    print("="*80)
+    print("NOTE: Write-back to docs/proposed_data_structure.md is disabled in Test Mode")
+    print("      to preserve all comprehensive schema comments and guidelines.")
+    print("="*80 + "\n")
 
 if __name__ == "__main__":
     main()

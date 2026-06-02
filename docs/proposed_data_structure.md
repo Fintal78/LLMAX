@@ -747,569 +747,494 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "3_audio": {
-      "3_1_speaker_system_capability": {
-        // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
-        "speaker_configuration": {
-          "value": "Tier 2: Standard Hybrid Stereo",
-          "value_details": {
-            "Tier 1: Balanced / Symmetrical Stereo": [],
-            "Tier 2: Standard Hybrid Stereo": [
-              { "name": "Stereo Speakers", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: Mono Speaker": [],
-            "Tier 4: No Usable Speaker": []
-          },
-          "subscore": 7.00
-          // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Balanced / Symmetrical Stereo" → 10.00
-          //     Definition: Two identical or near-identical dedicated speaker units (top/bottom or left/right) offering matched frequency response and volume. Must explicitly state "Symmetrical speakers" or "Balanced stereo".
-          //   • "Tier 2: Standard Hybrid Stereo"        → 7.00
-          //     Definition: Typically uses the earpiece as a second channel, lacking the bass response and volume of the primary speaker. Typically listed as 'Stereo Speakers' without symmetry claims.
-          //   • "Tier 3: Mono Speaker"                  → 3.00
-          //     Definition: Single active loudspeaker for media playback.
-          //   • "Tier 4: No Usable Speaker"             → 0.00
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 7.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits speaker_configuration.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "3_2_playback_audio_processing_immersion": {
-        // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
-        "audio_format_decode": {
-          "value": [
-            "Dolby Atmos",
-            "Dolby Digital / Dolby Audio"
+  },
+  "3_audio": {
+    "3_1_speaker_system_capability": {
+      // SCORING GOAL: Scores the physical speaker hardware configuration (Speaker System Capability, SSC) for audio output without headphones. Evaluates speaker count, placement, and channel symmetry.
+      "speaker_configuration": {
+        "value": "Tier 2: Standard Hybrid Stereo",
+        "value_details": {
+          "Tier 1: Balanced / Symmetrical Stereo": [],
+          "Tier 2: Standard Hybrid Stereo": [
+            { "name": "Stereo Speakers", "source": "TBD", "exact_extract": "Proof pending" }
           ],
-          "value_details": {
-            "Dolby Atmos": [
-              { "name": "Dolby Atmos", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "DTS:X": [],
-            "Dolby Digital / Dolby Audio": [
-              { "name": "Dolby Digital", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "DTS / DTS-HD": []
-          },
-          "subscore": 8.00
-          // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
-          //   • "Dolby Atmos"                 → adds +5.00 to the subscore
-          //   • "DTS:X"                       → adds +1.00 to the subscore
-          //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
-          //   • "DTS / DTS-HD"                → adds +1.00 to the subscore
-          // The subscore is the sum of these points (Clamped 0–10). Example: ["Dolby Atmos", "Dolby Digital / Dolby Audio"] = 5.00 + 3.00 = 8.00.
-          // If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), leave the array empty [] and set subscore to 0.00.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported audio formats/codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
+          "Tier 3: Mono Speaker": [],
+          "Tier 4: No Usable Speaker": []
         },
-        "spatial_audio_rendering": {
-          "value": "Tier 2: Static spatial audio (no head tracking)",
-          "value_details": {
-            "Tier 1: Spatial audio with Dynamic Head Tracking": [],
-            "Tier 2: Static spatial audio (no head tracking)": [
-              { "name": "360 Audio", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: No spatial rendering": []
-          },
-          "subscore": 7.00
-          // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Spatial audio with Dynamic Head Tracking"      → 10.00
-          //   • "Tier 2: Static spatial audio (no head tracking)"       → 7.00
-          //   • "Tier 3: No spatial rendering"                          → 0.00
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported spatial rendering technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 7.50,
-          // SCORING GUIDELINE: scores.predicted = (0.5 * audio_format_decode.subscore) + (0.5 * spatial_audio_rendering.subscore).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.50,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
+        "subscore": 7.00
+        // SCORING GUIDELINE: Identify the physical speaker setup. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Balanced / Symmetrical Stereo" → 10.00
+        //     Definition: Two identical or near-identical dedicated speaker units (top/bottom or left/right) offering matched frequency response and volume. Must explicitly state "Symmetrical speakers" or "Balanced stereo".
+        //   • "Tier 2: Standard Hybrid Stereo"        → 7.00
+        //     Definition: Typically uses the earpiece as a second channel, lacking the bass response and volume of the primary speaker. Typically listed as 'Stereo Speakers' without symmetry claims.
+        //   • "Tier 3: Mono Speaker"                  → 3.00
+        //     Definition: Single active loudspeaker for media playback.
+        //   • "Tier 4: No Usable Speaker"             → 0.00
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "3_3_wired_audio_capability": {
-        // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored.
-        "wired_audio_tier": {
-          "value": "Tier 3: USB-C digital audio only (dongle required)",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 3.00
-          // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: 3.5mm headphone jack (native analog output)"  → 10.00
-          //   • "Tier 2: USB-C with documented analog audio output"    → 6.00
-          //   • "Tier 3: USB-C digital audio only (dongle required)"   → 3.00
-          //   • "Tier 4: No wired audio support"                       → 0.00
-        },
-        "scores": {
-          "predicted": 3.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits wired_audio_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 3.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "3_4_microphone_audio_recording": {
-        // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%).
-        "microphone_hardware_count": {
-          "value": "Tier 2: 3",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.00
-          // SCORING GUIDELINE: Record the physical microphone count. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: ≥4 microphones" → 10.00
-          //   • "Tier 2: 3"              → 8.00
-          //   • "Tier 3: 2"              → 5.00
-          //   • "Tier 4: 1"              → 2.00
-          //   • "Tier 5: None"           → 0.00
-        },
-        "recording_channels_modes": {
-          "value": "Tier 2: Stereo",
-          "value_details": {
-            "Tier 1: Multi-channel / spatial audio": [],
-            "Tier 2: Stereo": [
-              { "name": "Stereo recording", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: Mono": [],
-            "Tier 4: Voice-only / unclear": []
-          },
-          "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Multi-channel / spatial audio" → 10.00
-          //     Definition: Captures audio with directional data (e.g., 5.1, 7.1, or OZO Audio).
-          //   • "Tier 2: Stereo"                        → 8.00
-          //     Definition: Standard two-channel (Left/Right) audio recording.
-          //   • "Tier 3: Mono"                          → 5.00
-          //     Definition: Single-channel audio recording.
-          //   • "Tier 4: Voice-only / unclear"          → 0.00
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific recording technologies found in specs (e.g., OZO Audio, Audio Zoom). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "advanced_capture_features": {
-          "value": [
-            "Directional / Audio Zoom",
-            "Wind Noise Reduction"
-          ],
-          "value_details": {
-            "Directional / Audio Zoom": [
-              { "name": "Audio Zoom", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Wind Noise Reduction": [
-              { "name": "Wind Noise Reduction", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Voice Focus / Isolation": [],
-            "Pro Mic Support": []
-          },
-          "subscore": 5.00
-          // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features * 2.50 = 5.00.
-          //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
-          //   • Wind Noise Reduction: Dedicated toggle or feature to filter wind rumble
-          //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
-          //   • Pro Mic Support: Accepts an external mic for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing for example "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording
-          // Always populate the full list of detected features in "value". Do not selectively omit.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
-        },
-        "scores": {
-          "predicted": 6.80,
-          // SCORING GUIDELINE: scores.predicted = (0.30 * microphone_hardware_count.subscore) + (0.30 * recording_channels_modes.subscore) + (0.40 * advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 6.80,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "scores": {
+        "predicted": 7.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits speaker_configuration.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
     },
-    "4_camera_systems": {
-      // GUIDELINE: Hardware inventory of all physical camera modules. Contains ONLY unscored reference data, as non-scoring data must be placed at section root. All scored parameters are stored in their respective scoring subsections and are NOT duplicated here.
-      // Each key under "rear_camera" / "front_camera" is the lens role (e.g., "main", "tele_5x"). All fields inside are unscored reference data.
-      // MISSING DATA RULE: If a required specification cannot be verified (either because the feature is absent 
-      // or the data is unavailable after an exhaustive research), set the "value" field strictly to "Not found or non existing" 
-      // and set "source" and "exact_extract" to "N/A".
-      "rear_camera": {
-        "main": {
-          // GUIDELINE: Main rear camera module. Only the sensor model name is stored here as unscored reference.
-          "sensor_model_name": {
-            // GUIDELINE: Sensor model name (e.g., "ISOCELL HP2").
-            "value": "ISOCELL HP2",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
+    "3_2_playback_audio_processing_immersion": {
+      // SCORING GOAL: Scores Playback Audio Processing & Immersion (PAPI) as a composite of two sub-criteria: audio format decoding capability (3.2.1, weight 50%) and spatial audio rendering capability (3.2.2, weight 50%).
+      "audio_format_decode": {
+        "value": [
+          "Dolby Atmos",
+          "Dolby Digital / Dolby Audio"
+        ],
+        "value_details": {
+          "Dolby Atmos": [
+            { "name": "Dolby Atmos", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "DTS:X": [],
+          "Dolby Digital / Dolby Audio": [
+            { "name": "Dolby Digital", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "DTS / DTS-HD": []
         },
-        "telephoto_1": {
-          // GUIDELINE: First telephoto rear camera module (highest optical zoom). Use "telephoto_1" for the primary
-          // telephoto lens, "telephoto_2" for a second one if present. 
-          "optical_zoom": {
-            // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "5x", "3x", "10x").
-            "value": "5x",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor_model_name": {
-            // GUIDELINE: Sensor model name.
-            "value": "IMX854",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "megapixels": {
-            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
-            "value": 50,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            // GUIDELINE: Aperture of this non-main lens.
-            "value": "f/3.4",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "optical_image_stabilization": {
-            // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        "telephoto_2": {
-          // GUIDELINE: Second telephoto rear camera module (if present).
-          "optical_zoom": {
-            // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "3x", "2x").
-            "value": "3x",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "sensor_model_name": {
-            // GUIDELINE: Sensor model name.
-            "value": "IMX754",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "megapixels": {
-            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
-            "value": 10,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            // GUIDELINE: Aperture of this non-main lens.
-            "value": "f/2.4",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "optical_image_stabilization": {
-            // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        },
-        "ultrawide": {
-          // GUIDELINE: Ultrawide rear camera module.
-          "sensor_model_name": {
-            // GUIDELINE: Sensor model name.
-            "value": "IMX564",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "megapixels": {
-            // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
-            "value": 12,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          },
-          "aperture": {
-            // GUIDELINE: Aperture of this non-main lens.
-            "value": "f/2.2",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-          }
-        }
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the presence of officially supported audio formats. For each supported format, use the exact term below for the "value" array:
+        //   • "Dolby Atmos"                 → adds +5.00 to the subscore
+        //   • "DTS:X"                       → adds +1.00 to the subscore
+        //   • "Dolby Digital / Dolby Audio" → adds +3.00 to the subscore
+        //   • "DTS / DTS-HD"                → adds +1.00 to the subscore
+        // The subscore is the sum of these points (Clamped 0–10). Example: ["Dolby Atmos", "Dolby Digital / Dolby Audio"] = 5.00 + 3.00 = 8.00.
+        // If the device does not list support for any multichannel/object formats (or explicitly only supports stereo), leave the array empty [] and set subscore to 0.00.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported audio formats/codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
       },
-      "front_camera": {
-        "main": {
-          // GUIDELINE: Main front-facing camera module. Only the sensor model name is stored here as unscored reference.
-          "sensor_model_name": {
-            // GUIDELINE: Front sensor model name.
-            "value": "Not found or non existing",
-            "source": "N/A",
-            "exact_extract": "N/A"
-          }
-        }
+      "spatial_audio_rendering": {
+        "value": "Tier 2: Static spatial audio (no head tracking)",
+        "value_details": {
+          "Tier 1: Spatial audio with Dynamic Head Tracking": [],
+          "Tier 2: Static spatial audio (no head tracking)": [
+            { "name": "360 Audio", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: No spatial rendering": []
+        },
+        "subscore": 7.00
+        // SCORING GUIDELINE: Identify the highest-tier spatial capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Spatial audio with Dynamic Head Tracking"      → 10.00
+        //   • "Tier 2: Static spatial audio (no head tracking)"       → 7.00
+        //   • "Tier 3: No spatial rendering"                          → 0.00
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported spatial rendering technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
       },
-      "4_1_main_sensor_size": {
-        // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
-        "optical_format": {
-          "value": "1/1.3 inches",
+      "scores": {
+        "predicted": 7.50,
+        // SCORING GUIDELINE: scores.predicted = (0.5 * audio_format_decode.subscore) + (0.5 * spatial_audio_rendering.subscore).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "3_3_wired_audio_capability": {
+      // SCORING GOAL: Scores native wired audio output capability. Evaluates the best natively supported wired audio tier without requiring powered external accessories. Per the hierarchical category rule, only the highest supported tier is stored.
+      "wired_audio_tier": {
+        "value": "Tier 3: USB-C digital audio only (dongle required)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 3.00
+        // SCORING GUIDELINE: Identify the highest supported wired audio tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: 3.5mm headphone jack (native analog output)"  → 10.00
+        //   • "Tier 2: USB-C with documented analog audio output"    → 6.00
+        //   • "Tier 3: USB-C digital audio only (dongle required)"   → 3.00
+        //   • "Tier 4: No wired audio support"                       → 0.00
+      },
+      "scores": {
+        "predicted": 3.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits wired_audio_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 3.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "3_4_microphone_audio_recording": {
+      // SCORING GOAL: Scores Microphone & Audio Recording (MAR) as a composite of hardware count (3.4.1, 30%), recording channels (3.4.2, 30%), and advanced capture features (3.4.3, 40%).
+      "microphone_hardware_count": {
+        "value": "Tier 2: 3",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.00
+        // SCORING GUIDELINE: Record the physical microphone count. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: ≥4 microphones" → 10.00
+        //   • "Tier 2: 3"              → 8.00
+        //   • "Tier 3: 2"              → 5.00
+        //   • "Tier 4: 1"              → 2.00
+        //   • "Tier 5: None"           → 0.00
+      },
+      "recording_channels_modes": {
+        "value": "Tier 2: Stereo",
+        "value_details": {
+          "Tier 1: Multi-channel / spatial audio": [],
+          "Tier 2: Stereo": [
+            { "name": "Stereo recording", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: Mono": [],
+          "Tier 4: Voice-only / unclear": []
+        },
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the highest-tier recording capability. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Multi-channel / spatial audio" → 10.00
+        //     Definition: Captures audio with directional data (e.g., 5.1, 7.1, or OZO Audio).
+        //   • "Tier 2: Stereo"                        → 8.00
+        //     Definition: Standard two-channel (Left/Right) audio recording.
+        //   • "Tier 3: Mono"                          → 5.00
+        //     Definition: Single-channel audio recording.
+        //   • "Tier 4: Voice-only / unclear"          → 0.00
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific recording technologies found in specs (e.g., OZO Audio, Audio Zoom). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "advanced_capture_features": {
+        "value": [
+          "Directional / Audio Zoom",
+          "Wind Noise Reduction"
+        ],
+        "value_details": {
+          "Directional / Audio Zoom": [
+            { "name": "Audio Zoom", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Wind Noise Reduction": [
+            { "name": "Wind Noise Reduction", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Voice Focus / Isolation": [],
+          "Pro Mic Support": []
+        },
+        "subscore": 5.00
+        // SCORING GUIDELINE: Identify the presence of documented features from the list below. For each detected feature, use the exact term before the ": " symbol (e.g., "Directional / Audio Zoom" or "Wind Noise Reduction") for the "value" array. Each feature adds +2.50 points to the subscore (Clamped 0–10). Example: 2 features * 2.50 = 5.00.
+        //   • Directional / Audio Zoom: Focuses audio on the zoomed subject (e.g., "Audio Zoom", "Zoom-in Mic")
+        //   • Wind Noise Reduction: Dedicated toggle or feature to filter wind rumble
+        //   • Voice Focus / Isolation: Feature to enhance speech over background noise (e.g., "Speech Enhancement", "Audio Eraser")
+        //   • Pro Mic Support: Accepts an external mic for video recording — wired (USB-C or 3.5mm) or wireless (Bluetooth). Verify via spec sheet listing for example "external mic input", a documented gain/level control in the camera app, or reviewer confirmation of external mic recording
+        // Always populate the full list of detected features in "value". Do not selectively omit.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
+      },
+      "scores": {
+        "predicted": 6.80,
+        // SCORING GUIDELINE: scores.predicted = (0.30 * microphone_hardware_count.subscore) + (0.30 * recording_channels_modes.subscore) + (0.40 * advanced_capture_features.subscore). Weights from the MAR formula in Section 3.4.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.80,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    }
+  },
+  "4_camera_systems": {
+    // GUIDELINE: Hardware inventory of all physical camera modules. Contains ONLY unscored reference data, as non-scoring data must be placed at section root. All scored parameters are stored in their respective scoring subsections and are NOT duplicated here.
+    // Each key under "rear_camera" / "front_camera" is the lens role (e.g., "main", "tele_5x"). All fields inside are unscored reference data.
+    // MISSING DATA RULE: If a required specification cannot be verified (either because the feature is absent 
+    // or the data is unavailable after an exhaustive research), set the "value" field strictly to "Not found or non existing" 
+    // and set "source" and "exact_extract" to "N/A".
+    "rear_camera": {
+      "main": {
+        // GUIDELINE: Main rear camera module. Only the sensor model name is stored here as unscored reference.
+        "sensor_model_name": {
+          // GUIDELINE: Sensor model name (e.g., "ISOCELL HP2").
+          "value": "ISOCELL HP2",
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.11
-          // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 * (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
-        },
-        "scores": {
-          "predicted": 8.11,
-          // SCORING GUIDELINE: scores.predicted directly inherits optical_format.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.11,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+          "exact_extract": "Proof pending"
         }
       },
-      "4_2_main_camera_aperture": {
-        // SCORING GOAL: Scores the main camera lens aperture (f-number).
-        "aperture_f_stop": {
-          "value": "f/1.7",
+      "telephoto_1": {
+        // GUIDELINE: First telephoto rear camera module (highest optical zoom). Use "telephoto_1" for the primary
+        // telephoto lens, "telephoto_2" for a second one if present. 
+        "optical_zoom": {
+          // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "5x", "3x", "10x").
+          "value": "5x",
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 6.40
-          // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 * (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+          "exact_extract": "Proof pending"
         },
-        "scores": {
-          "predicted": 6.40,
-          // SCORING GUIDELINE: scores.predicted directly inherits aperture_f_stop.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 6.40,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_3_main_camera_resolution": {
-        // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP).
+        "sensor_model_name": {
+          // GUIDELINE: Sensor model name.
+          "value": "IMX854",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
         "megapixels": {
-          "value": 200,
+          // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+          "value": 50,
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
+          "exact_extract": "Proof pending"
         },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits megapixels.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_4_image_stabilization": {
-        // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture.
-        "stabilization_type": {
-          "value": "Tier 3: Lens-Based Optical Image Stabilization",
-          "value_details": {
-            "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)": [],
-            "Tier 2: Sensor-Shift Optical Image Stabilization": [],
-            "Tier 3: Lens-Based Optical Image Stabilization": [
-              { "name": "OIS", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 4: Software-Only Stabilization (Electronic, no hardware)": [],
-            "Tier 5: None": []
-          },
-          "subscore": 8.00
-          // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
-          //     Definition: The entire camera module floats on a multi-axis mechanical suspension or gimbal (e.g., vivo, ASUS ROG/Zenfone).
-          //   • "Tier 2: Sensor-Shift Optical Image Stabilization"              → 9.00
-          //     Definition: The image sensor itself physically moves (IBIS) instead of the lens (primarily found on Apple iPhones 12 Pro Max and newer).
-          //   • "Tier 3: Lens-Based Optical Image Stabilization"                → 8.00
-          //     Definition: Individual optical lens elements move to counteract shake. This is the default tier for generic "OIS" listings.
-          //   • "Tier 4: Software-Only Stabilization (Electronic, no hardware)" → 5.00
-          //     Definition: Purely algorithmic stabilization (EIS/AIS) via digital cropping; requires no moving physical parts.
-          //   • "Tier 5: None"                                                  → 0.00
-          //     Definition: No hardware or software stabilization is detected or documented.
-          // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to "Tier 3: Lens-Based Optical Image Stabilization" (8.00).
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        "aperture": {
+          // GUIDELINE: Aperture of this non-main lens.
+          "value": "f/3.4",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
         },
-        "scores": {
-          "predicted": 8.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits stabilization_type.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_5_ultrawide_capability": {
-        // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View and sensor size, gated by the presence of an ultrawide lens.
-        "presence": {
+        "optical_image_stabilization": {
+          // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
           "value": true,
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": "N/A"
-          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no ultrawide lens, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
-        },
-        "field_of_view_degrees": {
-          "value": 120,
+          "exact_extract": "Proof pending"
+        }
+      },
+      "telephoto_2": {
+        // GUIDELINE: Second telephoto rear camera module (if present).
+        "optical_zoom": {
+          // GUIDELINE: Optical zoom factor of this telephoto lens (e.g., "3x", "2x").
+          "value": "3x",
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 7.78
-          // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 * (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          "exact_extract": "Proof pending"
         },
-        "ultrawide_sensor_size": {
-          "value": "1/2.0",
+        "sensor_model_name": {
+          // GUIDELINE: Sensor model name.
+          "value": "IMX754",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "megapixels": {
+          // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+          "value": 10,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "aperture": {
+          // GUIDELINE: Aperture of this non-main lens.
+          "value": "f/2.4",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "optical_image_stabilization": {
+          // GUIDELINE: Whether this non-main lens has Optical Image Stabilization (OIS).
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
+      },
+      "ultrawide": {
+        // GUIDELINE: Ultrawide rear camera module.
+        "sensor_model_name": {
+          // GUIDELINE: Sensor model name.
+          "value": "IMX564",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "megapixels": {
+          // GUIDELINE: Resolution of this non-main lens in Megapixels (MP).
+          "value": 12,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        },
+        "aperture": {
+          // GUIDELINE: Aperture of this non-main lens.
+          "value": "f/2.2",
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+        }
+      }
+    },
+    "front_camera": {
+      "main": {
+        // GUIDELINE: Main front-facing camera module. Only the sensor model name is stored here as unscored reference.
+        "sensor_model_name": {
+          // GUIDELINE: Front sensor model name.
+          "value": "Not found or non existing",
+          "source": "N/A",
+          "exact_extract": "N/A"
+        }
+      }
+    },
+    "4_1_main_sensor_size": {
+      // SCORING GOAL: Scores the main camera sensor size as the primary determinant of image quality.
+      "optical_format": {
+        "value": "1/1.3 inches",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.11
+        // SCORING GUIDELINE: Apply the Section 4.1 logarithmic formula: Score = 10 * (log(4_1_main_sensor_size.optical_format.value) − log(Camera_Main_Sensor_Inch_Min)) / (log(Camera_Main_Sensor_Inch_Max) − log(Camera_Main_Sensor_Inch_Min)), clamped 0–10. Convert the optical format string to a decimal (e.g., "1/1.3 inches" → 0.7692).
+      },
+      "scores": {
+        "predicted": 8.11,
+        // SCORING GUIDELINE: scores.predicted directly inherits optical_format.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.11,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_2_main_camera_aperture": {
+      // SCORING GOAL: Scores the main camera lens aperture (f-number).
+      "aperture_f_stop": {
+        "value": "f/1.7",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 6.40
+        // SCORING GUIDELINE: Apply the Section 4.2 inverted logarithmic formula: Score = 10 * (log(Camera_Main_Aperture_f_Max) − log(aperture_f_stop)) / (log(Camera_Main_Aperture_f_Max) − log(Camera_Main_Aperture_f_Min)), clamped 0–10. Parse the f-stop string to a decimal (e.g., "f/1.7" → 1.7). The formula is inverted because lower f-numbers are better.
+      },
+      "scores": {
+        "predicted": 6.40,
+        // SCORING GUIDELINE: scores.predicted directly inherits aperture_f_stop.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.40,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_3_main_camera_resolution": {
+      // SCORING GOAL: Scores the main sensor's maximum pixel count in Megapixels (MP).
+      "megapixels": {
+        "value": 200,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Apply the Section 4.3 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Main_Resolution_MP_Min)) / (log(Camera_Main_Resolution_MP_Max) − log(Camera_Main_Resolution_MP_Min)), clamped 0–10.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits megapixels.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_4_image_stabilization": {
+      // SCORING GOAL: Scores the image stabilization mechanism used to compensate for hand shake during photo and video capture.
+      "stabilization_type": {
+        "value": "Tier 3: Lens-Based Optical Image Stabilization",
+        "value_details": {
+          "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)": [],
+          "Tier 2: Sensor-Shift Optical Image Stabilization": [],
+          "Tier 3: Lens-Based Optical Image Stabilization": [
+            { "name": "OIS", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 4: Software-Only Stabilization (Electronic, no hardware)": [],
+          "Tier 5: None": []
+        },
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the stabilization mechanism. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Multi-Axis Mechanical Stabilization (Gimbal)"          → 10.00
+        //     Definition: The entire camera module floats on a multi-axis mechanical suspension or gimbal (e.g., vivo, ASUS ROG/Zenfone).
+        //   • "Tier 2: Sensor-Shift Optical Image Stabilization"              → 9.00
+        //     Definition: The image sensor itself physically moves (IBIS) instead of the lens (primarily found on Apple iPhones 12 Pro Max and newer).
+        //   • "Tier 3: Lens-Based Optical Image Stabilization"                → 8.00
+        //     Definition: Individual optical lens elements move to counteract shake. This is the default tier for generic "OIS" listings.
+        //   • "Tier 4: Software-Only Stabilization (Electronic, no hardware)" → 5.00
+        //     Definition: Purely algorithmic stabilization (EIS/AIS) via digital cropping; requires no moving physical parts.
+        //   • "Tier 5: None"                                                  → 0.00
+        //     Definition: No hardware or software stabilization is detected or documented.
+        // AMBIGUITY RULE: If the spec sheet lists only "Optical Image Stabilization (OIS)" without further qualification (no mention of "sensor-shift" or "gimbal"), default to "Tier 3: Lens-Based Optical Image Stabilization" (8.00).
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 8.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits stabilization_type.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_5_ultrawide_capability": {
+      // SCORING GOAL: Scores Ultrawide Camera Capability (UCC) as a composite of Field of View and sensor size, gated by the presence of an ultrawide lens.
+      "presence": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": "N/A"
+        // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no ultrawide lens, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
+      },
+      "field_of_view_degrees": {
+        "value": 120,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 7.78
+        // SCORING GUIDELINE: Apply the Section 4.5.2 linear formula: Score = 10 * (field_of_view_degrees − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max) / (Camera_Ultrawide_FOV_Deg_Max − Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max), clamped 0–10. Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+      },
+      "ultrawide_sensor_size": {
+        "value": "1/2.0",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 * (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+      },
+      "scores": {
+        "predicted": 8.67,
+        // SCORING GUIDELINE: scores.predicted = (0.60 * field_of_view_degrees.subscore) + (0.40 * ultrawide_sensor_size.subscore) if presence = true; otherwise scores.predicted = 0.00.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.67,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_6_zoom_capability": {
+      // SCORING GOAL: Scores optical zoom power. Only true optical magnification is counted; digital/crop zoom is excluded.
+      "optical_zoom_x": {
+        "value": 5,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 6.99
+        // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 * (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
+      },
+      "scores": {
+        "predicted": 6.99,
+        // SCORING GUIDELINE: scores.predicted directly inherits optical_zoom_x.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.99,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_7_macro_capability": {
+      // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths.
+      "4_7_1_ultrawide_path": {
+        // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
+        "ultrawide_autofocus": {
+          "value": "Tier 1: Autofocus",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Apply the Section 4.5.3 logarithmic formula: Score = 10 * (log(ultrawide_sensor_size) − log(Camera_Ultrawide_Sensor_Inch_Min)) / (log(Camera_Ultrawide_Sensor_Inch_Max) − log(Camera_Ultrawide_Sensor_Inch_Min)), clamped 0–10. Convert format string to decimal for the scoring formula (e.g., "1/2.0" → 0.5). Only evaluated if presence = true. If presence = false, then all fields of this block must be "N/A".
+          // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+          //   • "Tier 1: Autofocus"   → 10.00
+          //   • "Tier 2: Fixed Focus" → 3.00
+          //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be "N/A", and "subscore" MUST be 0.00.
         },
-        "scores": {
-          "predicted": 8.67,
-          // SCORING GUIDELINE: scores.predicted = (0.60 * field_of_view_degrees.subscore) + (0.40 * ultrawide_sensor_size.subscore) if presence = true; otherwise scores.predicted = 0.00.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.67,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_6_zoom_capability": {
-        // SCORING GOAL: Scores optical zoom power. Only true optical magnification is counted; digital/crop zoom is excluded.
-        "optical_zoom_x": {
-          "value": 5,
+        "min_focus_distance_cm": {
+          "value": 2.5,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 6.99
-          // SCORING GUIDELINE: Apply the Section 4.6 logarithmic formula: Score = 10 * (log(optical_zoom_x) − log(Camera_Zoom_Optical_x_Min)) / (log(Camera_Zoom_Optical_x_Max) − log(Camera_Zoom_Optical_x_Min)), clamped 0–10.
-        },
-        "scores": {
-          "predicted": 6.99,
-          // SCORING GUIDELINE: scores.predicted directly inherits optical_zoom_x.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 6.99,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_7_macro_capability": {
-        // SCORING GOAL: Scores Macro Capability & Close-Focus Performance (MCFP). Evaluates three hardware paths (Ultrawide, Telemacro, Dedicated Macro Lens). The final score is the maximum across all three paths.
-        "4_7_1_ultrawide_path": {
-          // SCORING GOAL (4.7.1): Groups the ultrawide lens macro capability via Autofocus (AF) and Minimum Focus Distance. Only evaluated if an ultrawide lens is present (see 4_5_ultrawide_capability.presence).
-          "ultrawide_autofocus": {
-            "value": "Tier 1: Autofocus",
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 10.00
-            // SCORING GUIDELINE (4.7.1.1): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-            //   • "Tier 1: Autofocus"   → 10.00
-            //   • "Tier 2: Fixed Focus" → 3.00
-            //   If presence = false, "value" MUST be "Not present or not found", "source" and "exact_extract" must be "N/A", and "subscore" MUST be 0.00.
-          },
-          "min_focus_distance_cm": {
-            "value": 2.5,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 7.31
-            // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 * (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
-          },
-          "scores": {
-            "predicted": 8.39,
-            // SCORING GUIDELINE: scores.predicted (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 * ultrawide_autofocus.subscore) + (0.60 * min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
-            "final": {
-              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-              "value": 8.39,
-              "method_used": "Predictor",
-              "booster": "No",
-              "confidence": "N/A"
-            }
-          }
-        },
-        "4_7_2_telemacro_path": {
-          // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 centimeters away), preventing the phone from casting a shadow and delivering natural background blur.
-          "telemacro_presence": {
-            "value": false,
-            "source": "N/A",
-            "exact_extract": "N/A",
-            "subscore": 0.00
-            // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no telemacro, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
-            // VERIFICATION RULE: Set to true only if specifications explicitly confirm "Macro telephoto", "floating elements", or list a focus distance between 5 centimeters and 30 centimeters for a specific telephoto lens.
-          },
-          "telemacro_optical_x": {
-            "value": "N/A",
-            "source": "N/A",
-            "exact_extract": "N/A",
-            "subscore": "N/A"
-            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
-            // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only millimeters focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
-            // IMPORTANT: Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
-            // CALCULATION: Zoom_Score = 10 * (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
-            // If telemacro_presence = false, then all fields of this block must be "N/A".
-          },
-          "telemacro_min_focus_distance_cm": {
-            "value": "N/A",
-            "source": "N/A",
-            "exact_extract": "N/A",
-            "subscore": "N/A"
-            // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
-            // WHERE TO FIND IT: Look for "minimum focus distance", "closest focus distance" or "macro focus from X cm" specifically for the telephoto lens.
-            // CALCULATION: MFD_Score = 10 * (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
-            // If telemacro_presence = false, then all fields of this block must be "N/A".
-          },
-          "scores": {
-            "predicted": 0.00,
-            // SCORING GUIDELINE: scores.predicted (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 * (0.70 * telemacro_optical_x.subscore + 0.30 * telemacro_min_focus_distance_cm.subscore).
-            "final": {
-              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-              "value": 0.00,
-              "method_used": "Predictor",
-              "booster": "No",
-              "confidence": "N/A"
-            }
-          }
-        },
-        "4_7_3_dedicated_path": {
-          // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/telephoto). Scores are capped at 3.00 to appropriately rank them below higher-quality macro implementations that use more capable primary or ultrawide sensors.
-          "dedicated_macro_megapixels": {
-            "value": 0,
-            "source": "N/A",
-            "exact_extract": "N/A",
-            "subscore": 0.00
-            // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 * dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
-          },
-          "scores": {
-            "predicted": 0.00,
-            // SCORING GUIDELINE: scores.predicted directly inherits dedicated_macro_megapixels.subscore.
-            "final": {
-              // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-              "value": 0.00,
-              "method_used": "Predictor",
-              "booster": "No",
-              "confidence": "N/A"
-            }
-          }
+          "subscore": 7.31
+          // SCORING GUIDELINE (4.7.1.2): Only evaluated if `4_5_ultrawide_capability.presence.value` = true. Apply the Section 4.7.1.2 logarithmic formula: Score = 10 * (log(Camera_Macro_Dist_cm_Max) − log(distance)) / (log(Camera_Macro_Dist_cm_Max) − log(Camera_Macro_Dist_cm_Min)), clamped 0–10. If `4_5_ultrawide_capability.presence.value` = false, then all fields of this block must be "N/A".
         },
         "scores": {
           "predicted": 8.39,
-          // SCORING GUIDELINE: scores.predicted (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
+          // SCORING GUIDELINE: scores.predicted (Source: *Formula for 4.7.1 Ultrawide Path:* Score_4.7.1) = (0.40 * ultrawide_autofocus.subscore) + (0.60 * min_focus_distance_cm.subscore) if `4_5_ultrawide_capability.presence.value` = true; otherwise 0.00.
           "final": {
             // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
             "value": 8.39,
@@ -1319,94 +1244,382 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
-      "4_8_rear_video_resolution": {
-        // SCORING GOAL: Scores the maximum spatial resolution supported for rear-camera video recording.
+      "4_7_2_telemacro_path": {
+        // SCORING GOAL (4.7.2): Scores Telemacro (Telephoto Macro) capability. A telephoto macro lens enables close-up shots from a greater working distance (10–15 centimeters away), preventing the phone from casting a shadow and delivering natural background blur.
+        "telemacro_presence": {
+          "value": false,
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Binary gate. If value = false, the subscore is 0.00, the fields "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no telemacro, in that case "source" and "exact_extract" should reflect that finding. If value = true, then the subscore must be "N/A" and the scores will be calculated in the sections below.
+          // VERIFICATION RULE: Set to true only if specifications explicitly confirm "Macro telephoto", "floating elements", or list a focus distance between 5 centimeters and 30 centimeters for a specific telephoto lens.
+        },
+        "telemacro_optical_x": {
+          "value": "N/A",
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": "N/A"
+          // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
+          // WHERE TO FIND IT: Look for the optical zoom of the specific telephoto lens with macro capability (e.g., "3× optical zoom", "5× periscope", "70 mm telephoto", etc.). If only millimeters focal length is provided, divide by main lens focal length (usually ~24 mm) to get the magnification. Example: a 70 mm telephoto on a phone with a 24 mm main = roughly 3×.
+          // IMPORTANT: Only use the optical magnification of the lens with confirmed telemacro capability. If a phone has a 3× and a 5× telephoto but only the 3× supports macro focus, use 3×.
+          // CALCULATION: Zoom_Score = 10 * (log(telemacro_optical_x) − log(Camera_Telemacro_x_Min)) / (log(Camera_Telemacro_x_Max) − log(Camera_Telemacro_x_Min)), clamped 0–10.
+          // If telemacro_presence = false, then all fields of this block must be "N/A".
+        },
+        "telemacro_min_focus_distance_cm": {
+          "value": "N/A",
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": "N/A"
+          // SCORING GUIDELINE: Only evaluated if telemacro_presence = true.
+          // WHERE TO FIND IT: Look for "minimum focus distance", "closest focus distance" or "macro focus from X cm" specifically for the telephoto lens.
+          // CALCULATION: MFD_Score = 10 * (log(Camera_Telemacro_MFD_cm_Max) − log(telemacro_min_focus_distance_cm)) / (log(Camera_Telemacro_MFD_cm_Max) − log(Camera_Telemacro_MFD_cm_Min)), clamped 0–10.
+          // If telemacro_presence = false, then all fields of this block must be "N/A".
+        },
+        "scores": {
+          "predicted": 0.00,
+          // SCORING GUIDELINE: scores.predicted (Score_4.7.2) = 0.00 if telemacro_presence = false; otherwise Score = 7.0 + 0.3 * (0.70 * telemacro_optical_x.subscore + 0.30 * telemacro_min_focus_distance_cm.subscore).
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        }
+      },
+      "4_7_3_dedicated_path": {
+        // SCORING GOAL (4.7.3): Scores a dedicated macro lens (a small fixed lens separate from the main/ultrawide/telephoto). Scores are capped at 3.00 to appropriately rank them below higher-quality macro implementations that use more capable primary or ultrawide sensors.
+        "dedicated_macro_megapixels": {
+          "value": 0,
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": 0.00
+          // SCORING GUIDELINE: Apply the Section 4.7.3 linear formula: Score_4.7.3 = clamp(3.0 * dedicated_macro_megapixels / Camera_Dedicated_Macro_MP_Max, 0.00, 3.00). The score maps the Megapixels (MP) count linearly onto 0–3.00, where Camera_Dedicated_Macro_MP_Max scores 3.00. Values above Camera_Dedicated_Macro_MP_Max are capped at 3.00. A value of 0 MP means no dedicated macro lens (score = 0.00), in that case "source" and "exact_extract" must be "N/A" unless you find a source that explicitly states the device has no dedicated macro, in that case "source" and "exact_extract" should reflect that finding.
+        },
+        "scores": {
+          "predicted": 0.00,
+          // SCORING GUIDELINE: scores.predicted directly inherits dedicated_macro_megapixels.subscore.
+          "final": {
+            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+            "value": 0.00,
+            "method_used": "Predictor",
+            "booster": "No",
+            "confidence": "N/A"
+          }
+        }
+      },
+      "scores": {
+        "predicted": 8.39,
+        // SCORING GUIDELINE: scores.predicted (MCFP Score) = Max(Score_4.7.1, Score_4.7.2, Score_4.7.3). The system evaluates all three paths independently and awards the score of the best-performing hardware implementation.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.39,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_8_rear_video_resolution": {
+      // SCORING GOAL: Scores the maximum spatial resolution supported for rear-camera video recording.
+      "maximum_resolution": {
+        "value": "Tier 2: 4K (Ultra HD)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: 8K"                    → 10.00
+        //   • "Tier 2: 4K (Ultra HD)"         → 10.00
+        //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
+        //   • "Tier 4: 1080p (Full HD)"       → 6.00
+        //   • "Tier 5: 720p (HD)"             → 3.00
+        //   • "Tier 6: ≤ 480p"                → 0.00
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits maximum_resolution.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_9_rear_video_frame_rate": {
+      // SCORING GOAL: Scores the maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K.
+      "maximum_frames_per_second": {
+        "value": 120,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 * (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits maximum_frames_per_second.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_10_video_hdr": {
+      // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the camera system can record in. Dynamic HDR formats (Dolby Vision, HDR10+) optimize brightness and colour frame-by-frame for superior realism and grading headroom.
+      "supported_formats": {
+        "value": [
+          "Dolby Vision",
+          "HDR10"
+        ],
+        "value_details": {
+          "Dolby Vision": [
+            { "name": "Dolby Vision", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "HDR10+": [],
+          "HDR10": [
+            { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "HLG": []
+        },
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
+        //   • "Dolby Vision"             → adds +3.00 to the subscore
+        //   • "HDR10+"                   → adds +2.00 to the subscore
+        //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
+        // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply. 
+      },
+      "scores": {
+        "predicted": 8.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits supported_formats.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_11_video_encoding": {
+      // SCORING GOAL: Scores support for professional codecs and recording profiles as a composite index.
+      "professional_codec_support": {
+        "value": "Tier 2: Mezzanine",
+        "value_details": {
+          "Tier 1: True RAW": [],
+          "Tier 2: Mezzanine": [
+            { "name": "ProRes", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: Standard": []
+        },
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: True RAW"    → 10.00
+        //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
+        //   • "Tier 2: Mezzanine"   → 8.00
+        //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
+        //   • "Tier 3: Standard"    → 0.00
+        //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "log_color_profile_support": {
+        "value": "Tier 1: True Log",
+        "value_details": {
+          "Tier 1: True Log": [
+            { "name": "Apple Log", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: Flat / Cine": [],
+          "Tier 3: Standard only": []
+        },
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: True Log"       → 10.00
+        //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
+        //   • "Tier 2: Flat / Cine"    → 5.00
+        //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, D-Cinelike).
+        //   • "Tier 3: Standard only"  → 0.00
+        //     Definition: No professional gamma profiles; only standard rec.709 or rec.2020 curves.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "color_bit_depth": {
+        "value": "Tier 2: 10-bit color",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 5.00
+        // SCORING GUIDELINE: Use the following exact same Tier Names for "value" with related scores as subscore: 
+        //   • "Tier 1: 12-bit color" → 10.00
+        //   • "Tier 2: 10-bit color" → 5.00
+        //   • "Tier 3: 8-bit color"  → 0.00
+      },
+      "scores": {
+        "predicted": 7.95,
+        // SCORING GUIDELINE: scores.predicted = (0.40 * professional_codec_support.subscore) + (0.35 * log_color_profile_support.subscore) + (0.25 * color_bit_depth.subscore).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.95,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_12_slow_motion": {
+      // SCORING GOAL: Scores the ability to capture video at very high frame rates in a dedicated "Slow Motion" mode based on maximum data throughput, expressed in Megapixels per second (MP/s).
+      "supported_modes": {
+        "value": [
+          {
+            "resolution_megapixels": 2.07,
+            "frames_per_second": 960
+          },
+          {
+            "resolution_megapixels": 8.29,
+            "frames_per_second": 120
+          }
+        ],
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution * FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
+      },
+      "scores": {
+        "predicted": 8.55,
+        // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels * frames_per_second. Apply the Section 4.12 logarithmic formula: scores.predicted = 10 * (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set scores.predicted to 0.00.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.55,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_13_front_camera_resolution": {
+      // SCORING GOAL: Scores the spatial resolution of the front-facing camera.
+      "megapixels": {
+        "value": 12,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+      },
+      "scores": {
+        "predicted": 4.72,
+        // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 4.72,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_14_front_camera_focus": {
+      // SCORING GOAL: Scores the ability of the front-facing camera to maintain sharp focus.
+      "aperture_f_number": {
+        "value": 2.2,
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // DATA GUIDELINE: Identify the Aperture f-number of the front camera. This is the numerical part of the fraction (e.g., 2.2 for f/2.2).
+      },
+      "sensor_size": {
+        "value": "1/3",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // DATA GUIDELINE: Identify the sensor size fraction (e.g., "1/3", "1/3.1", "1/4").
+      },
+      "focus_system_tier": {
+        "value": "Tier 1: Autofocus",
+        "value_details": {
+          "Tier 1: Autofocus": [
+            { "name": "Phase Detection Auto Focus (PDAF)", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: Fixed Focus (Modern Wide-DOF)": [],
+          "Tier 3: Fixed Focus (Legacy Narrow-DOF)": [],
+          "Tier 4: No Front Camera": []
+        },
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Autofocus"                        → 10.00
+        //     Definition: An active mechanical system where the lens moves to find focus (e.g., Phase Detection Auto Focus (PDAF), Dual Pixel, or Laser Auto Focus).
+        //   • "Tier 2: Fixed Focus (Modern Wide-DOF)"    → 6.00
+        //     Definition: A lens with no moving hardware parts configured for a wide Depth of Field (DOF) focus zone. Identified by (aperture_f_number ≥ 2.0) OR (sensor_size ≤ 1/3").
+        //   • "Tier 3: Fixed Focus (Legacy Narrow-DOF)"  → 3.00
+        //     Definition: A lens with no moving hardware parts featuring a narrow Depth of Field (DOF) focus zone. Identified by (aperture_f_number < 2.0) AND (sensor_size > 1/3").
+        //   • "Tier 4: No Front Camera"                  → 0.00
+        //     Definition: Device lacks a front-facing selfie camera module.
+        // AMBIGUITY RESOLUTION: Focus Zone width is determined by Depth of Field (DOF). If sensor size data is missing, classify based solely on the aperture (f-number) if it is known.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits focus_system_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_15_front_camera_video": {
+      // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, High Dynamic Range (HDR), and Professional Recording) of the front camera as a composite score.
+      "4_15_1_video_resolution": {
         "maximum_resolution": {
           "value": "Tier 2: 4K (Ultra HD)",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the maximum rear video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+          // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: 8K"                    → 10.00
           //   • "Tier 2: 4K (Ultra HD)"         → 10.00
           //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
           //   • "Tier 4: 1080p (Full HD)"       → 6.00
           //   • "Tier 5: 720p (HD)"             → 3.00
-          //   • "Tier 6: ≤ 480p"                → 0.00
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits maximum_resolution.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+          //   • "Tier 6: ≤480p"                 → 0.00
         }
       },
-      "4_9_rear_video_frame_rate": {
-        // SCORING GOAL: Scores the maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K.
+      "4_15_2_video_frame_rate": {
         "maximum_frames_per_second": {
-          "value": 120,
+          "value": 60,
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the exact maximum Frames Per Second (FPS) supported at the resolution evaluated in Section "4_8_rear_video_resolution" capped at 4K. For example, if the device scored 8K in "4_8_rear_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_8_rear_video_resolution", evaluate its 1080p FPS. Apply the Section 4.9 logarithmic formula: Score = 10 * (log(maximum_frames_per_second) − log(Camera_Video_FPS_Min)) / (log(Camera_Video_FPS_Max) − log(Camera_Video_FPS_Min)), clamped 0–10. Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+).
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits maximum_frames_per_second.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+          // SCORING GUIDELINE: Mirroring Section 4.9 (Rear Video Frame Rate). Identify the maximum Frames per second (FPS) specifically at the resolution listed in "4_15_1_video_resolution.maximum_resolution", capped at 4K. For example, if the device scored 8K in "4_15_1_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_15_1_video_resolution", evaluate its 1080p FPS. Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 * (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
         }
       },
-      "4_10_video_hdr": {
-        // SCORING GOAL: Scores which High Dynamic Range (HDR) video formats the camera system can record in. Dynamic HDR formats (Dolby Vision, HDR10+) optimize brightness and colour frame-by-frame for superior realism and grading headroom.
+      "4_15_3_video_hdr": {
         "supported_formats": {
           "value": [
             "Dolby Vision",
+            "HDR10+",
             "HDR10"
           ],
           "value_details": {
             "Dolby Vision": [
               { "name": "Dolby Vision", "source": "TBD", "exact_extract": "Proof pending" }
             ],
-            "HDR10+": [],
+            "HDR10+": [
+              { "name": "HDR10+", "source": "TBD", "exact_extract": "Proof pending" }
+            ],
             "HDR10": [
               { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
             ],
             "HLG": []
           },
-          "subscore": 8.00
-          // SCORING GUIDELINE: Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
+          "subscore": 10.00
+          // SCORING GUIDELINE: Mirroring Section 4.10 (Rear Video HDR). Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
           //   • "Dolby Vision"             → adds +3.00 to the subscore
           //   • "HDR10+"                   → adds +2.00 to the subscore
           //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
           // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply. 
-        },
-        "scores": {
-          "predicted": 8.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits supported_formats.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
         }
       },
-      "4_11_video_encoding": {
-        // SCORING GOAL: Scores support for professional codecs and recording profiles as a composite index.
-        "professional_codec_support": {
+      "4_15_4_1_professional_codec_support": {
+        "supported_codecs": {
           "value": "Tier 2: Mezzanine",
           "value_details": {
             "Tier 1: True RAW": [],
@@ -1416,16 +1629,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 3: Standard": []
           },
           "subscore": 8.00
-          // SCORING GUIDELINE: Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: True RAW"    → 10.00
-          //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
-          //   • "Tier 2: Mezzanine"   → 8.00
-          //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
-          //   • "Tier 3: Standard"    → 0.00
-          //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "log_color_profile_support": {
+        // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: True RAW"    → 10.00
+        //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
+        //   • "Tier 2: Mezzanine"   → 8.00
+        //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
+        //   • "Tier 3: Standard"    → 0.00
+        //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        }
+      },
+      "4_15_4_2_log_color_profile_support": {
+        "supported_profiles": {
           "value": "Tier 1: True Log",
           "value_details": {
             "Tier 1: True Log": [
@@ -1435,1779 +1650,1287 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "Tier 3: Standard only": []
           },
           "subscore": 10.00
-          // SCORING GUIDELINE: Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+          // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
           //   • "Tier 1: True Log"       → 10.00
           //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
           //   • "Tier 2: Flat / Cine"    → 5.00
-          //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, D-Cinelike).
+          //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, Cinelike-D).
           //   • "Tier 3: Standard only"  → 0.00
-          //     Definition: No professional gamma profiles; only standard rec.709 or rec.2020 curves.
+          //     Definition: No professional gamma profiles. only standard rec.709 or rec.2020 curves.
           // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "color_bit_depth": {
-          "value": "Tier 2: 10-bit color",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.00
-          // SCORING GUIDELINE: Use the following exact same Tier Names for "value" with related scores as subscore: 
-          //   • "Tier 1: 12-bit color" → 10.00
-          //   • "Tier 2: 10-bit color" → 5.00
-          //   • "Tier 3: 8-bit color"  → 0.00
-        },
-        "scores": {
-          "predicted": 7.95,
-          // SCORING GUIDELINE: scores.predicted = (0.40 * professional_codec_support.subscore) + (0.35 * log_color_profile_support.subscore) + (0.25 * color_bit_depth.subscore).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.95,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
         }
       },
-      "4_12_slow_motion": {
-        // SCORING GOAL: Scores the ability to capture video at very high frame rates in a dedicated "Slow Motion" mode based on maximum data throughput, expressed in Megapixels per second (MP/s).
-        "supported_modes": {
-          "value": [
-            {
-              "resolution_megapixels": 2.07,
-              "frames_per_second": 960
-            },
-            {
-              "resolution_megapixels": 8.29,
-              "frames_per_second": 120
-            }
-          ],
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-          // SCORING GUIDELINE: Enter all Resolution/Frames per Second(FPS) pairs explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion" or "High Speed Video" (Do NOT use standard video resolutions). Calculate MP/s (Resolution * FPS) for each pair and place the combination yielding the absolute highest MP/s in the VERY FIRST position of this array. If no dedicated slow-motion mode exists, leave the array empty [].
-        },
-        "scores": {
-          "predicted": 8.55,
-          // SCORING GUIDELINE: Use the first item in `supported_modes.value` (the highest MP/s pair) to calculate MP_s = resolution_megapixels * frames_per_second. Apply the Section 4.12 logarithmic formula: scores.predicted = 10 * (log(MP_s) − log(Camera_SlowMo_MPs_Min)) / (log(Camera_SlowMo_MPs_Max) − log(Camera_SlowMo_MPs_Min)), clamped 0–10. If the array is empty, set scores.predicted to 0.00.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.55,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_13_front_camera_resolution": {
-        // SCORING GOAL: Scores the spatial resolution of the front-facing camera.
-        "megapixels": {
-          "value": 12,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-        },
-        "scores": {
-          "predicted": 4.72,
-          // SCORING GUIDELINE: Mirroring Section 4.3 (Main Camera Resolution). Apply the Section 4.13 logarithmic formula: Score = 10 * (log(megapixels) − log(Camera_Front_Resolution_MP_Min)) / (log(Camera_Front_Resolution_MP_Max) − log(Camera_Front_Resolution_MP_Min)), clamped 0–10.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 4.72,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_14_front_camera_focus": {
-        // SCORING GOAL: Scores the ability of the front-facing camera to maintain sharp focus.
-        "aperture_f_number": {
-          "value": 2.2,
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-          // DATA GUIDELINE: Identify the Aperture f-number of the front camera. This is the numerical part of the fraction (e.g., 2.2 for f/2.2).
-        },
-        "sensor_size": {
-          "value": "1/3",
-          "source": "TBD",
-          "exact_extract": "Proof pending"
-          // DATA GUIDELINE: Identify the sensor size fraction (e.g., "1/3", "1/3.1", "1/4").
-        },
-        "focus_system_tier": {
-          "value": "Tier 1: Autofocus",
-          "value_details": {
-            "Tier 1: Autofocus": [
-              { "name": "Phase Detection Auto Focus (PDAF)", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 2: Fixed Focus (Modern Wide-DOF)": [],
-            "Tier 3: Fixed Focus (Legacy Narrow-DOF)": [],
-            "Tier 4: No Front Camera": []
-          },
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the front camera's focus type. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Autofocus"                        → 10.00
-          //     Definition: An active mechanical system where the lens moves to find focus (e.g., Phase Detection Auto Focus (PDAF), Dual Pixel, or Laser Auto Focus).
-          //   • "Tier 2: Fixed Focus (Modern Wide-DOF)"    → 6.00
-          //     Definition: A lens with no moving hardware parts configured for a wide Depth of Field (DOF) focus zone. Identified by (aperture_f_number ≥ 2.0) OR (sensor_size ≤ 1/3").
-          //   • "Tier 3: Fixed Focus (Legacy Narrow-DOF)"  → 3.00
-          //     Definition: A lens with no moving hardware parts featuring a narrow Depth of Field (DOF) focus zone. Identified by (aperture_f_number < 2.0) AND (sensor_size > 1/3").
-          //   • "Tier 4: No Front Camera"                  → 0.00
-          //     Definition: Device lacks a front-facing selfie camera module.
-          // AMBIGUITY RESOLUTION: Focus Zone width is determined by Depth of Field (DOF). If sensor size data is missing, classify based solely on the aperture (f-number) if it is known.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are **arrays of objects**. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits focus_system_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_15_front_camera_video": {
-        // SCORING GOAL: Scores maximum video capture capability (resolution, frame rate, High Dynamic Range (HDR), and Professional Recording) of the front camera as a composite score.
-        "4_15_1_video_resolution": {
-          "maximum_resolution": {
-            "value": "Tier 2: 4K (Ultra HD)",
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.8 (Rear Video Resolution). Identify the maximum front video resolution. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-            //   • "Tier 1: 8K"                    → 10.00
-            //   • "Tier 2: 4K (Ultra HD)"         → 10.00
-            //   • "Tier 3: 1440p / QHD (2.5K)"    → 8.00
-            //   • "Tier 4: 1080p (Full HD)"       → 6.00
-            //   • "Tier 5: 720p (HD)"             → 3.00
-            //   • "Tier 6: ≤480p"                 → 0.00
-          }
-        },
-        "4_15_2_video_frame_rate": {
-          "maximum_frames_per_second": {
-            "value": 60,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.9 (Rear Video Frame Rate). Identify the maximum Frames per second (FPS) specifically at the resolution listed in "4_15_1_video_resolution.maximum_resolution", capped at 4K. For example, if the device scored 8K in "4_15_1_video_resolution", evaluate its 4K FPS instead. If the device scored 1080p in "4_15_1_video_resolution", evaluate its 1080p FPS. Apply the Section 4.15.2 logarithmic formula: FPSScore = 10 * (log(maximum_frames_per_second) − log(Camera_Front_Video_FPS_Min)) / (log(Camera_Front_Video_FPS_Max) − log(Camera_Front_Video_FPS_Min)), clamped 0–10.
-          }
-        },
-        "4_15_3_video_hdr": {
-          "supported_formats": {
-            "value": [
-              "Dolby Vision",
-              "HDR10+",
-              "HDR10"
-            ],
-            "value_details": {
-              "Dolby Vision": [
-                { "name": "Dolby Vision", "source": "TBD", "exact_extract": "Proof pending" }
-              ],
-              "HDR10+": [
-                { "name": "HDR10+", "source": "TBD", "exact_extract": "Proof pending" }
-              ],
-              "HDR10": [
-                { "name": "HDR10", "source": "TBD", "exact_extract": "Proof pending" }
-              ],
-              "HLG": []
-            },
-            "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.10 (Rear Video HDR). Identify the presence of officially supported High Dynamic Range (HDR) video recording formats. For each supported format, use its exact term below for the "value" array:
-            //   • "Dolby Vision"             → adds +3.00 to the subscore
-            //   • "HDR10+"                   → adds +2.00 to the subscore
-            //   • "HDR10" or "HLG"           → adds +5.00 to the subscore (Base HDR tier, points do not stack)
-            // The subscore is the sum of these points (Clamped 0–10). If no HDR recording is supported (standard Standard Dynamic Range / SDR), leave the array empty [] and set subscore to 0.00.
-            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported HDR formats found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply.
-          }
-        },
-        "4_15_4_1_professional_codec_support": {
-          "supported_codecs": {
-            "value": "Tier 2: Mezzanine",
-            "value_details": {
-              "Tier 1: True RAW": [],
-              "Tier 2: Mezzanine": [
-                { "name": "ProRes", "source": "TBD", "exact_extract": "Proof pending" }
-              ],
-              "Tier 3: Standard": []
-            },
-            "subscore": 8.00
-          // SCORING GUIDELINE: Mirroring Section 4.11.1 (PCS). Identify the highest supported professional recording codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: True RAW"    → 10.00
-          //     Definition: Uncompressed or losslessly compressed raw video data with full sensor bit depth. Qualifying terms: CinemaDNG, Blackmagic RAW, ProRes RAW, Internal RAW.
-          //   • "Tier 2: Mezzanine"   → 8.00
-          //     Definition: High-bitrate intermediate production codecs with intra-frame compression. Qualifying terms: Apple ProRes 422 (HQ/Standard/LT/Proxy), Samsung Professional Video (ProRes), Xiaomi ProRes.
-          //   • "Tier 3: Standard"    → 0.00
-          //     Definition: Industry-standard distribution codecs (H.264/AVC, H.265/HEVC) without dedicated professional containers.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported professional codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-          }
-        },
-        "4_15_4_2_log_color_profile_support": {
-          "supported_profiles": {
-            "value": "Tier 1: True Log",
-            "value_details": {
-              "Tier 1: True Log": [
-                { "name": "Apple Log", "source": "TBD", "exact_extract": "Proof pending" }
-              ],
-              "Tier 2: Flat / Cine": [],
-              "Tier 3: Standard only": []
-            },
-            "subscore": 10.00
-            // SCORING GUIDELINE: Mirroring Section 4.11.2 (LCP). Identify the supported log profiles. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-            //   • "Tier 1: True Log"       → 10.00
-            //     Definition: Logarithmic gamma curve for professional grading (e.g., Apple Log, S-Log3, D-Log).
-            //   • "Tier 2: Flat / Cine"    → 5.00
-            //     Definition: Desaturated profiles that are not mathematically logarithmic (e.g., S-Cinetone, Cinelike-D).
-            //   • "Tier 3: Standard only"  → 0.00
-            //     Definition: No professional gamma profiles. only standard rec.709 or rec.2020 curves.
-            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported log/flat profiles found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-          }
-        },
-        "scores": {
-          "predicted": 9.80,
-          // SCORING GUIDELINE: scores.predicted = (0.35 * 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 * 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 * 4_15_3_video_hdr.supported_formats.subscore) + (0.10 * 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.10 * 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 9.80,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_16_multiframe_photo": {
-        // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
-        "processing_tier": {
-          "value": "Tier 1: Advanced Semantic & Neural Stacking",
-          "value_details": {
-            "Tier 1: Advanced Semantic & Neural Stacking": [
-              { "name": "Deep Fusion", "source": "TBD", "exact_extract": "Proof pending" },
-              { "name": "Photonic Engine", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 2: Standard Always-on Multi-Frame HDR": [
-              { "name": "Smart HDR 5", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: Conditional / Manual Multi-Frame": [],
-            "Tier 4: Basic / Single Frame (Legacy)": []
-          },
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Advanced Semantic & Neural Stacking" → 10.0
-          //     Definition: Advanced pipeline that uses semantic segmentation (understanding sky, faces, skin) within a Zero Shutter Lag (ZSL) multi-frame buffer.
-          //   • "Tier 2: Standard Always-on Multi-Frame HDR"  → 7.5
-          //     Definition: Always-on multi-frame HDR capture (e.g., Smart HDR) without advanced per-pixel semantic segmentation.
-          //   • "Tier 3: Conditional / Manual Multi-Frame"    → 5.0
-          //     Definition: Multi-frame processing only activates in specific modes (e.g., Night Mode) or requires manual activation (HDR toggle).
-          //   • "Tier 4: Basic / Single Frame (Legacy)"       → 0.0
-          //     Definition: No multi-frame stacking; reliance on single-frame exposure.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported multi-frame features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits processing_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_17_pipeline_semantic_ai": {
-        // SCORING GOAL: Automatic Capture-Time AI. Scores the ability of the software to segment scenes and subjects using Artificial Intelligence (AI).
-        "capability_tier": {
-          "value": "Tier 1: Neural Semantic Segmentation",
-          "value_details": {
-            "Tier 1: Neural Semantic Segmentation": [
-              { "name": "AI ProVisual Engine", "source": "TBD", "exact_extract": "Proof pending" },
-              { "name": "Object-aware engine", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 2: Object-Based Optimization": [],
-            "Tier 3: Basic Metadata AI": [],
-            "Tier 4: None": []
-          },
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Neural Semantic Segmentation" → 10.0
-          //     Definition: Real-time, pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth) during captured multi-frame pipeline.
-          //   • "Tier 2: Object-Based Optimization"    → 7.5
-          //     Definition: Recognizes high-level subjects (dog, flower, sunset) to apply preset global/local enhancements ("Scene Optimizer").
-          //   • "Tier 3: Basic Metadata AI"            → 4.0
-          //     Definition: Simple EXIF-level scene recognition (e.g., "Food", "Text") without intelligent segmentation or pixel-level relighting.
-          //   • "Tier 4: None"                         → 0.0
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI pipeline features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits capability_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "4_18_post_capture_ai_tools": {
-        // SCORING GOAL: User-Initiated Gallery-Time Artificial Intelligence (AI). Scores the ability to modify images after capture using AI tools.
-        "feature_tier": {
-          "value": "Tier 1: Generative Content Transformation",
-          "value_details": {
-            "Tier 1: Generative Content Transformation": [
-              { "name": "Magic Editor", "source": "TBD", "exact_extract": "Proof pending" },
-              { "name": "Best Take", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 2: Advanced Semantic Edits": [],
-            "Tier 3: Basic Algorithmic Fixes": [],
-            "Tier 4: None": []
-          },
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the Post-Capture AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Generative Content Transformation" → 10.0
-          //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
-          //   • "Tier 2: Advanced Semantic Edits"           → 7.50
-          //     Definition: Rule-based or shallow-learning tools for localized adjustments (shadow/reflection removal, face unblur, object erasure without generative fill).
-          //   • "Tier 3: Basic Algorithmic Fixes"           → 4.00
-          //     Definition: Standard beauty filters, color-aware auto-fixing, or basic object prioritization for cropping.
-          //   • "Tier 4: None"                              → 0.0
-          //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits feature_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "scores": {
+        "predicted": 9.80,
+        // SCORING GUIDELINE: scores.predicted = (0.35 * 4_15_1_video_resolution.maximum_resolution.subscore) + (0.25 * 4_15_2_video_frame_rate.maximum_frames_per_second.subscore) + (0.20 * 4_15_3_video_hdr.supported_formats.subscore) + (0.10 * 4_15_4_1_professional_codec_support.supported_codecs.subscore) + (0.10 * 4_15_4_2_log_color_profile_support.supported_profiles.subscore).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.80,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
     },
-    "5_software_and_longevity": {
-      "operating_system_version": {
-        // GUIDELINE: The operating system and version shipped with the device.
-        "value": "Android 14",
+    "4_16_multiframe_photo": {
+      // SCORING GOAL: Scores camera system's automatic multi-frame capture and stacking capabilities. 
+      "processing_tier": {
+        "value": "Tier 1: Advanced Semantic & Neural Stacking",
+        "value_details": {
+          "Tier 1: Advanced Semantic & Neural Stacking": [
+            { "name": "Deep Fusion", "source": "TBD", "exact_extract": "Proof pending" },
+            { "name": "Photonic Engine", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: Standard Always-on Multi-Frame HDR": [
+            { "name": "Smart HDR 5", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: Conditional / Manual Multi-Frame": [],
+          "Tier 4: Basic / Single Frame (Legacy)": []
+        },
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the Multi-Frame Computational Photography (MFCP) tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Advanced Semantic & Neural Stacking" → 10.0
+        //     Definition: Advanced pipeline that uses semantic segmentation (understanding sky, faces, skin) within a Zero Shutter Lag (ZSL) multi-frame buffer.
+        //   • "Tier 2: Standard Always-on Multi-Frame HDR"  → 7.5
+        //     Definition: Always-on multi-frame HDR capture (e.g., Smart HDR) without advanced per-pixel semantic segmentation.
+        //   • "Tier 3: Conditional / Manual Multi-Frame"    → 5.0
+        //     Definition: Multi-frame processing only activates in specific modes (e.g., Night Mode) or requires manual activation (HDR toggle).
+        //   • "Tier 4: Basic / Single Frame (Legacy)"       → 0.0
+        //     Definition: No multi-frame stacking; reliance on single-frame exposure.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported multi-frame features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits processing_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_17_pipeline_semantic_ai": {
+      // SCORING GOAL: Automatic Capture-Time AI. Scores the ability of the software to segment scenes and subjects using Artificial Intelligence (AI).
+      "capability_tier": {
+        "value": "Tier 1: Neural Semantic Segmentation",
+        "value_details": {
+          "Tier 1: Neural Semantic Segmentation": [
+            { "name": "AI ProVisual Engine", "source": "TBD", "exact_extract": "Proof pending" },
+            { "name": "Object-aware engine", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: Object-Based Optimization": [],
+          "Tier 3: Basic Metadata AI": [],
+          "Tier 4: None": []
+        },
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the Pipeline AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Neural Semantic Segmentation" → 10.0
+        //     Definition: Real-time, pixel-level differentiation between multiple semantic categories (skin, sky, hair, eyes, teeth) during captured multi-frame pipeline.
+        //   • "Tier 2: Object-Based Optimization"    → 7.5
+        //     Definition: Recognizes high-level subjects (dog, flower, sunset) to apply preset global/local enhancements ("Scene Optimizer").
+        //   • "Tier 3: Basic Metadata AI"            → 4.0
+        //     Definition: Simple EXIF-level scene recognition (e.g., "Food", "Text") without intelligent segmentation or pixel-level relighting.
+        //   • "Tier 4: None"                         → 0.0
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI pipeline features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits capability_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "4_18_post_capture_ai_tools": {
+      // SCORING GOAL: User-Initiated Gallery-Time Artificial Intelligence (AI). Scores the ability to modify images after capture using AI tools.
+      "feature_tier": {
+        "value": "Tier 1: Generative Content Transformation",
+        "value_details": {
+          "Tier 1: Generative Content Transformation": [
+            { "name": "Magic Editor", "source": "TBD", "exact_extract": "Proof pending" },
+            { "name": "Best Take", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: Advanced Semantic Edits": [],
+          "Tier 3: Basic Algorithmic Fixes": [],
+          "Tier 4: None": []
+        },
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the Post-Capture AI tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Generative Content Transformation" → 10.0
+        //     Definition: Advanced on-device or cloud-based generative AI that can add, remove, move, or transform objects within an image with pixel-accurate context awareness.
+        //   • "Tier 2: Advanced Semantic Edits"           → 7.50
+        //     Definition: Rule-based or shallow-learning tools for localized adjustments (shadow/reflection removal, face unblur, object erasure without generative fill).
+        //   • "Tier 3: Basic Algorithmic Fixes"           → 4.00
+        //     Definition: Standard beauty filters, color-aware auto-fixing, or basic object prioritization for cropping.
+        //   • "Tier 4: None"                              → 0.0
+        //     Definition: No AI-enhanced editing tools beyond standard gallery filters.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported AI features found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits feature_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    }
+  },
+  "5_software_and_longevity": {
+    "operating_system_version": {
+      // GUIDELINE: The operating system and version shipped with the device.
+      "value": "Android 14",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+    },
+    "5_1_support_longevity": {
+      // SCORING GOAL: Scores the manufacturer's software update commitment. The score is dynamic and decays as the device ages relative to its end_of_support_date.
+      //   • Goal: Measure "Safe Utility Lifespan" (Longevity).
+      //   • Anchor: The latest (most future) date between Operating System (OS) and Security support.
+      "launch_date_ref": {
+        "value": "2024-01-24",
+        "value_path": "identity.release_date.value"
+        // Use the global launch date (identity.release_date) as the baseline for all calculations below.
+      },
+      "os_end_date": {
+        "value": "2031-01-24",
         "source": "TBD",
         "exact_extract": "Proof pending"
+        // GUIDELINE: Record the verbatim phrase for Operating System (OS) updates (e.g., "4 generations of OS updates"). Translate to a date:
+        //   • os_end_date.value = launch_date_ref.value + X Years (Rule: 1 Generation = 1 Year).
+        //   • Result must be an ISO 8601 date (YYYY-MM-DD).
       },
-      "5_1_support_longevity": {
-        // SCORING GOAL: Scores the manufacturer's software update commitment. The score is dynamic and decays as the device ages relative to its end_of_support_date.
-        //   • Goal: Measure "Safe Utility Lifespan" (Longevity).
-        //   • Anchor: The latest (most future) date between Operating System (OS) and Security support.
-        "launch_date_ref": {
-          "value": "2024-01-24",
-          "value_path": "identity.release_date.value"
-          // Use the global launch date (identity.release_date) as the baseline for all calculations below.
-        },
-        "os_end_date": {
-          "value": "2031-01-24",
+      "security_end_date": {
+        "base_security_end_date": {
+          "value": "2030-01-24",
           "source": "TBD",
           "exact_extract": "Proof pending"
-          // GUIDELINE: Record the verbatim phrase for Operating System (OS) updates (e.g., "4 generations of OS updates"). Translate to a date:
-          //   • os_end_date.value = launch_date_ref.value + X Years (Rule: 1 Generation = 1 Year).
-          //   • Result must be an ISO 8601 date (YYYY-MM-DD).
+          // GUIDELINE: Record the verbatim phrase for standard Security updates (e.g., "Security updates until Jan 2029" or "5 years of security updates"). Translate to a date:
+          //   • If "Until [Date]": base_security_end_date.value = [Date].
+          //   • If "X Years": base_security_end_date.value = launch_date_ref.value + X Years.
         },
-        "security_end_date": {
-          "base_security_end_date": {
-            "value": "2030-01-24",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-            // GUIDELINE: Record the verbatim phrase for standard Security updates (e.g., "Security updates until Jan 2029" or "5 years of security updates"). Translate to a date:
-            //   • If "Until [Date]": base_security_end_date.value = [Date].
-            //   • If "X Years": base_security_end_date.value = launch_date_ref.value + X Years.
-          },
-          "enterprise_extension_years": {
-            "value": 1,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-            // GUIDELINE: Record the additional years of security support for Enterprise/Business editions (e.g., "+1" or "+2 years"). If not applicable, set value to 0.
-          },
-          "value": "2031-01-24"
-          // GUIDELINE: security_end_date.value = (security_end_date.base_security_end_date.value extended by security_end_date.enterprise_extension_years.value).
-        },
-        "end_of_support_date": {
-          "value": "2031-01-24",
-          // GUIDELINE: end_of_support_date.value = Max(os_end_date.value, security_end_date.value).
-        },
-        "scores": {
-          "predicted": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
-          // GUIDELINE: 
-          //   1. Determine Remaining_Years: end_of_support_date.value - Current_Date where Current_Date is the current date expressed in YYYY-MM-DD format.
-          //   2. Calculate the score: 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min)), clamped 0-10.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "5_2_system_cleanliness_control": {
-        // SCORING GOAL: Evaluates the out-of-box software experience by analyzing Preinstalled App Load, User Control, and System Ads.
-        "skin": {
-          "value": "Samsung One UI",
+        "enterprise_extension_years": {
+          "value": 1,
           "source": "TBD",
           "exact_extract": "Proof pending"
-          // DATA GUIDELINE: Record the software skin / platform name. The value MUST exactly match one of the entries in the `SKIN_LOOKUP_TABLE` below to enable automated mapping.
-          //
-          // █ SKIN_LOOKUP_TABLE:
-          // | Platform / Skin              | preinstalled_app_load_score (40%) | user_control_score (30%) | system_ads_score (30%) | *Composite* |
-          // | :--------------------------- | :-------------------------------: | :----------------------: | :--------------------: | :---------: |
-          // | **iOS**                      | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **Pixel UI**                 | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **Stock Android**            | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **AOSP**                     | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **Fairphone OS**             | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **Nothing OS**               | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
-          // | **Motorola MyUX**            | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **Motorola Hello UI**        | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **Sony Xperia UI**           | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **Sharp AQUOS UI**           | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **Nokia UI**                 | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **ASUS ZenUI**               | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **ROG UI**                   | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
-          // | **Redmagic OS**              | **3.0**                           | **10.0**                 | **10.0**               | *7.20*      |
-          // | **Funtouch OS**              | **6.0**                           | **5.0**                  | **10.0**               | *6.90*      |
-          // | **LG UX**                    | **6.0**                           | **5.0**                  | **5.0**                | *5.40*      |
-          // | **HTC Sense**                | **6.0**                           | **5.0**                  | **5.0**                | *5.40*      |
-          // | **OxygenOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **Samsung One UI**           | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **ColorOS**                  | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **Realme UI**                | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **OriginOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **Vivo UI**                  | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **Honor MagicOS**            | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **ZTE MiFavor UI**           | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **ZTE MyOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
-          // | **HyperOS**                  | **0.0**                           | **5.0**                  | **0.0**                | *1.50*      |
-          // | **Huawei EMUI**              | **0.0**                           | **5.0**                  | **0.0**                | *1.50*      |
-          // | **MIUI**                     | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
-          // | **Tecno HiOS**               | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
-          // | **Infinix XOS**              | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
-          // | **Itel OS**                  | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
+          // GUIDELINE: Record the additional years of security support for Enterprise/Business editions (e.g., "+1" or "+2 years"). If not applicable, set value to 0.
         },
-        "cleanliness_scores": {
-          "identifier": "Samsung One UI",
-          "identifier_path": "5_2_system_cleanliness_control.skin.value",
-          "reference_table": "SKIN_LOOKUP_TABLE",
-          "preinstalled_app_load_score": 3.00,
-          "user_control_score": 5.00,
-          "system_ads_score": 5.00
-          // GUIDELINE: Values retrieved from the `reference_table` by matching the `identifier`.
-        },
-        "scores": {
-          "predicted": 4.20,
-          "calculation_formula": "(0.40 * cleanliness_scores.preinstalled_app_load_score) + (0.30 * cleanliness_scores.user_control_score) + (0.30 * cleanliness_scores.system_ads_score)",
-          // SCORING GUIDELINE: scores.predicted = weighted sum of the 3 cleanliness scores. Alternatively, use the *Composite* score from the SKIN_LOOKUP_TABLE directly.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 4.20,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
+        "value": "2031-01-24"
+        // GUIDELINE: security_end_date.value = (security_end_date.base_security_end_date.value extended by security_end_date.enterprise_extension_years.value).
       },
-      "5_3_ai_feature_suite": {
-        // SCORING GOAL: Evaluates the specific AI software features available. Score is calculated using weighted binary features. Max score is 10.00.
-        // EXTRACTION GUIDELINE: Identify the specific Marketing Name found in official specs or reviewer evidence. If the phone has the capability under any name (Circle to Search, Magic Portal, etc.), set "value" to that name. If the feature is missing, set "value" to "None".
-        "visual_screen_search": {
-          "value": "Circle to Search",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
-          // Definition: A system-level visual search tool. The phone identifies an item and returns search results without leaving the app.
-          // Marketing Names: Circle to Search (Google, Samsung, Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, Motorola, Asus, Nothing), Visual Intelligence / Visual Look Up (Apple), Magic Portal (Honor), AI Screen Recognition (ZTE, Nubia, Redmagic, Tecno, Infinix), AI Search (Nothing, Itel).
-        },
-        "live_speech_translation": {
-          "value": "Live Translate",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 1.50
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 1.50.
-          // Definition: Real-time voice or text translation during calls or in-person conversations natively embedded in the system.
-          // Marketing Names: Live Translate (Samsung, Google), Interpreter (Samsung, Google, Xiaomi, Oppo, OnePlus, Vivo, Realme, iQOO), Translate App: Auto-Translate (Apple), AI Call Translator / Assistant (Asus, ROG, Vivo), AI Call Translation (Honor, ZTE, Tecno, Infinix), AI Real-time Subtitles / Live Subtitles (Xiaomi, Oppo, Vivo), AI Real-time Translation (Nubia, Redmagic), Moto AI Translate (Motorola), Ella Translate (Tecno, Infinix).
-        },
-        "content_summarization": {
-          "value": "Note Assist",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
-          // Definition: Condenses long-form content (web pages, articles, notes) into a short summary.
-          // Marketing Names: Note Assist / Browsing Assist (Samsung), Recorder Summarize (Google), Writing Tools: Summarize / Notification Summaries (Apple), AI Summary / AI Web Page Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix, Asus, ROG), Catch Me Up (Motorola).
-        },
-        "writing_tools": {
-          "value": "Chat Assist",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 0.50
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 0.50.
-          // Definition: System-wide AI text rewriting, tone adjustment, or proofreading available in any text field.
-          // Marketing Names: Chat Assist / Keyboard AI (Samsung), Magic Compose / Help me write (Google, Gboard), Writing Tools: Rewrite / Proofread (Apple), AI Writing Assistant / AI Writer (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Tecno, Infinix, Asus, ROG), AI Creative Writing (Nubia, Redmagic), Magic Text (Honor), Style Sync (Motorola).
-        },
-        "meeting_call_transcription": {
-          "value": "Transcribe Assist",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
-          // Definition: Auto-generates text from recordings or live calls into meeting minutes or transcripts.
-          // Marketing Names: Transcript Assist (Samsung), Recorder: AI Transcription (Google), Call Notes (Google), Call Transcription / Audio Transcription (Apple), AI Recorder / AI Recording Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix), AI Voice Scribe (Oppo, OnePlus), AI Transcript / AI Voice Recording (Asus, ROG, Vivo), Pay Attention (Motorola).
-        },
-        "on_device_reliability": {
-          "value": "Gemini Nano",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
-          // Definition: The device can run its core generative AI features locally (via NPU/TPU) without requiring a persistent cloud/internet connection.
-          // Marketing Names: "Process data only on device" (Samsung, Google, Xiaomi, Apple), Gemini Nano (Google, Samsung, Motorola, Realme), Private Cloud Compute / Secure Enclave (Apple), MagicLM On-Device (Honor), BlueLM (Vivo, iQOO), HyperMind / HyperAI (Xiaomi), Breeno / AndesBrain (Oppo), Nebula AI Model (ZTE, Nubia, Redmagic), Moto AI On-Device (Motorola), Ella AI (Tecno, Infinix).
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + meeting_call_transcription + on_device_reliability).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "end_of_support_date": {
+        "value": "2031-01-24",
+        // GUIDELINE: end_of_support_date.value = Max(os_end_date.value, security_end_date.value).
+      },
+      "scores": {
+        "predicted": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
+        // GUIDELINE: 
+        //   1. Determine Remaining_Years: end_of_support_date.value - Current_Date where Current_Date is the current date expressed in YYYY-MM-DD format.
+        //   2. Calculate the score: 10 * (log(Remaining_Years) - log(Support_Years_Min)) / (log(Support_Years_Max) - log(Support_Years_Min)), clamped 0-10.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": "[DYNAMIC_CALCULATION]", // to be updated continuously, score varies every day.
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
     },
-    "6_processing_power_and_performance": {
-
-      // █ CPU_CORE_ARCHITECTURE_LOOKUP_TABLE
-      // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency in Gigahertz [GHz]).
-      // 
-      // SCORING RATIONALE (Linear IPC): The CAS (Core Architecture Score) values in this table are linear performance scores representing relative IPC (Instructions Per Cycle) capabilities, anchored to a 10.00 ceiling for top-tier modern cores (Oryon Gen 2 / Apple Everest). 
-      // • WHY LINEAR? The scores must remain linear to ensure mathematically valid multi-core scaling in Step 3, where cluster effective throughputs are summed to compute the aggregate RCTS (Raw CPU Throughput Score). 
-      // • AVOID DOUBLE LOGARITHMS: Because the global logarithmic normalization to map human perception (Weber-Fechner Law) is performed later in Step 4, keeping these base architecture scores strictly linear prevents a mathematically incorrect "double logarithmic" compression, which would otherwise flatten the final scoring spectrum and penalize high-performance flagships.
-      // • MATH FLOOR: A floor of ~0.5 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
-      // • TYPICAL L2 KB: The standardized Level 2 cache capacity assigned to this specific core architecture across the majority of SoC implementations. This is used strictly by the Single-Core Method C penalty module. 
-      // • ISA GEN: The Instruction Set Architecture generation of the core. Used to apply a hardware efficiency multiplier.
-      // • ISA GEN SCORE: The numerical multiplier assigned to the specific ISA generation, representing its physical hardware efficiency.
-      // • INFERRED FIELDS: The `reference_frequency_ghz`, `typical_l2_kb`, and internal core codenames act as internal mathematical normalization anchors for the model's baseline framework, not universally authoritative public vendor specifications.
-      // 
-      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-      // │ PERFORMANCE / PRIME CORES — Flagship tier (highest IPC, used in prime and high-performance clusters)             │
-      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-      // | C1-Ultra (Lumex)             |          10.00          |           4.21           |      2048     |  ARMv9.3  |      1.10     |
-      // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |     16384     |  ARMv9.2  |      1.08     |
-      // | Oryon Gen 2                  |           9.80          |           4.32           |     12288     |  ARMv8.7  |      1.05     |
-      // | Apple A17 Pro Cores          |           9.10          |           3.78           |     16384     |  ARMv8.6  |      1.04     |
-      // | Cortex-X925                  |           9.00          |           3.60           |      3072     |  ARMv9.2  |      1.08     |
-      // | C1-Premium (Lumex)           |           8.45          |           3.50           |      1024     |  ARMv9.3  |      1.10     |
-      // | Apple A16 Bionic             |           8.25          |           3.46           |     16384     |  ARMv8.6  |      1.04     |
-      // | Cortex-X4                    |           7.95          |           3.30           |      2048     |  ARMv9.2  |      1.08     |
-      // | Apple A15 Bionic             |           7.30          |           3.22           |     12288     |  ARMv8.6  |      1.04     |
-      // | Cortex-X3                    |           7.15          |           3.20           |      1024     |  ARMv9.0  |      1.06     |
-      // | Apple A14 Bionic             |           6.70          |           3.10           |      8192     |  ARMv8.4  |      1.02     |
-      // | Cortex-X2                    |           6.40          |           3.00           |      1024     |  ARMv9.0  |      1.06     |
-      // | Apple A13 Lightning          |           5.80          |           2.65           |      8192     |  ARMv8.4  |      1.02     |
-      // | Cortex-X1                    |           5.60          |           2.84           |      1024     |  ARMv8.2  |      1.00     |
-      // | Apple A12 Vortex             |           4.95          |           2.49           |      8192     |  ARMv8.3  |      1.01     |
-      // | Apple A11 Monsoon            |           4.15          |           2.39           |      8192     |  ARMv8.2  |      1.00     |
-      // | Qualcomm Kryo 585            |           3.60          |           2.84           |       512     |  ARMv8.2  |      1.00     |
-      // | Exynos M5 (Lion)             |           3.30          |           2.73           |       512     |  ARMv8.2  |      1.00     |
-      // | Qualcomm Kryo 485            |           3.00          |           2.84           |       512     |  ARMv8.2  |      1.00     |
-      // | Apple A10 Hurricane          |           2.90          |           2.34           |      3072     |  ARMv8.1  |      0.97     |
-      // | Exynos M4 (Cheetah)          |           2.65          |           2.73           |       512     |  ARMv8.2  |      1.00     |
-      // | Qualcomm Kryo 385            |           2.30          |           2.80           |      2048     |  ARMv8.2  |      1.00     |
-      // | Exynos M3 (Meerkat)          |           2.20          |           2.70           |       512     |  ARMv8.0  |      0.96     |
-      // | Qualcomm Kryo 280            |           1.90          |           2.45           |      2048     |  ARMv8.0  |      0.96     |
-      // | Exynos M2                    |           1.80          |           2.30           |      2048     |  ARMv8.0  |      0.96     |      
-      // | Exynos M1 (Mongoose)         |           1.70          |           2.30           |      2048     |  ARMv8.0  |      0.96     |
-      // | Qualcomm Kryo (2.40 GHz)     |           1.76          |           2.40           |      1024     |  ARMv8.0  |      0.96     |
-      // | Qualcomm Kryo (2.15 GHz)     |           1.60          |           2.15           |      1024     |  ARMv8.0  |      0.96     |
-      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
-      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-      // │ PERFORMANCE / MID CORES — Used in performance clusters (high IPC but lower than prime cores)                     │
-      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-      // | C1-Pro (Lumex)               |           5.35          |           2.70           |       512     |  ARMv9.3  |      1.10     |
-      // | Cortex-A725                  |           5.25          |           2.80           |       512     |  ARMv9.2  |      1.08     |
-      // | Cortex-A720                  |           5.00          |           2.80           |       512     |  ARMv9.2  |      1.08     |
-      // | Cortex-A715                  |           4.40          |           2.50           |       512     |  ARMv9.0  |      1.06     |
-      // | Cortex-A710                  |           4.15          |           2.50           |       512     |  ARMv9.0  |      1.06     |
-      // | Cortex-A78                   |           3.80          |           2.40           |       512     |  ARMv8.2  |      1.00     |
-      // | Cortex-A77                   |           3.55          |           2.40           |       512     |  ARMv8.2  |      1.00     |
-      // | Cortex-A76                   |           2.90          |           2.20           |       512     |  ARMv8.2  |      1.00     |
-      // | Cortex-A75                   |           2.20          |           2.00           |       512     |  ARMv8.2  |      1.00     |
-      // | Cortex-A73                   |           1.80          |           2.00           |      1024     |  ARMv8.0  |      0.96     |
-      // | Cortex-A72                   |           1.60          |           2.50           |      1024     |  ARMv8.0  |      0.96     |
-      // | Cortex-A57                   |           1.45          |           2.00           |      2048     |  ARMv8.0  |      0.96     |
-      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
-      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-      // │ EFFICIENCY CORES — ARM standard efficiency cores (low IPC, optimized for power savings)                          │
-      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-      // | C1-Nano (Lumex)              |           1.00          |           2.00           |       128     |  ARMv9.3  |      1.10     |
-      // | Cortex-A525                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
-      // | Cortex-A520                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
-      // | Cortex-A510                  |           1.00          |           2.00           |       128     |  ARMv9.0  |      1.06     |
-      // | Cortex-A55                   |           0.60          |           1.80           |       128     |  ARMv8.2  |      1.00     |
-      // | Cortex-A53                   |           0.50          |           1.80           |       512     |  ARMv8.0  |      0.96     |
-      // | Cortex-A35                   |           0.45          |           1.50           |       512     |  ARMv8.0  |      0.96     |
-      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
-      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-      // │ APPLE EFFICIENCY CORES — Apple custom efficiency cores (used in the efficiency cluster of Apple SoCs)            │
-      // │ NOTE: Apple efficiency cores differ substantially from their performance counterparts in IPC and pipeline        │
-      // │ width. They MUST be listed separately to ensure correct multi-core throughput calculations for all iPhones.      │
-      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-      // | Apple A18 E-core (Sawtooth)  |           1.00          |           2.42           |      4096     |  ARMv9.2  |      1.08     |
-      // | Apple A17 Pro E-core         |           1.00          |           2.11           |      4096     |  ARMv8.6  |      1.04     |
-      // | Apple A16 E-core (Sawtooth)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
-      // | Apple A15 E-core (Blizzard)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
-      // | Apple A14 E-core (Icestorm)  |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
-      // | Apple A13 E-core (Thunder)   |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
-      // | Apple A12 E-core (Tempest)   |           0.60          |           1.60           |      2048     |  ARMv8.3  |      1.01     |
-      // | Apple A11 E-core (Mistral)   |           0.55          |           1.42           |      1024     |  ARMv8.2  |      1.00     |
-      // | Apple A10 E-core (Zephyr)    |           0.45          |           1.05           |      3072     |  ARMv8.1  |      0.97     |
-      // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
-      // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-      // │ LEGACY APPLE PERFORMANCE CORES — Pre-2016 borderline entries retained for completeness                           │
-      // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-      // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-      // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-      // | Apple A9 (Twister)           |           0.50          |           1.85           |      3072     |  ARMv8.0  |      0.96     |
-      // ---------------------------------------------------------------------------------------------------------------------------------------
-
-      "6_1_0_system_on_chip_reference": {
-        // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts and architectural types.
-        "value": "Snapdragon 8 Gen 3",
-        // GUIDELINE: Inherits the chipset model name from the device identity record.
-        "value_path": "identity.hardware_configuration.chipset.value",
-        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
-        "clusters": {
-          // GUIDELINE: The cluster structure is FIXED with 4 named keys to cover all modern SoC architectures. Do NOT add or remove keys. If a SoC uses fewer than 4 clusters, set all fields in the unused keys to "N/A".
-          "prime": {
-            "architecture": "Cortex-X4",
-            // GUIDELINE: The specific CPU core architecture name. The value MUST exactly match one of the entries in the `CPU_CORE_ARCHITECTURE_LOOKUP_TABLE` above to enable mapping (e.g., "Cortex-X4"). VERY IMPORTANT: The prime cluster is characterized by having the highest computational throughput, hence among the different clusters of the SoC this cluster MUST always be the one with the highest core_architecture_score.
-            "count": 1,
-            // GUIDELINE: The number of cores contained in this specific cluster.
-            "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            // GUIDELINE: Direct source URL for architectural data (type and count).
-            "exact_extract": "Cortex-X4"
-            // GUIDELINE: The verbatim proof from the source confirming architecture type and core count.
-          },
-          "performance": {
-            "architecture": "Cortex-A720",
-            "count": 5,
-            "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            "exact_extract": "Cortex-A720"
-          },
-          "efficiency": {
-            "architecture": "Cortex-A520",
-            "count": 2,
-            "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-            "exact_extract": "Cortex-A520"
-          },
-          "secondary": {
-            "architecture": "N/A",
-            "count": "N/A",
-            "source": "N/A",
-            "exact_extract": "N/A"
-          }
-        }
+    "5_2_system_cleanliness_control": {
+      // SCORING GOAL: Evaluates the out-of-box software experience by analyzing Preinstalled App Load, User Control, and System Ads.
+      "skin": {
+        "value": "Samsung One UI",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // DATA GUIDELINE: Record the software skin / platform name. The value MUST exactly match one of the entries in the `SKIN_LOOKUP_TABLE` below to enable automated mapping.
+        //
+        // █ SKIN_LOOKUP_TABLE:
+        // | Platform / Skin              | preinstalled_app_load_score (40%) | user_control_score (30%) | system_ads_score (30%) | *Composite* |
+        // | :--------------------------- | :-------------------------------: | :----------------------: | :--------------------: | :---------: |
+        // | **iOS**                      | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **Pixel UI**                 | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **Stock Android**            | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **AOSP**                     | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **Fairphone OS**             | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **Nothing OS**               | **10.0**                          | **10.0**                 | **10.0**               | *10.00*     |
+        // | **Motorola MyUX**            | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **Motorola Hello UI**        | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **Sony Xperia UI**           | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **Sharp AQUOS UI**           | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **Nokia UI**                 | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **ASUS ZenUI**               | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **ROG UI**                   | **6.0**                           | **10.0**                 | **10.0**               | *8.40*      |
+        // | **Redmagic OS**              | **3.0**                           | **10.0**                 | **10.0**               | *7.20*      |
+        // | **Funtouch OS**              | **6.0**                           | **5.0**                  | **10.0**               | *6.90*      |
+        // | **LG UX**                    | **6.0**                           | **5.0**                  | **5.0**                | *5.40*      |
+        // | **HTC Sense**                | **6.0**                           | **5.0**                  | **5.0**                | *5.40*      |
+        // | **OxygenOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **Samsung One UI**           | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **ColorOS**                  | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **Realme UI**                | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **OriginOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **Vivo UI**                  | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **Honor MagicOS**            | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **ZTE MiFavor UI**           | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **ZTE MyOS**                 | **3.0**                           | **5.0**                  | **5.0**                | *4.20*      |
+        // | **HyperOS**                  | **0.0**                           | **5.0**                  | **0.0**                | *1.50*      |
+        // | **Huawei EMUI**              | **0.0**                           | **5.0**                  | **0.0**                | *1.50*      |
+        // | **MIUI**                     | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
+        // | **Tecno HiOS**               | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
+        // | **Infinix XOS**              | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
+        // | **Itel OS**                  | **0.0**                           | **0.0**                  | **0.0**                | *0.00*      |
       },
-      "6_1_cpu_multi_core_performance": {
-        // SCORING GOAL: Measures the actual delivered CPU performance during intense, multi-threaded workloads to ensure the device can handle heavy multitasking, gaming physics, and background processing. A three-method hierarchy (A→B→C) is used. Method A uses the Geekbench 6 Multi-Core benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback predicted score based on physical core scaling parameters.
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD A — Direct Benchmark (Primary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_CPU_multi": {
-          "value": 7200,
-          "source": "https://browser.geekbench.com/android-benchmarks",
-          "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
-          "subscore": 9.11
-          // SCORING GUIDELINE: Primary benchmark is Geekbench 6 (GB6) Multi-Core.
-          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
-          // • EXTRACTION RULE: Use the "Multi-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Single-Core scores.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_multi.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Throughput Prediction Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_prediction_model_CPU_multi": {
-          // SCORING GOAL: Predicts the CPU (Central Processing Unit) Multi-Core Performance score using the 5-Step Performance Pipeline. The model accounts for core-frequency soft-saturation, local intra-cluster scaling, Raw CPU Throughput Score (RCTS) aggregation, global logarithmic normalization, and dynamic non-linear deficit penalties from adjacent physical subsystems.
-          // GUIDELINE: The number of cluster objects is FIXED at 4 to maintain structural parity with Section 6.1.0 SoC (System on Chip) Reference. Do NOT add or remove blocks. If a SoC uses fewer than 4 clusters (e.g., 2 for Apple, 3 for most Snapdragon), then for the remaining unused cluster block(s):
-          // - leave the fields containing internal paths or calculation formula unchanged ("identifier_path", "reference_table", "value_path", "calculation_formula") as these always remain valid
-          // - set the Cluster Effective Throughput (cluster_effective_throughput.value) to 0
-          // - set all remaining fields to "N/A"
-          "clusters": {
-            "prime": {
-              "architecture_mapping": {
-                "identifier": "Cortex-X4",
-                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
-                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-                "core_architecture_score": 7.95,
-                // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
-                "reference_frequency_ghz": 3.30
-                // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
-              },
-              "core_count": {
-                "value": 1,
-                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.count"
-                // GUIDELINE: Number of physical CPU cores in this specific cluster.
-              },
-              "actual_frequency_ghz": {
-                "value": 3.3,
-                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-                "exact_extract": "1x 3.3 GHz"
-                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
-              },
-              "soft_saturation_exponent": {
-                "value": 0.9300,
-                "calculation_formula": "gamma = Look up based on cluster core count (prime.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
-                // GUIDELINE: Saturation factor (gamma) modeling frequency scaling dimishing returns.
-              },
-              "core_yield": {
-                "value": 7.9500,
-                "calculation_formula": "prime.architecture_mapping.core_architecture_score * ((prime.actual_frequency_ghz.value / prime.architecture_mapping.reference_frequency_ghz) ^ prime.soft_saturation_exponent.value)"
-                // GUIDELINE: Yield = CAS (Core Architecture Score) * ((Actual Freq / Ref Freq) ^ gamma). Models frequency scaling soft-saturation. Keep 4 decimal places.
-              },
-              "pacc_decay_exponent": {
-                "value": 1.0000,
-                "calculation_formula": "Look up based on cluster core count (prime.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
-                // GUIDELINE: Cluster scaling exponent (alpha) modeling thread communication and resource contention decay.
-              },
-              "parallel_adjusted_core_count": {
-                "value": 1.0000,
-                "calculation_formula": "prime.core_count.value ^ prime.pacc_decay_exponent.value"
-                // GUIDELINE: Models cluster multi-thread capability.
-              },
-              "cluster_effective_throughput": {
-                "value": 7.9500,
-                "calculation_formula": "prime.core_yield.value * prime.parallel_adjusted_core_count.value"
-                // GUIDELINE: Cluster Effective Throughput = Core Yield * Parallel-Adjusted Core Count. Total multi-core contribution of this cluster. Keep 4 decimal places.
-              }
-            },
-            "performance": {
-              "architecture_mapping": {
-                "identifier": "Cortex-A720",
-                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.performance.architecture",
-                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-                "core_architecture_score": 5.00,
-                "reference_frequency_ghz": 2.80
-              },
-              "core_count": {
-                "value": 5,
-                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.performance.count"
-              },
-              "actual_frequency_ghz": {
-                "value": 3.2,
-                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-                "exact_extract": "5x 3.2 GHz"
-                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
-              },
-              "soft_saturation_exponent": {
-                "value": 0.9800,
-                "calculation_formula": "gamma = Look up based on cluster core count (performance.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
-              },
-              "core_yield": {
-                "value": 5.6990,
-                "calculation_formula": "performance.architecture_mapping.core_architecture_score * ((performance.actual_frequency_ghz.value / performance.architecture_mapping.reference_frequency_ghz) ^ performance.soft_saturation_exponent.value)"
-              },
-              "pacc_decay_exponent": {
-                "value": 0.8500,
-                "calculation_formula": "Look up based on cluster core count (performance.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
-              },
-              "parallel_adjusted_core_count": {
-                "value": 3.9276,
-                "calculation_formula": "performance.core_count.value ^ performance.pacc_decay_exponent.value"
-              },
-              "cluster_effective_throughput": {
-                "value": 22.3834,
-                "calculation_formula": "performance.core_yield.value * performance.parallel_adjusted_core_count.value"
-              }
-            },
-            "efficiency": {
-              "architecture_mapping": {
-                "identifier": "Cortex-A520",
-                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.efficiency.architecture",
-                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-                "core_architecture_score": 1.00,
-                "reference_frequency_ghz": 2.00
-              },
-              "core_count": {
-                "value": 2,
-                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.efficiency.count"
-              },
-              "actual_frequency_ghz": {
-                "value": 2.3,
-                "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-                "exact_extract": "2x 2.3 GHz"
-                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
-              },
-              "soft_saturation_exponent": {
-                "value": 0.9500,
-                "calculation_formula": "gamma = Look up based on cluster core count (efficiency.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
-              },
-              "core_yield": {
-                "value": 1.1420,
-                "calculation_formula": "efficiency.architecture_mapping.core_architecture_score * ((efficiency.actual_frequency_ghz.value / efficiency.architecture_mapping.reference_frequency_ghz) ^ efficiency.soft_saturation_exponent.value)"
-              },
-              "pacc_decay_exponent": {
-                "value": 0.9400,
-                "calculation_formula": "Look up based on cluster core count (efficiency.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
-              },
-              "parallel_adjusted_core_count": {
-                "value": 1.9185,
-                "calculation_formula": "efficiency.core_count.value ^ efficiency.pacc_decay_exponent.value"
-              },
-              "cluster_effective_throughput": {
-                "value": 2.1909,
-                "calculation_formula": "efficiency.core_yield.value * efficiency.parallel_adjusted_core_count.value"
-              }
-            },    
-            "secondary": {
-              "architecture_mapping": {
-                "identifier": "N/A",
-                "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.secondary.architecture",
-                "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-                "core_architecture_score": "N/A",
-                "reference_frequency_ghz": "N/A"
-              },
-              "core_count": {
-                "value": "N/A",
-                "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.secondary.count"
-              },
-              "actual_frequency_ghz": {
-                "value": "N/A",
-                "source": "N/A",
-                "exact_extract": "N/A"
-                // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
-              },
-              "soft_saturation_exponent": {
-                "value": "N/A",
-                "calculation_formula": "gamma = Look up based on cluster core count (secondary.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
-              },
-              "core_yield": {
-                "value": "N/A",
-                "calculation_formula": "secondary.architecture_mapping.core_architecture_score * ((secondary.actual_frequency_ghz.value / secondary.architecture_mapping.reference_frequency_ghz) ^ secondary.soft_saturation_exponent.value)"
-              },
-              "pacc_decay_exponent": {
-                "value": "N/A",
-                "calculation_formula": "Look up based on cluster core count (secondary.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
-              },
-              "parallel_adjusted_core_count": {
-                "value": "N/A",
-                "calculation_formula": "secondary.core_count.value ^ secondary.pacc_decay_exponent.value"
-              },
-              "cluster_effective_throughput": {
-                "value": 0.0000,
-                "calculation_formula": "secondary.core_yield.value * secondary.parallel_adjusted_core_count.value"
-              }
-            }
-          },
-          "raw_performance_throughput_score": {
-            "value": 32.5243,
-            "calculation_formula": "clusters.prime.cluster_effective_throughput.value + clusters.performance.cluster_effective_throughput.value + clusters.efficiency.cluster_effective_throughput.value + clusters.secondary.cluster_effective_throughput.value"
-            // GUIDELINE: RCTS (Raw CPU Throughput Score) = Sum of all Cluster Effective Throughputs (CET). Keep 4 decimal places.
-          },
-          "normalized_throughput_score": {
-            "value": 8.8379,
-            "calculation_formula": "10.0 * (log(raw_performance_throughput_score.value) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min)), clamped [0.0, 10.0]."
-          },
-          "memory_subsystem_penalty": {
-            "deficit": {
-              "value": 0.0000,
-              "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
-            },
-            "penalty": {
-              "value": 0.0000,
-              "calculation_formula": "0.2000 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
-            },
-            // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.20 * (Deficit ^ 1.4). Keep 4 decimal places.
-          },
-          "thermal_subsystem_penalty": {
-            "deficit": {
-              "value": 4.5979,
-              "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
-            },
-            "penalty": {
-              "value": 1.0156,
-              "calculation_formula": "0.1200 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
-            },
-            // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.12 * (Deficit ^ 1.4). Keep 4 decimal places.
-          },
-          "cache_subsystem_penalty": {
-            "identifier": "Snapdragon 8 Gen 3",
-            "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.value",
-            "reference_table": "references/soc_reference.md",
-            "CFEI": 8.6165,
-            // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is fetched from references/soc_reference.md.
-            "deficit": {
-              "value": 0.2214,
-              "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
-            },
-            "penalty": {
-              "value": 0.0056,
-              "calculation_formula": "0.0400 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
-            },
-            // GUIDELINE: Cache Penalty = 0.04 * (Deficit ^ 1.3). Keep 4 decimal places.
-            // CFEI FALLBACK RULE: If the SoC has no CFEI score (indicated by '?') or is missing, consider a penalty of exactly 0 by setting deficit to 0.0000 and penalty to 0.0000.
-          }, 
-          "predicted_score": 7.82,
-          "calculation_formula": "normalized_throughput_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value + cache_subsystem_penalty.penalty.value)"
-          // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the raw normalized throughput score through the subtraction of the active dynamic penalties from the memory, thermal and cache supporting subsystems.
-          // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD B — Nearest Neighbor Interpolation (Secondary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_CPU_multi": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 (GB6) Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, excluding the target device itself. Distance is calculated as:
-          // Distance = Sqrt( (RCTS_norm_Diff)^2 + (Penalty_MTI_Diff)^2 + (Penalty_TDSI_Diff)^2 + (Penalty_CFEI_Diff)^2 )
-          // Where the metric component differences are defined by the following precise value paths:
-          // • RCTS_norm_Diff = (target.method_c_prediction_model_CPU_multi.normalized_throughput_score.value) - (neighbor.method_c_prediction_model_CPU_multi.normalized_throughput_score.value)
-          // • Penalty_MTI_Diff = (target.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value)
-          // • Penalty_TDSI_Diff = (target.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value)
-          // • Penalty_CFEI_Diff = (target.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value)
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
-          "neighbors": [
-            {
-              // Neighbor1
-              "device_id_1": "xiaomi_14_ultra",
-              // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "euclidean_distance_1": 0.2315,
-              // GUIDELINE: Euclidean distance from Step 1. Keep 4 decimal places.
-              "predicted_score_1": 7.94,
-              // GUIDELINE: The neighbor's own Method C predicted score (overall Multi-Core).
-              "benchmark_score_1": 8.60
-              // GUIDELINE: The neighbor's Method A subscore.
-            },
-            {
-              // Neighbor2
-              "device_id_2": "oneplus_12",
-              "euclidean_distance_2": 0.1482,
-              "predicted_score_2": 7.86,
-              "benchmark_score_2": 8.55
-            },
-            {
-              // Neighbor3
-              "device_id_3": "asus_rog_phone_8_pro",
-              "euclidean_distance_3": 0.5230,
-              "predicted_score_3": 8.32,
-              "benchmark_score_3": 8.65
-            }
-          ],
-          "avg_predicted_neighbors": 8.0400,
-          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
-          "avg_benchmark_neighbors": 8.6000,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
-          "correction_ratio": 0.9726,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-          "interpolated_score": 8.36
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
-        },
-
-        "scores": {
-          "predicted": 7.82,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
-          "final": {
-            "value": 9.11,
-            // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_multi is available (method_a_benchmark_CPU_multi.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_multi.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_multi.predicted_score).
-            "method_used": "Benchmark (Geekbench 6)",
-            // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
-            //   • Neighbor Interpolation  → Method B (similar device benchmarks)
-            //   • Predictor               → Method C (spec calculation)
-            "booster": "No",
-            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-            "confidence": "N/A"
-            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
-          }
-        }
+      "cleanliness_scores": {
+        "identifier": "Samsung One UI",
+        "identifier_path": "5_2_system_cleanliness_control.skin.value",
+        "reference_table": "SKIN_LOOKUP_TABLE",
+        "preinstalled_app_load_score": 3.00,
+        "user_control_score": 5.00,
+        "system_ads_score": 5.00
+        // GUIDELINE: Values retrieved from the `reference_table` by matching the `identifier`.
       },
-      "6_2_cpu_architecture_single_core": {
-        // SCORING GOAL: Evaluates individual CPU (Central Processing Unit) core capability and IPC efficiency (Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick), representing the perceived snappiness of the UI (User Interface) and single-threaded application speed.
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD A — Direct Benchmark (Primary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_CPU_single": {
-          "value": 2200,
-          "source": "https://browser.geekbench.com/android-benchmarks",
-          "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
-          "subscore": 8.53
-          // SCORING GUIDELINE: The primary benchmark is Geekbench 6 (GB6) Single-Core.
-          // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
-          // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use older versions (e.g. Geekbench 4 or 5) or Multi-Core scores.
-          // • SCORING GUIDELINE: subscore = 10 * (log(value) - log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) - log(CPU_GB6_Single_Score_Min)), clamped 0–10.
-          // If no benchmark score is available, set value to "Not found" and source, exact_extract, and subscore to "N/A".
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Single-Thread Efficiency Prediction Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_prediction_model_CPU_single": {
-          "architecture_mapping": {
-            "identifier": "Cortex-X4",
-            "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.prime.architecture",
-            "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
-            "core_architecture_score": 7.95,
-            // GUIDELINE: The CAS (Core Architecture Score) retrieved from the lookup table representing linear IPC (Instructions Per Cycle) capability. VERY IMPORTANT: Ensure this core architecture score is the highest among all the core architecture scores of the SoC.
-            "reference_frequency_ghz": 3.30,
-            // GUIDELINE: The reference frequency in GHz (Gigahertz) from the lookup table.
-            "typical_l2_kb": 2048,
-            // GUIDELINE: The standardized private Level 2 (L2) cache capacity in KB (Kilobytes) from the lookup table.
-            "isa_gen": "ARMv9.2",
-            // GUIDELINE: The ISA (Instruction Set Architecture) generation from the lookup table.
-            "isa_gen_score": 1.08
-            // GUIDELINE: The ISA hardware efficiency multiplier from the lookup table.
-          },
-          "actual_frequency_ghz": {
-            "value": 3.3,
-            "value_path": "6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.prime.actual_frequency_ghz.value"
-            // GUIDELINE: The maximum advertised actual clock frequency in GHz (Gigahertz) of the prime core cluster from Section 6.1.
-          },
-          "core_yield": {
-            "value": 8.5860,
-            "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.9300) * architecture_mapping.isa_gen_score",
-            // GUIDELINE: Core Yield (CY) = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core frequency scaling soft-saturation exponent (gamma) of 0.93 representing the extreme burst behavior of the prime core pushed to physical limits. Keep 4 decimal places.
-          },
-          "normalized_core_yield": {
-            "value": 9.1300,
-            "calculation_formula": "normalized_core_yield.value = 10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped 0–10."
-            // GUIDELINE: Converts Core Yield into a human-perceptual score (STRS_norm [Single-Threaded Raw Score Normalized]) utilizing logarithmic scaling to model the Weber-Fechner Law. Keep 4 decimal places.
-          },
-          "cache_subsystem_penalty": {
-            "l2_cache_score": {
-              "value": 5.7143,
-              "calculation_formula": "l2_cache_score.value = 10.0 * (log(architecture_mapping.typical_l2_kb) - log(CPU_L2_KB_Min)) / (log(CPU_L2_KB_Max) - log(CPU_L2_KB_Min)), clamped 0–10."
-              // GUIDELINE: L2CS Score represents the standardized L2 Cache Subsystem capability normalized logarithmically between CPU_L2_KB_Min (128 KB) and CPU_L2_KB_Max (16384 KB). Keep 4 decimal places.
-            },
-            "deficit": {
-              "value": 3.4157,
-              "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
-              // GUIDELINE: Calculates the deficit between the normalized CPU core requirements (normalized_core_yield) and the cache subsystem capability (l2_cache_score). Keep 4 decimal places.
-            },
-            "penalty": {
-              "value": 0.3350,
-              "calculation_formula": "penalty.value = 0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
-              // GUIDELINE: Models non-linear memory-stall performance penalties caused by cache capacity constraints using a scaling factor of 0.06 and exponent of 1.4. Keep 4 decimal places.
-            }
-          },
-          "memory_subsystem_penalty": {
-            "deficit": {
-              "value": 0.0000,
-              "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
-              // GUIDELINE: Calculates the deficit between normalized CPU core requirements and the supporting system DRAM (Dynamic Random-Access Memory) Technology score (from Section 6.5). Keep 4 decimal places.
-            },
-            "penalty": {
-              "value": 0.0000,
-              "calculation_formula": "penalty.value = 0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
-              // GUIDELINE: Models fabric latency and transfer bandwidth bottlenecks under peak single-core throughput using a scaling factor of 0.03 and exponent of 1.3. Keep 4 decimal places.
-            }
-          },
-          "predicted_score": 8.79,
-          "calculation_formula": "predicted_score = normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)",
-          // SCORING GUIDELINE: The predicted CPU single-core score, computed by subtracting both private cache and memory subsystem penalties from the normalized core yield.
-          // BOUNDS CHECK ABORT PROCEDURE: If the predicted score is outside the physical standard bounds of [0.00, 10.00] (less than 0.00 or greater than 10.00), the scoring system MUST HALT execution immediately to prevent data pollution. The engine MUST raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process."
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD B — Nearest Neighbor Interpolation (Secondary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_CPU_single": {
-          // SCORING GUIDELINE: Method B is calculated for ALL phones (even if Method A is available) for precision validation. The interpolation search space includes all distinct phones in the database with a verified Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST utilize exactly 3 distinct neighbor devices.
-          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, calculated as:
-          // Distance = Sqrt( (STRS_norm_Diff)^2 + (Penalty_L2CS_Diff)^2 + (Penalty_MTI_Diff)^2 )
-          // Where the metric component differences are derived from the following paths:
-          // • STRS_norm_Diff (Single-Threaded Raw Score Normalized Difference) = (target.method_c_prediction_model_CPU_single.normalized_core_yield.value) - (neighbor.method_c_prediction_model_CPU_single.normalized_core_yield.value)
-          // • Penalty_L2CS_Diff (Level 2 Cache Subsystem Penalty Difference) = (target.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value)
-          // • Penalty_MTI_Diff (Memory Technology Index Penalty Difference) = (target.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value)
-          // Step 2: Compute the average predicted and average benchmark scores of the neighbors, calculate the correction ratio, and apply it to derive the final interpolated score.
-          "neighbors": [
-            {
-              // Neighbor1
-              "device_id_1": "xiaomi_14_ultra",
-              // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "euclidean_distance_1": 0.2315,
-              // GUIDELINE: Calculated Euclidean distance between the target device and the neighbor (Step 1). Keep 4 decimal places.
-              "predicted_score_1": 8.24,
-              // GUIDELINE: The neighbor's Method C predicted single-core CPU score.
-              "benchmark_score_1": 8.49
-              // GUIDELINE: The neighbor's Method A subscore.
-            },
-            {
-              // Neighbor2
-              "device_id_2": "oneplus_12",
-              "euclidean_distance_2": 0.1482,
-              "predicted_score_2": 8.12,
-              "benchmark_score_2": 8.45
-            },
-            {
-              // Neighbor3
-              "device_id_3": "asus_rog_phone_8_pro",
-              "euclidean_distance_3": 0.5230,
-              "predicted_score_3": 8.32,
-              "benchmark_score_3": 8.57
-            }
-          ],
-          "avg_predicted_neighbors": 8.2267,
-          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 8.5033,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0685,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-          "interpolated_score": 9.09
-          // SCORING GUIDELINE: The final interpolated score. Formula: correction_ratio * avg_benchmark_neighbors.
-        },
-        "scores": {
-          "predicted": 8.79,
-          // SCORING GUIDELINE: Directly inherits method_c_prediction_model_CPU_single.predicted_score.
-          "final": {
-            "value": 8.53,
-            // SCORING GUIDELINE: Resolved strictly by the A->B->C hierarchy: Use Method A if method_a_benchmark_CPU_single is available (method_a_benchmark_CPU_single.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_single.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_single.predicted_score).
-            "method_used": "Benchmark (Geekbench 6)",
-            // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • "Benchmark (Geekbench 6)" → Method A (documented Geekbench 6 score)
-            //   • "Neighbor Interpolation"  → Method B (similar device benchmarks)
-            //   • "Predictor"               → Method C (spec calculation)
-            "booster": "No",
-            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-            "confidence": "N/A"
-            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
-          }
+      "scores": {
+        "predicted": 4.20,
+        "calculation_formula": "(0.40 * cleanliness_scores.preinstalled_app_load_score) + (0.30 * cleanliness_scores.user_control_score) + (0.30 * cleanliness_scores.system_ads_score)",
+        // SCORING GUIDELINE: scores.predicted = weighted sum of the 3 cleanliness scores. Alternatively, use the *Composite* score from the SKIN_LOOKUP_TABLE directly.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 4.20,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
+      }
+    },
+    "5_3_ai_feature_suite": {
+      // SCORING GOAL: Evaluates the specific AI software features available. Score is calculated using weighted binary features. Max score is 10.00.
+      // EXTRACTION GUIDELINE: Identify the specific Marketing Name found in official specs or reviewer evidence. If the phone has the capability under any name (Circle to Search, Magic Portal, etc.), set "value" to that name. If the feature is missing, set "value" to "None".
+      "visual_screen_search": {
+        "value": "Circle to Search",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+        // Definition: A system-level visual search tool. The phone identifies an item and returns search results without leaving the app.
+        // Marketing Names: Circle to Search (Google, Samsung, Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, Motorola, Asus, Nothing), Visual Intelligence / Visual Look Up (Apple), Magic Portal (Honor), AI Screen Recognition (ZTE, Nubia, Redmagic, Tecno, Infinix), AI Search (Nothing, Itel).
       },
-      // █ GPU_ARCHITECTURE_LOOKUP_TABLE
-      // Centralized hardware index used to ensure 100% autonomous scoring across performance (§6.3) and efficiency (§8.1) modules.
-      // • Standard Graphics Score (SGS): The baseline architectural performance capacity for standard rasterization (non-RT) tasks.
-      // • Ray Tracing Score (RTS): The specialized hardware performance index for accelerated ray tracing calculations.
-      // • Ref Freq (MHz): The canonical maximum frequency used to calculate frequency-corrected performance multipliers in Method C.
-      // • Efficiency: The silicon-level power/thermal management index used exclusively for Section 8.1 benchmarking to derive normalized efficiency scores.
-      // 
-      // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
-      // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
-      // | Immortalis-G925 MC12       |       9.5         |    10.00    |      1612      |    10.00   |
-      // | Adreno 830                 |       9.5         |     9.80    |      1100      |    10.00   |
-      // | Apple GPU (A18 Pro)        |       9.0         |     8.80    |      1490      |    10.00   |
-      // | Adreno 750                 |       8.9         |     8.50    |       903      |     9.00   |
-      // | Immortalis-G720 MC12       |       8.8         |     8.40    |      1300      |    10.00   |
-      // | Apple GPU (A18)            |       8.7         |     8.20    |      1490      |    10.00   |
-      // | Immortalis-G715 MC11       |       8.5         |     7.60    |       981      |     9.00   |
-      // | Xclipse 940                |       8.5         |     8.00    |      1109      |     7.00   |
-      // | Adreno 740                 |       8.3         |     7.00    |       680      |     9.00   |
-      // | Apple GPU (A17 Pro)        |       8.1         |     7.50    |      1398      |     9.00   |
-      // | Adreno 735                 |       7.9         |     5.50    |       950      |     8.00   |
-      // | Adreno 732                 |       7.8         |     4.20    |       900      |     8.00   |
-      // | Adreno 730                 |       7.8         |     4.00    |       900      |     7.00   |
-      // | Adreno 725                 |       7.8         |     3.80    |       580      |     9.00   |
-      // | Apple GPU (A16 Bionic)     |       7.5         |     0.00    |      1398      |     8.00   |
-      // | Apple GPU (A15 Bionic)     |       6.8         |     0.00    |      1296      |     8.00   |
-      // | Mali-G715 MC9              |       6.8         |     2.20    |       850      |     9.00   |
-      // | Xclipse 920                |       6.5         |     2.50    |      1306      |     6.00   |
-      // | Mali-G710 MC10             |       6.5         |     0.00    |       850      |     8.00   |
-      // | Adreno 660                 |       6.5         |     0.00    |       840      |     5.00   |
-      // | Mali-G715 (Tensor G3)      |       6.2         |     2.00    |       890      |     6.00   |
-      // | Mali-G715 MC7              |       6.0         |     1.80    |       850      |     9.00   |
-      // | Apple GPU (A14 Bionic)     |       5.8         |     0.00    |      1086      |     7.00   |
-      // | Adreno 720                 |       5.2         |     0.00    |       800      |     8.00   |
-      // | Apple GPU (A13 Bionic)     |       5.0         |     0.00    |       979      |     6.00   |
-      // | Adreno 710                 |       4.8         |     0.00    |       800      |     8.00   |
-      // | Adreno 650                 |       4.8         |     0.00    |       587      |     6.00   |
-      // | Mali-G610 MC6              |       4.8         |     0.00    |       850      |     8.00   |
-      // | Mali-G77 MC9               |       4.8         |     0.00    |       850      |     6.00   |
-      // | Adreno 642L                |       4.5         |     0.00    |       490      |     8.00   |
-      // | Mali-G610 MC4              |       4.0         |     0.00    |       850      |     7.00   |
-      // | Adreno 640                 |       3.8         |     0.00    |       585      |     5.00   |
-      // | Adreno 620                 |       3.2         |     0.00    |       625      |     6.00   |
-      // | Mali-G68 MC4               |       3.2         |     0.00    |       900      |     6.00   |
-      // | Adreno 619                 |       3.0         |     0.00    |       825      |     6.00   |
-      // | Adreno 618                 |       2.8         |     0.00    |       610      |     5.00   |
-      // | Mali-G57 MC3               |       2.8         |     0.00    |       950      |     5.00   |
-      // | Adreno 613                 |       2.5         |     0.00    |       955      |     6.00   |
-      // | Adreno 610                 |       2.0         |     0.00    |       600      |     8.00   |
-      // | Mali-G57 MC2               |       1.8         |     0.00    |       950      |     5.00   |
-      // | Mali-G52 MP2               |       1.0         |     0.00    |       850      |     4.00   |
-      // | PowerVR GE8320             |       0.5         |     0.00    |       680      |     2.00 => 0 ????? |
-      // ----------------------------------------------------------------------------------------------
-      // Understanding Mali/Immortalis "MC" Notation:
-      // ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count.
-      // - Immortalis-G715 MC11 = 11 shader cores (flagship config)
-      // - Mali-G715 MC9 = 9 shader cores (high-end config)
-      // - Mali-G715 MC7 = 7 shader cores (mid-range config)
-      // More cores = higher performance. Always match the exact MC count from device specifications.
-      // -------------------------------------------------------------------------
-      // AMBIGUOUS SPECIFICATION RESOLUTION (MANDATORY PROCEDURE)
-      // 1. Identify the SoC: Retrieve the specific chipset model from identity.hardware_configuration.chipset.value
-      // 2. External Verification (Web Search): The parsing engine is strictly prohibited from guessing the GPU tier based on incomplete generic strings. The engine MUST execute an active web search targeting the host SoC's official specifications (e.g., query: "Qualcomm Snapdragon 680 GPU specs" or "Dimensity 9000 exact GPU model").
-      // 3. Canonical Component Extraction: Extract the exact GPU model number from the search results.
-      // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
-      
-      "6_3_0_gpu_architecture_reference": {
-        // SCORING GOAL: Serves as the authoritative hardware reference for the GPU architecture. Links the SoC to its specific GPU model.
-        "value": "Snapdragon 8 Gen 3",
-        // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
-        "value_path": "identity.hardware_configuration.chipset.value",
-        // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
-        "gpu_model": {
-          "value": "Adreno 750",
-          // GUIDELINE: Must exactly match an entry in the `GPU_ARCHITECTURE_LOOKUP_TABLE` above. If the spec sheet uses a generic name (e.g. "Adreno GPU"), use the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure to identify the canonical model.
+      "live_speech_translation": {
+        "value": "Live Translate",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 1.50
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 1.50.
+        // Definition: Real-time voice or text translation during calls or in-person conversations natively embedded in the system.
+        // Marketing Names: Live Translate (Samsung, Google), Interpreter (Samsung, Google, Xiaomi, Oppo, OnePlus, Vivo, Realme, iQOO), Translate App: Auto-Translate (Apple), AI Call Translator / Assistant (Asus, ROG, Vivo), AI Call Translation (Honor, ZTE, Tecno, Infinix), AI Real-time Subtitles / Live Subtitles (Xiaomi, Oppo, Vivo), AI Real-time Translation (Nubia, Redmagic), Moto AI Translate (Motorola), Ella Translate (Tecno, Infinix).
+      },
+      "content_summarization": {
+        "value": "Note Assist",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+        // Definition: Condenses long-form content (web pages, articles, notes) into a short summary.
+        // Marketing Names: Note Assist / Browsing Assist (Samsung), Recorder Summarize (Google), Writing Tools: Summarize / Notification Summaries (Apple), AI Summary / AI Web Page Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix, Asus, ROG), Catch Me Up (Motorola).
+      },
+      "writing_tools": {
+        "value": "Chat Assist",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.50
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 0.50.
+        // Definition: System-wide AI text rewriting, tone adjustment, or proofreading available in any text field.
+        // Marketing Names: Chat Assist / Keyboard AI (Samsung), Magic Compose / Help me write (Google, Gboard), Writing Tools: Rewrite / Proofread (Apple), AI Writing Assistant / AI Writer (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Tecno, Infinix, Asus, ROG), AI Creative Writing (Nubia, Redmagic), Magic Text (Honor), Style Sync (Motorola).
+      },
+      "meeting_call_transcription": {
+        "value": "Transcribe Assist",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+        // Definition: Auto-generates text from recordings or live calls into meeting minutes or transcripts.
+        // Marketing Names: Transcript Assist (Samsung), Recorder: AI Transcription (Google), Call Notes (Google), Call Transcription / Audio Transcription (Apple), AI Recorder / AI Recording Summary (Xiaomi, Oppo, OnePlus, Realme, Honor, Vivo, iQOO, ZTE, Nubia, Redmagic, Tecno, Infinix), AI Voice Scribe (Oppo, OnePlus), AI Transcript / AI Voice Recording (Asus, ROG, Vivo), Pay Attention (Motorola).
+      },
+      "on_device_reliability": {
+        "value": "Gemini Nano",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If value = "None", subscore = 0.00. Otherwise, subscore = 2.00.
+        // Definition: The device can run its core generative AI features locally (via NPU/TPU) without requiring a persistent cloud/internet connection.
+        // Marketing Names: "Process data only on device" (Samsung, Google, Xiaomi, Apple), Gemini Nano (Google, Samsung, Motorola, Realme), Private Cloud Compute / Secure Enclave (Apple), MagicLM On-Device (Honor), BlueLM (Vivo, iQOO), HyperMind / HyperAI (Xiaomi), Breeno / AndesBrain (Oppo), Nebula AI Model (ZTE, Nubia, Redmagic), Moto AI On-Device (Motorola), Ella AI (Tecno, Infinix).
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted is the sum of all subscores in this block (visual_screen_search + live_speech_translation + content_summarization + writing_tools + meeting_call_transcription + on_device_reliability).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    }
+  },
+  "6_processing_power_and_performance": {
+
+    // █ CPU_CORE_ARCHITECTURE_LOOKUP_TABLE
+    // Defines CAS (Core Architecture Score) and Ref Freq (Reference Frequency in Gigahertz [GHz]).
+    // 
+    // SCORING RATIONALE (Linear IPC): The CAS (Core Architecture Score) values in this table are linear performance scores representing relative IPC (Instructions Per Cycle) capabilities, anchored to a 10.00 ceiling for top-tier modern cores (Oryon Gen 2 / Apple Everest). 
+    // • WHY LINEAR? The scores must remain linear to ensure mathematically valid multi-core scaling in Step 3, where cluster effective throughputs are summed to compute the aggregate RCTS (Raw CPU Throughput Score). 
+    // • AVOID DOUBLE LOGARITHMS: Because the global logarithmic normalization to map human perception (Weber-Fechner Law) is performed later in Step 4, keeping these base architecture scores strictly linear prevents a mathematically incorrect "double logarithmic" compression, which would otherwise flatten the final scoring spectrum and penalize high-performance flagships.
+    // • MATH FLOOR: A floor of ~0.5 is enforced for legacy/efficiency cores strictly to prevent errors during subsequent logarithmic normalization in Step 4.
+    // • TYPICAL L2 KB: The standardized Level 2 cache capacity assigned to this specific core architecture across the majority of SoC implementations. This is used strictly by the Single-Core Method C penalty module. 
+    // • ISA GEN: The Instruction Set Architecture generation of the core. Used to apply a hardware efficiency multiplier.
+    // • ISA GEN SCORE: The numerical multiplier assigned to the specific ISA generation, representing its physical hardware efficiency.
+    // • INFERRED FIELDS: The `reference_frequency_ghz`, `typical_l2_kb`, and internal core codenames act as internal mathematical normalization anchors for the model's baseline framework, not universally authoritative public vendor specifications.
+    // 
+    // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    // │ PERFORMANCE / PRIME CORES — Flagship tier (highest IPC, used in prime and high-performance clusters)             │
+    // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+    // | C1-Ultra (Lumex)             |          10.00          |           4.21           |      2048     |  ARMv9.3  |      1.10     |
+    // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |     16384     |  ARMv9.2  |      1.08     |
+    // | Oryon Gen 2                  |           9.80          |           4.32           |     12288     |  ARMv8.7  |      1.05     |
+    // | Apple A17 Pro Cores          |           9.10          |           3.78           |     16384     |  ARMv8.6  |      1.04     |
+    // | Cortex-X925                  |           9.00          |           3.60           |      3072     |  ARMv9.2  |      1.08     |
+    // | C1-Premium (Lumex)           |           8.45          |           3.50           |      1024     |  ARMv9.3  |      1.10     |
+    // | Apple A16 Bionic             |           8.25          |           3.46           |     16384     |  ARMv8.6  |      1.04     |
+    // | Cortex-X4                    |           7.95          |           3.30           |      2048     |  ARMv9.2  |      1.08     |
+    // | Apple A15 Bionic             |           7.30          |           3.22           |     12288     |  ARMv8.6  |      1.04     |
+    // | Cortex-X3                    |           7.15          |           3.20           |      1024     |  ARMv9.0  |      1.06     |
+    // | Apple A14 Bionic             |           6.70          |           3.10           |      8192     |  ARMv8.4  |      1.02     |
+    // | Cortex-X2                    |           6.40          |           3.00           |      1024     |  ARMv9.0  |      1.06     |
+    // | Apple A13 Lightning          |           5.80          |           2.65           |      8192     |  ARMv8.4  |      1.02     |
+    // | Cortex-X1                    |           5.60          |           2.84           |      1024     |  ARMv8.2  |      1.00     |
+    // | Apple A12 Vortex             |           4.95          |           2.49           |      8192     |  ARMv8.3  |      1.01     |
+    // | Apple A11 Monsoon            |           4.15          |           2.39           |      8192     |  ARMv8.2  |      1.00     |
+    // | Qualcomm Kryo 585            |           3.60          |           2.84           |       512     |  ARMv8.2  |      1.00     |
+    // | Exynos M5 (Lion)             |           3.30          |           2.73           |       512     |  ARMv8.2  |      1.00     |
+    // | Qualcomm Kryo 485            |           3.00          |           2.84           |       512     |  ARMv8.2  |      1.00     |
+    // | Apple A10 Hurricane          |           2.90          |           2.34           |      3072     |  ARMv8.1  |      0.97     |
+    // | Exynos M4 (Cheetah)          |           2.65          |           2.73           |       512     |  ARMv8.2  |      1.00     |
+    // | Qualcomm Kryo 385            |           2.30          |           2.80           |      2048     |  ARMv8.2  |      1.00     |
+    // | Exynos M3 (Meerkat)          |           2.20          |           2.70           |       512     |  ARMv8.0  |      0.96     |
+    // | Qualcomm Kryo 280            |           1.90          |           2.45           |      2048     |  ARMv8.0  |      0.96     |
+    // | Exynos M2                    |           1.80          |           2.30           |      2048     |  ARMv8.0  |      0.96     |      
+    // | Exynos M1 (Mongoose)         |           1.70          |           2.30           |      2048     |  ARMv8.0  |      0.96     |
+    // | Qualcomm Kryo (2.40 GHz)     |           1.76          |           2.40           |      1024     |  ARMv8.0  |      0.96     |
+    // | Qualcomm Kryo (2.15 GHz)     |           1.60          |           2.15           |      1024     |  ARMv8.0  |      0.96     |
+    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+    // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    // │ PERFORMANCE / MID CORES — Used in performance clusters (high IPC but lower than prime cores)                     │
+    // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+    // | C1-Pro (Lumex)               |           5.35          |           2.70           |       512     |  ARMv9.3  |      1.10     |
+    // | Cortex-A725                  |           5.25          |           2.80           |       512     |  ARMv9.2  |      1.08     |
+    // | Cortex-A720                  |           5.00          |           2.80           |       512     |  ARMv9.2  |      1.08     |
+    // | Cortex-A715                  |           4.40          |           2.50           |       512     |  ARMv9.0  |      1.06     |
+    // | Cortex-A710                  |           4.15          |           2.50           |       512     |  ARMv9.0  |      1.06     |
+    // | Cortex-A78                   |           3.80          |           2.40           |       512     |  ARMv8.2  |      1.00     |
+    // | Cortex-A77                   |           3.55          |           2.40           |       512     |  ARMv8.2  |      1.00     |
+    // | Cortex-A76                   |           2.90          |           2.20           |       512     |  ARMv8.2  |      1.00     |
+    // | Cortex-A75                   |           2.20          |           2.00           |       512     |  ARMv8.2  |      1.00     |
+    // | Cortex-A73                   |           1.80          |           2.00           |      1024     |  ARMv8.0  |      0.96     |
+    // | Cortex-A72                   |           1.60          |           2.50           |      1024     |  ARMv8.0  |      0.96     |
+    // | Cortex-A57                   |           1.45          |           2.00           |      2048     |  ARMv8.0  |      0.96     |
+    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+    // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    // │ EFFICIENCY CORES — ARM standard efficiency cores (low IPC, optimized for power savings)                          │
+    // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+    // | C1-Nano (Lumex)              |           1.00          |           2.00           |       128     |  ARMv9.3  |      1.10     |
+    // | Cortex-A525                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
+    // | Cortex-A520                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
+    // | Cortex-A510                  |           1.00          |           2.00           |       128     |  ARMv9.0  |      1.06     |
+    // | Cortex-A55                   |           0.60          |           1.80           |       128     |  ARMv8.2  |      1.00     |
+    // | Cortex-A53                   |           0.50          |           1.80           |       512     |  ARMv8.0  |      0.96     |
+    // | Cortex-A35                   |           0.45          |           1.50           |       512     |  ARMv8.0  |      0.96     |
+    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+    // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    // │ APPLE EFFICIENCY CORES — Apple custom efficiency cores (used in the efficiency cluster of Apple SoCs)            │
+    // │ NOTE: Apple efficiency cores differ substantially from their performance counterparts in IPC and pipeline        │
+    // │ width. They MUST be listed separately to ensure correct multi-core throughput calculations for all iPhones.      │
+    // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+    // | Apple A18 E-core (Sawtooth)  |           1.00          |           2.42           |      4096     |  ARMv9.2  |      1.08     |
+    // | Apple A17 Pro E-core         |           1.00          |           2.11           |      4096     |  ARMv8.6  |      1.04     |
+    // | Apple A16 E-core (Sawtooth)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
+    // | Apple A15 E-core (Blizzard)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
+    // | Apple A14 E-core (Icestorm)  |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
+    // | Apple A13 E-core (Thunder)   |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
+    // | Apple A12 E-core (Tempest)   |           0.60          |           1.60           |      2048     |  ARMv8.3  |      1.01     |
+    // | Apple A11 E-core (Mistral)   |           0.55          |           1.42           |      1024     |  ARMv8.2  |      1.00     |
+    // | Apple A10 E-core (Zephyr)    |           0.45          |           1.05           |      3072     |  ARMv8.1  |      0.97     |
+    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+    // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    // │ LEGACY APPLE PERFORMANCE CORES — Pre-2016 borderline entries retained for completeness                           │
+    // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
+    // | Apple A9 (Twister)           |           0.50          |           1.85           |      3072     |  ARMv8.0  |      0.96     |
+    // ---------------------------------------------------------------------------------------------------------------------------------------
+
+    "6_1_0_system_on_chip_reference": {
+      // SCORING GOAL: Serves as the authoritative hardware reference for the SoC (System on Chip) architecture, including core counts and architectural types.
+      "value": "Snapdragon 8 Gen 3",
+      // GUIDELINE: Inherits the chipset model name from the device identity record.
+      "value_path": "identity.hardware_configuration.chipset.value",
+      // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
+      "clusters": {
+        // GUIDELINE: The cluster structure is FIXED with 4 named keys to cover all modern SoC architectures. Do NOT add or remove keys. If a SoC uses fewer than 4 clusters, set all fields in the unused keys to "N/A". Clusters MUST be strictly ordered from strongest ("best") to weakest ("fourth_best") according to their physical capability. The primary sorting criterion is the core_architecture_score (CAS) of the core architecture from the CPU_CORE_ARCHITECTURE_LOOKUP_TABLE. If two clusters have the exact same core_architecture_score, they must be ordered by their ratio of actual to reference frequency (higher ratio ordered first). Any unused clusters (which are set to "N/A") must be placed at the end of the ordering (e.g., in the "third_best" and "fourth_best" keys).
+        "best": {
+          "architecture": "Cortex-X4",
+          // GUIDELINE: The specific CPU core architecture name. The value MUST exactly match one of the entries in the `CPU_CORE_ARCHITECTURE_LOOKUP_TABLE` above to enable mapping (e.g., "Cortex-X4"). VERY IMPORTANT: The "best" cluster is characterized by having the highest computational throughput, hence among the different clusters of the SoC this cluster MUST always be the one with the highest core_architecture_score.
+          "count": 1,
+          // GUIDELINE: The number of cores contained in this specific cluster.
           "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
-          // GUIDELINE: Direct source URL for GPU model data.
-          "exact_extract": "Qualcomm® Adreno™ GPU"
-          // GUIDELINE: The verbatim proof from the source confirming the GPU identifier.
+          // GUIDELINE: Direct source URL for architectural data (type and count).
+          "exact_extract": "Cortex-X4"
+          // GUIDELINE: The verbatim proof from the source confirming architecture type and core count.
+        },
+        "second_best": {
+          "architecture": "Cortex-A720",
+          "count": 5,
+          "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+          "exact_extract": "Cortex-A720"
+        },
+        "third_best": {
+          "architecture": "Cortex-A520",
+          "count": 2,
+          "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+          "exact_extract": "Cortex-A520"
+        },
+        "fourth_best": {
+          "architecture": "N/A",
+          "count": "N/A",
+          "source": "N/A",
+          "exact_extract": "N/A"
         }
+      }
+    },
+    "6_1_cpu_multi_core_performance": {
+      // SCORING GOAL: Measures the actual delivered CPU performance during intense, multi-threaded workloads to ensure the device can handle heavy multitasking, gaming physics, and background processing. A three-method hierarchy (A→B→C) is used. Method A uses the Geekbench 6 Multi-Core benchmark when available. Method B uses Nearest Neighbor Interpolation when only similar devices have benchmarks. Method C (Predictor) is the fallback predicted score based on physical core scaling parameters.
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Direct Benchmark (Primary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_a_benchmark_CPU_multi": {
+        "value": 7200,
+        "source": "https://browser.geekbench.com/android-benchmarks",
+        "exact_extract": "Samsung Galaxy S24 Ultra [...] 7200",
+        "subscore": 9.11
+        // SCORING GUIDELINE: Primary benchmark is Geekbench 6 (GB6) Multi-Core.
+        // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
+        // • EXTRACTION RULE: Use the "Multi-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use v4/v5 or Single-Core scores.
+        // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_CPU_multi.value) − log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) − log(CPU_GB6_Multi_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
       },
-      "6_3_graphics_and_ray_tracing_performance": {
-        // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
-        // ═══════════════════════════════════════════════════════════════════════════
-        // STANDARD GRAPHICS PERFORMANCE
-        // ═══════════════════════════════════════════════════════════════════════════
-        "standard_graphics": {
-          // SCORING GOAL: Focuses on traditional "Raster" rendering (Geometry, Textures, and Shaders) and API efficiency. This represents the vast majority of current mobile gaming workloads. A three-method hierarchy (A→B→C) is used.
-          // ═══════════════════════════════════════════════════════════════════════════
-          // METHOD A — Direct Benchmark (Primary)
-          // ═══════════════════════════════════════════════════════════════════════════
-          "method_a_benchmark_GPU": {
-            "value": 1430,
-            "source": "https://www.3dmark.com/search",
-            "exact_extract": "Samsung Galaxy S24 Ultra [...] 1430",
-            "subscore": 8.20
-            // SCORING GUIDELINE: primary benchmark is 3DMark Steel Nomad Light.
-            // • WHERE TO FIND IT: Search 3dmark.com search index or GSMArena/NotebookCheck reviews.
-            // • EXTRACTION RULE: Use the "Steel Nomad Light" score. Ensure it is not the desktop "Steel Nomad" or older "Wild Life" benchmarks.
-            // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_GPU.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-          },
 
-          // ═══════════════════════════════════════════════════════════════════════════
-          // METHOD C — Graphics Performance Prediction Model (Tertiary / baseline for Method B)
-          // ═══════════════════════════════════════════════════════════════════════════
-          "method_c_prediction_model_GPU": {
-            // SCORING RATIONALE: This model predicts rasterization performance by analyzing the hardware's peak theoretical throughput (CTI) modified by software efficiency (AFM), data availability (MTI), command orchestration speed (CPU), and chassis-level thermal burst capacity (via TDSI).
-            // EXTERNAL GRAPHICS SYSTEM INPUTS
-            // SCORING GUIDELINE: These three parameters are external environmental and system factors outside the core Graphics Processing Unit (GPU) itself that directly bottleneck or facilitate graphics rendering performance under load.
-            "memory_throughput_index": {
-              "value": 9.34,
-              "identifier_path": "6_5_ram_technology.scores.predicted"
-              // GUIDELINE: Already-normalized Memory Throughput Index (MTI) score from Section 6.5. This represents the memory bandwidth available for data access.
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Throughput Prediction Model (Tertiary / baseline for Method B)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_c_prediction_model_CPU_multi": {
+        // SCORING GOAL: Predicts the CPU (Central Processing Unit) Multi-Core Performance score using the 5-Step Performance Pipeline. The model accounts for core-frequency soft-saturation, local intra-cluster scaling, Raw CPU Throughput Score (RCTS) aggregation, global logarithmic normalization, and dynamic non-linear deficit penalties from adjacent physical subsystems.
+        // GUIDELINE: The number of cluster objects is FIXED at 4 to maintain structural parity with Section 6.1.0 SoC (System on Chip) Reference. Do NOT add or remove blocks. If a SoC uses fewer than 4 clusters (e.g., 2 for Apple, 3 for most Snapdragon), then for the remaining unused cluster block(s):
+        // - leave the fields containing internal paths or calculation formula unchanged ("identifier_path", "reference_table", "value_path", "calculation_formula") as these always remain valid
+        // - set the Cluster Effective Throughput (cluster_effective_throughput.value) to 0
+        // - set all remaining fields to "N/A"
+        "clusters": {
+          "best": {
+            "architecture_mapping": {
+              "identifier": "Cortex-X4",
+              "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.best.architecture",
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              "core_architecture_score": 7.95,
+              // GUIDELINE: Performance score from the lookup table representing IPC (Instructions Per Cycle) capability.
+              "reference_frequency_ghz": 3.30
+              // GUIDELINE: Reference frequency in GHz (Gigahertz) from the lookup table.
             },
-            "cpu_orchestration_index": {
-              "value": 8.63,
-              "identifier_path": "6_1_cpu_multi_core_performance.scores.final.value"
-              // GUIDELINE: Central Processing Unit (CPU) Orchestration Index. PRIORITY: Use the Final Score. This represents the command submission speed, including software/scheduling modifiers.
+            "core_count": {
+              "value": 1,
+              "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.best.count"
+              // GUIDELINE: Number of physical CPU cores in this specific cluster.
             },
-            "tdsi_index": {
-              "value": 4.24,
-              "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value"
-              // GUIDELINE: Thermal Dissipation Stability Index (TDSI). PRIORITY: Use the Final Score. This represents real-world chassis cooling reality and assembly tolerances.
+            "actual_frequency_ghz": {
+              "value": 3.3,
+              "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+              "exact_extract": "1x 3.3 GHz"
+              // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
             },
-            "compute_throughput_index": {
-              // SCORING GOAL: Captures the raw mathematical work the Graphics Processing Unit (GPU) cores can perform per second (Compute Throughput Index (CTI)).
-              "architecture_mapping": {
-                "identifier": "Adreno 750",
-                "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
-                "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-                "standard_graphics_score": 8.90,
-                // GUIDELINE: Performance score from the "Standard Graphics" column of the lookup table.
-                "reference_frequency_mhz": 903.00
-                // GUIDELINE: Reference frequency from the "Ref Freq (MHz)" column of the lookup table in Megahertz (MHz).
-              },
-              "actual_frequency_mhz": {
-                "value": 1000,
-                "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
-                "exact_extract": "Adreno 750 (1 GHz)"
-                // GUIDELINE: The maximum advertised frequency of the Graphics Processing Unit (GPU) in Megahertz (MHz). Note: 1 GHz = 1000 MHz.
-              },
-              "compute_throughput_index_raw": {
-                "value": 9.1966,
-                "calculation_formula": "CLAMP(0.0, 10.0, (actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) * architecture_mapping.standard_graphics_score / (1.0 + 0.075 * architecture_mapping.standard_graphics_score * ((actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) - 1.0)))"
-                // GUIDELINE: Theoretical range-clamped perceptual graphics scaling using Weber-Fechner Law. Keep 4 decimal places.
-              },
-              "system_support_index": {
-                "value": 7.9585,
-                "calculation_formula": "(0.60 * memory_throughput_index.value) + (0.25 * tdsi_index.value) + (0.15 * cpu_orchestration_index.value)"
-                // GUIDELINE: The System Support Index (SSI) represents the aggregate capability of non-GPU components supporting the graphics processor. Keep 4 decimal places.
-              },
-              "transmission_factor": {
-                "value": 0.8762,
-                "calculation_formula": "system_support_index.value >= compute_throughput_index_raw.value ? 1.0 : 1.0 - (compute_throughput_index_raw.value - system_support_index.value) / 10.0"
-                // GUIDELINE: The dynamic bottleneck transmission factor naturally bounded within [0.0, 1.0]. Keep 4 decimal places.
-              },
-              "subscore": 9.1599,
-              "calculation_formula": "architecture_mapping.standard_graphics_score + (compute_throughput_index_raw.value - architecture_mapping.standard_graphics_score) * transmission_factor.value"
-              // GUIDELINE: Represents the final computed throughput index (CTI) after physical bottleneck adjustment. Keep 4 decimal places.
+            "soft_saturation_exponent": {
+              "value": 0.9300,
+              "calculation_formula": "gamma = Look up based on cluster core count (best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+              // GUIDELINE: Saturation factor (gamma) modeling frequency scaling dimishing returns.
             },
-            "api_modifier": {
-              // GPU_API_SUPPORT_LOOKUP_TABLE
-               // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score    |
-               // | :---------------- | :------------- | :----------------- | :---------------------- | :------: |
-               // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | **10.0** |
-               // | —                 | Metal 3.3      | —                  | —                       | **9.8**  |
-               // | —                 | Metal 3.2      | —                  | —                       | **9.6**  |
-               // | —                 | Metal 3.1      | —                  | —                       | **9.4**  |
-               // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_1)        | **9.2**  |
-               // | —                 | Metal 2.4      | —                  | —                       | **8.8**  |
-               // | —                 | Metal 2.3      | —                  | —                       | **8.6**  |
-               // | Vulkan 1.2        | —              | —                  | D3D 12 (FL 12_0)        | **8.5**  |
-               // | —                 | Metal 2.2      | —                  | —                       | **8.4**  |
-               // | —                 | Metal 2.1      | —                  | —                       | **8.2**  |
-               // | —                 | Metal 2.0      | —                  | —                       | **8.0**  |
-               // | Vulkan 1.1        | Metal 1.2      | —                  | D3D 12 (FL 11_1)        | **7.5**  |
-               // | —                 | Metal 1.1      | —                  | —                       | **7.2**  |
-               // | Vulkan 1.0        | Metal 1.0      | —                  | D3D 12 (FL 11_0)        | **7.0**  |
-               // | —                 | —              | —                  | D3D 11.2                | **6.8**  |
-               // | —                 | —              | —                  | D3D 11.1                | **6.5**  |
-               // | —                 | —              | —                  | D3D 11.0                | **6.0**  |
-               // | —                 | —              | —                  | D3D 10.1                | **5.5**  |
-               // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | **5.0**  |
-               // | —                 | —              | —                  | D3D 9.3                 | **4.0**  |
-               // | —                 | —              | —                  | D3D 9.2                 | **3.5**  |
-               // | —                 | —              | OpenGL ES 3.1      | —                       | **3.0**  |
-               // | —                 | —              | —                  | D3D 9.1                 | **2.5**  |
-               // | —                 | —              | —                  | D3D 9.0c                | **2.0**  |
-               // | —                 | —              | OpenGL ES 3.0      | —                       | **1.0**  |
-               // | —                 | —              | OpenGL ES 2.0      | —                       | **0.0**  |
-               // | —                 | —              | OpenGL ES 1.1      | —                       | **0.0**  |
-              //
-               // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
-               // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
-               //
-               // RATIONALE ON HARDWARE VS OS: Can identical SoCs have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
-               //
-               // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
-               // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
-               // | :------------------ | :------------------- | :------------------- |
-               // | iOS 19+             | A19, M5 (Future)     | Metal 4.0            |
-               // | iOS 18.x            | A18, M4              | Metal 3.3            |
-               // | iOS 17.x            | A17 Pro, M3          | Metal 3.2            |
-               // | iOS 16.x            | A16, M2              | Metal 3.1            |
-               // | iOS 15.x            | A14 - A15, M1        | Metal 3.0            |
-               // | iOS 14.x            | A12 - A13            | Metal 2.4            |
-               // | iOS 13.x            | A11 Bionic           | Metal 2.3            |
-               // | iOS 12.x            | A10 / A10X Fusion    | Metal 2.2            |
-               // | iOS 11.x            | A9 / A9X             | Metal 2.1            |
-               // | iOS 10.x            | A8 / A8X             | Metal 2.0            |
-               // | iOS 10.x - 12.x     | A7 (64-bit Baseline) | Metal 1.2            |
-               // | iOS 9.x             | A7 (64-bit Baseline) | Metal 1.1            |
-               // | iOS 8.x             | A7 (64-bit Baseline) | Metal 1.0            |
-               // | iOS 7.x             | A7 (64-bit Baseline) | OpenGL ES 3.0        |
-               // | iOS 6.x             | A6 / A6X             | OpenGL ES 2.0        |
-               // | iOS 4.x - 5.x       | A4 / A5 / A5X        | OpenGL ES 2.0        |
-               // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
-               //
-               // MATRIX 2: ANDROID (Deep Coverage Mirror)
-               // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
-               // | :------------------- | :----------------------------- | :------------ |
-               // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
-               // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-               // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
-               // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
-               // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
-               // | Android 6.0          | Adreno 430 (Snapdragon 810)    | OpenGL ES 3.2 |
-               // | Android 5.0 - 5.1    | Adreno 405/418/420, Mali-T7xx  | OpenGL ES 3.1 |
-               // | Android 4.3 - 4.4    | Adreno 3xx, Mali-T6xx          | OpenGL ES 3.0 |
-               // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
-               // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.1 |
-               //
-               // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
-               // | Windows OS Version     | Era / Reference Hardware         | Inferred API      |
-               // | :--------------------- | :------------------------------- | :---------------- |
-               // | Windows 11 (24H2)      | Snapdragon X Elite (Adreno X1)   | D3D 12 (FL 12_2)  |
-               // | Windows 11 (22H2)      | Snapdragon 8cx Gen 3             | D3D 12 (FL 12_1)  |
-               // | Windows 10/11 ARM      | Snapdragon 850 / 8cx Gen 1/2     | D3D 12 (FL 12_0)  |
-               // | Windows 10 ARM (RS1)   | Snapdragon 835                   | D3D 12 (FL 11_1)  |
-               // | Windows 9 (WP9 Skipped)| Unreleased WP9 Reference Dev Kits| D3D 12 (FL 11_1)  |
-               // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)     | D3D 12 (FL 11_0)  |
-               // | Windows 10 Mobile      | Lumia 950 / 950 XL               | D3D 11.2          |
-               // | Windows Phone 8.1      | Lumia 930 / 1520                 | D3D 11.1          |
-               // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8)  | D3D 11.0          |
-               // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)   | D3D 10.1          |
-               // | Windows Phone 8.0      | Early Surface RT / Tegra 3       | D3D 10.0          |
-               // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)      | D3D 9.3           |
-               // | Windows Phone 8.0      | Early builds / Dev hardware      | D3D 9.2           |
-               // | Windows Phone 7.x      | Lumia 800 / 900                  | D3D 9.1           |
-               // | Windows Phone 7.0      | Samsung Focus / LG Quantum       | D3D 9.0c          |
-               // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung           | OpenGL ES 1.1     |
-               // --------------------------------------------------------------------------------- 
-              "identifier": "Vulkan 1.3",
-              // GUIDELINE: Standardized API version supported by the GPU.
-              "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
-              "exact_extract": "Vulkan 1.3 support", 
-              "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
-              "score": 9.20
-              // GUIDELINE: Performance score from the "Score" column of the lookup table. If unspecified, execute AMBIGUOUS API RESOLUTION
+            "core_yield": {
+              "value": 7.9500,
+              "calculation_formula": "best.architecture_mapping.core_architecture_score * ((best.actual_frequency_ghz.value / best.architecture_mapping.reference_frequency_ghz) ^ best.soft_saturation_exponent.value)"
+              // GUIDELINE: Yield = CAS (Core Architecture Score) * ((Actual Freq / Ref Freq) ^ gamma). Models frequency scaling soft-saturation. Keep 4 decimal places.
             },
-            "predicted_score": 8.8655
-            // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.subscore) + (0.15 * api_modifier.score) + (0.15 * memory_throughput_index.value) + (0.0625 * tdsi_index.value) + (0.0375 * cpu_orchestration_index.value), clamped 0–10. This is the score used for Method B (Nearest Neighbor Interpolation) neighbors. Keep 4 decimal places.
+            "pacc_decay_exponent": {
+              "value": 1.0000,
+              "calculation_formula": "Look up based on cluster core count (best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+              // GUIDELINE: Cluster scaling exponent (alpha) modeling thread communication and resource contention decay.
+            },
+            "parallel_adjusted_core_count": {
+              "value": 1.0000,
+              "calculation_formula": "best.core_count.value ^ best.pacc_decay_exponent.value"
+              // GUIDELINE: Models cluster multi-thread capability.
+            },
+            "cluster_effective_throughput": {
+              "value": 7.9500,
+              "calculation_formula": "best.core_yield.value * best.parallel_adjusted_core_count.value"
+              // GUIDELINE: Cluster Effective Throughput = Core Yield * Parallel-Adjusted Core Count. Total multi-core contribution of this cluster. Keep 4 decimal places.
+            }
           },
-
-          // ═══════════════════════════════════════════════════════════════════════════
-          // METHOD B — Nearest Neighbor Interpolation (Secondary)
-          // ═══════════════════════════════════════════════════════════════════════════
-          "method_b_neighbor_interpolation_GPU": {
-            // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-            // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the
-            //         5-dimensional hardware feature space:
-            //         Distance = √( 0.60 * CTI_Diff² + 0.15 * AFM_Diff² + 0.15 * MTI_Diff² + 0.0625 * TDSI_Diff² + 0.0375 * CPU_Diff² )
-            //         Where the difference terms for a candidate neighbor are calculated as:
-            //           • CTI_Diff = Target_CTI - Neighbor_CTI
-            //             - Target_CTI & Neighbor_CTI are the Compute Throughput Index scores
-            //               sourced from the compute_throughput_index.subscore field.
-            //           • AFM_Diff = Target_AFM - Neighbor_AFM
-            //             - Target_AFM & Neighbor_AFM are the API & Feature Modifier scores
-            //               sourced from the api_modifier.score field.
-            //           • MTI_Diff = Target_MTI - Neighbor_MTI
-            //             - Target_MTI & Neighbor_MTI are sourced from Section 6.5 (RAM Technology)
-            //               Predicted Score (scores.predicted) to isolate raw hardware bandwidth
-            //               capabilities before system-level boosters are applied. 
-            //               Current path: 6_5_ram_technology.scores.predicted
-            //           • TDSI_Diff = Target_TDSI - Neighbor_TDSI
-            //             - Target_TDSI & Neighbor_TDSI are sourced from Section 6.10 (TDSI)
-            //               Final Score (scores.final.value) to represent physical cooling stability. 
-            //               Current path: 6_10_thermal_dissipation_stability.scores.final.value
-            //           • CPU_Diff = Target_CPU - Neighbor_CPU
-            //             - Target_CPU & Neighbor_CPU are sourced from Section 6.1 (CPU Multi-Core)
-            //               Final Score (scores.final.value) to capture command submission speed.
-            //               Current path: 6_1_cpu_multi_core_performance.scores.final.value
-            //         Search space: all phones with a known 3DMark Steel Nomad Light score (Method A),
-            //         excluding the target device itself.
-            // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
-            "neighbors": [
-              {
-                // Neighbor1
-                "device_id_1": "xiaomi_14_ultra",
-                // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-                "euclidean_distance_1": 0.2713,
-                // GUIDELINE: Weighted Euclidean distance from Step 1.
-                "predicted_score_1": 9.40,
-                // GUIDELINE: The neighbor's own Method C predicted score.
-                "benchmark_score_1": 7.82
-                // GUIDELINE: The neighbor's Method A subscore.
-              },
-              {
-                // Neighbor2
-                "device_id_2": "asus_rog_phone_8_pro",
-                "euclidean_distance_2": 0.2980,
-                "predicted_score_2": 9.46,
-                "benchmark_score_2": 7.98
-              },
-              {
-                // Neighbor3
-                "device_id_3": "oneplus_12",
-                "euclidean_distance_3": 0.3125,
-                "predicted_score_3": 9.40,
-                "benchmark_score_3": 7.88
-              }
-            ],
-            "avg_predicted_neighbors": 9.4200,
-            // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-            "avg_benchmark_neighbors": 7.8933,
-            // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-            "correction_ratio": 0.9411,
-            // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_GPU.predicted_score / avg_predicted_neighbors.
-            "interpolated_score": 7.43
-            // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+          "second_best": {
+            "architecture_mapping": {
+              "identifier": "Cortex-A720",
+              "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.second_best.architecture",
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              "core_architecture_score": 5.00,
+              "reference_frequency_ghz": 2.80
+            },
+            "core_count": {
+              "value": 5,
+              "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.second_best.count"
+            },
+            "actual_frequency_ghz": {
+              "value": 3.2,
+              "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+              "exact_extract": "5x 3.2 GHz"
+              // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
+            },
+            "soft_saturation_exponent": {
+              "value": 0.9800,
+              "calculation_formula": "gamma = Look up based on cluster core count (second_best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+            },
+            "core_yield": {
+              "value": 5.6990,
+              "calculation_formula": "second_best.architecture_mapping.core_architecture_score * ((second_best.actual_frequency_ghz.value / second_best.architecture_mapping.reference_frequency_ghz) ^ second_best.soft_saturation_exponent.value)"
+            },
+            "pacc_decay_exponent": {
+              "value": 0.8500,
+              "calculation_formula": "Look up based on cluster core count (second_best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+            },
+            "parallel_adjusted_core_count": {
+              "value": 3.9276,
+              "calculation_formula": "second_best.core_count.value ^ second_best.pacc_decay_exponent.value"
+            },
+            "cluster_effective_throughput": {
+              "value": 22.3834,
+              "calculation_formula": "second_best.core_yield.value * second_best.parallel_adjusted_core_count.value"
+            }
           },
-          "scores": {
-            "predicted": 8.8655,
-            // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_GPU.predicted_score.
-            "final": {
-              "value": 8.20,
-              // SCORING GUIDELINE: Use Method A if method_a_benchmark_GPU is available (method_a_benchmark_GPU.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_GPU.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_GPU.predicted_score).
-              "method_used": "Benchmark (3DMark)",
-              // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-              //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
-              //   • Neighbor Interpolation → Method B (similar device benchmarks)
-              //   • Predictor              → Method C (weighted spec calculation)
-              "booster": "No",
-              // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-              "confidence": "N/A"
-              // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+          "third_best": {
+            "architecture_mapping": {
+              "identifier": "Cortex-A520",
+              "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.third_best.architecture",
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              "core_architecture_score": 1.00,
+              "reference_frequency_ghz": 2.00
+            },
+            "core_count": {
+              "value": 2,
+              "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.third_best.count"
+            },
+            "actual_frequency_ghz": {
+              "value": 2.3,
+              "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+              "exact_extract": "2x 2.3 GHz"
+              // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
+            },
+            "soft_saturation_exponent": {
+              "value": 0.9500,
+              "calculation_formula": "gamma = Look up based on cluster core count (third_best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+            },
+            "core_yield": {
+              "value": 1.1420,
+              "calculation_formula": "third_best.architecture_mapping.core_architecture_score * ((third_best.actual_frequency_ghz.value / third_best.architecture_mapping.reference_frequency_ghz) ^ third_best.soft_saturation_exponent.value)"
+            },
+            "pacc_decay_exponent": {
+              "value": 0.9400,
+              "calculation_formula": "Look up based on cluster core count (third_best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+            },
+            "parallel_adjusted_core_count": {
+              "value": 1.9185,
+              "calculation_formula": "third_best.core_count.value ^ third_best.pacc_decay_exponent.value"
+            },
+            "cluster_effective_throughput": {
+              "value": 2.1909,
+              "calculation_formula": "third_best.core_yield.value * third_best.parallel_adjusted_core_count.value"
+            }
+          },    
+          "fourth_best": {
+            "architecture_mapping": {
+              "identifier": "N/A",
+              "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.fourth_best.architecture",
+              "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+              "core_architecture_score": "N/A",
+              "reference_frequency_ghz": "N/A"
+            },
+            "core_count": {
+              "value": "N/A",
+              "value_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.fourth_best.count"
+            },
+            "actual_frequency_ghz": {
+              "value": "N/A",
+              "source": "N/A",
+              "exact_extract": "N/A"
+              // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
+            },
+            "soft_saturation_exponent": {
+              "value": "N/A",
+              "calculation_formula": "gamma = Look up based on cluster core count (fourth_best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
+            },
+            "core_yield": {
+              "value": "N/A",
+              "calculation_formula": "fourth_best.architecture_mapping.core_architecture_score * ((fourth_best.actual_frequency_ghz.value / fourth_best.architecture_mapping.reference_frequency_ghz) ^ fourth_best.soft_saturation_exponent.value)"
+            },
+            "pacc_decay_exponent": {
+              "value": "N/A",
+              "calculation_formula": "Look up based on cluster core count (fourth_best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
+            },
+            "parallel_adjusted_core_count": {
+              "value": "N/A",
+              "calculation_formula": "fourth_best.core_count.value ^ fourth_best.pacc_decay_exponent.value"
+            },
+            "cluster_effective_throughput": {
+              "value": 0.0000,
+              "calculation_formula": "fourth_best.core_yield.value * fourth_best.parallel_adjusted_core_count.value"
             }
           }
         },
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // Ray Tracing 
-        // ═══════════════════════════════════════════════════════════════════════════
-        "ray_tracing": {
-          // This measures dedicated hardware acceleration for lighting and reflections.
-          "architecture_mapping": {
-            "identifier": "Adreno 750",
-            "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
-            "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-            "ray_tracing_score_raw": 8.50
-            // GUIDELINE: Maps to the "Ray Tracing" column.
+        "raw_performance_throughput_score": {
+          "value": 32.5243,
+          "calculation_formula": "clusters.best.cluster_effective_throughput.value + clusters.second_best.cluster_effective_throughput.value + clusters.third_best.cluster_effective_throughput.value + clusters.fourth_best.cluster_effective_throughput.value"
+          // GUIDELINE: RCTS (Raw CPU Throughput Score) = Sum of all Cluster Effective Throughputs (CET). Keep 4 decimal places.
+        },
+        "normalized_throughput_score": {
+          "value": 8.8379,
+          "calculation_formula": "10.0 * (log(raw_performance_throughput_score.value) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min)), clamped [0.0, 10.0]."
+        },
+        "memory_subsystem_penalty": {
+          "deficit": {
+            "value": 0.0000,
+            "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
           },
+          "penalty": {
+            "value": 0.0000,
+            "calculation_formula": "0.2000 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+          },
+          // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.20 * (Deficit ^ 1.4). Keep 4 decimal places.
+        },
+        "thermal_subsystem_penalty": {
+          "deficit": {
+            "value": 4.5979,
+            "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
+          },
+          "penalty": {
+            "value": 1.0156,
+            "calculation_formula": "0.1200 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+          },
+          // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.12 * (Deficit ^ 1.4). Keep 4 decimal places.
+        },
+        "cache_subsystem_penalty": {
+          "identifier": "Snapdragon 8 Gen 3",
+          "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.value",
+          "reference_table": "references/soc_reference.md",
+          "CFEI": 8.6165,
+          // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is fetched from references/soc_reference.md.
+          "deficit": {
+            "value": 0.2214,
+            "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
+          },
+          "penalty": {
+            "value": 0.0056,
+            "calculation_formula": "0.0400 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
+          },
+          // GUIDELINE: Cache Penalty = 0.04 * (Deficit ^ 1.3). Keep 4 decimal places.
+          // CFEI FALLBACK RULE: If the SoC has no CFEI score (indicated by '?') or is missing, consider a penalty of exactly 0 by setting deficit to 0.0000 and penalty to 0.0000.
+        }, 
+        "predicted_score": 7.82,
+        "calculation_formula": "normalized_throughput_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value + cache_subsystem_penalty.penalty.value)"
+        // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the raw normalized throughput score through the subtraction of the active dynamic penalties from the memory, thermal and cache supporting subsystems.
+        // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_b_neighbor_interpolation_CPU_multi": {
+        // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench 6 (GB6) Multi-Core score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+        // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, excluding the target device itself. Distance is calculated as:
+        // Distance = Sqrt( (RCTS_norm_Diff)^2 + (Penalty_MTI_Diff)^2 + (Penalty_TDSI_Diff)^2 + (Penalty_CFEI_Diff)^2 )
+        // Where the metric component differences are defined by the following precise value paths:
+        // • RCTS_norm_Diff = (target.method_c_prediction_model_CPU_multi.normalized_throughput_score.value) - (neighbor.method_c_prediction_model_CPU_multi.normalized_throughput_score.value)
+        // • Penalty_MTI_Diff = (target.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.memory_subsystem_penalty.penalty.value)
+        // • Penalty_TDSI_Diff = (target.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.thermal_subsystem_penalty.penalty.value)
+        // • Penalty_CFEI_Diff = (target.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_multi.cache_subsystem_penalty.penalty.value)
+        // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "xiaomi_14_ultra",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
+            "euclidean_distance_1": 0.2315,
+            // GUIDELINE: Euclidean distance from Step 1. Keep 4 decimal places.
+            "predicted_score_1": 7.94,
+            // GUIDELINE: The neighbor's own Method C predicted score (overall Multi-Core).
+            "benchmark_score_1": 8.60
+            // GUIDELINE: The neighbor's Method A subscore.
+          },
+          {
+            // Neighbor2
+            "device_id_2": "oneplus_12",
+            "euclidean_distance_2": 0.1482,
+            "predicted_score_2": 7.86,
+            "benchmark_score_2": 8.55
+          },
+          {
+            // Neighbor3
+            "device_id_3": "asus_rog_phone_8_pro",
+            "euclidean_distance_3": 0.5230,
+            "predicted_score_3": 8.32,
+            "benchmark_score_3": 8.65
+          }
+        ],
+        "avg_predicted_neighbors": 8.0400,
+        // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
+        "avg_benchmark_neighbors": 8.6000,
+        // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
+        "correction_ratio": 0.9726,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
+        "interpolated_score": 8.36
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+      },
+
+      "scores": {
+        "predicted": 7.82,
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
+        "final": {
+          "value": 9.11,
+          // SCORING GUIDELINE: Use Method A if method_a_benchmark_CPU_multi is available (method_a_benchmark_CPU_multi.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_multi.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_multi.predicted_score).
+          "method_used": "Benchmark (Geekbench 6)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
+          //   • Neighbor Interpolation  → Method B (similar device benchmarks)
+          //   • Predictor               → Method C (spec calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
+      }
+    },
+    "6_2_cpu_architecture_single_core": {
+      // SCORING GOAL: Evaluates individual CPU (Central Processing Unit) core capability and IPC efficiency (Instructions Per Cycle—a measure of how many tasks a CPU can perform in every clock tick), representing the perceived snappiness of the UI (User Interface) and single-threaded application speed.
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Direct Benchmark (Primary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_a_benchmark_CPU_single": {
+        "value": 2200,
+        "source": "https://browser.geekbench.com/android-benchmarks",
+        "exact_extract": "Samsung Galaxy S24 Ultra [...] 2200",
+        "subscore": 8.53
+        // SCORING GUIDELINE: The primary benchmark is Geekbench 6 (GB6) Single-Core.
+        // • WHERE TO FIND IT: Query browser.geekbench.com for the host SoC (System on Chip) or exact device model.
+        // • EXTRACTION RULE: Use the "Single-Core Score" from the "Android" or "iOS" category. Verify version is 6.x. Do NOT use older versions (e.g. Geekbench 4 or 5) or Multi-Core scores.
+        // • SCORING GUIDELINE: subscore = 10 * (log(value) - log(CPU_GB6_Single_Score_Min)) / (log(CPU_GB6_Single_Score_Max) - log(CPU_GB6_Single_Score_Min)), clamped 0–10.
+        // If no benchmark score is available, set value to "Not found" and source, exact_extract, and subscore to "N/A".
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Single-Thread Efficiency Prediction Model (Tertiary / baseline for Method B)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_c_prediction_model_CPU_single": {
+        "architecture_mapping": {
+          "identifier": "Cortex-X4",
+          "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.best.architecture",
+          "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+          "core_architecture_score": 7.95,
+          // GUIDELINE: The CAS (Core Architecture Score) retrieved from the lookup table representing linear IPC (Instructions Per Cycle) capability. VERY IMPORTANT: Ensure this core architecture score is the highest among all the core architecture scores of the SoC.
+          "reference_frequency_ghz": 3.30,
+          // GUIDELINE: The reference frequency in GHz (Gigahertz) from the lookup table.
+          "typical_l2_kb": 2048,
+          // GUIDELINE: The standardized private Level 2 (L2) cache capacity in KB (Kilobytes) from the lookup table.
+          "isa_gen": "ARMv9.2",
+          // GUIDELINE: The ISA (Instruction Set Architecture) generation from the lookup table.
+          "isa_gen_score": 1.08
+          // GUIDELINE: The ISA hardware efficiency multiplier from the lookup table.
+        },
+        "actual_frequency_ghz": {
+          "value": 3.3,
+          "value_path": "6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters.best.actual_frequency_ghz.value"
+          // GUIDELINE: The maximum advertised actual clock frequency in GHz (Gigahertz) of the best performing core cluster from Section 6.1.
+        },
+        "core_yield": {
+          "value": 8.5860,
+          "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.9300) * architecture_mapping.isa_gen_score",
+          // GUIDELINE: Core Yield (CY) = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core frequency scaling soft-saturation exponent (gamma) of 0.93 representing the extreme burst behavior of the best core pushed to physical limits. Keep 4 decimal places.
+        },
+        "normalized_core_yield": {
+          "value": 9.1300,
+          "calculation_formula": "normalized_core_yield.value = 10.0 * (log(core_yield.value) - log(CPU_STRS_Score_Min)) / (log(CPU_STRS_Score_Max) - log(CPU_STRS_Score_Min)), clamped 0–10."
+          // GUIDELINE: Converts Core Yield into a human-perceptual score (STRS_norm [Single-Threaded Raw Score Normalized]) utilizing logarithmic scaling to model the Weber-Fechner Law. Keep 4 decimal places.
+        },
+        "cache_subsystem_penalty": {
+          "l2_cache_score": {
+            "value": 5.7143,
+            "calculation_formula": "l2_cache_score.value = 10.0 * (log(architecture_mapping.typical_l2_kb) - log(CPU_L2_KB_Min)) / (log(CPU_L2_KB_Max) - log(CPU_L2_KB_Min)), clamped 0–10."
+            // GUIDELINE: L2CS Score represents the standardized L2 Cache Subsystem capability normalized logarithmically between CPU_L2_KB_Min (128 KB) and CPU_L2_KB_Max (16384 KB). Keep 4 decimal places.
+          },
+          "deficit": {
+            "value": 3.4157,
+            "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
+            // GUIDELINE: Calculates the deficit between the normalized CPU core requirements (normalized_core_yield) and the cache subsystem capability (l2_cache_score). Keep 4 decimal places.
+          },
+          "penalty": {
+            "value": 0.3350,
+            "calculation_formula": "penalty.value = 0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
+            // GUIDELINE: Models non-linear memory-stall performance penalties caused by cache capacity constraints using a scaling factor of 0.06 and exponent of 1.4. Keep 4 decimal places.
+          }
+        },
+        "memory_subsystem_penalty": {
+          "deficit": {
+            "value": 0.0000,
+            "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
+            // GUIDELINE: Calculates the deficit between normalized CPU core requirements and the supporting system DRAM (Dynamic Random-Access Memory) Technology score (from Section 6.5). Keep 4 decimal places.
+          },
+          "penalty": {
+            "value": 0.0000,
+            "calculation_formula": "penalty.value = 0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
+            // GUIDELINE: Models fabric latency and transfer bandwidth bottlenecks under peak single-core throughput using a scaling factor of 0.03 and exponent of 1.3. Keep 4 decimal places.
+          }
+        },
+        "predicted_score": 8.79,
+        "calculation_formula": "predicted_score = normalized_core_yield.value - (cache_subsystem_penalty.penalty.value + memory_subsystem_penalty.penalty.value)",
+        // SCORING GUIDELINE: The predicted CPU single-core score, computed by subtracting both private cache and memory subsystem penalties from the normalized core yield.
+        // BOUNDS CHECK ABORT PROCEDURE: If the predicted score is outside the physical standard bounds of [0.00, 10.00] (less than 0.00 or greater than 10.00), the scoring system MUST HALT execution immediately to prevent data pollution. The engine MUST raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw single-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process."
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_b_neighbor_interpolation_CPU_single": {
+        // SCORING GUIDELINE: Method B is calculated for ALL phones (even if Method A is available) for precision validation. The interpolation search space includes all distinct phones in the database with a verified Geekbench 6 Single-Core score (Method A), excluding the target device itself. The interpolation MUST utilize exactly 3 distinct neighbor devices.
+        // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, calculated as:
+        // Distance = Sqrt( (STRS_norm_Diff)^2 + (Penalty_L2CS_Diff)^2 + (Penalty_MTI_Diff)^2 )
+        // Where the metric component differences are derived from the following paths:
+        // • STRS_norm_Diff (Single-Threaded Raw Score Normalized Difference) = (target.method_c_prediction_model_CPU_single.normalized_core_yield.value) - (neighbor.method_c_prediction_model_CPU_single.normalized_core_yield.value)
+        // • Penalty_L2CS_Diff (Level 2 Cache Subsystem Penalty Difference) = (target.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.cache_subsystem_penalty.penalty.value)
+        // • Penalty_MTI_Diff (Memory Technology Index Penalty Difference) = (target.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_CPU_single.memory_subsystem_penalty.penalty.value)
+        // Step 2: Compute the average predicted and average benchmark scores of the neighbors, calculate the correction ratio, and apply it to derive the final interpolated score.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "xiaomi_14_ultra",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
+            "euclidean_distance_1": 0.2315,
+            // GUIDELINE: Calculated Euclidean distance between the target device and the neighbor (Step 1). Keep 4 decimal places.
+            "predicted_score_1": 8.24,
+            // GUIDELINE: The neighbor's Method C predicted single-core CPU score.
+            "benchmark_score_1": 8.49
+            // GUIDELINE: The neighbor's Method A subscore.
+          },
+          {
+            // Neighbor2
+            "device_id_2": "oneplus_12",
+            "euclidean_distance_2": 0.1482,
+            "predicted_score_2": 8.12,
+            "benchmark_score_2": 8.45
+          },
+          {
+            // Neighbor3
+            "device_id_3": "asus_rog_phone_8_pro",
+            "euclidean_distance_3": 0.5230,
+            "predicted_score_3": 8.32,
+            "benchmark_score_3": 8.57
+          }
+        ],
+        "avg_predicted_neighbors": 8.2267,
+        // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+        "avg_benchmark_neighbors": 8.5033,
+        // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+        "correction_ratio": 1.0685,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_single.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
+        "interpolated_score": 9.09
+        // SCORING GUIDELINE: The final interpolated score. Formula: correction_ratio * avg_benchmark_neighbors.
+      },
+      "scores": {
+        "predicted": 8.79,
+        // SCORING GUIDELINE: Directly inherits method_c_prediction_model_CPU_single.predicted_score.
+        "final": {
+          "value": 8.53,
+          // SCORING GUIDELINE: Resolved strictly by the A->B->C hierarchy: Use Method A if method_a_benchmark_CPU_single is available (method_a_benchmark_CPU_single.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_CPU_single.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_CPU_single.predicted_score).
+          "method_used": "Benchmark (Geekbench 6)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • "Benchmark (Geekbench 6)" → Method A (documented Geekbench 6 score)
+          //   • "Neighbor Interpolation"  → Method B (similar device benchmarks)
+          //   • "Predictor"               → Method C (spec calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
+      }
+    },
+    // █ GPU_ARCHITECTURE_LOOKUP_TABLE
+    // Centralized hardware index used to ensure 100% autonomous scoring across performance (§6.3) and efficiency (§8.1) modules.
+    // • Standard Graphics Score (SGS): The baseline architectural performance capacity for standard rasterization (non-RT) tasks.
+    // • Ray Tracing Score (RTS): The specialized hardware performance index for accelerated ray tracing calculations.
+    // • Ref Freq (MHz): The canonical maximum frequency used to calculate frequency-corrected performance multipliers in Method C.
+    // • Efficiency: The silicon-level power/thermal management index used exclusively for Section 8.1 benchmarking to derive normalized efficiency scores.
+    // 
+    // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
+    // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
+    // | Immortalis-G925 MC12       |       9.5         |    10.00    |      1612      |    10.00   |
+    // | Adreno 830                 |       9.5         |     9.80    |      1100      |    10.00   |
+    // | Apple GPU (A18 Pro)        |       9.0         |     8.80    |      1490      |    10.00   |
+    // | Adreno 750                 |       8.9         |     8.50    |       903      |     9.00   |
+    // | Immortalis-G720 MC12       |       8.8         |     8.40    |      1300      |    10.00   |
+    // | Apple GPU (A18)            |       8.7         |     8.20    |      1490      |    10.00   |
+    // | Immortalis-G715 MC11       |       8.5         |     7.60    |       981      |     9.00   |
+    // | Xclipse 940                |       8.5         |     8.00    |      1109      |     7.00   |
+    // | Adreno 740                 |       8.3         |     7.00    |       680      |     9.00   |
+    // | Apple GPU (A17 Pro)        |       8.1         |     7.50    |      1398      |     9.00   |
+    // | Adreno 735                 |       7.9         |     5.50    |       950      |     8.00   |
+    // | Adreno 732                 |       7.8         |     4.20    |       900      |     8.00   |
+    // | Adreno 730                 |       7.8         |     4.00    |       900      |     7.00   |
+    // | Adreno 725                 |       7.8         |     3.80    |       580      |     9.00   |
+    // | Apple GPU (A16 Bionic)     |       7.5         |     0.00    |      1398      |     8.00   |
+    // | Apple GPU (A15 Bionic)     |       6.8         |     0.00    |      1296      |     8.00   |
+    // | Mali-G715 MC9              |       6.8         |     2.20    |       850      |     9.00   |
+    // | Xclipse 920                |       6.5         |     2.50    |      1306      |     6.00   |
+    // | Mali-G710 MC10             |       6.5         |     0.00    |       850      |     8.00   |
+    // | Adreno 660                 |       6.5         |     0.00    |       840      |     5.00   |
+    // | Mali-G715 (Tensor G3)      |       6.2         |     2.00    |       890      |     6.00   |
+    // | Mali-G715 MC7              |       6.0         |     1.80    |       850      |     9.00   |
+    // | Apple GPU (A14 Bionic)     |       5.8         |     0.00    |      1086      |     7.00   |
+    // | Adreno 720                 |       5.2         |     0.00    |       800      |     8.00   |
+    // | Apple GPU (A13 Bionic)     |       5.0         |     0.00    |       979      |     6.00   |
+    // | Adreno 710                 |       4.8         |     0.00    |       800      |     8.00   |
+    // | Adreno 650                 |       4.8         |     0.00    |       587      |     6.00   |
+    // | Mali-G610 MC6              |       4.8         |     0.00    |       850      |     8.00   |
+    // | Mali-G77 MC9               |       4.8         |     0.00    |       850      |     6.00   |
+    // | Adreno 642L                |       4.5         |     0.00    |       490      |     8.00   |
+    // | Mali-G610 MC4              |       4.0         |     0.00    |       850      |     7.00   |
+    // | Adreno 640                 |       3.8         |     0.00    |       585      |     5.00   |
+    // | Adreno 620                 |       3.2         |     0.00    |       625      |     6.00   |
+    // | Mali-G68 MC4               |       3.2         |     0.00    |       900      |     6.00   |
+    // | Adreno 619                 |       3.0         |     0.00    |       825      |     6.00   |
+    // | Adreno 618                 |       2.8         |     0.00    |       610      |     5.00   |
+    // | Mali-G57 MC3               |       2.8         |     0.00    |       950      |     5.00   |
+    // | Adreno 613                 |       2.5         |     0.00    |       955      |     6.00   |
+    // | Adreno 610                 |       2.0         |     0.00    |       600      |     8.00   |
+    // | Mali-G57 MC2               |       1.8         |     0.00    |       950      |     5.00   |
+    // | Mali-G52 MP2               |       1.0         |     0.00    |       850      |     4.00   |
+    // | PowerVR GE8320             |       0.5         |     0.00    |       680      |     2.00 => 0 ????? |
+    // ----------------------------------------------------------------------------------------------
+    // Understanding Mali/Immortalis "MC" Notation:
+    // ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count.
+    // - Immortalis-G715 MC11 = 11 shader cores (flagship config)
+    // - Mali-G715 MC9 = 9 shader cores (high-end config)
+    // - Mali-G715 MC7 = 7 shader cores (mid-range config)
+    // More cores = higher performance. Always match the exact MC count from device specifications.
+    // -------------------------------------------------------------------------
+    // AMBIGUOUS SPECIFICATION RESOLUTION (MANDATORY PROCEDURE)
+    // 1. Identify the SoC: Retrieve the specific chipset model from identity.hardware_configuration.chipset.value
+    // 2. External Verification (Web Search): The parsing engine is strictly prohibited from guessing the GPU tier based on incomplete generic strings. The engine MUST execute an active web search targeting the host SoC's official specifications (e.g., query: "Qualcomm Snapdragon 680 GPU specs" or "Dimensity 9000 exact GPU model").
+    // 3. Canonical Component Extraction: Extract the exact GPU model number from the search results.
+    // 4. Final Mapping: Map this newly verified, precise component directly to its corresponding row in the Scoring Table above.
+    
+    "6_3_0_gpu_architecture_reference": {
+      // SCORING GOAL: Serves as the authoritative hardware reference for the GPU architecture. Links the SoC to its specific GPU model.
+      "value": "Snapdragon 8 Gen 3",
+      // GUIDELINE: Inherits the chipset model name from the device identity record to link with GPU architecture.
+      "value_path": "identity.hardware_configuration.chipset.value",
+      // GUIDELINE: Absolute path to the chipset identifier in the device identity section.
+      "gpu_model": {
+        "value": "Adreno 750",
+        // GUIDELINE: Must exactly match an entry in the `GPU_ARCHITECTURE_LOOKUP_TABLE` above. If the spec sheet uses a generic name (e.g. "Adreno GPU"), use the "AMBIGUOUS SPECIFICATION RESOLUTION" procedure to identify the canonical model.
+        "source": "https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform",
+        // GUIDELINE: Direct source URL for GPU model data.
+        "exact_extract": "Qualcomm® Adreno™ GPU"
+        // GUIDELINE: The verbatim proof from the source confirming the GPU identifier.
+      }
+    },
+    "6_3_graphics_and_ray_tracing_performance": {
+      // SCORING GOAL: Scores raw GPU compute capability using standard graphics tasks and hardware ray tracing.
+      // ═══════════════════════════════════════════════════════════════════════════
+      // STANDARD GRAPHICS PERFORMANCE
+      // ═══════════════════════════════════════════════════════════════════════════
+      "standard_graphics": {
+        // SCORING GOAL: Focuses on traditional "Raster" rendering (Geometry, Textures, and Shaders) and API efficiency. This represents the vast majority of current mobile gaming workloads. A three-method hierarchy (A→B→C) is used.
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD A — Direct Benchmark (Primary)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_a_benchmark_GPU": {
+          "value": 1430,
+          "source": "https://www.3dmark.com/search",
+          "exact_extract": "Samsung Galaxy S24 Ultra [...] 1430",
+          "subscore": 8.20
+          // SCORING GUIDELINE: primary benchmark is 3DMark Steel Nomad Light.
+          // • WHERE TO FIND IT: Search 3dmark.com search index or GSMArena/NotebookCheck reviews.
+          // • EXTRACTION RULE: Use the "Steel Nomad Light" score. Ensure it is not the desktop "Steel Nomad" or older "Wild Life" benchmarks.
+          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_GPU.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        },
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // METHOD C — Graphics Performance Prediction Model (Tertiary / baseline for Method B)
+        // ═══════════════════════════════════════════════════════════════════════════
+        "method_c_prediction_model_GPU": {
+          // SCORING RATIONALE: This model predicts rasterization performance by analyzing the hardware's peak theoretical throughput (CTI) modified by software efficiency (AFM), data availability (MTI), command orchestration speed (CPU), and chassis-level thermal burst capacity (via TDSI).
+          // EXTERNAL GRAPHICS SYSTEM INPUTS
+          // SCORING GUIDELINE: These three parameters are external environmental and system factors outside the core Graphics Processing Unit (GPU) itself that directly bottleneck or facilitate graphics rendering performance under load.
           "memory_throughput_index": {
             "value": 9.34,
             "identifier_path": "6_5_ram_technology.scores.predicted"
-            // GUIDELINE: Sourced from Section 6.5 predicted score to capture hardware bandwidth capabilities.
+            // GUIDELINE: Already-normalized Memory Throughput Index (MTI) score from Section 6.5. This represents the memory bandwidth available for data access.
           },
-          "subscore": 8.7520,
-          "calculation_formula": "(architecture_mapping.ray_tracing_score_raw * 0.70) + (memory_throughput_index.value * 0.30), clamped 0–10. Keep 4 decimal places.",
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // Final score (STANDARD GRAPHICS PERFORMANCE & Ray Tracing) 
-        // ═══════════════════════════════════════════════════════════════════════════
-        "scores": {
-          "predicted": 8.85,
-          // SCORING GUIDELINE: Final predicted graphics score including ray tracing. Formula: (standard_graphics.scores.predicted * 0.90) + (ray_tracing.subscore * 0.10).
-          "final": {
-            "value": 8.26,
-            // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (standard_graphics.scores.final.value * 0.90) + (ray_tracing.subscore * 0.10).
-            "method_used": "Benchmark (3DMark)",
-            // SCORING GUIDELINE: inherits standard_graphics.scores.final.method_used
-            "booster": "No",
-            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-            "confidence": "N/A"
-            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
-          }
-        }
-      },
-      // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
-      //
-      // TOPS values prefixed with ~ are estimates from vendor relative claims and family cross-referencing.
-      //
-      // |  # | SoC Model                  | NPU / AI Engine               | TOPS(INT8) | TOPS Norm | Arch Gen         | Precision     | NPU Score |
-      // |:--:|:---------------------------|:------------------------------|:----------:|:---------:|:-----------------|:-------------:|:---------:|
-      // |  1 | Snapdragon 8 Elite         | Hexagon (Oryon NPU)           |      45    |   9.77    | Gen AI Native    | INT4+8+FP16   |   9.88    |
-      // |  2 | Dimensity 9400             | APU 890                       |     ~40    |   9.52    | Gen AI Native    | INT4+8+FP16   |   9.76    |
-      // |  3 | Apple A18                  | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
-      // |  4 | Apple A18 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
-      // |  5 | Snapdragon 8 Gen 3         | Hexagon (2024)                |      45    |   9.77    | Gen AI Capable   | INT4+8+FP16   |   9.28    |
-      // |  6 | Apple A17 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Capable   | INT4+8+FP16   |   9.01    |
-      // |  7 | Exynos 2400                | NPU 5th-gen                   |    34.7    |   9.21    | Gen AI Capable   | INT4+8+FP16   |   9.00    |
-      // |  8 | Dimensity 9300             | APU 790                       |     ~30    |   8.89    | Gen AI Capable   | INT4+8+FP16   |   8.84    |
-      // |  9 | Snapdragon 8 Gen 2         | Hexagon (2023)                |      26    |   8.58    | Gen AI Capable   | INT4+8+FP16   |   8.69    |
-      // | 10 | Snapdragon 8 Gen 1         | Hexagon (2022)                |      27    |   8.66    | ML Optimized     | INT8+FP16     |   7.53    |
-      // | 11 | Snapdragon 888             | Hexagon 780                   |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
-      // | 12 | Snapdragon 888+            | Hexagon 780 (OC)              |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
-      // | 13 | Dimensity 9200             | APU 690                       |     ~18    |   7.78    | ML Optimized     | INT8+FP16     |   7.09    |
-      // | 14 | Apple A16 Bionic           | 16-Core Neural Engine         |      17    |   7.66    | ML Optimized     | INT8+FP16     |   7.03    |
-      // | 15 | Apple A15 Bionic           | 16-Core Neural Engine         |    15.8    |   7.50    | ML Optimized     | INT8+FP16     |   6.95    |
-      // | 16 | Exynos 1480                | NPU (6K MAC)                  |     ~20    |   8.01    | ML Accelerated   | INT8+FP16     |   6.61    |
-      // | 17 | Snapdragon 7+ Gen 2        | Hexagon (Mid 2023)            |     ~13    |   7.07    | ML Optimized     | INT8+FP16     |   6.74    |
-      // | 18 | Kirin 9010                 | Da Vinci (Refined)            |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
-      // | 19 | Tensor G4                  | Google TPU (2024)             |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
-      // | 20 | Exynos 990                 | Dual-core NPU                 |     ~15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
-      // | 21 | Snapdragon 865             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
-      // | 22 | Snapdragon 870             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
-      // | 23 | Kirin 9000                 | Da Vinci 2.0 (2+1 core)       |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
-      // | 24 | Tensor G3                  | Google TPU (2023)             |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
-      // | 25 | Dimensity 9000             | APU 590                       |     ~12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
-      // | 26 | Snapdragon 778G / 778G+    | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
-      // | 27 | Snapdragon 780G            | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
-      // | 28 | Apple A14 Bionic           | 16-Core Neural Engine         |      11    |   6.71    | ML Accelerated   | INT8+FP16     |   5.96    |
-      // | 29 | Exynos 2200                | Xclipse NPU                   |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
-      // | 30 | Snapdragon 7 Gen 3         | Hexagon (Mid 2024)            |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
-      // | 31 | Snapdragon 7 Gen 1         | Hexagon (Mid 2022)            |      ~9    |   6.28    | ML Accelerated   | INT8+FP16     |   5.74    |
-      // | 32 | Kirin 990 5G               | Da Vinci 1.0 (2+1 core)       |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
-      // | 33 | Tensor G2                  | Google TPU (2022)             |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
-      // | 34 | Unisoc T820                | Dedicated NPU                 |       8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
-      // | 35 | Apple A13 Bionic           | 8-Core Neural Engine          |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
-      // | 36 | Dimensity 8200             | APU 580                       |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
-      // | 37 | Dimensity 8100             | APU 580                       |    ~5.5    |   5.21    | ML Accelerated   | INT8+FP16     |   5.21    |
-      // | 38 | Dimensity 7300             | APU 650+                      |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
-      // | 39 | Dimensity 8000             | APU 580                       |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
-      // | 40 | Tensor G1                  | Google TPU (2021)             |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
-      // | 41 | Apple A12 Bionic           | 8-Core Neural Engine          |       5    |   5.00    | ML Accelerated   | INT8 only     |   4.50    |
-      // | 42 | Exynos 1380                | NPU                           |     4.9    |   4.96    | ML Accelerated   | INT8 only     |   4.48    |
-      // | 43 | Dimensity 1300             | APU 3.0 (6-core OC)           |    ~4.5    |   4.77    | ML Accelerated   | INT8 only     |   4.38    |
-      // | 44 | Exynos 1280                | NPU                           |     4.3    |   4.67    | ML Accelerated   | INT8 only     |   4.33    |
-      // | 45 | Dimensity 1200             | APU 3.0 (6-core)              |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
-      // | 46 | Dimensity 7200             | APU 650                       |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
-      // | 47 | Kirin 980                  | Cambricon (Dual-NPU)          |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
-      // | 48 | Snapdragon 6 Gen 3         | Hexagon (Mid-tier)            |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
-      // | 49 | Unisoc T770                | Imagination NNA               |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
-      // | 50 | Dimensity 7050             | APU 650                       |    ~3.5    |   4.23    | ML Accelerated   | INT8 only     |   4.12    |
-      // | 51 | Snapdragon 680             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
-      // | 52 | Snapdragon 695             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
-      // | 53 | Unisoc T760                | Dedicated NPU                 |     3.2    |   4.03    | DSP/HVX          | INT8 only     |   3.42    |
-      // | 54 | Snapdragon 480             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
-      // | 55 | Snapdragon 6 Gen 1         | Hexagon (Mid-tier)            |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
-      // | 56 | Snapdragon 662             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
-      // | 57 | Snapdragon 685             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
-      // | 58 | Kirin 970                  | Cambricon (Single-NPU)        |      ~2    |   3.01    | ML Accelerated   | INT8 only     |   3.50    |
-      // | 59 | Dimensity 6100+            | APU (Budget)                  |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
-      // | 60 | Snapdragon 4 Gen 2         | Hexagon (Budget)              |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
-      // | 61 | Snapdragon 4 Gen 1         | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
-      // | 62 | Snapdragon 4s Gen 2        | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
-      // | 63 | Exynos 850                 | Minimal NPU                   |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
-      // | 64 | Helio G99                  | APU 2.0                       |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
-      // | 65 | Helio G96                  | APU 2.0                       |    ~0.8    |   1.02    | DSP/HVX          | INT8 only     |   1.91    |
-      // | 66 | Apple A11 Bionic           | 2-Core Neural Engine          |     0.6    |   0.40    | ML Accelerated   | INT8 only     |   2.20    |
-      // | 67 | Helio G95                  | APU 2.0                       |    ~0.7    |   0.73    | DSP/HVX          | INT8 only     |   1.77    |
-      // | 68 | Helio G85 / G88            | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
-      // | 69 | Unisoc T616 / T612 / T606  | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
-      // -------------------------------------------------------------------------
-      
-      "6_4_ai_hardware_performance": {
-        // SCORING GOAL: Evaluates the AI hardware acceleration capability.
-        // AI_System_Score: Method A → B → C hierarchy.
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD A — Direct Benchmark (Primary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_AI": {
-          "value": 35000,
-          "source": "https://browser.geekbench.com/ai-benchmarks",
-          "exact_extract": "Samsung Galaxy S24 Ultra [...] 35000",
-          "subscore": 8.34
-          // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
-          // • WHERE TO FIND IT: browser.geekbench.com/ai.
-          // • EXTRACTION RULE: Use the "Quantized Score (INT8)". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
-          // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. This subscore is the "AI System Score" for Method A. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_prediction_model_AI": {
-          "npu": {
-            "identifier": "Snapdragon 8 Gen 3",
-            "identifier_path": "identity.hardware_configuration.chipset.value",
-            "reference_table": "SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE",
-            "npu_score": 9.28
-            // GUIDELINE: Maps to the "NPU Score" column.
+          "cpu_orchestration_index": {
+            "value": 8.63,
+            "identifier_path": "6_1_cpu_multi_core_performance.scores.final.value"
+            // GUIDELINE: Central Processing Unit (CPU) Orchestration Index. PRIORITY: Use the Final Score. This represents the command submission speed, including software/scheduling modifiers.
           },
-          "software_stack": {
-            "value": "Tier 2: SDK Co-Optimized",
-            "value_details": {
-              "Tier 1: Native Synergistic": [],
-              "Tier 2: SDK Co-Optimized": [
-                {
-                  "name": "Qualcomm Neural Network (QNN) SDK",
-                  "source": "https://www.qualcomm.com/products/technology/processors/snapdragon-8-gen-3",
-                  "exact_extract": "Qualcomm Neural Network (QNN) SDK [...] Optimized NPU delegation"
-                }
-              ],
-              "Tier 3: Hardware Accelerated / Optimized Fallback": [],
-              "Tier 4: CPU/GPU Fallback": [],
-              "Tier 5: Minimal / None": []
+          "tdsi_index": {
+            "value": 4.24,
+            "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value"
+            // GUIDELINE: Thermal Dissipation Stability Index (TDSI). PRIORITY: Use the Final Score. This represents real-world chassis cooling reality and assembly tolerances.
+          },
+          "compute_throughput_index": {
+            // SCORING GOAL: Captures the raw mathematical work the Graphics Processing Unit (GPU) cores can perform per second (Compute Throughput Index (CTI)).
+            "architecture_mapping": {
+              "identifier": "Adreno 750",
+              "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
+              "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+              "standard_graphics_score": 8.90,
+              // GUIDELINE: Performance score from the "Standard Graphics" column of the lookup table.
+              "reference_frequency_mhz": 903.00
+              // GUIDELINE: Reference frequency from the "Ref Freq (MHz)" column of the lookup table in Megahertz (MHz).
             },
-            "subscore": 8.00
-            // SCORING GUIDELINE: **AI Software Stack Scoring Guideline:**
-            //
-            // Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-            //
-            //  • "Tier 1: Native Synergistic"                        → 10.00
-            //     *   *Definition:* The device manufacturer natively designs the OS framework strictly for their own silicon compiler. This guarantees exclusive high-speed pipelines bypassing generic API translation layers (e.g., **Apple Core ML**, **Google Android AICore + Edge TPU**, **Huawei MindSpore**).
-            //     *   *Agent Validation Rule (Concrete boolean check):*
-            //         *   `IF (SoC_Family == "Google Tensor")` → Score 10.0.
-            //         *   `IF (Device_Brand == "Apple" AND SoC_Model >= "Apple A11")` → Score 10.0.
-            //         *   `IF (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True)` → Score 10.0.
-            //
-            //  • "Tier 2: SDK Co-Optimized"                          → 8.00
-            //     *   *Definition:* The device uses a modern 3rd-party SoC supported by a robust, vendor-specific optimization SDK that bridges the OS and hardware (e.g., **Qualcomm QNN**, **MediaTek NeuroPilot**, **Samsung ENN**).
-            //     *   *Agent Validation Rule (Concrete boolean check):*
-            //         *   `IF (SoC_Manufacturer IN ["Qualcomm", "MediaTek", "Samsung", "HiSilicon"]) AND (NPU == True)` → Score 8.0.
-            //         *   `IF (Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge"))` → Score 8.0.
-            //
-            //  • "Tier 3: Hardware Accelerated / Optimized Fallback" → 5.50
-            //     *   *Definition:* The device lacks a modern dedicated NPU but features an OS-level API highly optimized for bare-metal GPU acceleration or standard fixed-function blocks (e.g., **Apple Metal Performance Shaders (MPS)**, **Qualcomm SNPE**).
-            //     *   *Agent Validation Rule (Concrete boolean check):*
-            //         *   `IF (NPU == True) AND NOT (Rule_Match == Tier 1 OR Rule_Match == Tier 2)` → Score 5.5 (e.g. Budget NPU Standard Fallback).
-            //         *   `IF (Device_Brand == "Apple" AND SoC_Model IN ["Apple A8", "Apple A9", "Apple A10"])` → Score 5.5.
-            //         *   `IF (SoC_Model IN ["Snapdragon 820", "Snapdragon 821", "Snapdragon 835", "Snapdragon 730", "Snapdragon 675", "Snapdragon 670"])` → Score 5.5.
-            //
-            //  • "Tier 4: CPU/GPU Fallback"                          → 3.00
-            //     *   *Definition:* The device relies entirely on generic runtime translation (e.g., standard **Android NNAPI** or early OpenGL kernels). Operations are emulated slowly without pipeline-specific silicon.
-            //     *   *Agent Validation Rule (Concrete boolean check):*
-            //         *   `IF (OS IN ["Android", "HarmonyOS", "iOS", "Windows Mobile", "BlackBerry OS", "Tizen"])` AND NOT (Previous Tier Match) → Score 3.0.
-            //         *   *Example Application:* Budget Unisoc/Helio A-series, iPhone 4S through iPhone 5s (A4-A7).
-            //
-            //  • "Tier 5: Minimal / None"                            → 0.00
-            //     *   *Definition:* Device lacks any software framework capable of ML execution.
-            //     *   *Agent Validation Rule (Concrete boolean check):*
-            //         *   `IF (OS IN ["KaiOS", "Series 30+", "Symbian", "Proprietary"]) OR (Form_Factor == "Feature Phone")` → Score 0.0.
-            //         *   `IF (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older")` → Score 0.0.
-            //
-            // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all applicable marketing names/technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+            "actual_frequency_mhz": {
+              "value": 1000,
+              "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+              "exact_extract": "Adreno 750 (1 GHz)"
+              // GUIDELINE: The maximum advertised frequency of the Graphics Processing Unit (GPU) in Megahertz (MHz). Note: 1 GHz = 1000 MHz.
+            },
+            "compute_throughput_index_raw": {
+              "value": 9.1966,
+              "calculation_formula": "CLAMP(0.0, 10.0, (actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) * architecture_mapping.standard_graphics_score / (1.0 + 0.075 * architecture_mapping.standard_graphics_score * ((actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) - 1.0)))"
+              // GUIDELINE: Theoretical range-clamped perceptual graphics scaling using Weber-Fechner Law. Keep 4 decimal places.
+            },
+            "system_support_index": {
+              "value": 7.9585,
+              "calculation_formula": "(0.60 * memory_throughput_index.value) + (0.25 * tdsi_index.value) + (0.15 * cpu_orchestration_index.value)"
+              // GUIDELINE: The System Support Index (SSI) represents the aggregate capability of non-GPU components supporting the graphics processor. Keep 4 decimal places.
+            },
+            "transmission_factor": {
+              "value": 0.8762,
+              "calculation_formula": "system_support_index.value >= compute_throughput_index_raw.value ? 1.0 : 1.0 - (compute_throughput_index_raw.value - system_support_index.value) / 10.0"
+              // GUIDELINE: The dynamic bottleneck transmission factor naturally bounded within [0.0, 1.0]. Keep 4 decimal places.
+            },
+            "subscore": 9.1599,
+            "calculation_formula": "architecture_mapping.standard_graphics_score + (compute_throughput_index_raw.value - architecture_mapping.standard_graphics_score) * transmission_factor.value"
+            // GUIDELINE: Represents the final computed throughput index (CTI) after physical bottleneck adjustment. Keep 4 decimal places.
           },
-          "scores": {
-            "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu.npu_score",                 "weight_NPU": 0.40 },
-            "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.20 },
-            "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
-            "subscore_GPU":      { "subscore_path": "6_3_graphics_and_ray_tracing_performance.standard_graphics.scores.final.value",          "weight_GPU": 0.15 },
-            "subscore_CPU":      { "subscore_path": "6_2_cpu_architecture_single_core.scores.final.value",                                    "weight_CPU": 0.10 }, 
-            // IMPORTANT: For RAM (subscore_RAM_tech) always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
-            // IMPORTANT: For GPU (subscore_GPU), use strictly the Standard Graphics component (SGS) as Ray Tracing does not contribute to AI workloads.
-            // These inputs are used to calculate the predicted score (Method C):
-            "predicted": 9.21,
-            // SCORING GUIDELINE: Sum(subscore_X * weight_X) for all 5 entries above. This is the score used for Method B neighbors.
-          }
+          "api_modifier": {
+            // GPU_API_SUPPORT_LOOKUP_TABLE
+              // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score    |
+              // | :---------------- | :------------- | :----------------- | :---------------------- | :------: |
+              // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | **10.0** |
+              // | —                 | Metal 3.3      | —                  | —                       | **9.8**  |
+              // | —                 | Metal 3.2      | —                  | —                       | **9.6**  |
+              // | —                 | Metal 3.1      | —                  | —                       | **9.4**  |
+              // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_1)        | **9.2**  |
+              // | —                 | Metal 2.4      | —                  | —                       | **8.8**  |
+              // | —                 | Metal 2.3      | —                  | —                       | **8.6**  |
+              // | Vulkan 1.2        | —              | —                  | D3D 12 (FL 12_0)        | **8.5**  |
+              // | —                 | Metal 2.2      | —                  | —                       | **8.4**  |
+              // | —                 | Metal 2.1      | —                  | —                       | **8.2**  |
+              // | —                 | Metal 2.0      | —                  | —                       | **8.0**  |
+              // | Vulkan 1.1        | Metal 1.2      | —                  | D3D 12 (FL 11_1)        | **7.5**  |
+              // | —                 | Metal 1.1      | —                  | —                       | **7.2**  |
+              // | Vulkan 1.0        | Metal 1.0      | —                  | D3D 12 (FL 11_0)        | **7.0**  |
+              // | —                 | —              | —                  | D3D 11.2                | **6.8**  |
+              // | —                 | —              | —                  | D3D 11.1                | **6.5**  |
+              // | —                 | —              | —                  | D3D 11.0                | **6.0**  |
+              // | —                 | —              | —                  | D3D 10.1                | **5.5**  |
+              // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | **5.0**  |
+              // | —                 | —              | —                  | D3D 9.3                 | **4.0**  |
+              // | —                 | —              | —                  | D3D 9.2                 | **3.5**  |
+              // | —                 | —              | OpenGL ES 3.1      | —                       | **3.0**  |
+              // | —                 | —              | —                  | D3D 9.1                 | **2.5**  |
+              // | —                 | —              | —                  | D3D 9.0c                | **2.0**  |
+              // | —                 | —              | OpenGL ES 3.0      | —                       | **1.0**  |
+              // | —                 | —              | OpenGL ES 2.0      | —                       | **0.0**  |
+              // | —                 | —              | OpenGL ES 1.1      | —                       | **0.0**  |
+            //
+              // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
+              // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
+              //
+              // RATIONALE ON HARDWARE VS OS: Can identical SoCs have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
+              //
+              // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
+              // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
+              // | :------------------ | :------------------- | :------------------- |
+              // | iOS 19+             | A19, M5 (Future)     | Metal 4.0            |
+              // | iOS 18.x            | A18, M4              | Metal 3.3            |
+              // | iOS 17.x            | A17 Pro, M3          | Metal 3.2            |
+              // | iOS 16.x            | A16, M2              | Metal 3.1            |
+              // | iOS 15.x            | A14 - A15, M1        | Metal 3.0            |
+              // | iOS 14.x            | A12 - A13            | Metal 2.4            |
+              // | iOS 13.x            | A11 Bionic           | Metal 2.3            |
+              // | iOS 12.x            | A10 / A10X Fusion    | Metal 2.2            |
+              // | iOS 11.x            | A9 / A9X             | Metal 2.1            |
+              // | iOS 10.x            | A8 / A8X             | Metal 2.0            |
+              // | iOS 10.x - 12.x     | A7 (64-bit Baseline) | Metal 1.2            |
+              // | iOS 9.x             | A7 (64-bit Baseline) | Metal 1.1            |
+              // | iOS 8.x             | A7 (64-bit Baseline) | Metal 1.0            |
+              // | iOS 7.x             | A7 (64-bit Baseline) | OpenGL ES 3.0        |
+              // | iOS 6.x             | A6 / A6X             | OpenGL ES 2.0        |
+              // | iOS 4.x - 5.x       | A4 / A5 / A5X        | OpenGL ES 2.0        |
+              // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
+              //
+              // MATRIX 2: ANDROID (Deep Coverage Mirror)
+              // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
+              // | :------------------- | :----------------------------- | :------------ |
+              // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
+              // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
+              // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
+              // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
+              // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
+              // | Android 6.0          | Adreno 430 (Snapdragon 810)    | OpenGL ES 3.2 |
+              // | Android 5.0 - 5.1    | Adreno 405/418/420, Mali-T7xx  | OpenGL ES 3.1 |
+              // | Android 4.3 - 4.4    | Adreno 3xx, Mali-T6xx          | OpenGL ES 3.0 |
+              // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
+              // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.1 |
+              //
+              // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
+              // | Windows OS Version     | Era / Reference Hardware         | Inferred API      |
+              // | :--------------------- | :------------------------------- | :---------------- |
+              // | Windows 11 (24H2)      | Snapdragon X Elite (Adreno X1)   | D3D 12 (FL 12_2)  |
+              // | Windows 11 (22H2)      | Snapdragon 8cx Gen 3             | D3D 12 (FL 12_1)  |
+              // | Windows 10/11 ARM      | Snapdragon 850 / 8cx Gen 1/2     | D3D 12 (FL 12_0)  |
+              // | Windows 10 ARM (RS1)   | Snapdragon 835                   | D3D 12 (FL 11_1)  |
+              // | Windows 9 (WP9 Skipped)| Unreleased WP9 Reference Dev Kits| D3D 12 (FL 11_1)  |
+              // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)     | D3D 12 (FL 11_0)  |
+              // | Windows 10 Mobile      | Lumia 950 / 950 XL               | D3D 11.2          |
+              // | Windows Phone 8.1      | Lumia 930 / 1520                 | D3D 11.1          |
+              // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8)  | D3D 11.0          |
+              // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)   | D3D 10.1          |
+              // | Windows Phone 8.0      | Early Surface RT / Tegra 3       | D3D 10.0          |
+              // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)      | D3D 9.3           |
+              // | Windows Phone 8.0      | Early builds / Dev hardware      | D3D 9.2           |
+              // | Windows Phone 7.x      | Lumia 800 / 900                  | D3D 9.1           |
+              // | Windows Phone 7.0      | Samsung Focus / LG Quantum       | D3D 9.0c          |
+              // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung           | OpenGL ES 1.1     |
+              // --------------------------------------------------------------------------------- 
+            "identifier": "Vulkan 1.3",
+            // GUIDELINE: Standardized API version supported by the GPU.
+            "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
+            "exact_extract": "Vulkan 1.3 support", 
+            "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
+            "score": 9.20
+            // GUIDELINE: Performance score from the "Score" column of the lookup table. If unspecified, execute AMBIGUOUS API RESOLUTION
+          },
+          "predicted_score": 8.8655
+          // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.subscore) + (0.15 * api_modifier.score) + (0.15 * memory_throughput_index.value) + (0.0625 * tdsi_index.value) + (0.0375 * cpu_orchestration_index.value), clamped 0–10. This is the score used for Method B (Nearest Neighbor Interpolation) neighbors. Keep 4 decimal places.
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_AI": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.40 * (NPU_Diff)² + 0.20 * (RAM_Tech_Diff)² + 0.15 * (Software_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² )
-          //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_AI.scores`.
+        "method_b_neighbor_interpolation_GPU": {
+          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+          // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the
+          //         5-dimensional hardware feature space:
+          //         Distance = √( 0.60 * CTI_Diff² + 0.15 * AFM_Diff² + 0.15 * MTI_Diff² + 0.0625 * TDSI_Diff² + 0.0375 * CPU_Diff² )
+          //         Where the difference terms for a candidate neighbor are calculated as:
+          //           • CTI_Diff = Target_CTI - Neighbor_CTI
+          //             - Target_CTI & Neighbor_CTI are the Compute Throughput Index scores
+          //               sourced from the compute_throughput_index.subscore field.
+          //           • AFM_Diff = Target_AFM - Neighbor_AFM
+          //             - Target_AFM & Neighbor_AFM are the API & Feature Modifier scores
+          //               sourced from the api_modifier.score field.
+          //           • MTI_Diff = Target_MTI - Neighbor_MTI
+          //             - Target_MTI & Neighbor_MTI are sourced from Section 6.5 (RAM Technology)
+          //               Predicted Score (scores.predicted) to isolate raw hardware bandwidth
+          //               capabilities before system-level boosters are applied. 
+          //               Current path: 6_5_ram_technology.scores.predicted
+          //           • TDSI_Diff = Target_TDSI - Neighbor_TDSI
+          //             - Target_TDSI & Neighbor_TDSI are sourced from Section 6.10 (TDSI)
+          //               Final Score (scores.final.value) to represent physical cooling stability. 
+          //               Current path: 6_10_thermal_dissipation_stability.scores.final.value
+          //           • CPU_Diff = Target_CPU - Neighbor_CPU
+          //             - Target_CPU & Neighbor_CPU are sourced from Section 6.1 (CPU Multi-Core)
+          //               Final Score (scores.final.value) to capture command submission speed.
+          //               Current path: 6_1_cpu_multi_core_performance.scores.final.value
+          //         Search space: all phones with a known 3DMark Steel Nomad Light score (Method A),
+          //         excluding the target device itself.
           // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
           "neighbors": [
             {
               // Neighbor1
               "device_id_1": "xiaomi_14_ultra",
               // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "euclidean_distance_1": 0.0500,
+              "euclidean_distance_1": 0.2713,
               // GUIDELINE: Weighted Euclidean distance from Step 1.
-              "predicted_score_1": 8.60,
+              "predicted_score_1": 9.40,
               // GUIDELINE: The neighbor's own Method C predicted score.
-              "benchmark_score_1": 8.34
+              "benchmark_score_1": 7.82
               // GUIDELINE: The neighbor's Method A subscore.
             },
             {
               // Neighbor2
-              "device_id_2": "oneplus_12",
-              "euclidean_distance_2": 0.0800,
-              "predicted_score_2": 8.50,
-              "benchmark_score_2": 8.30
+              "device_id_2": "asus_rog_phone_8_pro",
+              "euclidean_distance_2": 0.2980,
+              "predicted_score_2": 9.46,
+              "benchmark_score_2": 7.98
             },
             {
               // Neighbor3
-              "device_id_3": "asus_rog_phone_8_pro",
-              "euclidean_distance_3": 0.1000,
-              "predicted_score_3": 8.55,
-              "benchmark_score_3": 8.32
+              "device_id_3": "oneplus_12",
+              "euclidean_distance_3": 0.3125,
+              "predicted_score_3": 9.40,
+              "benchmark_score_3": 7.88
             }
           ],
-          "avg_predicted_neighbors": 8.5500,
+          "avg_predicted_neighbors": 9.4200,
           // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 8.3200,
+          "avg_benchmark_neighbors": 7.8933,
           // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0772,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.scores.predicted / avg_predicted_neighbors.
-          "interpolated_score": 8.96
+          "correction_ratio": 0.9411,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_GPU.predicted_score / avg_predicted_neighbors.
+          "interpolated_score": 7.43
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 8.90,
-          // SCORING GUIDELINE: Final weighted predicted score. Formula: (method_c_prediction_model_AI.scores.predicted * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025).
+          "predicted": 8.8655,
+          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_GPU.predicted_score.
           "final": {
-            "value": 8.25,
-            // SCORING GUIDELINE: Final Score combines the AI System Score with residency gates (RAM/Storage) and thermal stability (TDSI) according to the A→B→C hierarchy. Formula: (AI_System_Score * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025). 
-            // AI_System_Score is derived from Method A (method_a_benchmark_AI.subscore) if available; if not, Method B (method_b_neighbor_interpolation_AI.interpolated_score); if not, Method C (method_c_prediction_model_AI.scores.predicted). 
-            "method_used": "Benchmark (Geekbench AI)",
+            "value": 8.20,
+            // SCORING GUIDELINE: Use Method A if method_a_benchmark_GPU is available (method_a_benchmark_GPU.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_GPU.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_GPU.predicted_score).
+            "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
-            //   • Neighbor Interpolation   → Method B (similar device benchmarks)
-            //   • Predictor                → Method C (weighted spec calculation)
+            //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
+            //   • Neighbor Interpolation → Method B (similar device benchmarks)
+            //   • Predictor              → Method C (weighted spec calculation)
             "booster": "No",
             // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
             "confidence": "N/A"
@@ -3215,1450 +2938,1727 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         }
       },
-      "6_5_ram_technology": {
-        // SCORING GOAL: Evaluates RAM (Random Access Memory) throughput and efficiency using the Memory Technology Efficiency Index (MTEI).
-        // RAM is the device's "short-term memory" where active data is stored for immediate access. 
-        // Newer technologies like LPDDR5X or even LPDDR5T allow for significantly faster data transfer speeds—measured in MT/s (Megatransfers per second).
-        //
-        // ════════════════════════════════════════════════════════════════════ ═══════
-        // MTEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
-        // ═══════════════════════════════════════════════════════════════════════════
-        // | Denomination | MT/s (Basis)  | Score | Marketing Terms & Keywords                                 |
-        // | :----------- | :-----------: | :---- | :--------------------------------------------------------- |
-        // | LPDDR5T      | 9600          | 10.00 | Turbo (SK Hynix/Vivo), 9.6 Gbps, Enhanced 5X Peak          |
-        // | LPDDR5X-8533 | 8533          |  9.34 | Full-blooded (Xiaomi/Redmi), Peak, 8.5 Gbps                |
-        // | LPDDR5X-7500 | 7500          |  8.62 | Power Optimized, 7.5 Gbps, Standard 5X, Optimized          |
-        // | LPDDR5-6400  | 6400          |  7.74 | Unified Memory (Apple A16/A17 Pro), 6.4 Gbps, High-speed 5 |
-        // | LPDDR5-5500  | 5500          |  6.89 | Standard LPDDR5, 5.5 Gbps, Mainstream 5                    |
-        // | LPDDR4X-4266 | 4266          |  5.47 | Enhanced 4X, Peak 4X, 4.2 Gbps, High-speed 4X              |
-        // | LPDDR4X-3733 | 3733          |  4.73 | Standard LPDDR4X, 3.7 Gbps, Mainstream 4X                  |
-        // | LPDDR4-3200  | 3200          |  3.87 | High-speed LPDDR4, 3.2 Gbps, Standard 4                    |
-        // | LPDDR4-2133  | 2133          |  1.60 | Budget LPDDR4, 2.1 Gbps, Entry LPDDR4                      |
-        // | LPDDR3       | 1600          |  0.00 | Baseline, Legacy, Obsolete, 1.6 Gbps, LPDDR3/2/1           |
-        //
-        // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
-        // To ensure absolute scoring neutrality and prevent speculative "peak-speed" awarding for undisclosed hardware, the following hierarchy MUST be followed:
-        //
-        //   1. LEVEL 1: VERBATIM SPECIFICATION (PRIMARY)
-        //      - Use only if the exact MT/s (e.g., "8533 MT/s") is found in the official technical specification or verified hardware teardown.
-        //   2. LEVEL 2: DETERMINISTIC MARKETING BIN (SECONDARY)
-        //      - If MT/s is missing but qualified marketing terms (e.g., "Turbo", "9.6 Gbps", "Full-blooded") are used, match them directly to the Resolution Matrix above.
-        //   3. LEVEL 3: CONSERVATIVE GENERATIONAL FALLBACK
-        //      - If only a generic generation is disclosed (e.g., "LPDDR5X", "LPDDR5"), the agent MUST resolve to the **Standard/Consensus JEDEC baseline** for that generation.
-        //      - PEAK BIN SCORES (e.g., 8533 MT/s, 9600 MT/s) are strictly PROHIBITED for generic disclosures.
-        //      - EXAMPLES: 
-        //                       Generic "LPDDR5X" resolves to **7500 MT/s**
-        //                       Generic "LPDDR5"  resolves to **5500 MT/s**
-        //                       Generic "LPDDR4X" resolves to **3733 MT/s**
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // Ray Tracing 
+      // ═══════════════════════════════════════════════════════════════════════════
+      "ray_tracing": {
+        // This measures dedicated hardware acceleration for lighting and reflections.
+        "architecture_mapping": {
+          "identifier": "Adreno 750",
+          "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
+          "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+          "ray_tracing_score_raw": 8.50
+          // GUIDELINE: Maps to the "Ray Tracing" column.
+        },
+        "memory_throughput_index": {
+          "value": 9.34,
+          "identifier_path": "6_5_ram_technology.scores.predicted"
+          // GUIDELINE: Sourced from Section 6.5 predicted score to capture hardware bandwidth capabilities.
+        },
+        "subscore": 8.7520,
+        "calculation_formula": "(architecture_mapping.ray_tracing_score_raw * 0.70) + (memory_throughput_index.value * 0.30), clamped 0–10. Keep 4 decimal places.",
+      },
 
-        "technology_generation": {
-          "value": "Tier 2: LPDDR5X-8533",
+      // ═══════════════════════════════════════════════════════════════════════════
+      // Final score (STANDARD GRAPHICS PERFORMANCE & Ray Tracing) 
+      // ═══════════════════════════════════════════════════════════════════════════
+      "scores": {
+        "predicted": 8.85,
+        // SCORING GUIDELINE: Final predicted graphics score including ray tracing. Formula: (standard_graphics.scores.predicted * 0.90) + (ray_tracing.subscore * 0.10).
+        "final": {
+          "value": 8.26,
+          // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (standard_graphics.scores.final.value * 0.90) + (ray_tracing.subscore * 0.10).
+          "method_used": "Benchmark (3DMark)",
+          // SCORING GUIDELINE: inherits standard_graphics.scores.final.method_used
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
+      }
+    },
+    // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
+    //
+    // TOPS values prefixed with ~ are estimates from vendor relative claims and family cross-referencing.
+    //
+    // |  # | SoC Model                  | NPU / AI Engine               | TOPS(INT8) | TOPS Norm | Arch Gen         | Precision     | NPU Score |
+    // |:--:|:---------------------------|:------------------------------|:----------:|:---------:|:-----------------|:-------------:|:---------:|
+    // |  1 | Snapdragon 8 Elite         | Hexagon (Oryon NPU)           |      45    |   9.77    | Gen AI Native    | INT4+8+FP16   |   9.88    |
+    // |  2 | Dimensity 9400             | APU 890                       |     ~40    |   9.52    | Gen AI Native    | INT4+8+FP16   |   9.76    |
+    // |  3 | Apple A18                  | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
+    // |  4 | Apple A18 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Native    | INT4+8+FP16   |   9.62    |
+    // |  5 | Snapdragon 8 Gen 3         | Hexagon (2024)                |      45    |   9.77    | Gen AI Capable   | INT4+8+FP16   |   9.28    |
+    // |  6 | Apple A17 Pro              | 16-Core Neural Engine         |      35    |   9.23    | Gen AI Capable   | INT4+8+FP16   |   9.01    |
+    // |  7 | Exynos 2400                | NPU 5th-gen                   |    34.7    |   9.21    | Gen AI Capable   | INT4+8+FP16   |   9.00    |
+    // |  8 | Dimensity 9300             | APU 790                       |     ~30    |   8.89    | Gen AI Capable   | INT4+8+FP16   |   8.84    |
+    // |  9 | Snapdragon 8 Gen 2         | Hexagon (2023)                |      26    |   8.58    | Gen AI Capable   | INT4+8+FP16   |   8.69    |
+    // | 10 | Snapdragon 8 Gen 1         | Hexagon (2022)                |      27    |   8.66    | ML Optimized     | INT8+FP16     |   7.53    |
+    // | 11 | Snapdragon 888             | Hexagon 780                   |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
+    // | 12 | Snapdragon 888+            | Hexagon 780 (OC)              |      26    |   8.58    | ML Accelerated   | INT8+FP16     |   6.89    |
+    // | 13 | Dimensity 9200             | APU 690                       |     ~18    |   7.78    | ML Optimized     | INT8+FP16     |   7.09    |
+    // | 14 | Apple A16 Bionic           | 16-Core Neural Engine         |      17    |   7.66    | ML Optimized     | INT8+FP16     |   7.03    |
+    // | 15 | Apple A15 Bionic           | 16-Core Neural Engine         |    15.8    |   7.50    | ML Optimized     | INT8+FP16     |   6.95    |
+    // | 16 | Exynos 1480                | NPU (6K MAC)                  |     ~20    |   8.01    | ML Accelerated   | INT8+FP16     |   6.61    |
+    // | 17 | Snapdragon 7+ Gen 2        | Hexagon (Mid 2023)            |     ~13    |   7.07    | ML Optimized     | INT8+FP16     |   6.74    |
+    // | 18 | Kirin 9010                 | Da Vinci (Refined)            |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
+    // | 19 | Tensor G4                  | Google TPU (2024)             |     ~12    |   6.90    | ML Optimized     | INT8+FP16     |   6.65    |
+    // | 20 | Exynos 990                 | Dual-core NPU                 |     ~15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+    // | 21 | Snapdragon 865             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+    // | 22 | Snapdragon 870             | Hexagon 698                   |      15    |   7.39    | ML Accelerated   | INT8+FP16     |   6.29    |
+    // | 23 | Kirin 9000                 | Da Vinci 2.0 (2+1 core)       |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
+    // | 24 | Tensor G3                  | Google TPU (2023)             |     ~10    |   6.51    | ML Optimized     | INT8+FP16     |   6.46    |
+    // | 25 | Dimensity 9000             | APU 590                       |     ~12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+    // | 26 | Snapdragon 778G / 778G+    | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+    // | 27 | Snapdragon 780G            | Hexagon 770                   |      12    |   6.90    | ML Accelerated   | INT8+FP16     |   6.05    |
+    // | 28 | Apple A14 Bionic           | 16-Core Neural Engine         |      11    |   6.71    | ML Accelerated   | INT8+FP16     |   5.96    |
+    // | 29 | Exynos 2200                | Xclipse NPU                   |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
+    // | 30 | Snapdragon 7 Gen 3         | Hexagon (Mid 2024)            |     ~10    |   6.51    | ML Accelerated   | INT8+FP16     |   5.86    |
+    // | 31 | Snapdragon 7 Gen 1         | Hexagon (Mid 2022)            |      ~9    |   6.28    | ML Accelerated   | INT8+FP16     |   5.74    |
+    // | 32 | Kirin 990 5G               | Da Vinci 1.0 (2+1 core)       |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+    // | 33 | Tensor G2                  | Google TPU (2022)             |      ~8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+    // | 34 | Unisoc T820                | Dedicated NPU                 |       8    |   6.02    | ML Accelerated   | INT8+FP16     |   5.61    |
+    // | 35 | Apple A13 Bionic           | 8-Core Neural Engine          |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
+    // | 36 | Dimensity 8200             | APU 580                       |      ~6    |   5.40    | ML Accelerated   | INT8+FP16     |   5.30    |
+    // | 37 | Dimensity 8100             | APU 580                       |    ~5.5    |   5.21    | ML Accelerated   | INT8+FP16     |   5.21    |
+    // | 38 | Dimensity 7300             | APU 650+                      |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+    // | 39 | Dimensity 8000             | APU 580                       |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+    // | 40 | Tensor G1                  | Google TPU (2021)             |      ~5    |   5.00    | ML Accelerated   | INT8+FP16     |   5.10    |
+    // | 41 | Apple A12 Bionic           | 8-Core Neural Engine          |       5    |   5.00    | ML Accelerated   | INT8 only     |   4.50    |
+    // | 42 | Exynos 1380                | NPU                           |     4.9    |   4.96    | ML Accelerated   | INT8 only     |   4.48    |
+    // | 43 | Dimensity 1300             | APU 3.0 (6-core OC)           |    ~4.5    |   4.77    | ML Accelerated   | INT8 only     |   4.38    |
+    // | 44 | Exynos 1280                | NPU                           |     4.3    |   4.67    | ML Accelerated   | INT8 only     |   4.33    |
+    // | 45 | Dimensity 1200             | APU 3.0 (6-core)              |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+    // | 46 | Dimensity 7200             | APU 650                       |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+    // | 47 | Kirin 980                  | Cambricon (Dual-NPU)          |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+    // | 48 | Snapdragon 6 Gen 3         | Hexagon (Mid-tier)            |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+    // | 49 | Unisoc T770                | Imagination NNA               |      ~4    |   4.52    | ML Accelerated   | INT8 only     |   4.26    |
+    // | 50 | Dimensity 7050             | APU 650                       |    ~3.5    |   4.23    | ML Accelerated   | INT8 only     |   4.12    |
+    // | 51 | Snapdragon 680             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
+    // | 52 | Snapdragon 695             | Hexagon 686                   |     3.3    |   4.10    | DSP/HVX          | INT8 only     |   3.45    |
+    // | 53 | Unisoc T760                | Dedicated NPU                 |     3.2    |   4.03    | DSP/HVX          | INT8 only     |   3.42    |
+    // | 54 | Snapdragon 480             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+    // | 55 | Snapdragon 6 Gen 1         | Hexagon (Mid-tier)            |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+    // | 56 | Snapdragon 662             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+    // | 57 | Snapdragon 685             | Hexagon 686                   |      ~3    |   3.89    | DSP/HVX          | INT8 only     |   3.34    |
+    // | 58 | Kirin 970                  | Cambricon (Single-NPU)        |      ~2    |   3.01    | ML Accelerated   | INT8 only     |   3.50    |
+    // | 59 | Dimensity 6100+            | APU (Budget)                  |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
+    // | 60 | Snapdragon 4 Gen 2         | Hexagon (Budget)              |      ~2    |   3.01    | DSP/HVX          | INT8 only     |   2.91    |
+    // | 61 | Snapdragon 4 Gen 1         | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
+    // | 62 | Snapdragon 4s Gen 2        | Hexagon (Budget)              |    ~1.5    |   2.39    | DSP/HVX          | INT8 only     |   2.59    |
+    // | 63 | Exynos 850                 | Minimal NPU                   |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
+    // | 64 | Helio G99                  | APU 2.0                       |      ~1    |   1.51    | DSP/HVX          | INT8 only     |   2.16    |
+    // | 65 | Helio G96                  | APU 2.0                       |    ~0.8    |   1.02    | DSP/HVX          | INT8 only     |   1.91    |
+    // | 66 | Apple A11 Bionic           | 2-Core Neural Engine          |     0.6    |   0.40    | ML Accelerated   | INT8 only     |   2.20    |
+    // | 67 | Helio G95                  | APU 2.0                       |    ~0.7    |   0.73    | DSP/HVX          | INT8 only     |   1.77    |
+    // | 68 | Helio G85 / G88            | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
+    // | 69 | Unisoc T616 / T612 / T606  | CPU-only emulation            |    <0.5    |   0.00    | CPU-Only         | None          |   0.00    |
+    // -------------------------------------------------------------------------
+    
+    "6_4_ai_hardware_performance": {
+      // SCORING GOAL: Evaluates the AI hardware acceleration capability.
+      // AI_System_Score: Method A → B → C hierarchy.
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Direct Benchmark (Primary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_a_benchmark_AI": {
+        "value": 35000,
+        "source": "https://browser.geekbench.com/ai-benchmarks",
+        "exact_extract": "Samsung Galaxy S24 Ultra [...] 35000",
+        "subscore": 8.34
+        // SCORING GUIDELINE: primary benchmark is Geekbench AI (v1.x).
+        // • WHERE TO FIND IT: browser.geekbench.com/ai.
+        // • EXTRACTION RULE: Use the "Quantized Score (INT8)". Do NOT use "Half-Precision" or "Single-Precision" scores. Confirm version 1.x.
+        // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_AI.value) - log(AI_GB_Quant_Score_Min)) / (log(AI_GB_Quant_Score_Max) - log(AI_GB_Quant_Score_Min)), clamped 0-10. This subscore is the "AI System Score" for Method A. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Static Component Prediction Model (Tertiary / baseline for Method B)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_c_prediction_model_AI": {
+        "npu": {
+          "identifier": "Snapdragon 8 Gen 3",
+          "identifier_path": "identity.hardware_configuration.chipset.value",
+          "reference_table": "SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE",
+          "npu_score": 9.28
+          // GUIDELINE: Maps to the "NPU Score" column.
+        },
+        "software_stack": {
+          "value": "Tier 2: SDK Co-Optimized",
           "value_details": {
-            "Tier 1: LPDDR5T-9600": [],
-            "Tier 2: LPDDR5X-8533": [
-              { "name": "Full-blooded LPDDR5X", "source": "TBD", "exact_extract": "Proof pending" }
+            "Tier 1: Native Synergistic": [],
+            "Tier 2: SDK Co-Optimized": [
+              {
+                "name": "Qualcomm Neural Network (QNN) SDK",
+                "source": "https://www.qualcomm.com/products/technology/processors/snapdragon-8-gen-3",
+                "exact_extract": "Qualcomm Neural Network (QNN) SDK [...] Optimized NPU delegation"
+              }
             ],
-            "Tier 3: LPDDR5X-7500": [],
-            "Tier 4: LPDDR5-6400": [],
-            "Tier 5: LPDDR5-5500": [],
-            "Tier 6: LPDDR4X-4266": [],
-            "Tier 7: LPDDR4X-3733": [],
-            "Tier 8: LPDDR4-3200": [],
-            "Tier 9: LPDDR4-2133": [],
-            "Tier 10: LPDDR3-1600 or older": []
-          }
-          // SCORING GUIDELINE: Identify the RAM technical denomination strictly via reported standard or data rate.
-          // Match the device's highest verified specification to the corresponding Tier in the "MTEI SCORING & RESOLUTION MATRIX" above. 
-          // Use the following exact Tier Names for "value" (always apply the highest applicable tier) and store the related score in "effective_speed_mts".
-          //   • "Tier 1: LPDDR5T-9600"          → 10.00
-          //   • "Tier 2: LPDDR5X-8533"          → 9.34
-          //   • "Tier 3: LPDDR5X-7500"          → 8.62
-          //   • "Tier 4: LPDDR5-6400"           → 7.74
-          //   • "Tier 5: LPDDR5-5500"           → 6.89
-          //   • "Tier 6: LPDDR4X-4266"          → 5.47
-          //   • "Tier 7: LPDDR4X-3733"          → 4.73
-          //   • "Tier 8: LPDDR4-3200"           → 3.87
-          //   • "Tier 9: LPDDR4-2133"           → 1.60
-          //   • "Tier 10: LPDDR3-1600 or older" → 0.00
-          // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/Data Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
-          // Note: Stored for info and traceability, not directly used for scoring.
+            "Tier 3: Hardware Accelerated / Optimized Fallback": [],
+            "Tier 4: CPU/GPU Fallback": [],
+            "Tier 5: Minimal / None": []
+          },
+          "subscore": 8.00
+          // SCORING GUIDELINE: **AI Software Stack Scoring Guideline:**
+          //
+          // Classify the device's AI software stack strictly via deterministic boolean architecture cutoffs. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+          //
+          //  • "Tier 1: Native Synergistic"                        → 10.00
+          //     *   *Definition:* The device manufacturer natively designs the OS framework strictly for their own silicon compiler. This guarantees exclusive high-speed pipelines bypassing generic API translation layers (e.g., **Apple Core ML**, **Google Android AICore + Edge TPU**, **Huawei MindSpore**).
+          //     *   *Agent Validation Rule (Concrete boolean check):*
+          //         *   `IF (SoC_Family == "Google Tensor")` → Score 10.0.
+          //         *   `IF (Device_Brand == "Apple" AND SoC_Model >= "Apple A11")` → Score 10.0.
+          //         *   `IF (OS == "HarmonyOS" AND SoC_Manufacturer == "HiSilicon" AND NPU == True)` → Score 10.0.
+          //
+          //  • "Tier 2: SDK Co-Optimized"                          → 8.00
+          //     *   *Definition:* The device uses a modern 3rd-party SoC supported by a robust, vendor-specific optimization SDK that bridges the OS and hardware (e.g., **Qualcomm QNN**, **MediaTek NeuroPilot**, **Samsung ENN**).
+          //     *   *Agent Validation Rule (Concrete boolean check):*
+          //         *   `IF (SoC_Manufacturer IN ["Qualcomm", "MediaTek", "Samsung", "HiSilicon"]) AND (NPU == True)` → Score 8.0.
+          //         *   `IF (Device Specs contain custom Co-processor ("MariSilicon", "Vivo V-series", "Xiaomi Surge"))` → Score 8.0.
+          //
+          //  • "Tier 3: Hardware Accelerated / Optimized Fallback" → 5.50
+          //     *   *Definition:* The device lacks a modern dedicated NPU but features an OS-level API highly optimized for bare-metal GPU acceleration or standard fixed-function blocks (e.g., **Apple Metal Performance Shaders (MPS)**, **Qualcomm SNPE**).
+          //     *   *Agent Validation Rule (Concrete boolean check):*
+          //         *   `IF (NPU == True) AND NOT (Rule_Match == Tier 1 OR Rule_Match == Tier 2)` → Score 5.5 (e.g. Budget NPU Standard Fallback).
+          //         *   `IF (Device_Brand == "Apple" AND SoC_Model IN ["Apple A8", "Apple A9", "Apple A10"])` → Score 5.5.
+          //         *   `IF (SoC_Model IN ["Snapdragon 820", "Snapdragon 821", "Snapdragon 835", "Snapdragon 730", "Snapdragon 675", "Snapdragon 670"])` → Score 5.5.
+          //
+          //  • "Tier 4: CPU/GPU Fallback"                          → 3.00
+          //     *   *Definition:* The device relies entirely on generic runtime translation (e.g., standard **Android NNAPI** or early OpenGL kernels). Operations are emulated slowly without pipeline-specific silicon.
+          //     *   *Agent Validation Rule (Concrete boolean check):*
+          //         *   `IF (OS IN ["Android", "HarmonyOS", "iOS", "Windows Mobile", "BlackBerry OS", "Tizen"])` AND NOT (Previous Tier Match) → Score 3.0.
+          //         *   *Example Application:* Budget Unisoc/Helio A-series, iPhone 4S through iPhone 5s (A4-A7).
+          //
+          //  • "Tier 5: Minimal / None"                            → 0.00
+          //     *   *Definition:* Device lacks any software framework capable of ML execution.
+          //     *   *Agent Validation Rule (Concrete boolean check):*
+          //         *   `IF (OS IN ["KaiOS", "Series 30+", "Symbian", "Proprietary"]) OR (Form_Factor == "Feature Phone")` → Score 0.0.
+          //         *   `IF (SoC_Series == "Pre-A4 Apple" OR "ARMv6 and older")` → Score 0.0.
+          //
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all applicable marketing names/technologies found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
         },
-        "effective_speed_mts": {
-          "value": 8533,
-          // GUIDELINE: The effective transfer rate in MT/s.
+        "scores": {
+          "subscore_NPU":      { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.npu.npu_score",                 "weight_NPU": 0.40 },
+          "subscore_RAM_tech": { "subscore_path": "6_5_ram_technology.scores.predicted",                                                    "weight_RAM_tech": 0.20 },
+          "subscore_Software": { "subscore_path": "6_4_ai_hardware_performance.method_c_prediction_model_AI.software_stack.subscore",       "weight_Software": 0.15 },
+          "subscore_GPU":      { "subscore_path": "6_3_graphics_and_ray_tracing_performance.standard_graphics.scores.final.value",          "weight_GPU": 0.15 },
+          "subscore_CPU":      { "subscore_path": "6_2_cpu_architecture_single_core.scores.final.value",                                    "weight_CPU": 0.10 }, 
+          // IMPORTANT: For RAM (subscore_RAM_tech) always use Predicted Scores (before any Boosters), not Final Scores, to ensure hardware-only comparison.
+          // IMPORTANT: For GPU (subscore_GPU), use strictly the Standard Graphics component (SGS) as Ray Tracing does not contribute to AI workloads.
+          // These inputs are used to calculate the predicted score (Method C):
+          "predicted": 9.21,
+          // SCORING GUIDELINE: Sum(subscore_X * weight_X) for all 5 entries above. This is the score used for Method B neighbors.
+        }
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_b_neighbor_interpolation_AI": {
+        // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known Geekbench AI score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+        //         Distance = √( 0.40 * (NPU_Diff)² + 0.20 * (RAM_Tech_Diff)² + 0.15 * (Software_Diff)² + 0.15 * (GPU_Diff)² + 0.10 * (CPU_Diff)² )
+        //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_AI.scores`.
+        // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "xiaomi_14_ultra",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
+            "euclidean_distance_1": 0.0500,
+            // GUIDELINE: Weighted Euclidean distance from Step 1.
+            "predicted_score_1": 8.60,
+            // GUIDELINE: The neighbor's own Method C predicted score.
+            "benchmark_score_1": 8.34
+            // GUIDELINE: The neighbor's Method A subscore.
+          },
+          {
+            // Neighbor2
+            "device_id_2": "oneplus_12",
+            "euclidean_distance_2": 0.0800,
+            "predicted_score_2": 8.50,
+            "benchmark_score_2": 8.30
+          },
+          {
+            // Neighbor3
+            "device_id_3": "asus_rog_phone_8_pro",
+            "euclidean_distance_3": 0.1000,
+            "predicted_score_3": 8.55,
+            "benchmark_score_3": 8.32
+          }
+        ],
+        "avg_predicted_neighbors": 8.5500,
+        // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+        "avg_benchmark_neighbors": 8.3200,
+        // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+        "correction_ratio": 1.0772,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_AI.scores.predicted / avg_predicted_neighbors.
+        "interpolated_score": 8.96
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+      },
+      "scores": {
+        "predicted": 8.90,
+        // SCORING GUIDELINE: Final weighted predicted score. Formula: (method_c_prediction_model_AI.scores.predicted * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025).
+        "final": {
+          "value": 8.25,
+          // SCORING GUIDELINE: Final Score combines the AI System Score with residency gates (RAM/Storage) and thermal stability (TDSI) according to the A→B→C hierarchy. Formula: (AI_System_Score * 0.75) + (6_6_ram_capacity.scores.predicted * 0.10) + (6_10_thermal_dissipation_stability.scores.predicted * 0.075) + (6_8_storage_capacity.scores.predicted * 0.05) + (6_7_storage_technology.scores.predicted * 0.025). 
+          // AI_System_Score is derived from Method A (method_a_benchmark_AI.subscore) if available; if not, Method B (method_b_neighbor_interpolation_AI.interpolated_score); if not, Method C (method_c_prediction_model_AI.scores.predicted). 
+          "method_used": "Benchmark (Geekbench AI)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
+          //   • Neighbor Interpolation   → Method B (similar device benchmarks)
+          //   • Predictor                → Method C (weighted spec calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
+      }
+    },
+    "6_5_ram_technology": {
+      // SCORING GOAL: Evaluates RAM (Random Access Memory) throughput and efficiency using the Memory Technology Efficiency Index (MTEI).
+      // RAM is the device's "short-term memory" where active data is stored for immediate access. 
+      // Newer technologies like LPDDR5X or even LPDDR5T allow for significantly faster data transfer speeds—measured in MT/s (Megatransfers per second).
+      //
+      // ════════════════════════════════════════════════════════════════════ ═══════
+      // MTEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+      // ═══════════════════════════════════════════════════════════════════════════
+      // | Denomination | MT/s (Basis)  | Score | Marketing Terms & Keywords                                 |
+      // | :----------- | :-----------: | :---- | :--------------------------------------------------------- |
+      // | LPDDR5T      | 9600          | 10.00 | Turbo (SK Hynix/Vivo), 9.6 Gbps, Enhanced 5X Peak          |
+      // | LPDDR5X-8533 | 8533          |  9.34 | Full-blooded (Xiaomi/Redmi), Peak, 8.5 Gbps                |
+      // | LPDDR5X-7500 | 7500          |  8.62 | Power Optimized, 7.5 Gbps, Standard 5X, Optimized          |
+      // | LPDDR5-6400  | 6400          |  7.74 | Unified Memory (Apple A16/A17 Pro), 6.4 Gbps, High-speed 5 |
+      // | LPDDR5-5500  | 5500          |  6.89 | Standard LPDDR5, 5.5 Gbps, Mainstream 5                    |
+      // | LPDDR4X-4266 | 4266          |  5.47 | Enhanced 4X, Peak 4X, 4.2 Gbps, High-speed 4X              |
+      // | LPDDR4X-3733 | 3733          |  4.73 | Standard LPDDR4X, 3.7 Gbps, Mainstream 4X                  |
+      // | LPDDR4-3200  | 3200          |  3.87 | High-speed LPDDR4, 3.2 Gbps, Standard 4                    |
+      // | LPDDR4-2133  | 2133          |  1.60 | Budget LPDDR4, 2.1 Gbps, Entry LPDDR4                      |
+      // | LPDDR3       | 1600          |  0.00 | Baseline, Legacy, Obsolete, 1.6 Gbps, LPDDR3/2/1           |
+      //
+      // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
+      // To ensure absolute scoring neutrality and prevent speculative "peak-speed" awarding for undisclosed hardware, the following hierarchy MUST be followed:
+      //
+      //   1. LEVEL 1: VERBATIM SPECIFICATION (PRIMARY)
+      //      - Use only if the exact MT/s (e.g., "8533 MT/s") is found in the official technical specification or verified hardware teardown.
+      //   2. LEVEL 2: DETERMINISTIC MARKETING BIN (SECONDARY)
+      //      - If MT/s is missing but qualified marketing terms (e.g., "Turbo", "9.6 Gbps", "Full-blooded") are used, match them directly to the Resolution Matrix above.
+      //   3. LEVEL 3: CONSERVATIVE GENERATIONAL FALLBACK
+      //      - If only a generic generation is disclosed (e.g., "LPDDR5X", "LPDDR5"), the agent MUST resolve to the **Standard/Consensus JEDEC baseline** for that generation.
+      //      - PEAK BIN SCORES (e.g., 8533 MT/s, 9600 MT/s) are strictly PROHIBITED for generic disclosures.
+      //      - EXAMPLES: 
+      //                       Generic "LPDDR5X" resolves to **7500 MT/s**
+      //                       Generic "LPDDR5"  resolves to **5500 MT/s**
+      //                       Generic "LPDDR4X" resolves to **3733 MT/s**
+
+      "technology_generation": {
+        "value": "Tier 2: LPDDR5X-8533",
+        "value_details": {
+          "Tier 1: LPDDR5T-9600": [],
+          "Tier 2: LPDDR5X-8533": [
+            { "name": "Full-blooded LPDDR5X", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: LPDDR5X-7500": [],
+          "Tier 4: LPDDR5-6400": [],
+          "Tier 5: LPDDR5-5500": [],
+          "Tier 6: LPDDR4X-4266": [],
+          "Tier 7: LPDDR4X-3733": [],
+          "Tier 8: LPDDR4-3200": [],
+          "Tier 9: LPDDR4-2133": [],
+          "Tier 10: LPDDR3-1600 or older": []
+        }
+        // SCORING GUIDELINE: Identify the RAM technical denomination strictly via reported standard or data rate.
+        // Match the device's highest verified specification to the corresponding Tier in the "MTEI SCORING & RESOLUTION MATRIX" above. 
+        // Use the following exact Tier Names for "value" (always apply the highest applicable tier) and store the related score in "effective_speed_mts".
+        //   • "Tier 1: LPDDR5T-9600"          → 10.00
+        //   • "Tier 2: LPDDR5X-8533"          → 9.34
+        //   • "Tier 3: LPDDR5X-7500"          → 8.62
+        //   • "Tier 4: LPDDR5-6400"           → 7.74
+        //   • "Tier 5: LPDDR5-5500"           → 6.89
+        //   • "Tier 6: LPDDR4X-4266"          → 5.47
+        //   • "Tier 7: LPDDR4X-3733"          → 4.73
+        //   • "Tier 8: LPDDR4-3200"           → 3.87
+        //   • "Tier 9: LPDDR4-2133"           → 1.60
+        //   • "Tier 10: LPDDR3-1600 or older" → 0.00
+        // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/Data Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
+        // Note: Stored for info and traceability, not directly used for scoring.
+      },
+      "effective_speed_mts": {
+        "value": 8533,
+        // GUIDELINE: The effective transfer rate in MT/s.
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+      },
+      "scores": {
+        "predicted": 9.34,
+        // SCORING GUIDELINE: Match the "effective_speed_mts.value" to the "MTEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.34,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "6_6_ram_capacity": {
+      // SCORING GOAL: Evaluates total physical system RAM capacity.
+      "capacity_gb": {
+        "value": 12,
+        // GUIDELINE: Inherits the physical RAM capacity from the device identity Section.
+        "value_path": "identity.hardware_configuration.ram_gb.value",
+        "subscore": 7.21
+        // SCORING GUIDELINE: Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)), clamped 0-10. 
+        // VIRTUAL RAM DISCRIMINATION:
+        //    - The scoring engine MUST strictly distinguish between physical hardware and software-based "Virtual RAM" (e.g., RAM Plus, Dynamic RAM, Extended RAM).
+        //    - VIRTUAL RAM IS PROHIBITED: If a spec says "12GB + 8GB Extended RAM", the scorable value is STRICTLY **12**.
+        //    - DYNAMIC STRINGS: Ignore strings like "Up to 24GB RAM" if they refer to swap space.
+      },
+      "scores": {
+        "predicted": 7.21,
+        // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.21,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "6_7_storage_technology": {
+      // SCORING GOAL: Evaluates internal storage protocol efficiency and sequential throughput using the Storage Technology Efficiency Index (STEI).
+      // Faster storage directly impacts system boot times, app installation speed, and overall OS responsiveness.
+      // Storage throughput is measured in MB/s (Megabytes per second), representing the data bottleneck between the flash memory and the SoC.
+      //
+      // ═══════════════════════════════════════════════════════════════════════════
+      // STEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+      // ═══════════════════════════════════════════════════════════════════════════
+      // | Tier    | Denomination (Logic Key)      | Score | MB/s  |
+      // | :------ | :---------------------------- | :---- | :---- |
+      // | Tier 1  | UFS 4.0 Peak / NVMe (A17/18)  | 10.00 | 4200  |
+      // | Tier 2  | UFS 4.0 Base / NVMe (A16)     |  9.10 | 3000  |
+      // | Tier 3  | UFS 3.1 (Enhanced - WB+HPB)   |  8.15 | 2100  |
+      // | Tier 4  | UFS 3.1 Standard / NVMe (A15) |  7.66 | 1750  |
+      // | Tier 5  | UFS 3.0 / NVMe (A14)          |  7.15 | 1450  |
+      // | Tier 6  | UFS 2.2 / NVMe (A13)          |  6.16 | 1000  |
+      // | Tier 7  | UFS 2.1 (Peak)                |  5.72 | 850   |
+      // | Tier 8  | UFS 2.1 Standard / NVMe (A12) |  4.80 | 600   |
+      // | Tier 9  | UFS 2.0 / NVMe (A11)          |  4.02 | 450   |
+      // | Tier 10 | eMMC 5.1 Peak / NVMe (A10)    |  3.20 | 330   |
+      // | Tier 11 | eMMC 5.1 Base / NVMe (A9)     |  2.11 | 220   |
+      // | Tier 12 | eMMC 5.0                      |  1.09 | 150   |
+      // | Tier 13 | eMMC ≤ 4.5 / NVMe (A8 & Older)|  0.00 | 100   |
+      //
+      // RESOLUTION LOGIC:
+      // 1. PRIMARY: MB/s VERBATIM -> Match verbatim sequential read speed (e.g., "2100 MB/s") to the nearest Basis.
+      // 2. SECONDARY: TECH + KEYWORDS (Exhaustive Mapping) ->
+      //    - Tier 1 (Peak 4.0): Requires "UFS 4.0" AND ("Peak" OR "High-speed" OR "4.2 GB/s").
+      //    - Tier 3 (Enhanced 3.1): Requires "UFS 3.1" AND ("Write Booster" OR "WB") AND ("HPB" OR "Host Performance Booster").
+      //    - Tier 7 (Peak 2.1): Requires "UFS 2.1" AND ("Turbo Write" OR "Write Booster" OR "WB").
+      //    - Tier 10 (Peak eMMC 5.1): Requires "eMMC 5.1" AND ("Peak" OR "High-speed").
+      // 3. TERTIARY: BASELINE by default (Ambiguous Disclosure) ->
+      //    - Generic "UFS 4.0" -> Tier 2 (Baseline).
+      //    - Generic "UFS 3.1" -> Tier 4 (Baseline).
+      //    - Generic "UFS 2.1" -> Tier 8 (Baseline).
+      //    - Generic "eMMC 5.1" -> Tier 11 (Baseline).
+      // 4. FALLBACK: SoC PARITY -> Map Apple devices exactly as defined in 'Denomination' column.
+      //
+      "storage_format": {
+        "value": "Tier 1: UFS 4.0 Peak",
+        "value_details": {
+          "Tier 1: \"UFS 4.0 Peak\" OR \"NVMe (A17/18)\"": [
+              { "name": "UFS 4.0 Peak", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 2: \"UFS 4.0 Base\" OR \"NVMe (A16)\"": [],
+          "Tier 3: \"UFS 3.1 (Enhanced - WB + HPB)\"": [],
+          "Tier 4: \"UFS 3.1 Standard\" OR \"NVMe (A15)\"": [],
+          "Tier 5: \"UFS 3.0\" OR \"NVMe (A14)\"": [],
+          "Tier 6: \"UFS 2.2\" OR \"NVMe (A13)\"": [],
+          "Tier 7: \"UFS 2.1 (Peak)\"": [],
+          "Tier 8: \"UFS 2.1 Standard\" OR \"NVMe (A12)\"": [],
+          "Tier 9: \"UFS 2.0\" OR \"NVMe (A11)\"": [],
+          "Tier 10: \"eMMC 5.1 Peak\" OR \"NVMe (A10)\"": [],
+          "Tier 11: \"eMMC 5.1 Base\" OR \"NVMe (A9)\"": [],
+          "Tier 12: \"eMMC 5.0\"": [],
+          "Tier 13: \"eMMC ≤ 4.5\" OR \"NVMe (A8 & Older)\"": []
+        }
+        // SCORING GUIDELINE: Identify the storage technical denomination strictly via reported protocol or sequential throughput.
+        // Match the device's highest verified specification to the corresponding Tier in the "STEI SCORING & RESOLUTION MATRIX" above.
+        // TRACEABILITY RULE: In the final "value" field, keep ONLY the denomination part that applies to the device to ensure precise traceability.
+        // Use the following exact Tier Names as the basis for "value" (always apply the highest applicable tier) and store the related score in "effective_sequential_read_mbps".
+        //   • Tier 1:  "UFS 4.0 Peak" OR "NVMe (A17/18)"        → 10.00
+        //   • Tier 2:  "UFS 4.0 Base" OR "NVMe (A16)"           → 9.10
+        //   • Tier 3:  "UFS 3.1 (Enhanced - WB + HPB)"          → 8.15
+        //   • Tier 4:  "UFS 3.1 Standard" OR "NVMe (A15)"       → 7.66
+        //   • Tier 5:  "UFS 3.0" OR "NVMe (A14)"                → 7.15
+        //   • Tier 6:  "UFS 2.2" OR "NVMe (A13)"                → 6.16
+        //   • Tier 7:  "UFS 2.1 (Peak)"                         → 5.72
+        //   • Tier 8:  "UFS 2.1 Standard" OR "NVMe (A12)"       → 4.80
+        //   • Tier 9:  "UFS 2.0" OR "NVMe (A11)"                → 4.02
+        //   • Tier 10: "eMMC 5.1 Peak" OR "NVMe (A10)"          → 3.20
+        //   • Tier 11: "eMMC 5.1 Base" OR "NVMe (A9)"           → 2.11
+        //   • Tier 12: "eMMC 5.0"                               → 1.09
+        //   • Tier 13: "eMMC ≤ 4.5" OR "NVMe (A8 & Older)"      → 0.00
+        // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/MBps Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
+      },
+      "effective_sequential_read_mbps": {
+        "value": 4200,
+        // GUIDELINE: The effective sequential throughput in MB/s.
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Match the "effective_sequential_read_mbps.value" to the "STEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits effective_sequential_read_mbps.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "6_8_storage_capacity": {
+      // SCORING GOAL: Evaluates total physical internal non-volatile memory capacity using the Storage Capacity Index (SCI).
+      // Higher storage allows for expansive on-device AI models (§6.4) and high-resolution media without performance degradation due to capacity saturation.
+      //
+      // ═════════════════════════════════════
+      // SCI SCORING & BENCHMARK REFERENCE
+      // ═════════════════════════════════════
+      // | Denomination | Basis (GB) | Score | 
+      // | :----------- | :--------: | :---- |
+      // | 2 TB         | 2048       | 10.00 |
+      // | 1 TB         | 1024       |  8.75 |
+      // | 512 GB       | 512        |  7.50 |
+      // | 256 GB       | 256        |  6.25 |
+      // | 128 GB       | 128        |  5.00 |
+      // | 64 GB        | 64         |  3.75 |
+      // | 32 GB        | 32         |  2.50 |
+      // | 16 GB        | 16         |  1.25 |
+      // | ≤8 GB        | 8          |  0.00 |
+      //
+      // CONSOLIDATION & NORMALIZATION RULES:
+      // 1. VARIANT ISOLATION: The database scores the SPECIFIC variant listed in Section 0 (Identity). If a phone has 128/256/512 variants, ensure the scorable `value` matches the `identity` version.
+      // 2. PHYSICAL EXCLUSIVITY: Strictly exclude "Cloud", "Virtual", or "MicroSD-combined" strings. Only the physical NAND flash integrated into the main logic board is eligible for scoring.
+      //
+      "capacity_gb": {
+        "value": 512,
+        // GUIDELINE: Inherits the physical storage capacity from the device identity Section.
+        "value_path": "identity.hardware_configuration.storage_gb.value",
+        "subscore": 7.50
+        // SCORING GUIDELINE: Subscore is resolved via the SCI SCORING & BENCHMARK REFERENCE table (defined above). Score is clamped 0-10.
+      },
+      "scores": {
+        "predicted": 7.50,
+        // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 7.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "6_9_storage_expandability": {
+      // SCORING GOAL: Evaluates the device's ability to expand its non-volatile memory via removable media (e.g. microSD, NM card). 
+      // This is a critical usability differentiator for power users, media creators, and offline consumers who require large, inexpensive storage buffers without sacrificing SIM connectivity.
+      // It is a deterministic index based strictly on physical slot configuration and trade-offs.
+      //
+      // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+      // MEMORY EXPANSION RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
+      // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+      // | Tier    | Architecture (Logic Key)      | Score | Marketing Terms & Keywords                                 |
+      // | :------ | :---------------------------- | :---- | :--------------------------------------------------------- |
+      // | Tier 1  | Dedicated Slot                | 10.00 | Triple slot, 3-card tray, 2 SIM + 1 SD, Dedicated microSD  |
+      // | Tier 2  | Hybrid Slot                   |  7.00 | Shared SIM slot, SIM2 or MicroSD, 2-in-1 tray              |
+      // | Tier 3  | Proprietary                   |  5.00 | Nano Memory, NM card support, Huawei Memory                |
+      // | Tier 4  | None                          |  0.00 | No expansion, non-expandable, physical storage fixed       |
+      //
+      // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
+      // 1. PRIMARY: PHYSICAL TRAY INSPECTION / SCHEMATIC ->
+      //    - Tier 1: Requires evidence of 3 distinct physical contact points (e.g. "Triple slot") or official mention of "Dedicated slot for MicroSD".
+      //    - Tier 2: Confirmed by terms like "Shared slot" or "SIM2 or SD".
+      // 2. SECONDARY: eSIM FLEXIBILITY CLARIFICATION ->
+      //    - Devices utilizing a physical Hybrid tray (1x dedicated Nano-SIM slot + 1x shared slot for either SIM2 or a memory card) are strictly categorized as **Tier 2: Hybrid Slot**, regardless of eSIM support. While eSIM allows for dual-line usage without a second physical card, the physical architecture still forces a trade-off for users with two physical Nano-SIM cards.
+      // 3. TERTIARY: Original Equipment Manufacturer (OEM) BRANDING ->
+      //    - Huawei devices with NM cards score strictly as **Tier 3 (Proprietary)** due to limited third-party card availability and higher cost-per-GB.
+      // 4. FALLBACK: ABSENCE OF EVIDENCE -> 
+      //    - If no expansion mentioned in GSMarena or other sources (Memory -> Card slot: No), resolve to **Tier 4 (None)**.
+      //
+      "expandability_support": {
+        "value": "Tier 4: None",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Identify the expandability support strictly via the physical slot configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Dedicated Slot" → 10.00
+        //     Definition: Separate tray or contact specifically for a removable memory card (microSD) that does not interfere with simultaneous Dual SIM usage.
+        //   • "Tier 2: Hybrid Slot"    → 7.00
+        //     Definition: Shared slot where the user must choose between a second physical SIM card or a memory card (e.g., microSD, Nano Memory).
+        //   • "Tier 3: Proprietary"    → 5.00
+        //     Definition: Support for branded/exclusive removable storage formats (e.g., Huawei NM Card).
+        //   • "Tier 4: None"           → 0.00
+        //     Definition: No physical hardware interface for local storage expansion.
+        // 
+        // RESOLUTION OF AMBIGUITY:
+        // In cases where marketing terms or technical descriptions are unclear, prioritize the PHYSICAL TRAY INSPECTION and DATA PRIORITY RULES documented in the RESOLUTION MATRIX above to ensure deterministic categorization.
+      },
+      "scores": {
+        "predicted": 0.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits expandability_support.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "6_10_thermal_dissipation_stability": {
+      // SCORING GOAL: Evaluates the device's physical ability to dissipate heat and maintain consistent performance during sustained workloads. It validates the hardware's theoretical cooling capacity (Thermodynamic RC Model) against empirical gaming stability from the 3DMark Benchmark to ensure a transparent, physics-based thermal score.
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Direct Benchmark (Primary Standard: 3DMark Wild Life Extreme)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_a_benchmark_TDSI": {
+        "value": 59.0,
+        // GUIDELINE: The "Stability %" result from a 20-minute 3DMark Wild Life Extreme Stress Test. MANDATORY: Only extract the percentage value (e.g., 59.0) representing the ratio between the lowest and highest loops. This value must be ≤ 100.0. CRITICAL: Do NOT use the raw performance "Score" (e.g., 5230) or FPS values.
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 4.24
+        // SCORING GUIDELINE: subscore = 10 * (log(value) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Thermodynamic RC Prediction Model (Tertiary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_c_prediction_model_TDSI": {
+        // SCORING GOAL: Predicts the Thermal Dissipation Stability Index (TDSI) using a multi-physics model.
+        // The model evaluates geometric bounds, three-path thermal resistance (resistance_total_k_w), and the net System-on-Chip (SoC) power budget.
+        //
+        // --- [1] GEOMETRIC BOUNDARY INPUTS ---
+        "height_mm": {
+          "value": 162.3,
           "source": "TBD",
-          "exact_extract": "Proof pending",
+          "exact_extract": "Proof pending"
+          // GUIDELINE: Overall device height in mm. Critical for radiator surface area calculation.
         },
-        "scores": {
-          "predicted": 9.34,
-          // SCORING GUIDELINE: Match the "effective_speed_mts.value" to the "MTEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 9.34,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "6_6_ram_capacity": {
-        // SCORING GOAL: Evaluates total physical system RAM capacity.
-        "capacity_gb": {
-          "value": 12,
-          // GUIDELINE: Inherits the physical RAM capacity from the device identity Section.
-          "value_path": "identity.hardware_configuration.ram_gb.value",
-          "subscore": 7.21
-          // SCORING GUIDELINE: Score = 10 * (log(GB) - log(RAM_GB_Min)) / (log(RAM_GB_Max) - log(RAM_GB_Min)), clamped 0-10. 
-          // VIRTUAL RAM DISCRIMINATION:
-          //    - The scoring engine MUST strictly distinguish between physical hardware and software-based "Virtual RAM" (e.g., RAM Plus, Dynamic RAM, Extended RAM).
-          //    - VIRTUAL RAM IS PROHIBITED: If a spec says "12GB + 8GB Extended RAM", the scorable value is STRICTLY **12**.
-          //    - DYNAMIC STRINGS: Ignore strings like "Up to 24GB RAM" if they refer to swap space.
+        "width_mm": {
+          "value": 79.0,
+          "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
+          // GUIDELINE: Overall device width in mm. Critical for radiator surface area calculation.
         },
-        "scores": {
-          "predicted": 7.21,
-          // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.21,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "6_7_storage_technology": {
-        // SCORING GOAL: Evaluates internal storage protocol efficiency and sequential throughput using the Storage Technology Efficiency Index (STEI).
-        // Faster storage directly impacts system boot times, app installation speed, and overall OS responsiveness.
-        // Storage throughput is measured in MB/s (Megabytes per second), representing the data bottleneck between the flash memory and the SoC.
-        //
-        // ═══════════════════════════════════════════════════════════════════════════
-        // STEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
-        // ═══════════════════════════════════════════════════════════════════════════
-        // | Tier    | Denomination (Logic Key)      | Score | MB/s  |
-        // | :------ | :---------------------------- | :---- | :---- |
-        // | Tier 1  | UFS 4.0 Peak / NVMe (A17/18)  | 10.00 | 4200  |
-        // | Tier 2  | UFS 4.0 Base / NVMe (A16)     |  9.10 | 3000  |
-        // | Tier 3  | UFS 3.1 (Enhanced - WB+HPB)   |  8.15 | 2100  |
-        // | Tier 4  | UFS 3.1 Standard / NVMe (A15) |  7.66 | 1750  |
-        // | Tier 5  | UFS 3.0 / NVMe (A14)          |  7.15 | 1450  |
-        // | Tier 6  | UFS 2.2 / NVMe (A13)          |  6.16 | 1000  |
-        // | Tier 7  | UFS 2.1 (Peak)                |  5.72 | 850   |
-        // | Tier 8  | UFS 2.1 Standard / NVMe (A12) |  4.80 | 600   |
-        // | Tier 9  | UFS 2.0 / NVMe (A11)          |  4.02 | 450   |
-        // | Tier 10 | eMMC 5.1 Peak / NVMe (A10)    |  3.20 | 330   |
-        // | Tier 11 | eMMC 5.1 Base / NVMe (A9)     |  2.11 | 220   |
-        // | Tier 12 | eMMC 5.0                      |  1.09 | 150   |
-        // | Tier 13 | eMMC ≤ 4.5 / NVMe (A8 & Older)|  0.00 | 100   |
-        //
-        // RESOLUTION LOGIC:
-        // 1. PRIMARY: MB/s VERBATIM -> Match verbatim sequential read speed (e.g., "2100 MB/s") to the nearest Basis.
-        // 2. SECONDARY: TECH + KEYWORDS (Exhaustive Mapping) ->
-        //    - Tier 1 (Peak 4.0): Requires "UFS 4.0" AND ("Peak" OR "High-speed" OR "4.2 GB/s").
-        //    - Tier 3 (Enhanced 3.1): Requires "UFS 3.1" AND ("Write Booster" OR "WB") AND ("HPB" OR "Host Performance Booster").
-        //    - Tier 7 (Peak 2.1): Requires "UFS 2.1" AND ("Turbo Write" OR "Write Booster" OR "WB").
-        //    - Tier 10 (Peak eMMC 5.1): Requires "eMMC 5.1" AND ("Peak" OR "High-speed").
-        // 3. TERTIARY: BASELINE by default (Ambiguous Disclosure) ->
-        //    - Generic "UFS 4.0" -> Tier 2 (Baseline).
-        //    - Generic "UFS 3.1" -> Tier 4 (Baseline).
-        //    - Generic "UFS 2.1" -> Tier 8 (Baseline).
-        //    - Generic "eMMC 5.1" -> Tier 11 (Baseline).
-        // 4. FALLBACK: SoC PARITY -> Map Apple devices exactly as defined in 'Denomination' column.
-        //
-        "storage_format": {
-          "value": "Tier 1: UFS 4.0 Peak",
-          "value_details": {
-            "Tier 1: \"UFS 4.0 Peak\" OR \"NVMe (A17/18)\"": [
-               { "name": "UFS 4.0 Peak", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 2: \"UFS 4.0 Base\" OR \"NVMe (A16)\"": [],
-            "Tier 3: \"UFS 3.1 (Enhanced - WB + HPB)\"": [],
-            "Tier 4: \"UFS 3.1 Standard\" OR \"NVMe (A15)\"": [],
-            "Tier 5: \"UFS 3.0\" OR \"NVMe (A14)\"": [],
-            "Tier 6: \"UFS 2.2\" OR \"NVMe (A13)\"": [],
-            "Tier 7: \"UFS 2.1 (Peak)\"": [],
-            "Tier 8: \"UFS 2.1 Standard\" OR \"NVMe (A12)\"": [],
-            "Tier 9: \"UFS 2.0\" OR \"NVMe (A11)\"": [],
-            "Tier 10: \"eMMC 5.1 Peak\" OR \"NVMe (A10)\"": [],
-            "Tier 11: \"eMMC 5.1 Base\" OR \"NVMe (A9)\"": [],
-            "Tier 12: \"eMMC 5.0\"": [],
-            "Tier 13: \"eMMC ≤ 4.5\" OR \"NVMe (A8 & Older)\"": []
-          }
-          // SCORING GUIDELINE: Identify the storage technical denomination strictly via reported protocol or sequential throughput.
-          // Match the device's highest verified specification to the corresponding Tier in the "STEI SCORING & RESOLUTION MATRIX" above.
-          // TRACEABILITY RULE: In the final "value" field, keep ONLY the denomination part that applies to the device to ensure precise traceability.
-          // Use the following exact Tier Names as the basis for "value" (always apply the highest applicable tier) and store the related score in "effective_sequential_read_mbps".
-          //   • Tier 1:  "UFS 4.0 Peak" OR "NVMe (A17/18)"        → 10.00
-          //   • Tier 2:  "UFS 4.0 Base" OR "NVMe (A16)"           → 9.10
-          //   • Tier 3:  "UFS 3.1 (Enhanced - WB + HPB)"          → 8.15
-          //   • Tier 4:  "UFS 3.1 Standard" OR "NVMe (A15)"       → 7.66
-          //   • Tier 5:  "UFS 3.0" OR "NVMe (A14)"                → 7.15
-          //   • Tier 6:  "UFS 2.2" OR "NVMe (A13)"                → 6.16
-          //   • Tier 7:  "UFS 2.1 (Peak)"                         → 5.72
-          //   • Tier 8:  "UFS 2.1 Standard" OR "NVMe (A12)"       → 4.80
-          //   • Tier 9:  "UFS 2.0" OR "NVMe (A11)"                → 4.02
-          //   • Tier 10: "eMMC 5.1 Peak" OR "NVMe (A10)"          → 3.20
-          //   • Tier 11: "eMMC 5.1 Base" OR "NVMe (A9)"           → 2.11
-          //   • Tier 12: "eMMC 5.0"                               → 1.09
-          //   • Tier 13: "eMMC ≤ 4.5" OR "NVMe (A8 & Older)"      → 0.00
-          // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/MBps Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
-        },
-        "effective_sequential_read_mbps": {
-          "value": 4200,
-          // GUIDELINE: The effective sequential throughput in MB/s.
+        "aspect_ratio": {
+          "value": 2.1667, // Numerical value of the screen aspect ratio (Height / Width).
+          "value_details": "19.5 / 9",
           "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Match the "effective_sequential_read_mbps.value" to the "STEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
+          "exact_extract": "Proof pending"
+          // GUIDELINE: Standard screen aspect ratio R (Height / Width) from specs (20:9, 19.5:9, etc.).
         },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits effective_sequential_read_mbps.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "6_8_storage_capacity": {
-        // SCORING GOAL: Evaluates total physical internal non-volatile memory capacity using the Storage Capacity Index (SCI).
-        // Higher storage allows for expansive on-device AI models (§6.4) and high-resolution media without performance degradation due to capacity saturation.
-        //
-        // ═════════════════════════════════════
-        // SCI SCORING & BENCHMARK REFERENCE
-        // ═════════════════════════════════════
-        // | Denomination | Basis (GB) | Score | 
-        // | :----------- | :--------: | :---- |
-        // | 2 TB         | 2048       | 10.00 |
-        // | 1 TB         | 1024       |  8.75 |
-        // | 512 GB       | 512        |  7.50 |
-        // | 256 GB       | 256        |  6.25 |
-        // | 128 GB       | 128        |  5.00 |
-        // | 64 GB        | 64         |  3.75 |
-        // | 32 GB        | 32         |  2.50 |
-        // | 16 GB        | 16         |  1.25 |
-        // | ≤8 GB        | 8          |  0.00 |
-        //
-        // CONSOLIDATION & NORMALIZATION RULES:
-        // 1. VARIANT ISOLATION: The database scores the SPECIFIC variant listed in Section 0 (Identity). If a phone has 128/256/512 variants, ensure the scorable `value` matches the `identity` version.
-        // 2. PHYSICAL EXCLUSIVITY: Strictly exclude "Cloud", "Virtual", or "MicroSD-combined" strings. Only the physical NAND flash integrated into the main logic board is eligible for scoring.
-        //
-        "capacity_gb": {
-          "value": 512,
-          // GUIDELINE: Inherits the physical storage capacity from the device identity Section.
-          "value_path": "identity.hardware_configuration.storage_gb.value",
-          "subscore": 7.50
-          // SCORING GUIDELINE: Subscore is resolved via the SCI SCORING & BENCHMARK REFERENCE table (defined above). Score is clamped 0-10.
+        "footprint_area_m2": {
+          "value": 0.01282,
+          "calculation_formula": "(height_mm * width_mm) / 1000000"
+          // GUIDELINE: Total flat surface area (in m^2) of the device's footprint (Height * Width). Represents the theoretical maximum radiator area for BOTH the front and back panels.
         },
-        "scores": {
-          "predicted": 7.50,
-          // SCORING GUIDELINE: scores.predicted directly inherits capacity_gb.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.50,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "6_9_storage_expandability": {
-        // SCORING GOAL: Evaluates the device's ability to expand its non-volatile memory via removable media (e.g. microSD, NM card). 
-        // This is a critical usability differentiator for power users, media creators, and offline consumers who require large, inexpensive storage buffers without sacrificing SIM connectivity.
-        // It is a deterministic index based strictly on physical slot configuration and trade-offs.
-        //
-        // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-        // MEMORY EXPANSION RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
-        // ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-        // | Tier    | Architecture (Logic Key)      | Score | Marketing Terms & Keywords                                 |
-        // | :------ | :---------------------------- | :---- | :--------------------------------------------------------- |
-        // | Tier 1  | Dedicated Slot                | 10.00 | Triple slot, 3-card tray, 2 SIM + 1 SD, Dedicated microSD  |
-        // | Tier 2  | Hybrid Slot                   |  7.00 | Shared SIM slot, SIM2 or MicroSD, 2-in-1 tray              |
-        // | Tier 3  | Proprietary                   |  5.00 | Nano Memory, NM card support, Huawei Memory                |
-        // | Tier 4  | None                          |  0.00 | No expansion, non-expandable, physical storage fixed       |
-        //
-        // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
-        // 1. PRIMARY: PHYSICAL TRAY INSPECTION / SCHEMATIC ->
-        //    - Tier 1: Requires evidence of 3 distinct physical contact points (e.g. "Triple slot") or official mention of "Dedicated slot for MicroSD".
-        //    - Tier 2: Confirmed by terms like "Shared slot" or "SIM2 or SD".
-        // 2. SECONDARY: eSIM FLEXIBILITY CLARIFICATION ->
-        //    - Devices utilizing a physical Hybrid tray (1x dedicated Nano-SIM slot + 1x shared slot for either SIM2 or a memory card) are strictly categorized as **Tier 2: Hybrid Slot**, regardless of eSIM support. While eSIM allows for dual-line usage without a second physical card, the physical architecture still forces a trade-off for users with two physical Nano-SIM cards.
-        // 3. TERTIARY: Original Equipment Manufacturer (OEM) BRANDING ->
-        //    - Huawei devices with NM cards score strictly as **Tier 3 (Proprietary)** due to limited third-party card availability and higher cost-per-GB.
-        // 4. FALLBACK: ABSENCE OF EVIDENCE -> 
-        //    - If no expansion mentioned in GSMarena or other sources (Memory -> Card slot: No), resolve to **Tier 4 (None)**.
-        //
-        "expandability_support": {
-          "value": "Tier 4: None",
+        "frame_radiator_area_m2": {
+          "value": 0.00353,
+          "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_thickness_mm.value * 0.85 / 1000000"
+          // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
+        },
+        "display_surface_area_cm2": {
+          "value": 113.5,
+          "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+          // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat.
+        },
+
+        // --- [2] THERMAL RESISTANCE PARAMETERS ---
+        "cooling_hardware": {
+          // Inventory of passive and active cooling modules. Phase Change Materials (PCM) are excluded from this block as they function via heat absorption and are accounted for separately in the pcm_buffer field.
+          "vapor_chamber": {
+            // Definition: A two-dimensional heat pipe that uses liquid-to-vapor phase change within a vacuum-sealed flat chamber to rapidly spread heat away from the SoC (System on Chip) across a larger surface area.
+            // Marketing Names: Vapor Chamber, VC Cooling, Stainless Steel VC, Copper Vapor Chamber, Dual Vapor Chamber, Mega VC, IceLoop, Ice-cool, Super VC, VC Liquid Cooling, 3D Vapor Chamber.
+            "coverage_area_mm2": {
+              "value": 4050, 
+              "source": "TBD",
+              "exact_extract": "Proof pending", 
+              // GUIDELINE: total surface area (footprint) of the Vapor Chamber in mm^2, if no Vapor Chamber is present set "value" to 0 and "source" and "exact_extract" to N/A.               
+            },
+            "phi": {
+              "value": 0.3159,
+              "calculation_formula": "phi = coverage_area_mm2 / (height_mm * width_mm)"
+              // GUIDELINE: Thermal Coverage Factor (ratio of Vapor Chamber footprint to device footprint).
+            },
+            // NOTE: Regarding the Technological Spreading Constant for Vapor Chambers (alpha), a constant value is directly used in the formula calculating the effective spreading efficiency (s_eff).
+          },
+          "graphite_or_graphene_layer": {
+            // Definition: High-conductivity carbon-based sheets (Natural/Synthetic Graphite or Graphene) used to spread heat laterally. Graphite is the industry standard, while Graphene offers higher thermal conductivity in thinner layers.
+            "identifier": "Multi-layer Graphite",
+            "source": "TBD",
+            "exact_extract": "Proof pending",
+            "alpha": 0.8,
+            "phi": 0.50,               
+            // GUIDELINE: Maps the "Cooling Technology Class" to "alpha" and "phi" based on the provided table. Search for the graphite or graphene cooling technology that applies. Use the following EXACT strings present in the first column (from the lookup table below) for "identifier" with related "alpha" and "phi". Use "None (SoC Only)" if no dedicated sheets are present.
+            // | Cooling Technology Class | alpha | phi  |
+            // | :------------------------| :---: | :--: |
+            // | None (SoC Only)          |  0.0  | 0.00 |
+            // | Standard Graphite Sheet  |  0.6  | 0.40 |
+            // | Multi-layer Graphite     |  0.8  | 0.50 |
+            // | Synthetic Graphene Film  |  1.2  | 0.50 |
+            //
+          },
+          "fan": {
+            // GUIDELINE: An integrated mechanical fan can be used to force airflow across internal heat sinks or through the device chassis to enhance convective heat dissipation.
+            "max_speed_rpm": {
+              "value": 0, 
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+              // GUIDELINE: Fetch the maximum rated rotational speed of the internal fan in RPM. If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
+            },
+            "diameter_mm": {
+              "value": 0.0,
+              "source": "TBD",
+              "exact_extract": "Proof pending"
+              // GUIDELINE: Fetch the internal fan's diameter in millimeters (mm). If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
+            },
+            "h_fan": {
+              "value": 0,
+              "calculation_formula": "10 + 100 * (max_speed_rpm * diameter_mm / 240000)^0.8"
+              // GUIDELINE: Convective intensity within the cooling duct. If max_speed_rpm or diameter_mm are missing (set to "Not found") for a confirmed fan, use a default h_fan = 80 which is a slightly conservative value vs baseline fan (110). value = 0 if no fan is present.
+            },
+          },
+        },
+        "back_panel": { 
+          "material": {
+            "identifier": "Armor-Class Glass",
+            "identifier_path": "1_design_and_build_quality.1_1_materials.back_material.value",
+            "s_0": 0.05,
+            "s_max": 0.95
+            // GUIDELINE: Selects the material class based on the back panel identity to determine s_0 and s_max.
+            // | Materials (Section 1.1)      | Material Class                | s_0  | s_max |
+            // | :--------------------------- | :-----------------------------| :--: | :---: |
+            // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+            // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+            // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+            // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
+            // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.25 | 1.00  |
+            // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Armor-Class Glass**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Shield-Class Glass**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Reinforced Glass**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Standard Glass**           | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Flexible Membrane**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Composite Sheet**          | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            // | **Not Disclosed**            | Class 3 (Insulating Material) | 0.05 | 0.95  |
+            //
+          },
+          "s_eff": {
+            // GUIDELINE: s_eff is the effective spreading efficiency of the back panel.
+            "value": 0.6929,
+            "calculation_formula": "material.s_0 + (material.s_max - material.s_0) * [ 1 - exp(-2.7 * vapor_chamber.phi - graphite_or_graphene_layer.alpha * graphite_or_graphene_layer.phi)]"
+            // GUIDELINE: Continuous Saturation Model of thermal diffusion. Quantifies how effectively the internal spreaders (Vapor Chamber/Graphite/Graphene) utilize the back panel area for convection. The constant 2.7 represents the 'alpha' (spreading intensity) for Vapor Chambers, which is significantly higher than solid graphite due to the near-isothermal behavior of phase-change cycles.
+          },    
+        },
+        "resistance_back_k_w": {
+          "value": 11.26,
+          "calculation_formula": "1 / [ footprint_area_m2 * ( fan.h_fan * f_fan + 10.0 * (back_panel.s_eff - f_fan) ) ]"
+          // GUIDELINE: Thermal resistance of the back panel path. Uses an Area Model to sum dissipation from the forced duct (fan.h_fan over f_fan) and the remaining passive spread surface (h = 10.0 over back_panel.s_eff - f_fan). 
+          // f_fan = 0.1 (meaning 10% of the back surface area) if fan.max_speed_rpm > 0, else f_fan = 0.
+        },
+        "resistance_front_k_w": {
+          "value": 31.20,
+          "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
+          // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
+        },
+        "frame_material": {
+          "identifier": "Titanium Alloy",
+          "identifier_path": "1_design_and_build_quality.1_1_materials.frame_material.value",
+          "s_eff": 0.40
+          // GUIDELINE: Defines lateral perimeter spreading based on the structural frame identity.
+          // | Materials (Section 1.1)      | Material Class                | s_eff |
+          // | :--------------------------- | :---------------------------- | :---: |
+          // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
+          // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
+          // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 1.00  |
+          // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 1.00  |
+          // | **Magnesium Alloy**          | Class 1 (Conductive Metal)    | 1.00  |
+          // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.40  |
+          // | **Amorphous Alloy**          | Class 2 (Moderate Alloy)      | 0.40  |
+          // | **Titanium Alloy**           | Class 2 (Moderate Alloy)      | 0.40  |
+          // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05  |
+          // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05  |
+          // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05  |
+          // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05  |
+          // | **Material Not Disclosed**   | Class 3 (Insulating Material) | 0.05  |
+          //
+        },
+        "resistance_frame_k_w": {
+          "value": 70.82,
+          "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff)"
+          // GUIDELINE: Thermal resistance of the perimeter frame path (K/W).
+        },
+        "resistance_total_k_w": {
+          "value": 7.41,
+          "calculation_formula": "(1/resistance_back_k_w + 1/resistance_front_k_w + 1/resistance_frame_k_w)^-1"
+          // GUIDELINE: Unified system thermal resistance (Parallel sum of Back, Front, and Mid-Frame paths). Defines the chassis's global ability to expel thermal wattage to the environment.
+        },
+
+        // --- [3] ENERGY BALANCE & TIME CONSTANT ---
+        "pcm_buffer": {
+          // SCORING GOAL: Evaluates the latent heat storage capacity of the device to buffer high-power transients.
+          // Phase Change Materials (PCM) (typically organic hydrocarbons/paraffin) absorb thermal energy during their solid-liquid phase transition, effectively increasing the system's thermal capacitance (C).
+          //
+          // SCORING GUIDELINE: Identify the PCM implementation strictly via the structural form factor (3D Matrix vs. 2D Interface). 
+          // Match the device's verified architecture to the corresponding Tier below. Use the following exact Tier Names for "value" and the related numerical factor for "subscore":
+          //
+          // • Tier 1: 3D Structural PCM Matrix                → subscore = 0.75
+          //   Physical Definition: The PCM (paraffin) is integrated into a 3D conductive lattice (e.g., metal honeycomb, graphene foam, or conductive pillar). This architecture allows for rapid volumetric heat absorption.
+          //   AI Detection Logic: Classify as Tier 1 ONLY if descriptions imply a 'structure', 'matrix', '3D foam', 'encapsulation', or 'volumetric pillar'.
+          //   Illustrative Examples: Xiaomi's "Honeycomb PCM", "PCM Matrix", "Graphene-PCM Foam", "Aerospace-grade PCM matrix", "Rapid-cooling Conductor (Pillar)".
+          //
+          // • Tier 2: 2D Interfacial PCM Layer                → subscore = 0.50
+          //   Physical Definition: The PCM is applied as a thin interfacial layer (gel, sheet, or film) to improve contact between the SoC (System-on-Chip) and the heat spreader. It lacks a 3D structural matrix.
+          //   AI Detection Logic: Classify as Tier 2 if the material is described as a 'gel', 'pad', 'sheet', 'film', 'paste', or 'thermal interface'.
+          //   Illustrative Examples: Realme's "Diamond Thermal Gel", "Phase-change gel", "Organic hydrocarbon pad/sheet", "Solid-liquid transition interface", "Paraffin wax sheet".
+          //
+          // • Tier 3: High-Temp PCM (Melting Point > 45°C)    → subscore = 0.00
+          //   Physical Definition: The material is a verified Phase Change Material but its melting point is above the 45°C safety threshold. Because it remains in a solid state throughout the ergonomic evaluation window, it provides zero latent heat capacitance benefit for this model.
+          //
+          // • Tier 4: None / Standard                         → subscore = 0.00
+          //   Physical Definition: No latent heat storage material is utilized beyond standard Thermal Paste (also known as TIM — Thermal Interface Material). Standard TIM fills microscopic air gaps between the SoC (System-on-Chip) and the heat spreader to improve conduction, but remains in a single state; it does not change phase at 40°C–45°C and thus provides no latent heat capacitance. Note: Only in this case (Tier 4) set "source" and "exact_extract" to "N/A".
+          //
+          // NEUTRALITY & DIFFERENTIATION RULES:
+          // 1. VC EXCLUSIVITY: A Vapor Chamber (VC) is a heat TRANSPORT mechanism (Phase Change: Liquid/Vapor). It is already accounted for in Spreading Efficiency (s_eff). 
+          //    A PCM Buffer is a heat STORAGE mechanism (Phase Change: Solid/Liquid). Categorizing a VC as a PCM Buffer constitutes double-counting and is strictly forbidden.
+          // 2. MELTING POINT CONSTRAINT: Credits only apply if the melting phase is verified to occur between ambient (25°C) and the safety threshold (45°C). Any melting within this window successfully absorbs the latent buffer and delays the thermal throttling point. Above 45°C (Tier 3), the benefit is zero.
+          //
+          "value": "Tier 4: None / Standard",
           "source": "TBD",
           "exact_extract": "Proof pending",
           "subscore": 0.00
-          // SCORING GUIDELINE: Identify the expandability support strictly via the physical slot configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Dedicated Slot" → 10.00
-          //     Definition: Separate tray or contact specifically for a removable memory card (microSD) that does not interfere with simultaneous Dual SIM usage.
-          //   • "Tier 2: Hybrid Slot"    → 7.00
-          //     Definition: Shared slot where the user must choose between a second physical SIM card or a memory card (e.g., microSD, Nano Memory).
-          //   • "Tier 3: Proprietary"    → 5.00
-          //     Definition: Support for branded/exclusive removable storage formats (e.g., Huawei NM Card).
-          //   • "Tier 4: None"           → 0.00
-          //     Definition: No physical hardware interface for local storage expansion.
-          // 
-          // RESOLUTION OF AMBIGUITY:
-          // In cases where marketing terms or technical descriptions are unclear, prioritize the PHYSICAL TRAY INSPECTION and DATA PRIORITY RULES documented in the RESOLUTION MATRIX above to ensure deterministic categorization.
         },
-        "scores": {
-          "predicted": 0.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits expandability_support.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+        "thermal_capacitance_j_k": {
+          "value": 197.2,
+          "calculation_formula": "(1_design_and_build_quality.1_5_weight_g.value * 0.850) + (pcm_buffer.subscore * 25)"
+          // GUIDELINE: Unified system thermal capacitance (J/K). Defines the "soak capacity" or ability to buffer heat spikes. 850 J/kg-K is the standard bulk specific heat.
+        },
+        "time_constant_s": {
+          "value": 1461,
+          "calculation_formula": "resistance_total_k_w * thermal_capacitance_j_k"
+          // GUIDELINE: System time constant (seconds). Quantifies the transient lag before the system reaches steady-state equilibrium.
+        },
+        "power_admissible_w": {
+          "value": 4.82,
+          "calculation_formula": "20 / (resistance_total_k_w * (1 - exp(-1200 / time_constant_s)))"
+          // GUIDELINE: Total Admissible Thermal Power (Watts). The maximum wattage allowed for the entire system to reach exactly the safety threshold (20K rise) at the end of the 1200-second (20-minute) evaluation window. 
+        },
+
+        // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
+        "power_base_needs_w": {
+          "value": 1.25,
+          "calculation_formula": "0.4 + (0.0075 * display_surface_area_cm2)"
+          // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
+        },
+        "power_admissible_soc_w": {
+          "value": 3.57,
+          "calculation_formula": "power_admissible_w - power_base_needs_w"
+          // GUIDELINE: Net admissible wattage available exclusively for the SoC workload after accounting for baseline system heat.
+        },
+        "system_on_chip": {
+          // GUIDELINE: Peak SoC Thermal Power (Watts). Represents the maximum heat generated by the chipset during unrestricted high-performance workloads (intensive gaming/benchmarks).
+          "identifier": "Snapdragon 8 Gen 3",
+          "identifier_path": "identity.hardware_configuration.chipset.value",
+          "reference_table": "SOC_PEAK_POWER_MATRIX",
+          "power_peak_soc_w": 14.0
+          // GUIDELINE: Maps to the "Peak Power (W)" column based on the SoC identity.
+        },
+        // █ SOC_PEAK_POWER_MATRIX:
+          // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
+          // | :---------------------------------------- | :------------: | :---: | :-----: |
+          // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
+          // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
+          // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
+          // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
+          // | **Apple A19 Pro**                         | **15.0**       | 3nm   | TSMC    |
+          // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
+          // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
+          // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
+          // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
+          // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
+          // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
+          // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
+          // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
+          // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
+          // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
+          // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
+          // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
+          // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
+          // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
+          // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
+          // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
+          // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
+          // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
+          // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
+          // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
+          // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
+          // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
+          // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
+          // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
+          // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
+          // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
+          // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
+          // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
+          // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
+          // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
+          // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
+          // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
+        "power_ratio": {
+          "value": 0.255,
+          "calculation_formula": "power_admissible_soc_w / system_on_chip.power_peak_soc_w"
+          // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (system_on_chip.power_peak_soc_w) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
+        },
+        "predicted_stability_percentage": {
+          "value": 63.4,
+          "calculation_formula": "100 * (power_ratio ^ 0.333) (Clamped 0-100)"
+          // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)). Capped at 100.
+        },
+        "predicted_tdsi_score": {
+          "value": 5.03,
+          "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10."
+          // GUIDELINE: Final score mapping. Normalizes the predicted stability percentage against industry thresholds (Thermal_Stability_Min/Max).
         }
       },
-      "6_10_thermal_dissipation_stability": {
-        // SCORING GOAL: Evaluates the device's physical ability to dissipate heat and maintain consistent performance during sustained workloads. It validates the hardware's theoretical cooling capacity (Thermodynamic RC Model) against empirical gaming stability from the 3DMark Benchmark to ensure a transparent, physics-based thermal score.
 
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD A — Direct Benchmark (Primary Standard: 3DMark Wild Life Extreme)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_TDSI": {
-          "value": 59.0,
-          // GUIDELINE: The "Stability %" result from a 20-minute 3DMark Wild Life Extreme Stress Test. MANDATORY: Only extract the percentage value (e.g., 59.0) representing the ratio between the lowest and highest loops. This value must be ≤ 100.0. CRITICAL: Do NOT use the raw performance "Score" (e.g., 5230) or FPS values.
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_b_neighbor_interpolation_TDSI": {
+        // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
+        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters defined in the thermodynamic model (Method C), excluding the target device itself.
+        //         Formula: Distance = Sqrt( 0.40 * %Diff(system_on_chip.power_peak_soc_w)^2 + 0.30 * %Diff(resistance_total_k_w)^2 + 0.20 * %Diff(thermal_capacitance_j_k)^2 + 0.10 * %Diff(power_base_needs_w)^2 )
+        //         Where:
+        //         - %Diff(X) = abs(X_Target - X_Neighbor) / X_Target
+        //         - X: The exact parameter name from the thermodynamic model (Method C) defined above.
+        //         - Target: The device currently being scored (whose stability is being predicted).
+        //         - Neighbor: Any device in the database with a known benchmark score (Method A), except the Target itself.
+        //         Search space: all phones that have a known 3DMark Wild Life Extreme score (Method A), excluding the target device itself.
+        // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "apple_iphone_15_pro_max",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "apple_iphone_15_pro_max").
+            "euclidean_distance_1": 0.0450,
+            // GUIDELINE: Weighted Euclidean distance from Step 1.
+            "predicted_score_1": 4.65,
+            // GUIDELINE: The neighbor's own Method C predicted score.
+            "benchmark_score_1": 4.40
+            // GUIDELINE: The neighbor's Method A subscore.
+          },
+          {
+            // Neighbor2
+            "device_id_2": "xiaomi_14_pro",
+            "euclidean_distance_2": 0.0620,
+            "predicted_score_2": 5.10,
+            "benchmark_score_2": 4.85
+          },
+          {
+            // Neighbor3
+            "device_id_3": "google_pixel_8_pro",
+            "euclidean_distance_3": 0.0850,
+            "predicted_score_3": 4.80,
+            "benchmark_score_3": 4.15
+          }
+        ],
+        "avg_predicted_neighbors": 4.8500,
+        // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+        "avg_benchmark_neighbors": 4.4667,
+        // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+        "correction_ratio": 1.0371,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.predicted_tdsi_score.value / avg_predicted_neighbors.
+        "interpolated_score": 4.63
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+      },
+
+      "scores": {
+        "predicted": 5.03,
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_TDSI.predicted_tdsi_score.value.
+        "final": {
+          "value": 4.24,
+          // SCORING GUIDELINE: Use Method A if method_a_benchmark_TDSI is available (method_a_benchmark_TDSI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_TDSI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_TDSI.predicted_tdsi_score.value).
+          "method_used": "Benchmark (3DMark)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • Benchmark (3DMark)     → Method A (documented 3DMark Wild Life Extreme stability score)
+          //   • Neighbor Interpolation → Method B (similar device benchmarks)
+          //   • Predictor              → Method C (thermodynamic RC calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+        }
+      }
+    }
+  },
+  "7_connectivity_and_sensors": {
+    "7_1_cellular_capabilities": {
+      // SCORING GOAL: Evaluates max cellular network standards.
+      "network_technology": {
+        "value": "Tier 1: 5G mmWave + Sub-6 (Global band coverage)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: 5G mmWave + Sub-6 (Global band coverage)" → 10.00
+        //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
+        //   • "Tier 2: 5G Sub-6 (Global band coverage)"          → 8.50
+        //     Definition: Supports 5G on Sub-6GHz frequencies with extensive band coverage for global roaming.
+        //   • "Tier 3: 5G Sub-6 (Regional band coverage)"        → 7.50
+        //     Definition: Supports 5G on Sub-6GHz but with band coverage limited to specific markets.
+        //   • "Tier 4: 4G LTE-A (Cat 24+)"                       → 5.00
+        //     Definition: 4G LTE Advanced with support for high-order carrier aggregation and 4x4 MIMO.
+        //   • "Tier 5: 4G LTE"                                   → 2.50
+        //     Definition: Standard 4G Long-Term Evolution without advanced carrier aggregation.
+        //   • "Tier 6: 3G / Legacy"                              → 0.00
+        //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits network_technology.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_2_sim_capabilities": {
+      // SCORING GOAL: Evaluates subscriber identity module format support.
+      "sim_configuration": {
+        "value": "Tier 1: Dual eSIM / iSIM + Physical Slot",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00
+        //     Definition: Supports two or more active eSIM profiles/integrated SIM alongside a physical Nano-SIM slot.
+        //   • "Tier 2: eSIM + Physical Slot"              → 8.00
+        //     Definition: Supports one active eSIM profile alongside a physical Nano-SIM slot.
+        //   • "Tier 3: Dual Physical Nano-SIM Only"       → 6.00
+        //     Definition: Two physical Nano-SIM slots; no electronic/programmable SIM support.
+        //   • "Tier 4: Single Physical Nano-SIM Only"     → 4.00
+        //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
+        //   • "Tier 5: None"                              → 0.00
+        //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
+        // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits sim_configuration.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_3_wifi_standard": {
+      // SCORING GOAL: Evaluates Wi-Fi network standards.
+      "standard": {
+        "value": "Tier 1: Wi-Fi 7",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Wi-Fi 7"   → 10.00
+        //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
+        //   • "Tier 2: Wi-Fi 6E"  → 8.00
+        //     Definition: 802.11ax standard adding support for the 6GHz spectrum, reducing congestion.
+        //   • "Tier 3: Wi-Fi 6"   → 6.00
+        //     Definition: 802.11ax standard on 2.4/5GHz. Improved efficiency and performance in dense environments.
+        //   • "Tier 4: Wi-Fi 5"   → 3.00
+        //     Definition: 802.11ac standard.
+        //   • "Tier 5: Legacy"    → 0.00
+        //     Definition: 802.11n (Wi-Fi 4) or older technology.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits standard.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_4_bluetooth_and_audio_codecs": {
+      // SCORING GOAL: Evaluates Bluetooth version and high-fidelity audio codec support.
+      "bluetooth_version": {
+        "value": "Tier 2: 5.3",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 4.50
+        // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: 5.4"      → 5.00
+        //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
+        //   • "Tier 2: 5.3"      → 4.50
+        //     Definition: Improved encryption, connection reliability, and efficiency.
+        //   • "Tier 3: 5.2"      → 3.50
+        //     Definition: Introduces LE Audio and Enhanced Attribute Protocol (EATT).
+        //   • "Tier 4: 5.1 / 5.0" → 2.50
+        //     Definition: Basic Bluetooth 5 standards.
+        //   • "Tier 5: 4.2"      → 1.00
+        //     Definition: Legacy Bluetooth 4 standards.
+        //   • "Tier 6: < 4.2"    → 0.00
+        //     Definition: Obsolete Bluetooth standards.
+      },
+      "highest_codec_supported": {
+        "value": "Tier 2: High-Res",
+        "value_details": {
+          "Tier 1: Lossless": [],
+          "Tier 2: High-Res": [
+            { "name": "LDAC", "source": "TBD", "exact_extract": "Proof pending" },
+            { "name": "aptX HD", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: Standard": [
+            { "name": "AAC", "source": "TBD", "exact_extract": "Proof pending" },
+            { "name": "SBC", "source": "TBD", "exact_extract": "Proof pending" }
+          ]
+        },
+        "subscore": 4.00
+        // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Lossless"   → 5.00
+        //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
+        //   • "Tier 2: High-Res"   → 4.00
+        //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
+        //   • "Tier 3: Standard"   → 1.50
+        //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 8.50,
+        // SCORING GUIDELINE: scores.predicted = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_5_biometrics": {
+      // SCORING GOAL: Evaluates secure unlock mechanisms.
+      "best_technology": {
+        "value": "Tier 2: Ultrasonic FP",
+        "value_details": {
+          "Tier 1: 3D Face / Sonic Gen 2": [],
+          "Tier 2: Ultrasonic FP": [
+            { "name": "Qualcomm 3D Sonic Gen 2", "source": "TBD", "exact_extract": "Proof pending" }
+          ],
+          "Tier 3: Optical FP / 2D Face": [],
+          "Tier 4: Capacitive FP": [],
+          "Tier 5: None / Pin Only": []
+        },
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: 3D Face / Sonic Gen 2"  → 10.00
+        //     Definition: Secure 3D facial recognition (e.g., Face ID) or 2nd-gen Ultrasonic fingerprint sensors (large area, fast).
+        //   • "Tier 2: Ultrasonic FP"          → 8.00
+        //     Definition: Standard ultrasonic fingerprint sensors (3D mapping of the finger via sound waves).
+        //   • "Tier 3: Optical FP / 2D Face"  → 6.00
+        //     Definition: Standard optical fingerprint sensors (2D photograph of the finger) or basic 2D webcam-style face unlock (non-secure for payments).
+        //   • "Tier 4: Capacitive FP"          → 4.00
+        //     Definition: Physical button-integrated fingerprint sensors (side-mounted or rear-mounted).
+        //   • "Tier 5: None / Pin Only"        → 0.00
+        //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific biometric technologies found in specs (e.g., FaceID, specific sensor models). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+      },
+      "scores": {
+        "predicted": 8.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits best_technology.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_6_sensors": {
+      // SCORING GOAL: Evaluates navigation and accessory sensors.
+      "core_sensor_suite": {
+        "accelerometer": {
+          "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 4.24
-          // SCORING GUIDELINE: subscore = 10 * (log(value) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10.
+          "subscore": 1.00
+          // SCORING GUIDELINE: If true, 1.00; false, 0.00.
         },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Thermodynamic RC Prediction Model (Tertiary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_prediction_model_TDSI": {
-          // SCORING GOAL: Predicts the Thermal Dissipation Stability Index (TDSI) using a multi-physics model.
-          // The model evaluates geometric bounds, three-path thermal resistance (resistance_total_k_w), and the net System-on-Chip (SoC) power budget.
-          //
-          // --- [1] GEOMETRIC BOUNDARY INPUTS ---
-          "height_mm": {
-            "value": 162.3,
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-            // GUIDELINE: Overall device height in mm. Critical for radiator surface area calculation.
+        "gyroscope": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 1.50
+          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+        },
+        "magnetometer": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 1.00
+          // SCORING GUIDELINE: If true, 1.00; false, 0.00.
+        },
+        "proximity_sensor": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.75
+          // SCORING GUIDELINE: If true, 0.75; false, 0.00.
+        },
+        "ambient_light_sensor": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.75
+          // SCORING GUIDELINE: If true, 0.75; false, 0.00.
+        }
+      },
+      "advanced_sensor_capabilities": {
+        "barometer": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 1.50
+          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+        },
+        "lidar_tof_3d_depth_sensor": {
+          "value": false,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        },
+        "color_spectrum_flicker_sensor": {
+          "value": false,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.00
+          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+        }
+      },
+      "scores": {
+        "predicted": 6.50,
+        // SCORING GUIDELINE: scores.predicted is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 6.50,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_7_nfc_and_uwb": {
+      // SCORING GOAL: Evaluates short-range wireless connectivity technologies.
+      "configuration": {
+        "value": "Tier 1: NFC + UWB",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: NFC + UWB" → 10.00
+        //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
+        //   • "Tier 2: NFC Only"   → 5.00
+        //     Definition: Near Field Communication support only; no directional UWB tracking.
+        //   • "Tier 3: None"       → 0.00
+        //     Definition: No short-range wireless connectivity.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits configuration.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_8_connectivity_and_cdc_index": {
+      // SCORING GOAL: Evaluates seamless ecosystem connectivity features.
+      "fast_file_transfer": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        // Definition: High-speed peer-to-peer file sharing protocol over Wi-Fi/Bluetooth (e.g., Quick Share, AirDrop).
+      },
+      "cross_device_clipboard": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        // Definition: Unified clipboard allowing copy-paste across different devices logged into the same account.
+      },
+      "task_handoff": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        // Definition: Seamlessly resuming an active task (e.g., email draft, webpage) on a different device.
+      },
+      "communication_integration": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        // Definition: Ability to pick up phone calls or reply to SMS from other connected devices (tablet/laptop).
+      },
+      "camera_virtualization": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
+        // Definition: Using the smartphone's camera as a high-quality webcam for a connected tablet or laptop.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted is sum of all subscores above (Max 10.0).
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "7_9_usb_port_speed": {
+      // SCORING GOAL: Evaluates wired transfer speed.
+      "version_speed": {
+        "value": "Tier 2: USB 3.2 Gen 2 (10Gbps)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 9.00
+        // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: USB 3.2 Gen 2x2 (20Gbps)" → 10.00
+        //     Definition: SuperSpeed USB 20Gbps.
+        //   • "Tier 2: USB 3.2 Gen 2 (10Gbps)"   → 9.00
+        //     Definition: SuperSpeed USB 10Gbps.
+        //   • "Tier 3: USB 3.2 Gen 1 (5Gbps)"    → 7.50
+        //     Definition: SuperSpeed USB 5Gbps (formerly USB 3.0/3.1 Gen 1).
+        //   • "Tier 4: USB 2.0 (480Mbps)"        → 2.00
+        //     Definition: High Speed USB 2.0.
+        //   • "Tier 5: Proprietary / Legacy"     → 0.00
+        //     Definition: Non-standard or obsolete physical/logical interface.
+      },
+      "scores": {
+        "predicted": 9.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits version_speed.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 9.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    }
+  },
+  "8_battery_and_charging": {
+    "8_1_battery_endurance_score": {
+      // SCORING GOAL: Evaluates smartphone battery life by prioritizing real-world performance data over theoretical specifications via a Benchmark-First Approach with Predictive Interpolation.
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD A — Benchmark Validation (Primary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_a_benchmark_Battery": {
+        "gsmarena_active_use_score_v2": {
+          "value": 16.75,
+          "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667p3.php",
+          "exact_extract": "Active use score: 16:45h",
+          "subscore": 9.45
+          // SCORING GUIDELINE: source is GSMArena.
+          // • WHERE TO FIND IT: GSMarena.com review (Battery page).
+          // • EXTRACTION RULE: Use the "Active use score" (e.g., "16:45h"). 
+          // • CALCULATION: Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the normalization formula.
+          // SCORING GUIDELINE: subscore = 10 * (value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10.
+          // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        },
+        "phonearena_battery_life_estimate": {
+          "value": 15.50,
+          "source": "https://www.phonearena.com/phones/Samsung-Galaxy-S24-Ultra_id12151/benchmarks",
+          "exact_extract": "Combined battery life: 15h 30min",
+          "subscore": 9.20
+          // SCORING GUIDELINE: source is PhoneArena.
+          // • WHERE TO FIND IT: PhoneArena.com device specs page, under "Ratings and Benchmarks".
+          // • EXTRACTION RULE: Use the "Combined battery life" estimate.
+          // SCORING GUIDELINE: subscore = 10 * (value - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min), clamped 0-10.
+          // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+        }
+      },
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_c_prediction_model_Battery": {
+        "layer_a_energy_score": {
+          "energy_capacity_wh": {
+            "value": 19.25,
+            "value_path": "theoretical_calculation",
+            "subscore": 6.62
+            // GUIDELINE: Energy (Wh) = (mAh * V) / 1000. 
+            // VOLTAGE LOGIC: Use identity.hardware_configuration.battery_nominal_voltage_v. If N/A, fallback to 3.85V (Single-cell) if wired_charging_watts < 120W, otherwise 7.7V (Dual-cell).
+            // SCORING GUIDELINE: subscore = 10 * (Wh - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min).
           },
-          "width_mm": {
-            "value": 79.0,
-            "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
-            // GUIDELINE: Overall device width in mm. Critical for radiator surface area calculation.
-          },
-          "aspect_ratio": {
-            "value": 2.1667, // Numerical value of the screen aspect ratio (Height / Width).
-            "value_details": "19.5 / 9",
-            "source": "TBD",
-            "exact_extract": "Proof pending"
-            // GUIDELINE: Standard screen aspect ratio R (Height / Width) from specs (20:9, 19.5:9, etc.).
-          },
-          "footprint_area_m2": {
-            "value": 0.01282,
-            "calculation_formula": "(height_mm * width_mm) / 1000000"
-            // GUIDELINE: Total flat surface area (in m^2) of the device's footprint (Height * Width). Represents the theoretical maximum radiator area for BOTH the front and back panels.
-          },
-          "frame_radiator_area_m2": {
-            "value": 0.00353,
-            "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_thickness_mm.value * 0.85 / 1000000"
-            // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
-          },
-          "display_surface_area_cm2": {
-            "value": 113.5,
-            "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
-            // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat.
-          },
-
-          // --- [2] THERMAL RESISTANCE PARAMETERS ---
-          "cooling_hardware": {
-            // Inventory of passive and active cooling modules. Phase Change Materials (PCM) are excluded from this block as they function via heat absorption and are accounted for separately in the pcm_buffer field.
-            "vapor_chamber": {
-              // Definition: A two-dimensional heat pipe that uses liquid-to-vapor phase change within a vacuum-sealed flat chamber to rapidly spread heat away from the SoC (System on Chip) across a larger surface area.
-              // Marketing Names: Vapor Chamber, VC Cooling, Stainless Steel VC, Copper Vapor Chamber, Dual Vapor Chamber, Mega VC, IceLoop, Ice-cool, Super VC, VC Liquid Cooling, 3D Vapor Chamber.
-              "coverage_area_mm2": {
-                "value": 4050, 
-                "source": "TBD",
-                "exact_extract": "Proof pending", 
-                // GUIDELINE: total surface area (footprint) of the Vapor Chamber in mm^2, if no Vapor Chamber is present set "value" to 0 and "source" and "exact_extract" to N/A.               
-              },
-              "phi": {
-                "value": 0.3159,
-                "calculation_formula": "phi = coverage_area_mm2 / (height_mm * width_mm)"
-                // GUIDELINE: Thermal Coverage Factor (ratio of Vapor Chamber footprint to device footprint).
-              },
-              // NOTE: Regarding the Technological Spreading Constant for Vapor Chambers (alpha), a constant value is directly used in the formula calculating the effective spreading efficiency (s_eff).
-            },
-            "graphite_or_graphene_layer": {
-              // Definition: High-conductivity carbon-based sheets (Natural/Synthetic Graphite or Graphene) used to spread heat laterally. Graphite is the industry standard, while Graphene offers higher thermal conductivity in thinner layers.
-              "identifier": "Multi-layer Graphite",
-              "source": "TBD",
-              "exact_extract": "Proof pending",
-              "alpha": 0.8,
-              "phi": 0.50,               
-              // GUIDELINE: Maps the "Cooling Technology Class" to "alpha" and "phi" based on the provided table. Search for the graphite or graphene cooling technology that applies. Use the following EXACT strings present in the first column (from the lookup table below) for "identifier" with related "alpha" and "phi". Use "None (SoC Only)" if no dedicated sheets are present.
-              // | Cooling Technology Class | alpha | phi  |
-              // | :------------------------| :---: | :--: |
-              // | None (SoC Only)          |  0.0  | 0.00 |
-              // | Standard Graphite Sheet  |  0.6  | 0.40 |
-              // | Multi-layer Graphite     |  0.8  | 0.50 |
-              // | Synthetic Graphene Film  |  1.2  | 0.50 |
-              //
-            },
-            "fan": {
-              // GUIDELINE: An integrated mechanical fan can be used to force airflow across internal heat sinks or through the device chassis to enhance convective heat dissipation.
-              "max_speed_rpm": {
-                "value": 0, 
-                "source": "TBD",
-                "exact_extract": "Proof pending"
-                // GUIDELINE: Fetch the maximum rated rotational speed of the internal fan in RPM. If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
-              },
-              "diameter_mm": {
-                "value": 0.0,
-                "source": "TBD",
-                "exact_extract": "Proof pending"
-                // GUIDELINE: Fetch the internal fan's diameter in millimeters (mm). If no internal fan is present, set "value" to 0 and "source" and "exact_extract" to N/A. If unknown but a fan is present, set "value" to "Not found" but you HAVE to provide a valid "source" and "exact_extract" that prove the fan exists.
-              },
-              "h_fan": {
-                "value": 0,
-                "calculation_formula": "10 + 100 * (max_speed_rpm * diameter_mm / 240000)^0.8"
-                // GUIDELINE: Convective intensity within the cooling duct. If max_speed_rpm or diameter_mm are missing (set to "Not found") for a confirmed fan, use a default h_fan = 80 which is a slightly conservative value vs baseline fan (110). value = 0 if no fan is present.
-              },
-            },
-          },
-          "back_panel": { 
-            "material": {
-              "identifier": "Armor-Class Glass",
-              "identifier_path": "1_design_and_build_quality.1_1_materials.back_material.value",
-              "s_0": 0.05,
-              "s_max": 0.95
-              // GUIDELINE: Selects the material class based on the back panel identity to determine s_0 and s_max.
-              // | Materials (Section 1.1)      | Material Class                | s_0  | s_max |
-              // | :--------------------------- | :-----------------------------| :--: | :---: |
-              // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
-              // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
-              // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 0.60 | 1.00  |
-              // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 0.60 | 1.00  |
-              // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.25 | 1.00  |
-              // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Armor-Class Glass**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Shield-Class Glass**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Reinforced Glass**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Standard Glass**           | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Flexible Membrane**        | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Composite Sheet**          | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              // | **Not Disclosed**            | Class 3 (Insulating Material) | 0.05 | 0.95  |
-              //
-            },
-            "s_eff": {
-              // GUIDELINE: s_eff is the effective spreading efficiency of the back panel.
-              "value": 0.6929,
-              "calculation_formula": "material.s_0 + (material.s_max - material.s_0) * [ 1 - exp(-2.7 * vapor_chamber.phi - graphite_or_graphene_layer.alpha * graphite_or_graphene_layer.phi)]"
-              // GUIDELINE: Continuous Saturation Model of thermal diffusion. Quantifies how effectively the internal spreaders (Vapor Chamber/Graphite/Graphene) utilize the back panel area for convection. The constant 2.7 represents the 'alpha' (spreading intensity) for Vapor Chambers, which is significantly higher than solid graphite due to the near-isothermal behavior of phase-change cycles.
-            },    
-          },
-          "resistance_back_k_w": {
-            "value": 11.26,
-            "calculation_formula": "1 / [ footprint_area_m2 * ( fan.h_fan * f_fan + 10.0 * (back_panel.s_eff - f_fan) ) ]"
-            // GUIDELINE: Thermal resistance of the back panel path. Uses an Area Model to sum dissipation from the forced duct (fan.h_fan over f_fan) and the remaining passive spread surface (h = 10.0 over back_panel.s_eff - f_fan). 
-            // f_fan = 0.1 (meaning 10% of the back surface area) if fan.max_speed_rpm > 0, else f_fan = 0.
-          },
-          "resistance_front_k_w": {
-            "value": 31.20,
-            "calculation_formula": "1 / (10.0 * footprint_area_m2 * 0.25)"
-            // GUIDELINE: 0.25 (s_eff_front) is constant for front-path due to the PCB (Printed Circuit Board) Thermal Wall.
-          },
-          "frame_material": {
-            "identifier": "Titanium Alloy",
-            "identifier_path": "1_design_and_build_quality.1_1_materials.frame_material.value",
-            "s_eff": 0.40
-            // GUIDELINE: Defines lateral perimeter spreading based on the structural frame identity.
-            // | Materials (Section 1.1)      | Material Class                | s_eff |
-            // | :--------------------------- | :---------------------------- | :---: |
-            // | **7000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
-            // | **6000 Series Aluminum**     | Class 1 (Conductive Metal)    | 1.00  |
-            // | **Zinc Alloy (Zamak 3)**     | Class 1 (Conductive Metal)    | 1.00  |
-            // | **Die-Cast Aluminum (ADC12)**| Class 1 (Conductive Metal)    | 1.00  |
-            // | **Magnesium Alloy**          | Class 1 (Conductive Metal)    | 1.00  |
-            // | **Stainless Steel**          | Class 2 (Moderate Alloy)      | 0.40  |
-            // | **Amorphous Alloy**          | Class 2 (Moderate Alloy)      | 0.40  |
-            // | **Titanium Alloy**           | Class 2 (Moderate Alloy)      | 0.40  |
-            // | **Specialized Ceramic**      | Class 3 (Insulating Material) | 0.05  |
-            // | **Reinforced Polymer**       | Class 3 (Insulating Material) | 0.05  |
-            // | **High-Performance Polymer** | Class 3 (Insulating Material) | 0.05  |
-            // | **Standard Polymer**         | Class 3 (Insulating Material) | 0.05  |
-            // | **Material Not Disclosed**   | Class 3 (Insulating Material) | 0.05  |
-            //
-          },
-          "resistance_frame_k_w": {
-            "value": 70.82,
-            "calculation_formula": "1 / (10.0 * frame_radiator_area_m2 * frame_material.s_eff)"
-            // GUIDELINE: Thermal resistance of the perimeter frame path (K/W).
-          },
-          "resistance_total_k_w": {
-            "value": 7.41,
-            "calculation_formula": "(1/resistance_back_k_w + 1/resistance_front_k_w + 1/resistance_frame_k_w)^-1"
-            // GUIDELINE: Unified system thermal resistance (Parallel sum of Back, Front, and Mid-Frame paths). Defines the chassis's global ability to expel thermal wattage to the environment.
-          },
-
-          // --- [3] ENERGY BALANCE & TIME CONSTANT ---
-          "pcm_buffer": {
-            // SCORING GOAL: Evaluates the latent heat storage capacity of the device to buffer high-power transients.
-            // Phase Change Materials (PCM) (typically organic hydrocarbons/paraffin) absorb thermal energy during their solid-liquid phase transition, effectively increasing the system's thermal capacitance (C).
-            //
-            // SCORING GUIDELINE: Identify the PCM implementation strictly via the structural form factor (3D Matrix vs. 2D Interface). 
-            // Match the device's verified architecture to the corresponding Tier below. Use the following exact Tier Names for "value" and the related numerical factor for "subscore":
-            //
-            // • Tier 1: 3D Structural PCM Matrix                → subscore = 0.75
-            //   Physical Definition: The PCM (paraffin) is integrated into a 3D conductive lattice (e.g., metal honeycomb, graphene foam, or conductive pillar). This architecture allows for rapid volumetric heat absorption.
-            //   AI Detection Logic: Classify as Tier 1 ONLY if descriptions imply a 'structure', 'matrix', '3D foam', 'encapsulation', or 'volumetric pillar'.
-            //   Illustrative Examples: Xiaomi's "Honeycomb PCM", "PCM Matrix", "Graphene-PCM Foam", "Aerospace-grade PCM matrix", "Rapid-cooling Conductor (Pillar)".
-            //
-            // • Tier 2: 2D Interfacial PCM Layer                → subscore = 0.50
-            //   Physical Definition: The PCM is applied as a thin interfacial layer (gel, sheet, or film) to improve contact between the SoC (System-on-Chip) and the heat spreader. It lacks a 3D structural matrix.
-            //   AI Detection Logic: Classify as Tier 2 if the material is described as a 'gel', 'pad', 'sheet', 'film', 'paste', or 'thermal interface'.
-            //   Illustrative Examples: Realme's "Diamond Thermal Gel", "Phase-change gel", "Organic hydrocarbon pad/sheet", "Solid-liquid transition interface", "Paraffin wax sheet".
-            //
-            // • Tier 3: High-Temp PCM (Melting Point > 45°C)    → subscore = 0.00
-            //   Physical Definition: The material is a verified Phase Change Material but its melting point is above the 45°C safety threshold. Because it remains in a solid state throughout the ergonomic evaluation window, it provides zero latent heat capacitance benefit for this model.
-            //
-            // • Tier 4: None / Standard                         → subscore = 0.00
-            //   Physical Definition: No latent heat storage material is utilized beyond standard Thermal Paste (also known as TIM — Thermal Interface Material). Standard TIM fills microscopic air gaps between the SoC (System-on-Chip) and the heat spreader to improve conduction, but remains in a single state; it does not change phase at 40°C–45°C and thus provides no latent heat capacitance. Note: Only in this case (Tier 4) set "source" and "exact_extract" to "N/A".
-            //
-            // NEUTRALITY & DIFFERENTIATION RULES:
-            // 1. VC EXCLUSIVITY: A Vapor Chamber (VC) is a heat TRANSPORT mechanism (Phase Change: Liquid/Vapor). It is already accounted for in Spreading Efficiency (s_eff). 
-            //    A PCM Buffer is a heat STORAGE mechanism (Phase Change: Solid/Liquid). Categorizing a VC as a PCM Buffer constitutes double-counting and is strictly forbidden.
-            // 2. MELTING POINT CONSTRAINT: Credits only apply if the melting phase is verified to occur between ambient (25°C) and the safety threshold (45°C). Any melting within this window successfully absorbs the latent buffer and delays the thermal throttling point. Above 45°C (Tier 3), the benefit is zero.
-            //
-            "value": "Tier 4: None / Standard",
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 0.00
-          },
-          "thermal_capacitance_j_k": {
-            "value": 197.2,
-            "calculation_formula": "(1_design_and_build_quality.1_5_weight_g.value * 0.850) + (pcm_buffer.subscore * 25)"
-            // GUIDELINE: Unified system thermal capacitance (J/K). Defines the "soak capacity" or ability to buffer heat spikes. 850 J/kg-K is the standard bulk specific heat.
-          },
-          "time_constant_s": {
-            "value": 1461,
-            "calculation_formula": "resistance_total_k_w * thermal_capacitance_j_k"
-            // GUIDELINE: System time constant (seconds). Quantifies the transient lag before the system reaches steady-state equilibrium.
-          },
-          "power_admissible_w": {
-            "value": 4.82,
-            "calculation_formula": "20 / (resistance_total_k_w * (1 - exp(-1200 / time_constant_s)))"
-            // GUIDELINE: Total Admissible Thermal Power (Watts). The maximum wattage allowed for the entire system to reach exactly the safety threshold (20K rise) at the end of the 1200-second (20-minute) evaluation window. 
-          },
-
-          // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
-          "power_base_needs_w": {
-            "value": 1.25,
-            "calculation_formula": "0.4 + (0.0075 * display_surface_area_cm2)"
-            // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
-          },
-          "power_admissible_soc_w": {
-            "value": 3.57,
-            "calculation_formula": "power_admissible_w - power_base_needs_w"
-            // GUIDELINE: Net admissible wattage available exclusively for the SoC workload after accounting for baseline system heat.
-          },
-          "system_on_chip": {
-            // GUIDELINE: Peak SoC Thermal Power (Watts). Represents the maximum heat generated by the chipset during unrestricted high-performance workloads (intensive gaming/benchmarks).
+          "predicted_score": 6.62
+          // SCORING GUIDELINE: Directly inherits energy_capacity_wh.subscore.
+        },
+        "layer_b_hardware_efficiency_score": {
+          // SCORING GUIDELINE (Section 8.1 Layer B): HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal).
+          "soc_efficiency_mapping": {
             "identifier": "Snapdragon 8 Gen 3",
             "identifier_path": "identity.hardware_configuration.chipset.value",
             "reference_table": "SOC_PEAK_POWER_MATRIX",
-            "power_peak_soc_w": 14.0
-            // GUIDELINE: Maps to the "Peak Power (W)" column based on the SoC identity.
+            "process_node_score": 9.0, // Mapped from Section 6.10 Part C
+            "cpu_efficiency_score": 9.2, // AES calculated from Section 6.1.0
+            "gpu_efficiency_score": 8.8, // Efficiency score from Section 6.3.0
+            "soc_efficiency_index": 9.02,
+            "weight": 0.40
+            // GUIDELINE: soc_efficiency_index = (0.50 * node) + (0.30 * cpu) + (0.20 * gpu).
           },
-          // █ SOC_PEAK_POWER_MATRIX:
-            // | SoC Model                                 | Peak Power (W) | Node  | Foundry |
-            // | :---------------------------------------- | :------------: | :---: | :-----: |
-            // | **Snapdragon 8 Elite**                    | **19.5**       | 3nm   | TSMC    |
-            // | **Snapdragon 8 Gen 5 (Est.)**             | **19.0**       | 2nm   | TSMC    |
-            // | **Snapdragon 8 Gen 1**                    | **16.5**       | 4nm   | Samsung |
-            // | **Dimensity 9400**                        | **15.5**       | 3nm   | TSMC    |
-            // | **Apple A19 Pro**                         | **15.0**       | 3nm   | TSMC    |
-            // | **Apple A18 Pro**                         | **14.5**       | 3nm   | TSMC    |
-            // | **Snapdragon 8 Gen 3**                    | **14.0**       | 4nm   | TSMC    |
-            // | **Exynos 2400**                           | **12.5**       | 4nm   | Samsung |
-            // | **Dimensity 9300**                        | **12.0**       | 4nm   | TSMC    |
-            // | **Apple A17 Pro**                         | **11.5**       | 3nm   | TSMC    |
-            // | **Kirin 9010**                            | **11.0**       | 7nm   | SMIC    |
-            // | **Snapdragon 888**                        | **10.5**       | 5nm   | Samsung |
-            // | **Kirin 9000S**                           | **10.5**       | 7nm   | SMIC    |
-            // | **Exynos 2200**                           | **10.0**       | 4nm   | Samsung |
-            // | **Google Tensor G3**                      | **9.5**        | 4nm   | Samsung |
-            // | **Snapdragon 8 Gen 2**                    | **9.0**        | 4nm   | TSMC    |
-            // | **Kirin 9000**                            | **9.0**        | 5nm   | TSMC    |
-            // | **Apple A16 Bionic**                      | **8.5**        | 4nm   | TSMC    |
-            // | **Snapdragon 8+ Gen 1**                   | **8.0**        | 4nm   | TSMC    |
-            // | **Apple A15 Bionic**                      | **7.5**        | 5nm   | TSMC    |
-            // | **Snapdragon 7+ Gen 2**                   | **7.0**        | 4nm   | TSMC    |
-            // | **Dimensity 8100**                        | **6.5**        | 5nm   | TSMC    |
-            // | **Snapdragon 865**                        | **6.2**        | 7nm   | TSMC    |
-            // | **Apple A14 Bionic**                      | **5.8**        | 5nm   | TSMC    |
-            // | **Exynos 990**                            | **5.5**        | 7nm   | Samsung |
-            // | **Snapdragon 855**                        | **5.2**        | 7nm   | TSMC    |
-            // | **Apple A13 Bionic**                      | **4.8**        | 7nm   | TSMC    |
-            // | **Snapdragon 845**                        | **4.5**        | 10nm  | Samsung |
-            // | **Apple A12 Bionic**                      | **4.2**        | 7nm   | TSMC    |
-            // | **Snapdragon 835**                        | **4.0**        | 10nm  | Samsung |
-            // | **Apple A11 Bionic**                      | **4.0**        | 10nm  | TSMC    |
-            // | **Apple A10 Fusion**                      | **3.8**        | 16nm  | TSMC    |
-            // | **Helio G99**                             | **3.2**        | 6nm   | TSMC    |
-            // | **Snapdragon 820**                        | **3.0**        | 14nm  | Samsung |
-            // | **Dimensity 6020**                        | **2.8**        | 7nm   | TSMC    |
-            // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
-            // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
+          "display_efficiency_mapping": {
+            "identifier": "LTPO OLED",
+            "identifier_path": "2_1_panel_architecture.panel_type.value",
+            "reference_table": "2_1_panel_technology_scoring_table",
+            "panel_tech_score": 10.0,
+            "refresh_efficiency_score": 9.5,
+            "resolution_efficiency_score": 8.5,
+            "display_efficiency_index": 9.375,
+            "weight": 0.40
+            // GUIDELINE: display_efficiency_index = (0.35 * panel) + (0.35 * refresh) + (0.30 * resolution).
           },
-          "power_ratio": {
-            "value": 0.255,
-            "calculation_formula": "power_admissible_soc_w / system_on_chip.power_peak_soc_w"
-            // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (system_on_chip.power_peak_soc_w) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
+          "connectivity_efficiency_mapping": {
+            "identifier": "5G Full / WiFi 7",
+            "cellular_score": 1.0,
+            "wifi_score": 0.0,
+            "connectivity_efficiency_index": 0.70,
+            "weight": 0.10
+            // GUIDELINE: connectivity_efficiency_index = (0.70 * cellular) + (0.30 * wifi).
           },
-          "predicted_stability_percentage": {
-            "value": 63.4,
-            "calculation_formula": "100 * (power_ratio ^ 0.333) (Clamped 0-100)"
-            // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)). Capped at 100.
+          "thermal_efficiency_mapping": {
+            "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value",
+            "thermal_efficiency_index": 7.63,
+            "weight": 0.10
+            // GUIDELINE: Directly inherits TDSI predicted score.
           },
-          "predicted_tdsi_score": {
-            "value": 5.03,
-            "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10."
-            // GUIDELINE: Final score mapping. Normalizes the predicted stability percentage against industry thresholds (Thermal_Stability_Min/Max).
-          }
+          "predicted_score": 8.19
+          // SCORING GUIDELINE: HEI = Sum(component_index * weight).
         },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD B — Nearest Neighbor Interpolation (Secondary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_TDSI": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
-          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters defined in the thermodynamic model (Method C), excluding the target device itself.
-          //         Formula: Distance = Sqrt( 0.40 * %Diff(system_on_chip.power_peak_soc_w)^2 + 0.30 * %Diff(resistance_total_k_w)^2 + 0.20 * %Diff(thermal_capacitance_j_k)^2 + 0.10 * %Diff(power_base_needs_w)^2 )
-          //         Where:
-          //         - %Diff(X) = abs(X_Target - X_Neighbor) / X_Target
-          //         - X: The exact parameter name from the thermodynamic model (Method C) defined above.
-          //         - Target: The device currently being scored (whose stability is being predicted).
-          //         - Neighbor: Any device in the database with a known benchmark score (Method A), except the Target itself.
-          //         Search space: all phones that have a known 3DMark Wild Life Extreme score (Method A), excluding the target device itself.
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
-          "neighbors": [
-            {
-              // Neighbor1
-              "device_id_1": "apple_iphone_15_pro_max",
-              // GUIDELINE: The identity.id of the neighbor device (e.g., "apple_iphone_15_pro_max").
-              "euclidean_distance_1": 0.0450,
-              // GUIDELINE: Weighted Euclidean distance from Step 1.
-              "predicted_score_1": 4.65,
-              // GUIDELINE: The neighbor's own Method C predicted score.
-              "benchmark_score_1": 4.40
-              // GUIDELINE: The neighbor's Method A subscore.
-            },
-            {
-              // Neighbor2
-              "device_id_2": "xiaomi_14_pro",
-              "euclidean_distance_2": 0.0620,
-              "predicted_score_2": 5.10,
-              "benchmark_score_2": 4.85
-            },
-            {
-              // Neighbor3
-              "device_id_3": "google_pixel_8_pro",
-              "euclidean_distance_3": 0.0850,
-              "predicted_score_3": 4.80,
-              "benchmark_score_3": 4.15
-            }
-          ],
-          "avg_predicted_neighbors": 4.8500,
-          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-          "avg_benchmark_neighbors": 4.4667,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 1.0371,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.predicted_tdsi_score.value / avg_predicted_neighbors.
-          "interpolated_score": 4.63
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+        "layer_c_software_optimization_score": {
+          "value": 9.00
+          // SCORING GUIDELINE: OS level power management architecture.
         },
-
+        "predicted_score": 7.65,
+        // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C (Weights: A=0.45, B=0.35, C=0.20).
         "scores": {
-          "predicted": 5.03,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_TDSI.predicted_tdsi_score.value.
-          "final": {
-            "value": 4.24,
-            // SCORING GUIDELINE: Use Method A if method_a_benchmark_TDSI is available (method_a_benchmark_TDSI.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_TDSI.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_TDSI.predicted_tdsi_score.value).
-            "method_used": "Benchmark (3DMark)",
-            // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • Benchmark (3DMark)     → Method A (documented 3DMark Wild Life Extreme stability score)
-            //   • Neighbor Interpolation → Method B (similar device benchmarks)
-            //   • Predictor              → Method C (thermodynamic RC calculation)
-            "booster": "No",
-            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-            "confidence": "N/A"
-            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
+          "subscore_LayerA": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_a_energy_score.predicted_score" },
+          "subscore_LayerB": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_b_hardware_efficiency_score.predicted_score" },
+          "subscore_LayerC": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_c_software_optimization_score.value" }
+        }
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "method_b_neighbor_interpolation_Battery": {
+        // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
+        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
+        //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
+        //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_Battery.scores`.
+        // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "xiaomi_14_ultra",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
+            "euclidean_distance_1": 0.0500,
+            // GUIDELINE: Weighted Euclidean distance from Step 1.
+            "predicted_score_1": 8.40,
+            // GUIDELINE: The neighbor's own Method C predicted score.
+            "benchmark_score_1": 9.10
+            // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
+          },
+          {
+            // Neighbor2
+            "device_id_2": "oneplus_12",
+            "euclidean_distance_2": 0.0800,
+            "predicted_score_2": 8.45,
+            "benchmark_score_2": 9.40
+          },
+          {
+            // Neighbor3
+            "device_id_3": "asus_rog_phone_8_pro",
+            "euclidean_distance_3": 0.1000,
+            "predicted_score_3": 8.35,
+            "benchmark_score_3": 9.20
           }
+        ],
+        "avg_predicted_neighbors": 8.4000,
+        "avg_benchmark_neighbors": 9.2333,
+        // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
+        "correction_ratio": 0.9107,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score / avg_predicted_neighbors.
+        "interpolated_score": 8.41
+        // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
+      },
+
+      "scores": {
+        "predicted": 7.65,
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.
+        "final": {
+          "value": 9.3250,
+          // SCORING GUIDELINE (Section 8.1): Use Method A if method_a_benchmark_Battery is available (the average of GSMArena + PhoneArena subscores becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_Battery.predicted_score).
+          "method_used": "Benchmark (GSMArena + PhoneArena)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
+          //   • Benchmark (GSMArena + PhoneArena) → Method A (documented GSMArena/PhoneArena scores)
+          //   • Neighbor Interpolation            → Method B (similar device benchmarks)
+          //   • Predictor                         → Method C (weighted spec calculation)
+          "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
+          "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
         }
       }
     },
-    "7_connectivity_and_sensors": {
-      "7_1_cellular_capabilities": {
-        // SCORING GOAL: Evaluates max cellular network standards.
-        "network_technology": {
-          "value": "Tier 1: 5G mmWave + Sub-6 (Global band coverage)",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: 5G mmWave + Sub-6 (Global band coverage)" → 10.00
-          //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
-          //   • "Tier 2: 5G Sub-6 (Global band coverage)"          → 8.50
-          //     Definition: Supports 5G on Sub-6GHz frequencies with extensive band coverage for global roaming.
-          //   • "Tier 3: 5G Sub-6 (Regional band coverage)"        → 7.50
-          //     Definition: Supports 5G on Sub-6GHz but with band coverage limited to specific markets.
-          //   • "Tier 4: 4G LTE-A (Cat 24+)"                       → 5.00
-          //     Definition: 4G LTE Advanced with support for high-order carrier aggregation and 4x4 MIMO.
-          //   • "Tier 5: 4G LTE"                                   → 2.50
-          //     Definition: Standard 4G Long-Term Evolution without advanced carrier aggregation.
-          //   • "Tier 6: 3G / Legacy"                              → 0.00
-          //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits network_technology.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
+    "8_2_wired_charging_speed": {
+      // SCORING GOAL: Evaluates maximum wired charging input.
+      "watts": {
+        "value": 45,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 8.00
+        // SCORING GUIDELINE: Apply Section 8.2 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=5W, Max=120W.
       },
-      "7_2_sim_capabilities": {
-        // SCORING GOAL: Evaluates subscriber identity module format support.
-        "sim_configuration": {
-          "value": "Tier 1: Dual eSIM / iSIM + Physical Slot",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00
-          //     Definition: Supports two or more active eSIM profiles/integrated SIM alongside a physical Nano-SIM slot.
-          //   • "Tier 2: eSIM + Physical Slot"              → 8.00
-          //     Definition: Supports one active eSIM profile alongside a physical Nano-SIM slot.
-          //   • "Tier 3: Dual Physical Nano-SIM Only"       → 6.00
-          //     Definition: Two physical Nano-SIM slots; no electronic/programmable SIM support.
-          //   • "Tier 4: Single Physical Nano-SIM Only"     → 4.00
-          //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
-          //   • "Tier 5: None"                              → 0.00
-          //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
-          // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits sim_configuration.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_3_wifi_standard": {
-        // SCORING GOAL: Evaluates Wi-Fi network standards.
-        "standard": {
-          "value": "Tier 1: Wi-Fi 7",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Wi-Fi 7"   → 10.00
-          //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
-          //   • "Tier 2: Wi-Fi 6E"  → 8.00
-          //     Definition: 802.11ax standard adding support for the 6GHz spectrum, reducing congestion.
-          //   • "Tier 3: Wi-Fi 6"   → 6.00
-          //     Definition: 802.11ax standard on 2.4/5GHz. Improved efficiency and performance in dense environments.
-          //   • "Tier 4: Wi-Fi 5"   → 3.00
-          //     Definition: 802.11ac standard.
-          //   • "Tier 5: Legacy"    → 0.00
-          //     Definition: 802.11n (Wi-Fi 4) or older technology.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits standard.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_4_bluetooth_and_audio_codecs": {
-        // SCORING GOAL: Evaluates Bluetooth version and high-fidelity audio codec support.
-        "bluetooth_version": {
-          "value": "Tier 2: 5.3",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 4.50
-          // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: 5.4"      → 5.00
-          //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
-          //   • "Tier 2: 5.3"      → 4.50
-          //     Definition: Improved encryption, connection reliability, and efficiency.
-          //   • "Tier 3: 5.2"      → 3.50
-          //     Definition: Introduces LE Audio and Enhanced Attribute Protocol (EATT).
-          //   • "Tier 4: 5.1 / 5.0" → 2.50
-          //     Definition: Basic Bluetooth 5 standards.
-          //   • "Tier 5: 4.2"      → 1.00
-          //     Definition: Legacy Bluetooth 4 standards.
-          //   • "Tier 6: < 4.2"    → 0.00
-          //     Definition: Obsolete Bluetooth standards.
-        },
-        "highest_codec_supported": {
-          "value": "Tier 2: High-Res",
-          "value_details": {
-            "Tier 1: Lossless": [],
-            "Tier 2: High-Res": [
-              { "name": "LDAC", "source": "TBD", "exact_extract": "Proof pending" },
-              { "name": "aptX HD", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: Standard": [
-              { "name": "AAC", "source": "TBD", "exact_extract": "Proof pending" },
-              { "name": "SBC", "source": "TBD", "exact_extract": "Proof pending" }
-            ]
-          },
-          "subscore": 4.00
-          // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Lossless"   → 5.00
-          //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
-          //   • "Tier 2: High-Res"   → 4.00
-          //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
-          //   • "Tier 3: Standard"   → 1.50
-          //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 8.50,
-          // SCORING GUIDELINE: scores.predicted = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.50,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_5_biometrics": {
-        // SCORING GOAL: Evaluates secure unlock mechanisms.
-        "best_technology": {
-          "value": "Tier 2: Ultrasonic FP",
-          "value_details": {
-            "Tier 1: 3D Face / Sonic Gen 2": [],
-            "Tier 2: Ultrasonic FP": [
-              { "name": "Qualcomm 3D Sonic Gen 2", "source": "TBD", "exact_extract": "Proof pending" }
-            ],
-            "Tier 3: Optical FP / 2D Face": [],
-            "Tier 4: Capacitive FP": [],
-            "Tier 5: None / Pin Only": []
-          },
-          "subscore": 8.00
-          // SCORING GUIDELINE: Identify the most secure/advanced available biometric unlock method. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: 3D Face / Sonic Gen 2"  → 10.00
-          //     Definition: Secure 3D facial recognition (e.g., Face ID) or 2nd-gen Ultrasonic fingerprint sensors (large area, fast).
-          //   • "Tier 2: Ultrasonic FP"          → 8.00
-          //     Definition: Standard ultrasonic fingerprint sensors (3D mapping of the finger via sound waves).
-          //   • "Tier 3: Optical FP / 2D Face"  → 6.00
-          //     Definition: Standard optical fingerprint sensors (2D photograph of the finger) or basic 2D webcam-style face unlock (non-secure for payments).
-          //   • "Tier 4: Capacitive FP"          → 4.00
-          //     Definition: Physical button-integrated fingerprint sensors (side-mounted or rear-mounted).
-          //   • "Tier 5: None / Pin Only"        → 0.00
-          //     Definition: No biometric sensors; reliance on PIN, pattern, or password.
-          // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific biometric technologies found in specs (e.g., FaceID, specific sensor models). To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
-        },
-        "scores": {
-          "predicted": 8.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits best_technology.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_6_sensors": {
-        // SCORING GOAL: Evaluates navigation and accessory sensors.
-        "core_sensor_suite": {
-          "accelerometer": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 1.00
-            // SCORING GUIDELINE: If true, 1.00; false, 0.00.
-          },
-          "gyroscope": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 1.50
-            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
-          },
-          "magnetometer": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 1.00
-            // SCORING GUIDELINE: If true, 1.00; false, 0.00.
-          },
-          "proximity_sensor": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 0.75
-            // SCORING GUIDELINE: If true, 0.75; false, 0.00.
-          },
-          "ambient_light_sensor": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 0.75
-            // SCORING GUIDELINE: If true, 0.75; false, 0.00.
-          }
-        },
-        "advanced_sensor_capabilities": {
-          "barometer": {
-            "value": true,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 1.50
-            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
-          },
-          "lidar_tof_3d_depth_sensor": {
-            "value": false,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 0.00
-            // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          },
-          "color_spectrum_flicker_sensor": {
-            "value": false,
-            "source": "TBD",
-            "exact_extract": "Proof pending",
-            "subscore": 0.00
-            // SCORING GUIDELINE: If true, 1.50; false, 0.00.
-          }
-        },
-        "scores": {
-          "predicted": 6.50,
-          // SCORING GUIDELINE: scores.predicted is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 6.50,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_7_nfc_and_uwb": {
-        // SCORING GOAL: Evaluates short-range wireless connectivity technologies.
-        "configuration": {
-          "value": "Tier 1: NFC + UWB",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: NFC + UWB" → 10.00
-          //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
-          //   • "Tier 2: NFC Only"   → 5.00
-          //     Definition: Near Field Communication support only; no directional UWB tracking.
-          //   • "Tier 3: None"       → 0.00
-          //     Definition: No short-range wireless connectivity.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits configuration.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_8_connectivity_and_cdc_index": {
-        // SCORING GOAL: Evaluates seamless ecosystem connectivity features.
-        "fast_file_transfer": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          // Definition: High-speed peer-to-peer file sharing protocol over Wi-Fi/Bluetooth (e.g., Quick Share, AirDrop).
-        },
-        "cross_device_clipboard": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          // Definition: Unified clipboard allowing copy-paste across different devices logged into the same account.
-        },
-        "task_handoff": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          // Definition: Seamlessly resuming an active task (e.g., email draft, webpage) on a different device.
-        },
-        "communication_integration": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          // Definition: Ability to pick up phone calls or reply to SMS from other connected devices (tablet/laptop).
-        },
-        "camera_virtualization": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 2.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-          // Definition: Using the smartphone's camera as a high-quality webcam for a connected tablet or laptop.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted is sum of all subscores above (Max 10.0).
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "7_9_usb_port_speed": {
-        // SCORING GOAL: Evaluates wired transfer speed.
-        "version_speed": {
-          "value": "Tier 2: USB 3.2 Gen 2 (10Gbps)",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 9.00
-          // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: USB 3.2 Gen 2x2 (20Gbps)" → 10.00
-          //     Definition: SuperSpeed USB 20Gbps.
-          //   • "Tier 2: USB 3.2 Gen 2 (10Gbps)"   → 9.00
-          //     Definition: SuperSpeed USB 10Gbps.
-          //   • "Tier 3: USB 3.2 Gen 1 (5Gbps)"    → 7.50
-          //     Definition: SuperSpeed USB 5Gbps (formerly USB 3.0/3.1 Gen 1).
-          //   • "Tier 4: USB 2.0 (480Mbps)"        → 2.00
-          //     Definition: High Speed USB 2.0.
-          //   • "Tier 5: Proprietary / Legacy"     → 0.00
-          //     Definition: Non-standard or obsolete physical/logical interface.
-        },
-        "scores": {
-          "predicted": 9.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits version_speed.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 9.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "scores": {
+        "predicted": 8.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 8.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
     },
-    "8_battery_and_charging": {
-      "8_1_battery_endurance_score": {
-        // SCORING GOAL: Evaluates smartphone battery life by prioritizing real-world performance data over theoretical specifications via a Benchmark-First Approach with Predictive Interpolation.
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD A — Benchmark Validation (Primary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_a_benchmark_Battery": {
-          "gsmarena_active_use_score_v2": {
-            "value": 16.75,
-            "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667p3.php",
-            "exact_extract": "Active use score: 16:45h",
-            "subscore": 9.45
-            // SCORING GUIDELINE: source is GSMArena.
-            // • WHERE TO FIND IT: GSMarena.com review (Battery page).
-            // • EXTRACTION RULE: Use the "Active use score" (e.g., "16:45h"). 
-            // • CALCULATION: Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the normalization formula.
-            // SCORING GUIDELINE: subscore = 10 * (value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10.
-            // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-          },
-          "phonearena_battery_life_estimate": {
-            "value": 15.50,
-            "source": "https://www.phonearena.com/phones/Samsung-Galaxy-S24-Ultra_id12151/benchmarks",
-            "exact_extract": "Combined battery life: 15h 30min",
-            "subscore": 9.20
-            // SCORING GUIDELINE: source is PhoneArena.
-            // • WHERE TO FIND IT: PhoneArena.com device specs page, under "Ratings and Benchmarks".
-            // • EXTRACTION RULE: Use the "Combined battery life" estimate.
-            // SCORING GUIDELINE: subscore = 10 * (value - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min), clamped 0-10.
-            // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-          }
-        },
-        
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_c_prediction_model_Battery": {
-          "layer_a_energy_score": {
-            "energy_capacity_wh": {
-              "value": 19.25,
-              "value_path": "theoretical_calculation",
-              "subscore": 6.62
-              // GUIDELINE: Energy (Wh) = (mAh * V) / 1000. 
-              // VOLTAGE LOGIC: Use identity.hardware_configuration.battery_nominal_voltage_v. If N/A, fallback to 3.85V (Single-cell) if wired_charging_watts < 120W, otherwise 7.7V (Dual-cell).
-              // SCORING GUIDELINE: subscore = 10 * (Wh - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min).
-            },
-            "predicted_score": 6.62
-            // SCORING GUIDELINE: Directly inherits energy_capacity_wh.subscore.
-          },
-          "layer_b_hardware_efficiency_score": {
-            // SCORING GUIDELINE (Section 8.1 Layer B): HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal).
-            "soc_efficiency_mapping": {
-              "identifier": "Snapdragon 8 Gen 3",
-              "identifier_path": "identity.hardware_configuration.chipset.value",
-              "reference_table": "SOC_PEAK_POWER_MATRIX",
-              "process_node_score": 9.0, // Mapped from Section 6.10 Part C
-              "cpu_efficiency_score": 9.2, // AES calculated from Section 6.1.0
-              "gpu_efficiency_score": 8.8, // Efficiency score from Section 6.3.0
-              "soc_efficiency_index": 9.02,
-              "weight": 0.40
-              // GUIDELINE: soc_efficiency_index = (0.50 * node) + (0.30 * cpu) + (0.20 * gpu).
-            },
-            "display_efficiency_mapping": {
-              "identifier": "LTPO OLED",
-              "identifier_path": "2_1_panel_architecture.panel_type.value",
-              "reference_table": "2_1_panel_technology_scoring_table",
-              "panel_tech_score": 10.0,
-              "refresh_efficiency_score": 9.5,
-              "resolution_efficiency_score": 8.5,
-              "display_efficiency_index": 9.375,
-              "weight": 0.40
-              // GUIDELINE: display_efficiency_index = (0.35 * panel) + (0.35 * refresh) + (0.30 * resolution).
-            },
-            "connectivity_efficiency_mapping": {
-              "identifier": "5G Full / WiFi 7",
-              "cellular_score": 1.0,
-              "wifi_score": 0.0,
-              "connectivity_efficiency_index": 0.70,
-              "weight": 0.10
-              // GUIDELINE: connectivity_efficiency_index = (0.70 * cellular) + (0.30 * wifi).
-            },
-            "thermal_efficiency_mapping": {
-              "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value",
-              "thermal_efficiency_index": 7.63,
-              "weight": 0.10
-              // GUIDELINE: Directly inherits TDSI predicted score.
-            },
-            "predicted_score": 8.19
-            // SCORING GUIDELINE: HEI = Sum(component_index * weight).
-          },
-          "layer_c_software_optimization_score": {
-            "value": 9.00
-            // SCORING GUIDELINE: OS level power management architecture.
-          },
-          "predicted_score": 7.65,
-          // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C (Weights: A=0.45, B=0.35, C=0.20).
-          "scores": {
-            "subscore_LayerA": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_a_energy_score.predicted_score" },
-            "subscore_LayerB": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_b_hardware_efficiency_score.predicted_score" },
-            "subscore_LayerC": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_c_software_optimization_score.value" }
-          }
-        },
-
-        // ═══════════════════════════════════════════════════════════════════════════
-        // METHOD B — Nearest Neighbor Interpolation (Secondary)
-        // ═══════════════════════════════════════════════════════════════════════════
-        "method_b_neighbor_interpolation_Battery": {
-          // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-          //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
-          //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_Battery.scores`.
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
-          "neighbors": [
-            {
-              // Neighbor1
-              "device_id_1": "xiaomi_14_ultra",
-              // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
-              "euclidean_distance_1": 0.0500,
-              // GUIDELINE: Weighted Euclidean distance from Step 1.
-              "predicted_score_1": 8.40,
-              // GUIDELINE: The neighbor's own Method C predicted score.
-              "benchmark_score_1": 9.10
-              // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
-            },
-            {
-              // Neighbor2
-              "device_id_2": "oneplus_12",
-              "euclidean_distance_2": 0.0800,
-              "predicted_score_2": 8.45,
-              "benchmark_score_2": 9.40
-            },
-            {
-              // Neighbor3
-              "device_id_3": "asus_rog_phone_8_pro",
-              "euclidean_distance_3": 0.1000,
-              "predicted_score_3": 8.35,
-              "benchmark_score_3": 9.20
-            }
-          ],
-          "avg_predicted_neighbors": 8.4000,
-          "avg_benchmark_neighbors": 9.2333,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 0.9107,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 8.41
-          // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
-        },
-
-        "scores": {
-          "predicted": 7.65,
-          // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.
-          "final": {
-            "value": 9.3250,
-            // SCORING GUIDELINE (Section 8.1): Use Method A if method_a_benchmark_Battery is available (the average of GSMArena + PhoneArena subscores becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_Battery.predicted_score).
-            "method_used": "Benchmark (GSMArena + PhoneArena)",
-            // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-            //   • Benchmark (GSMArena + PhoneArena) → Method A (documented GSMArena/PhoneArena scores)
-            //   • Neighbor Interpolation            → Method B (similar device benchmarks)
-            //   • Predictor                         → Method C (weighted spec calculation)
-            "booster": "No",
-            // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
-            "confidence": "N/A"
-            // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
-          }
-        }
+    "8_3_wireless_charging_speed": {
+      // SCORING GOAL: Evaluates maximum wireless charging input.
+      "watts": {
+        "value": 15,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 5.00
+        // SCORING GUIDELINE: Apply Section 8.3 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=7.5W, Max=50W. Set to 0 if unsupported.
       },
-      "8_2_wired_charging_speed": {
-        // SCORING GOAL: Evaluates maximum wired charging input.
-        "watts": {
-          "value": 45,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 8.00
-          // SCORING GUIDELINE: Apply Section 8.2 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=5W, Max=120W.
-        },
-        "scores": {
-          "predicted": 8.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 8.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "8_3_wireless_charging_speed": {
-        // SCORING GOAL: Evaluates maximum wireless charging input.
-        "watts": {
-          "value": 15,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.00
-          // SCORING GUIDELINE: Apply Section 8.3 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=7.5W, Max=50W. Set to 0 if unsupported.
-        },
-        "scores": {
-          "predicted": 5.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 5.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "8_4_reverse_wired": {
-        // SCORING GOAL: Evaluates reverse wired charging output capability.
-        "watts": {
-          "value": 0,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 0.00
-          // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
-        },
-        "scores": {
-          "predicted": 0.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "8_5_reverse_wireless": {
-        // SCORING GOAL: Evaluates reverse wireless charging output capability.
-        "watts": {
-          "value": 4.5,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 5.00
-          // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
-        },
-        "scores": {
-          "predicted": 5.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 5.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
-      },
-      "8_6_charger_in_box": {
-        // SCORING GOAL: Rewards devices that include a high-speed charger in the box.
-        "included_watts": {
-          "value": "Tier 5: None",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 0.00
-          // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from Sec 8.2.
-        },
-        "scores": {
-          "predicted": 0.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits included_watts.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "scores": {
+        "predicted": 5.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 5.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
     },
-    "9_financial_and_economic_value": {
-      "9_1_price": {
-        // SCORING GOAL: Evaluates device price relative to standard flagships. Lower is better.
-        "usd": {
-          "value": 1299,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 0.80
-          // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price) - log(Min)) / (log(Max) - log(Min)). Min=100, Max=1600.
-        },
-        "scores": {
-          "predicted": 0.80,
-          // SCORING GUIDELINE: scores.predicted directly inherits usd.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 0.80,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
-        }
+    "8_4_reverse_wired": {
+      // SCORING GOAL: Evaluates reverse wired charging output capability.
+      "watts": {
+        "value": 0,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
       },
-      "9_2_manufacturer_warranty_commitment": {
-        // SCORING GOAL: Evaluates standard included warranty length.
-        "months": {
-          "value": "Tier 3: 12 Months",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 3.00
-          // SCORING GUIDELINE: Map months to scores using the following exact Tier Names for "value":
-          //   • "Tier 1: >= 36 Months" → 10.00
-          //   • "Tier 2: 24 Months"    → 7.00
-          //   • "Tier 3: 12 Months"    → 3.00
-          //   • "Tier 4: < 12 Months"  → 0.00
-        },
-        "scores": {
-          "predicted": 3.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits months.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 3.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+      "scores": {
+        "predicted": 0.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
+      }
+    },
+    "8_5_reverse_wireless": {
+      // SCORING GOAL: Evaluates reverse wireless charging output capability.
+      "watts": {
+        "value": 4.5,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 5.00
+        // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
       },
-      "9_3_repairability": {
-        // SCORING GOAL: Evaluates official repairability scores.
-        "european_union_repairability_index": {
+      "scores": {
+        "predicted": 5.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 5.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "8_6_charger_in_box": {
+      // SCORING GOAL: Rewards devices that include a high-speed charger in the box.
+      "included_watts": {
+        "value": "Tier 5: None",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from Sec 8.2.
+      },
+      "scores": {
+        "predicted": 0.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits included_watts.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    }
+  },
+  "9_financial_and_economic_value": {
+    "9_1_price": {
+      // SCORING GOAL: Evaluates device price relative to standard flagships. Lower is better.
+      "usd": {
+        "value": 1299,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.80
+        // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price) - log(Min)) / (log(Max) - log(Min)). Min=100, Max=1600.
+      },
+      "scores": {
+        "predicted": 0.80,
+        // SCORING GUIDELINE: scores.predicted directly inherits usd.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 0.80,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "9_2_manufacturer_warranty_commitment": {
+      // SCORING GOAL: Evaluates standard included warranty length.
+      "months": {
+        "value": "Tier 3: 12 Months",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 3.00
+        // SCORING GUIDELINE: Map months to scores using the following exact Tier Names for "value":
+        //   • "Tier 1: >= 36 Months" → 10.00
+        //   • "Tier 2: 24 Months"    → 7.00
+        //   • "Tier 3: 12 Months"    → 3.00
+        //   • "Tier 4: < 12 Months"  → 0.00
+      },
+      "scores": {
+        "predicted": 3.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits months.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 3.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
+        }
+      }
+    },
+    "9_3_repairability": {
+      // SCORING GOAL: Evaluates official repairability scores.
+      "european_union_repairability_index": {
+        "value": 7.50,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 7.50
+        // SCORING GUIDELINE: Direct inheritance. Max 10.00.
+      },
+      "scores": {
+        "predicted": 7.50,
+        // SCORING GUIDELINE: scores.predicted directly inherits european_union_repairability_index.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 7.50,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 7.50
-          // SCORING GUIDELINE: Direct inheritance. Max 10.00.
-        },
-        "scores": {
-          "predicted": 7.50,
-          // SCORING GUIDELINE: scores.predicted directly inherits european_union_repairability_index.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 7.50,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
-    },
-    "10_miscellaneous": {
-      "10_1_stylus_hardware_system_support": {
-        // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
-        "support_tier": {
-          "value": "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features",
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 10.00
-          // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-          //   • "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
-          //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
-          //   • "Tier 2: Active stylus support (dedicated digitizer, no silo)"              → 7.00
-          //     Definition: Device has a dedicated digitizer layer for high-precision active pens (e.g., Apple Pencil, S Pen) but no internal storage for the pen.
-          //   • "Tier 3: Passive stylus or basic touch pen"                                  → 3.00
-          //     Definition: No dedicated digitizer; works with generic capacitive pens that mimic finger touch.
-          //   • "Tier 4: None"                                                               → 0.00
-          //     Definition: No official stylus support or secondary digitizer layer.
-        },
-        "scores": {
-          "predicted": 10.00,
-          // SCORING GUIDELINE: scores.predicted directly inherits support_tier.subscore.
-          "final": {
-            // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-            "value": 10.00,
-            "method_used": "Predictor",
-            "booster": "No",
-            "confidence": "N/A"
-          }
+    }
+  },
+  "10_miscellaneous": {
+    "10_1_stylus_hardware_system_support": {
+      // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
+      "support_tier": {
+        "value": "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        //   • "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
+        //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
+        //   • "Tier 2: Active stylus support (dedicated digitizer, no silo)"              → 7.00
+        //     Definition: Device has a dedicated digitizer layer for high-precision active pens (e.g., Apple Pencil, S Pen) but no internal storage for the pen.
+        //   • "Tier 3: Passive stylus or basic touch pen"                                  → 3.00
+        //     Definition: No dedicated digitizer; works with generic capacitive pens that mimic finger touch.
+        //   • "Tier 4: None"                                                               → 0.00
+        //     Definition: No official stylus support or secondary digitizer layer.
+      },
+      "scores": {
+        "predicted": 10.00,
+        // SCORING GUIDELINE: scores.predicted directly inherits support_tier.subscore.
+        "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
+          "value": 10.00,
+          "method_used": "Predictor",
+          "booster": "No",
+          "confidence": "N/A"
         }
       }
-    },
+    }
+  },
   "11_reviews_and_performance_boosters": {
     "11_1_dxomark_24mp_texture_rendering": {
       "source_link": "https://www.dxomark.com/apple-iphone-15-pro-max-camera-test/",
