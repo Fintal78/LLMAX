@@ -1594,7 +1594,7 @@ This table provides the authoritative CPU core architecture scores used througho
 > For example: Apple does not officially publish a canonical "reference frequency" or private L2 cache capacity for individual A-series cores, and Qualcomm's Snapdragon 8 Elite documentation explicitly notes that its maximum CPU speed varies depending on the platform version (including a 4.32 GHz variant). These fields exist strictly within this framework to provide a stable mathematical baseline for the `Actual_Frequency / Reference_Frequency` normalization ratio and the penalty prediction modules.
 
 
-### 🔹 6.1 CPU Multi-Core Performance (Sustained Outcome)
+### 🔹 6.1 CPU Multi-Core Performance
 *Description:* Measures actual delivered CPU performance in standardized workloads, ensuring the device can handle heavy multitasking and sustained processing.
 *   **Measurement:** Geekbench 6 Multi-Core Score.
 *   **Unit:** Points (0–10)
