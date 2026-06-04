@@ -2701,7 +2701,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "memory_throughput_index": {
             "value": 9.34,
             "identifier_path": "6_5_ram_technology.scores.predicted"
-            // GUIDELINE: Already-normalized Memory Throughput Index (MTI) score from Section 6.5. This represents the memory bandwidth available for data access.
+            // GUIDELINE: Already-normalized Memory Technology Index (MTI) score from Section 6.5. This represents the memory bandwidth available for data access.
           },
           "cpu_orchestration_index": {
             "value": 8.63,

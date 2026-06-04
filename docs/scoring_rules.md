@@ -1587,11 +1587,11 @@ This table provides the authoritative CPU core architecture scores used througho
 | **Apple A17 Pro Cores**      |   9.10    |      3.78      |     16384       | ARMv8.6          |     1.04      |
 - [...] *(See full list in [proposed_data_structure.md])*
 
-> [!NOTE]
-> **Internal Normalization Anchors vs. Vendor Specs**
-> The `reference_frequency_ghz` and `typical_l2_kb` columns, as well as several internal core codenames (e.g., Apple's "Sawtooth" or "Blizzard"), act as **internal mathematical normalization anchors** for the scoring model. They are inferred or approximated fields used to establish a consistent mathematical baseline across vastly different architectures. They should **not** be interpreted as universally authoritative public vendor specifications. 
-> 
-> For example: Apple does not officially publish a canonical "reference frequency" or private L2 cache capacity for individual A-series cores, and Qualcomm's Snapdragon 8 Elite documentation explicitly notes that its maximum CPU speed varies depending on the platform version (including a 4.32 GHz variant). These fields exist strictly within this framework to provide a stable mathematical baseline for the `Actual_Frequency / Reference_Frequency` normalization ratio and the penalty prediction modules.
+[!NOTE]
+**Internal Normalization Anchors vs. Vendor Specs**
+The `reference_frequency_ghz` and `typical_l2_kb` columns, as well as several internal core codenames (e.g., Apple's "Sawtooth" or "Blizzard"), act as **internal mathematical normalization anchors** for the scoring model. They are inferred or approximated fields used to establish a consistent mathematical baseline across vastly different architectures. They should **not** be interpreted as universally authoritative public vendor specifications. 
+ 
+For example: Apple does not officially publish a canonical "reference frequency" or private L2 cache capacity for individual A-series cores, and Qualcomm's Snapdragon 8 Elite documentation explicitly notes that its maximum CPU speed varies depending on the platform version (including a 4.32 GHz variant). These fields exist strictly within this framework to provide a stable mathematical baseline for the `Actual_Frequency / Reference_Frequency` normalization ratio and the penalty prediction modules.
 
 
 ### 🔹 6.1 CPU Multi-Core Performance
@@ -1606,8 +1606,8 @@ This is the preferred method when a direct Geekbench 6 score is available. It pr
 *   **Formula:** `Score = 10 * (log(Score) - log(CPU_GB6_Multi_Score_Min)) / (log(CPU_GB6_Multi_Score_Max) - log(CPU_GB6_Multi_Score_Min))` (Clamped 0-10)
 *   **Max Score (10.0):** ≥ CPU_GB6_Multi_Score_Max
 *   **Min Score (0.0):** ≤ CPU_GB6_Multi_Score_Min
-> [!NOTE]
-> **Why Logarithmic?** Performance utility follows diminishing returns. A 1000-point jump between a baseline 1500-point phone and a capable 2500-point mid-ranger is transformative for daily usability. In contrast, a 1000-point jump between a 10000-point flagship and an 11000-point gaming beast is a marginal improvement noticeable only in extreme multitasking or specialized competitive gaming.
+[!NOTE]
+**Why Logarithmic?** Performance utility follows diminishing returns. A 1000-point jump between a baseline 1500-point phone and a capable 2500-point mid-ranger is transformative for daily usability. In contrast, a 1000-point jump between a 10000-point flagship and an 11000-point gaming beast is a marginal improvement noticeable only in extreme multitasking or specialized competitive gaming.
 
 #### Method B: Nearest Neighbor Interpolation (Secondary / Validation)
 Method B is populated for **all** phones (even if Method A is available) to evaluate the precision of the interpolation model by comparing its result with Method A.
@@ -1617,8 +1617,8 @@ Method B is populated for **all** phones (even if Method A is available) to eval
         *   `Distance = Sqrt( (RCTS_norm_Diff)² + (Penalty_MTI_Diff)² + (Penalty_TDSI_Diff)² + (Penalty_CFEI_Diff)² )`
         *   *Where "Diff" is the difference between Target and Neighbor values for each component:*
             *   `RCTS_norm` (Raw CPU Throughput Score, normalized, see Method C): The core active compute capability.
-            *   `Penalty_MTI` (§6.1 Step 5): The Memory (MTI [Memory Technology Index]) bandwidth starvation penalty. This isolates the actual active memory bottleneck impact on performance.
-            *   `Penalty_TDSI` (§6.1 Step 5): The Thermals (TDSI [Thermal Dissipation Stability Index]) thermodynamic cooling throttle penalty. This captures the active thermal bottleneck currently restricting core capability.
+            *   `Penalty_MTI` (§6.1 Step 5): The Memory Technology Index (MTI) bandwidth starvation penalty. This isolates the actual active memory bottleneck impact on performance.
+            *   `Penalty_TDSI` (§6.1 Step 5): The Thermal Dissipation Stability Index (TDSI) cooling throttle penalty. This captures the active thermal bottleneck currently restricting core capability.
             *   `Penalty_CFEI` (§6.1 Step 5): The Cache & Fabric Efficiency Index (CFEI) penalty. This represents the active fabric latency bottleneck.
         *   **Scientific & Mathematical Rationale:** Since the 5-Step Performance Pipeline from Method C defines the overall performance score as a direct linear subtraction of the penalties from the core compute capacity (`Predicted_Score = RCTS_norm - Sum(Penalty_S)`), every single component enters the final performance metric with an absolute weight of exactly 1.0. While in the vast majority of cases the core compute difference squared (`(RCTS_norm_Diff)²`) will be much greater than the penalty differences, keeping all components allows the model to catch and correctly group highly unbalanced outlier devices that suffer from exceptionally high dynamic penalties.
     *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
@@ -1634,52 +1634,51 @@ Method B is populated for **all** phones (even if Method A is available) to eval
 #### Method C: Predicted Calculation (Tertiary)
 Used as a standalone fallback if no neighbors exist, or as the **Predictor** for Method B.
 
-> ### 📖 Executive Summary & Roadmap: CPU Multi-Core Modeling
-> Evaluating mobile CPU performance requires much more than simply adding up core speeds or counting cores. Modern smartphones utilize highly complex, **heterogeneous multi-cluster CPU complexes** configured to balance high-burst speeds with strict thermal and battery limitations.
-> 
-> To model this physical reality with accuracy, **Method C** uses a **5-Step Pipeline** that transforms raw silicon specifications into a realistic, human-perceptual performance score.
-> 
-> #### 🧭 The 5-Step Performance Pipeline Map
-> Below is the mathematical journey a device's raw CPU specifications take through the modeling framework:
-> 
-> 1. **Step 1: Core Frequency Soft-Saturation (γ)** 
->    * *What it does:* Analyzes each CPU core's clock speed. High overclocked frequencies are scaled down using a core-count-based **γ (gamma)** exponent to model voltage walls and latency overhead.
-> 2. **Step 2: Local Intra-Cluster Scaling (α)** 
->    * *What it does:* Groups identical cores into their respective hardware clusters. A parallel-scaling **α (alpha)** exponent is applied to model diminishing parallel returns (cores competing for local L2 cache).
-> 3. **Step 3: Raw Throughput Aggregation (RCTS)**
->    * *What it does:* Sums the parallel-adjusted capacities of all clusters to compute the total raw processing throughput demand of the CPU.
-> 4. **Step 4: Global Perceptual Normalization (RCTS_norm)**
->    * *What it does:* Converts the raw throughput into a 0.0 to 10.0 scale using a **logarithmic function** to match human sensory perception (diminishing return utility).
-> 5. **Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
->    * *What it does:* Evaluates three support subsystems (Memory, Cooling Thermals and Cache), subtracts non-linear penalties from the normalized demand to compute the final score, and halts execution via a strict **Process Abort Protocol** if the score falls outside `[0.00, 10.00]`.
-> 
-> ---
-> 
-> ### 🧠 The Physics of CPU Architecture & Heterogeneity
-> Modern System-on-Chip (SoC) architectures do not use identical cores. Instead, they group different types of specialized cores into **Clusters** to optimize performance:
-> *   **Best Performing Cores:** Large, extreme-performance cores dedicated to brief, heavy single-threaded bursts (like launching an app).
-> *   **Second Best Performing Cores:** Medium-high speed workhorse cores that handle active multitasking, heavy browsing, and gaming physics.
-> *   **Third Best / Fourth Best Performing Cores:** Small, ultra-low power cores that run background syncing, OS maintenance, and music playback while preserving battery.
-> 
-> #### 🧪 Standardized Rank-Based CPU Cluster Nomenclature
-> To enable robust, automated parsing and maintain microarchitectural neutrality across all hardware platforms, this scoring framework adopts a strictly standardized, rank-based nomenclature for CPU core clusters: `best`, `second_best`, `third_best`, and `fourth_best`.
-> 
-> These cluster designations are defined in absolute terms of relative peak computing capability (Instructions Per Cycle multiplied by maximum clock frequency) rather than vendor-specific marketing terms like "Prime", "Performance", or "Efficiency".
-> 
-> ##### Rationale for Rank-Based Nomenclature
-> 1. **Elimination of Schema Ambiguity:** High-performance mobile CPU layouts are highly heterogeneous and vary widely between vendors. For example, some custom architectures (such as Apple Silicon) utilize a symmetric dual-cluster configuration comprising only high-performance cores and highly efficient cores. Under marketing-biased schemas, mapping these designs forces arbitrary decisions—such as classifying the performance cluster as a "Prime" cluster and leaving the "Performance" schema key completely empty or unmapped. This structural asymmetry creates parsing exceptions and data schema fragility.
-> 2. **Prevention of Parsing & Validation Errors:** Automated database parsers and verification loops rely on strict path-referenced JSON hooks. By standardizing the clusters strictly by their relative performance ranking from highest to lowest (`best` to `fourth_best`), the database schemas maintain total structural consistency across all chipsets. The single-core predictive model can always query the highest-performing cluster uniformly via the static path `clusters.best.architecture`, completely avoiding vendor-specific mapping logic and potential parsing failures.
-> 3. **Microarchitectural Neutrality:** Modern designs frequently blur the lines between traditional cluster definitions (e.g., integrating a mix of medium and high cores in a 1+3+4 or 1+5+2 layout). Rank-based neutral naming provides a robust mathematical classification that fits any physical topology, from dual-cluster Apple architectures to complex quad-cluster Snapdragon platforms.
-> 
-> #### Layer 1: Local Intra-Cluster Scaling (Local Silicon Contention)
-> *   *The Constraint:* Cores within the same cluster are placed next to each other on the silicon die, sharing a local L2 cache and cluster-level fabric. As more cores run concurrently, they contend for L2 cache access and generate local thread synchronization overhead.
-> *   *How we model it:* In **Step 2**, we apply the **Parallel-Adjusted Core Count (PACC)** (`CoreCount^α`), using a decaying alpha exponent to reduce the incremental value added by each additional core.
-> 
-> #### Layer 2: Global Inter-Cluster Scaling (Systemic Platform Support)
-> *   *The Constraint:* Even if individual clusters are efficient internally, they must communicate via the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) interconnect. They compete for bandwidth on the LPDDR (Low Power Double Data Rate) RAM memory bus, share the physical thermal dissipation limits of the phone's chassis, and share a common shared L3/SLC (Level 3 / System Level Cache) cache.
-> *   *How we model it:* In **Step 5**, we evaluate these platform-wide dependencies using a non-linear deficit penalty model, treating Memory, Thermals and Cache as strict constraints rather than optional bonuses.
->
-> **Method C** calculates performance by scoring every cluster found in the device's SOC reference (§6.1.0) individually before aggregating them into a system-wide throughput model.
+##### 📖 Executive Summary & Roadmap: CPU Multi-Core Modeling
+Evaluating mobile CPU performance requires much more than simply adding up core speeds or counting cores. Modern smartphones utilize highly complex, **heterogeneous multi-cluster CPU complexes** configured to balance high-burst speeds with strict thermal and battery limitations.
+ 
+To model this physical reality with accuracy, **Method C** uses a **5-Step Pipeline** that transforms raw silicon specifications into a realistic, human-perceptual performance score.
+ 
+###### 🧭 The 5-Step Performance Pipeline Map
+Below is the mathematical journey a device's raw CPU specifications take through the modeling framework:
+ 
+1. **Step 1: Core Frequency Soft-Saturation (γ)** 
+    * *What it does:* Analyzes each CPU core's clock speed. High overclocked frequencies are scaled down using a core-count-based **γ (gamma)** exponent to model voltage walls and latency overhead.
+2. **Step 2: Local Intra-Cluster Scaling (α)** 
+    * *What it does:* Groups identical cores into their respective hardware clusters. A parallel-scaling **α (alpha)** exponent is applied to model diminishing parallel returns (cores competing for local Level 2 (L2) cache).
+3. **Step 3: Raw Throughput Aggregation (RCTS)**
+    * *What it does:* Sums the parallel-adjusted capacities of all clusters to compute the total raw processing throughput demand of the CPU.
+4. **Step 4: Global Perceptual Normalization (RCTS_norm)**
+    * *What it does:* Converts the raw throughput into a 0.0 to 10.0 scale using a **logarithmic function** to match human sensory perception (diminishing return utility).
+5. **Step 5: Non-Linear Deficit Penalties, Final Score & Abort Protocol**
+    * *What it does:* Evaluates three support subsystems (Memory, Cooling Thermals and Cache), subtracts non-linear penalties from the normalized demand to compute the final score, and halts execution via a strict **Process Abort Protocol** if the score falls outside `[0.00, 10.00]`.
+ 
+ 
+##### 🧠 The Physics of CPU Architecture & Heterogeneity
+Modern System-on-Chip (SoC) architectures do not use identical cores. Instead, they group different types of specialized cores into **Clusters** to optimize performance:
+ *   **Best Performing Cores:** Large, extreme-performance cores dedicated to brief, heavy single-threaded bursts (like launching an app).
+ *   **Second Best Performing Cores:** Medium-high speed workhorse cores that handle active multitasking, heavy browsing, and gaming physics.
+ *   **Third Best / Fourth Best Performing Cores:** Small, ultra-low power cores that run background syncing, Operating System (OS) maintenance, and music playback while preserving battery.
+ 
+###### 🧪 Standardized Rank-Based CPU Cluster Nomenclature
+To enable robust, automated parsing and maintain microarchitectural neutrality across all hardware platforms, this scoring framework adopts a strictly standardized, rank-based nomenclature for CPU core clusters: `best`, `second_best`, `third_best`, and `fourth_best`.
+ 
+These cluster designations are defined in absolute terms of relative peak computing capability (Instructions Per Cycle [IPC] multiplied by maximum clock frequency) rather than vendor-specific marketing terms like "Prime", "Performance", or "Efficiency".
+
+###### Rationale for Rank-Based Nomenclature
+1. **Elimination of Schema Ambiguity:** High-performance mobile CPU layouts are highly heterogeneous and vary widely between vendors. For example, some custom architectures (such as Apple Silicon) utilize a symmetric dual-cluster configuration comprising only high-performance cores and highly efficient cores. Under marketing-biased schemas, mapping these designs forces arbitrary decisions—such as classifying the performance cluster as a "Prime" cluster and leaving the "Performance" schema key completely empty or unmapped. This structural asymmetry creates parsing exceptions and data schema fragility.
+2. **Prevention of Parsing & Validation Errors:** Automated database parsers and verification loops rely on strict path-referenced JSON hooks. By standardizing the clusters strictly by their relative performance ranking from highest to lowest (`best` to `fourth_best`), the database schemas maintain total structural consistency across all chipsets. The single-core predictive model can always query the highest-performing cluster uniformly via the static path `clusters.best.architecture`, completely avoiding vendor-specific mapping logic and potential parsing failures.
+3. **Microarchitectural Neutrality:** Modern designs frequently blur the lines between traditional cluster definitions (e.g., integrating a mix of medium and high cores in a 1+3+4 or 1+5+2 layout). Rank-based neutral naming provides a robust mathematical classification that fits any physical topology, from dual-cluster Apple architectures to complex quad-cluster Snapdragon platforms.
+
+###### Layer 1: Local Intra-Cluster Scaling (Local Silicon Contention)
+*   *The Constraint:* Cores within the same cluster are placed next to each other on the silicon die, sharing a local L2 cache and cluster-level fabric. As more cores run concurrently, they contend for L2 cache access and generate local thread synchronization overhead.
+*   *How we model it:* In **Step 2**, we apply the **Parallel-Adjusted Core Count (PACC)** (`CoreCount^α`), using a decaying alpha exponent to reduce the incremental value added by each additional core.
+ 
+###### Layer 2: Global Inter-Cluster Scaling (Systemic Platform Support)
+*   *The Constraint:* Even if individual clusters are efficient internally, they must communicate via the DynamIQ Shared Unit (DSU — a cluster shared unit coordinating different cores) interconnect. They compete for bandwidth on the Low-Power Double Data Rate (LPDDR) RAM memory bus, share the physical thermal dissipation limits of the phone's chassis, and share a common shared Level 3 (L3) Cache or System Level Cache (SLC).
+*   *How we model it:* In **Step 5**, we evaluate these platform-wide dependencies using a non-linear deficit penalty model, treating Memory, Thermals and Cache as strict constraints rather than optional bonuses.
+
+**Method C** calculates performance by scoring every cluster found in the device's SOC reference (§6.1.0) individually before aggregating them into a system-wide throughput model.
 
 **Step 1: Core Frequency Soft-Saturation (γ)**
 Before assessing how cores behave in parallel, we must first determine the physical yield of each individual core at its given operating frequency. While frequency scaling is generally linear near a core's sweet spot, pushing cores to extreme frequencies (overclocking) hits a "voltage wall" where heat and power scale exponentially but performance does not. Furthermore, at high clock speeds, internal CPU caches (L2/L3) and memory buses cannot scale in tandem, resulting in nanosecond-level latency mismatches that waste clock cycles.
@@ -1696,9 +1695,9 @@ We model this sub-linear frequency scaling using a soft-saturation exponent **γ
         *   `γ(5-6 cores) = 0.98`: High-efficiency clusters running at conservative, highly efficient clock speeds.
         *   `γ(7-8 cores) = 0.99`: Large efficiency clusters or homogeneous budget processors operating in low-frequency bands. Scaling is nearly linear, but a perfect 1.00 is physically impossible due to silicon interconnect and cache latency overheads.
 
-    > [!NOTE]
-    > **Why the Instruction Set Architecture (ISA) Multiplier is Omitted in Section 6.1**
-    > Instruction Set Architecture (ISA) is the core "dictionary" of hardware commands a Central Processing Unit (CPU) understands. While the ISA multiplier is included in Section 6.2 to model single-threaded peak efficiency, it is omitted in Section 6.1 because multi-core throughput is heavily dominated by systemic hardware limits—specifically memory bandwidth, cache capacity, and thermal stability—rather than individual instruction execution rates. A compressed multi-core ISA modifier (with a small 1% to 3% spread) could be introduced in future revisions of the model, but it is currently neglected due to this extremely low physical impact, which becomes even less significant after the global logarithmic normalization is applied.
+    [!NOTE]
+    **Why the Instruction Set Architecture (ISA) Multiplier is Omitted in Section 6.1**
+    Instruction Set Architecture (ISA) is the core "dictionary" of hardware commands a Central Processing Unit (CPU) understands. While the ISA multiplier is included in Section 6.2 to model single-threaded peak efficiency, it is omitted in Section 6.1 because multi-core throughput is heavily dominated by systemic hardware limits—specifically memory bandwidth, cache capacity, and thermal stability—rather than individual instruction execution rates. A compressed multi-core ISA modifier (with a small 1% to 3% spread) could be introduced in future revisions of the model, but it is currently neglected due to this extremely low physical impact, which becomes even less significant after the global logarithmic normalization is applied.
 
 **Step 2: Per-Cluster Effective Throughput (CET)**
 Core scaling is sub-linear. Doubling the cores does not double the performance due to synchronization overhead, cache contention, and shared memory pressure (Amdahl's Law). We model this physical constraint by calculating a Parallel-Adjusted Core Count before applying the base architecture score.
@@ -1732,7 +1731,7 @@ Core scaling is sub-linear. Doubling the cores does not double the performance d
     > *Physical Ceiling Rationale:* 
     > As more cores are grouped together in a single homogeneous cluster, synchronization overhead (contending for the same shared local L2 cache and cluster-level bus) rises. The incremental value of each core decays smoothly from **91.9%** to **37.0%**. The 5.278x yield for an 8-core cluster represents the maximum physical ceiling of homogeneous scaling in the absence of external system bottlenecks. This aligns well with modern computer science literature on non-SMT parallel scaling (where 8 identical cores typically achieve a maximum scaling factor of ~4.1x to ~5.3x depending on power limits and virtual thread capabilities).
     
-    > * *Note on SMT (Simultaneous Multithreading):* Simultaneous Multithreading is a CPU design technique that allows a single physical processor core to execute two software threads at the same time. While extremely common in desktop computers (often marketed as "Hyper-Threading"), it is absent in mobile chips where each physical core can only execute a single thread.
+    * *Note on SMT (Simultaneous Multithreading):* Simultaneous Multithreading is a CPU design technique that allows a single physical processor core to execute two software threads at the same time. While extremely common in desktop computers (often marketed as "Hyper-Threading"), it is absent in mobile chips where each physical core can only execute a single thread.
 
 2.  **Cluster Effective Throughput (CET):** `CET_i = CY_i * PACC_i`
     *   This combines the frequency-adjusted core yield (`CY_i`) with the parallel cluster overhead (`PACC_i`).
@@ -1772,216 +1771,216 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
     The final performance score is the normalized demand minus all active system penalties:
     `Predicted_Score_6.1 = RCTS_norm - SUM(Penalty_S)`
 
-> [!NOTE]
-> **Mathematical Design of the Penalty System:**
-> The non-linear exponents (`β = 1.3 to 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score. 
-> 
-> **Physical Rationale of the Beta Exponents (β):**
-> The non-linear exponents control how rapidly the penalty scales as a deficit widens:
-> 
-> 1.  **Memory and Thermals (β = 1.4):** Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When RAM bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the SoC's hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon. These cascading physical limits are modeled with a high exponent of 1.4.
-> 2.  **Cache Capacity (β = 1.3):** A deficit in cache capacity represents a routing latency penalty rather than a hard physical stop. When a thread misses in the Level 3 (L3) or System Level Cache (SLC), the data must be retrieved from external DRAM. Although DRAM access takes longer, the CPU's out-of-order execution engine can overlap instructions to hide some of the latency. Thus, cache deficits degrade performance at a slightly less aggressive rate than memory bandwidth starvation or thermal throttling, modeled with a slightly lower exponent of 1.3. 
+[!NOTE]
+**Mathematical Design of the Penalty System:**
+The non-linear exponents (`β = 1.3 to 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score. 
+ 
+**Physical Rationale of the Beta Exponents (β):**
+The non-linear exponents control how rapidly the penalty scales as a deficit widens:
+ 
+1.  **Memory and Thermals (β = 1.4):** Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When RAM bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the SoC's hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon. These cascading physical limits are modeled with a high exponent of 1.4.
+2.  **Cache Capacity (β = 1.3):** A deficit in cache capacity represents a routing latency penalty rather than a hard physical stop. When a thread misses in the Level 3 (L3) or System Level Cache (SLC), the data must be retrieved from external DRAM. Although DRAM access takes longer, the CPU's out-of-order execution engine can overlap instructions to hide some of the latency. Thus, cache deficits degrade performance at a slightly less aggressive rate than memory bandwidth starvation or thermal throttling, modeled with a slightly lower exponent of 1.3. 
 
-> The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **5.17** (`0.16*(10^1.4) + 0.03*(10^1.4) + 0.02*(10^1.3)`). 
-> While this design keeps the penalty system naturally self-limiting under high-performance scenarios, it does not guarantee absolute safety under all possible imbalanced or low-to-mid performance configurations. 
+The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **5.17** (`0.16*(10^1.4) + 0.03*(10^1.4) + 0.02*(10^1.3)`). 
+While this design keeps the penalty system naturally self-limiting under high-performance scenarios, it does not guarantee absolute safety under all possible imbalanced or low-to-mid performance configurations. 
 
-> [!CAUTION]
-> ⚠️ **CRITICAL PHYSICAL RANGE VIOLATION — PROCESS ABORT RULE!**
-> Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. 
-> If the raw calculation `Predicted_Score_6.1 = RCTS_norm - SUM(Penalty_S)` yields a value outside the physical standard range of `[0, 10]` (e.g., less than 0 or greater than 10), **the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY.** 
-> The system must immediately raise the following standardized exception alert and halt execution:
-> 
-> `CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process.`
-> 
-> An out-of-bounds score indicates a structural model breakdown, mathematical overflow, or a highly anomalous physical SoC configuration. The compilation pipeline must throw a high-priority system exception, halt database generation for that device, and emit a detailed error log detailing all pre-clamped coefficients and subsystem deficits. This triggers immediate engineering examination for a potential model update.
+[!CAUTION]
+⚠️ **CRITICAL PHYSICAL RANGE VIOLATION — PROCESS ABORT RULE!**
+Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. 
+If the raw calculation `Predicted_Score_6.1 = RCTS_norm - SUM(Penalty_S)` yields a value outside the physical standard range of `[0, 10]` (e.g., less than 0 or greater than 10), **the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY.** 
+The system must immediately raise the following standardized exception alert and halt execution:
+ 
+`CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process.`
+ 
+An out-of-bounds score indicates a structural model breakdown, mathematical overflow, or a highly anomalous physical SoC configuration. The compilation pipeline must throw a high-priority system exception, halt database generation for that device, and emit a detailed error log detailing all pre-clamped coefficients and subsystem deficits. This triggers immediate engineering examination for a potential model update.
 
-> 
-> ### 🔬 Empirical Calibration & Physical Rationale
-> 
-> To ensure mathematical alignment with real-world physical throughput, the penalty coefficients (weights) and non-linear exponents (beta values) are calibrated using verifiable hardware benchmarks and isolated scaling tests.
-> 
-> #### A. Common Mathematical Translation Framework
-> The scoring model converts raw multi-threaded throughput drops to normalized score deltas. Under our global normalization (Weber-Fechner Law), the normalized Raw CPU Throughput Score (RCTS_norm) is:
-> `RCTS_norm = 10 * (log(RCTS) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min))`
-> 
-> Utilizing the following canonical anchors representing the full performance spectrum of 2016-2026 devices:
-> *   `CPU_RCTS_Min = 0.5487`
-> *   `CPU_RCTS_Max = 55.6302`
-> *   `Global Scaling Range = log(55.6302) - log(0.5487) = 1.7453 - (-0.2607) = 2.0060`
-> 
-> Thus, any raw throughput degradation from an optimal state (T_optimal) to a compromised state (T_compromised) translates to a normalized score delta:
-> `Delta_RCTS_norm = 10 * log(T_optimal / T_compromised) / 2.0060`
-> 
-> #### B. Subsystem Deficit Calibration
-> 
-> | Bottleneck Type         | Input Metric | Weight | Exponent (β) | Target Workload           | Empirical Drop | Score Delta     |
-> | :---------------------- | :----------- | :----: | :----------: | :------------------------ | :------------: | :-------------: |
-> | **Memory Bandwidth**    | MTI          |  0.16  |     1.4      | SPEC CPU2017 (Multi-core) |   35% - 42%    | 0.9326 - 1.1793 |
-> | **Thermal Dissipation** | TDSI         |  0.03  |     1.4      | Geekbench 6 Multi-Core    |    5% - 6%     | 0.1110 - 0.1340 |
-> | **Cache Capacity**      | CFEI         |  0.02  |     1.3      | General multi-core mix    |    5% - 7%     | 0.1110 - 0.1571 |
-> 
-> ##### 1. Memory Technology Efficiency Index (MTI) Calibration
-> *   **Hard Empirical Evidence:** Down-clocking memory from a quad-channel Low Power Double Data Rate 5X (LPDDR5X) configuration at 8533 MT/s to a dual-channel Low Power Double Data Rate 4X (LPDDR4X) configuration at 4266 MT/s results in a measured 35% to 42% throughput drop in multi-threaded integer and floating-point workloads (tested via SPEC CPU2017).
-> *   **CPU Demand Baseline:** `RCTS_norm = 9.3400` (matching the optimal LPDDR5X-8533 memory score, representing the zero-deficit anchor state where memory bandwidth perfectly satisfies flagship CPU requests).
-> *   **Subsystem Scores:** LPDDR5X-8533 = 9.3400; LPDDR4X-4266 = 5.4700 (derived from Section 6.5).
-> *   **Deficit Derivations:**
->     *   `Deficit_MTI_Optimal = max(0.0000, RCTS_norm - MTI_Optimal) = max(0.0000, 9.3400 - 9.3400) = 0.0000` → scaled: `0.0000 ^ 1.4 = 0.0000`
->     *   `Deficit_MTI_Starved = max(0.0000, RCTS_norm - MTI_Starved) = max(0.0000, 9.3400 - 5.4700) = 3.8700` → scaled: `3.8700 ^ 1.4 = 6.6496`
-> *   **Logarithmic Translation:** A 35% throughput drop translates to a score delta of `10 * log(1 / 0.65) / 2.0060 = 0.9326` points. A 42% drop translates to `10 * log(1 / 0.58) / 2.0060 = 1.1793` points.
-> *   **Weight Derivation Formula:**
->     `Weight_MTI = Delta_RCTS_norm / ( (Deficit_MTI_Starved)^1.4 - (Deficit_MTI_Optimal)^1.4 )`
->     *   Divisor calculation: `6.6496 - 0.0000 = 6.6496`
->     *   Solving for the bounds yields:
->         *   Lower bound: `0.9326 / 6.6496 = 0.1403`
->         *   Upper bound: `1.1793 / 6.6496 = 0.1773`
->     *   *Result:* A calibrated weight of **0.1600** represents a **38.8000%** throughput drop, matching the exact midpoint of empirical observations.
-> 
-> ##### 2. Thermal Dissipation Stability Index (TDSI) Calibration
-> *   **Timescale Mismatch & Compression Rationale:** The Thermal Dissipation Stability Index (TDSI) is evaluated using a 20-minute 3DMark Wild Life Extreme (WLE) stress test, which captures long-term thermal saturation and highly amplifies thermal stability differences between devices. In contrast, our multi-core benchmark (Geekbench 6 Multi-Core) is a short-burst test lasting approximately 60 seconds. The penalty weight acts as a compression factor to scale down the long-term amplified TDSI deficit to its actual short-term benchmark impact.
-> *   **Hard Empirical Evidence (Same-SoC Isolation):** Comparing the Samsung Galaxy S24 Ultra (59% WLE stability) and the ASUS ROG Phone 8 Pro (71% WLE stability). Both devices share the identical Snapdragon 8 Gen 3 System on Chip (SoC), identical LPDDR5X memory, and identical 12 MB shared cache. The stability percentages translate to TDSI scores using the logarithmic scaling formula defined in Section 6.10:
->     `TDSI = 10 * (log(Stability_Percent) - log(40.0000)) / (log(100.0000) - log(40.0000))` (where `40.0000` represents the minimum thermal stability floor boundary observed across all devices, and `100.0000` represents the maximum stability ceiling).
->     *   **Galaxy S24 Ultra TDSI Derivation:** `10 * (log(59.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 4.24`.
->     *   **ROG Phone 8 Pro TDSI Derivation:** `10 * (log(71.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 6.26`.
->     *   **Physical Cooling Differences:**
->         *   **Samsung Galaxy S24 Ultra:** Employs a passive, fully enclosed vapor chamber integrated under a sealed glass-sandwich chassis, optimized for transient daily burst loads but saturating under sustained workloads.
->         *   **ASUS ROG Phone 8 Pro:** Features a specialized gaming-centric cooling design using a rapid-conduction copper column (a physical copper pillar routing heat directly from the SoC through the Printed Circuit Board (PCB) to internal graphite cooling sheets) and boron nitride thermal interface materials.
->     Because their silicon configurations are identical, the performance gap between these two devices isolates the pure impact of thermal dissipation: under optimal (cold) conditions, both devices achieve a similar peak of ~7,250 points. However, under typical or repeated benchmarking runs, the passive chassis of the Galaxy S24 Ultra throttles performance down to ~6,850 points, whereas the gaming-optimized cooling of the ROG Phone 8 Pro sustains the peak ~7,250 points. This establishes an empirical **5.0000% to 6.0000% typical performance gap** (throughput drop) between the sustained ROG Phone 8 Pro and the thermally saturated Galaxy S24 Ultra.
-> *   **CPU Demand Baseline:** `RCTS_norm = 8.8400` (the normalized raw throughput score of the Snapdragon 8 Gen 3 shared by both devices, calculated deterministically in the worked example below, see **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**).
-> *   **Deficit Derivations:**
->     *   `Deficit_TDSI_S24 = max(0.0000, RCTS_norm - TDSI_S24) = max(0.0000, 8.8400 - 4.2400) = 4.6000` → scaled: `4.6000 ^ 1.4 = 8.4696`
->     *   `Deficit_TDSI_ROG = max(0.0000, RCTS_norm - TDSI_ROG) = max(0.0000, 8.8400 - 6.2600) = 2.5800` → scaled: `2.5800 ^ 1.4 = 3.7694`
-> *   **Logarithmic Translation:** A 5% burst performance drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 6% drop translates to `10 * log(1 / 0.94) / 2.0060 = 0.1340` points.
-> *   **Weight Derivation Formula:**
->     `Weight_TDSI = Delta_RCTS_norm / ( (Deficit_TDSI_S24)^1.4 - (Deficit_TDSI_ROG)^1.4 )`
->     *   Divisor calculation: `8.4696 - 3.7694 = 4.7002`
->     *   Solving for the bounds yields:
->         *   Lower bound: `0.1110 / 4.7002 = 0.0236`
->         *   Upper bound: `0.1340 / 4.7002 = 0.0285`
->     *   *Result:* A calibrated weight of **0.0300** (rounded from the 0.0236–0.0285 range) ensures that the highly amplified TDSI score is compressed accurately to predict short-term multi-core benchmark drops.
-> 
-> ##### 3. Cache & Fabric Efficiency Index (CFEI) Calibration
-> *   **Hard Empirical Evidence:** Semiconductor cache scaling studies (evaluating isolated cache-miss latency) show that severe cache starvation (e.g. comparing a flagship CPU complex with a unified 12 MB shared cache vs a budget 2 MB shared cache) yields an **8% to 10%** throughput drop in cache-intensive workloads.
-> *   **General Workload Translation:** General multi-core benchmarks (such as Geekbench 6) include a mix of cache-sensitive tasks (e.g., data compression) and cache-insensitive tasks (e.g., compute-bound photo filtering). Thus, general-purpose cache degradation impact is lower than the cache-intensive upper bound, and we can expect it to be in the **5% to 7%** range.
-> *   **CPU Demand Baseline:** `RCTS_norm = 7.6400` (chosen because the optimal cache configuration under study—a 12 MB shared cache—has a CFEI score of `7.6400`, which represents the zero-deficit anchor state where cache capacity perfectly satisfies the flagship CPU complex's requirements).
-> *   **Subsystem Scores:** 12 MB Cache = 7.64 CFEI; 2 MB Cache = 3.33 CFEI. These Cache & Fabric Efficiency Index (CFEI) scores are calculated continuously from the combined Level 3 (L3) and System Level Cache (SLC) capacity via the logarithmic scaling formula defined in the CFEI subsection below:
->     `CFEI = 10 * (log(Effective_Shared_Cache) - log(0.5000)) / (log(32.0000) - log(0.5000))` (where `0.5000` Megabytes (MB) is the database minimum stability floor and `32.0000` MB is the maximum ceiling):
->     *   **12 MB Cache score:** `10 * (log(12.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 7.64`.
->     *   **2 MB Cache score:** `10 * (log(2.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 3.33`.
-> *   **Deficit Derivations:**
->     *   `Deficit_CFEI_Optimal = max(0.0000, RCTS_norm - CFEI_Optimal) = max(0.0000, 7.6400 - 7.6400) = 0.0000` → scaled: `0.0000 ^ 1.3 = 0.0000`
->     *   `Deficit_CFEI_Starved = max(0.0000, RCTS_norm - CFEI_Starved) = max(0.0000, 7.6400 - 3.3300) = 4.3100` → scaled: `4.3100 ^ 1.3 = 6.6807`
-> *   **Logarithmic Translation:** A 5% general workload throughput drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 7% drop translates to `10 * log(1 / 0.93) / 2.0060 = 0.1571` points.
-> *   **Weight Derivation Formula:**
->     `Weight_CFEI = Delta_RCTS_norm / ( (Deficit_CFEI_Starved)^1.3 - (Deficit_CFEI_Optimal)^1.3 )`
->     *   Divisor calculation: `6.6807 - 0.0000 = 6.6807`
->     *   Solving for the bounds yields:
->         *   Lower bound: `0.1110 / 6.6807 = 0.0166`
->         *   Upper bound: `0.1571 / 6.6807 = 0.0235`
->     *   *Result:* A calibrated weight of **0.0200** (which lies within the 0.0166–0.0235 range) ensures cache starvation is penalized accurately for general multi-core workloads.
+ 
+##### 🔬 Empirical Calibration & Physical Rationale
 
-> [!TIP]
-> 🚀 **POTENTIAL FUTURE MODEL IMPROVEMENTS:**
-> To capture physical hardware dependencies even more precisely, subsequent model revisions may evaluate replacing the global `RCTS_norm` baseline with targeted physical demand functions and new component integrations. Furthermore, conducting more precise empirical studies and regression analyses across a wider variety of hardware configurations could help to mathematically fine-tune the calibrated weights and non-linear exponents (representing a generalization of the methodology detailed in *Section 6.1.C.B: Subsystem Deficit Calibration* but with the simultaneous optimization of the beta exponents alongside the weights):
-> 
-> #### A. Physical Subsystem Demand Functions (Proposed Options)
-> These proposed formulations isolate core-type sensitivities by replacing flat global demands with specialized physical demand curves:
-> *   **Thermal Demand Function:** Models thermal load by factoring in high-burst single-core power draw:
->     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * BestClusterStrength`
->     *(Rationale: Extremely clocked best performing cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
-> *   **Memory Demand Function:** Models memory bus contention by factoring in cooperative background efficiency workloads:
->     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * WorstClusterStrength`
->     *(Rationale: High concurrency of background threads on the lowest-performing active cluster (the worst cluster) generates heavy random RAM fetches, saturating the system bus and starving fast high-performance clusters.)*
-> *   **Cache Demand Function:** Models cache demand as a function of workload complexity, core asymmetry, and concurrent task parallelism:
->     `Cache_Demand = 0.65 * RCTS_norm + 0.20 * Core_Asymmetry_Index + 0.15 * Parallelism_Index`
->     `Deficit_Cache = max(0, Cache_Demand - CFEI)`
->     *(Rationale: Cache only becomes critical when active threads exceed private caches and memory synchronization pressure increases. A weaker midrange CPU has fewer cores running less demanding tasks, meaning its data fits easily in private caches and it has very little real-world need for a massive shared cache pool. In contrast, an 8-core flagship running highly parallel threads generates heavy shared-data pressure, making a large cache essential.)*
-> 
-> #### B. Dynamic Thread Scheduler Integration (Proposed Option)
-> A comprehensive structural refinement could introduce the OS (Operating System) thread scheduler not as an independent score, but as a dynamic **scheduler efficiency coefficient** applied to a **Core Asymmetry Index (CAI)**.
-> *   *Context and Physical Impact:* In highly asymmetric CPU layouts, the thread scheduler acts as the physical "traffic cop" of the processor. If the scheduler places a high-priority, time-critical thread on a tiny lower-performance core, or a trivial background thread on a power-hungry best performing core, the CPU stalls (causing UI micro-stutters) and wastes power (triggering thermal throttling). An inefficient scheduler directly prevents highly capable flagship core complexes from ever realizing their theoretical multi-core throughput.
-> *   *Core Asymmetry Index (CAI) Formulation:* `CAI = Cluster_Count_Factor * IPC_Disparity * Frequency_Disparity` (where IPC is Instructions Per Cycle). This index mathematically models the physical asymmetry and layout complexity of the CPU core clusters.
-> *   *Physical System Demand:* `Scheduler_Demand = RCTS_norm * CAI` (scaling the physical scheduling workload demand directly by silicon asymmetry).
-> *   *Software Scheduler Capability:* `Scheduler_Capability` represents the OS (Operating System) scheduling capability scored on a granular `[0, 10]` scale (evaluating Base OS Tiers, Hardware Telemetry Bonuses like Qualcomm Thread Director or ARM Hardware Feedback Interface [HFI], and OEM scheduling engines).
-> *   *Penalty and Final Score Integration:* Similar to other physical subsystems, the software scheduling capability is compared directly against the physical hardware demand to calculate a deficit: `Deficit_Scheduler = max(0, Scheduler_Demand - Scheduler_Capability)`. If a deficit exists (meaning the OS scheduler is too weak to efficiently orchestrate the physical cluster asymmetry), an exponential penalty is applied (`Penalty_Scheduler = Weight_Scheduler * (Deficit_Scheduler ^ 1.3)`) to directly discount the final multi-core CPU performance score.
-> 
+To ensure mathematical alignment with real-world physical throughput, the penalty coefficients (weights) and non-linear exponents (beta values) are calibrated using verifiable hardware benchmarks and isolated scaling tests.
+ 
+###### A. Common Mathematical Translation Framework
+The scoring model converts raw multi-threaded throughput drops to normalized score deltas. Under our global normalization (Weber-Fechner Law), the normalized Raw CPU Throughput Score (RCTS_norm) is:
+`RCTS_norm = 10 * (log(RCTS) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min))`
+ 
+Utilizing the following canonical anchors representing the full performance spectrum of 2016-2026 devices:
+*   `CPU_RCTS_Min = 0.5487`
+*   `CPU_RCTS_Max = 55.6302`
+*   `Global Scaling Range = log(55.6302) - log(0.5487) = 1.7453 - (-0.2607) = 2.0060`
+ 
+Thus, any raw throughput degradation from an optimal state (T_optimal) to a compromised state (T_compromised) translates to a normalized score delta:
+`Delta_RCTS_norm = 10 * log(T_optimal / T_compromised) / 2.0060`
+ 
+###### B. Subsystem Deficit Calibration
+ 
+| Bottleneck Type         | Input Metric | Weight | Exponent (β) | Target Workload           | Empirical Drop | Score Delta     |
+| :---------------------- | :----------- | :----: | :----------: | :------------------------ | :------------: | :-------------: |
+| **Memory Bandwidth**    | MTI          |  0.16  |     1.4      | SPEC CPU2017 (Multi-core) |   35% - 42%    | 0.9326 - 1.1793 |
+| **Thermal Dissipation** | TDSI         |  0.03  |     1.4      | Geekbench 6 Multi-Core    |    5% - 6%     | 0.1110 - 0.1340 |
+| **Cache Capacity**      | CFEI         |  0.02  |     1.3      | General multi-core mix    |    5% - 7%     | 0.1110 - 0.1571 |
+ 
+###### 1. Memory Technology Index (MTI) Calibration
+*   **Hard Empirical Evidence:** Down-clocking memory from a quad-channel Low Power Double Data Rate 5X (LPDDR5X) configuration at 8533 MT/s to a dual-channel Low Power Double Data Rate 4X (LPDDR4X) configuration at 4266 MT/s results in a measured 35% to 42% throughput drop in multi-threaded integer and floating-point workloads (tested via Standard Performance Evaluation Corporation (SPEC) CPU2017).
+*   **CPU Demand Baseline:** `RCTS_norm = 9.3400` (matching the optimal LPDDR5X-8533 memory score, representing the zero-deficit anchor state where memory bandwidth perfectly satisfies flagship CPU requests).
+*   **Subsystem Scores:** LPDDR5X-8533 = 9.3400; LPDDR4X-4266 = 5.4700 (derived from Section 6.5).
+*   **Deficit Derivations:**
+     *   `Deficit_MTI_Optimal = max(0.0000, RCTS_norm - MTI_Optimal) = max(0.0000, 9.3400 - 9.3400) = 0.0000` → scaled: `0.0000 ^ 1.4 = 0.0000`
+     *   `Deficit_MTI_Starved = max(0.0000, RCTS_norm - MTI_Starved) = max(0.0000, 9.3400 - 5.4700) = 3.8700` → scaled: `3.8700 ^ 1.4 = 6.6496`
+*   **Logarithmic Translation:** A 35% throughput drop translates to a score delta of `10 * log(1 / 0.65) / 2.0060 = 0.9326` points. A 42% drop translates to `10 * log(1 / 0.58) / 2.0060 = 1.1793` points.
+*   **Weight Derivation Formula:**
+     `Weight_MTI = Delta_RCTS_norm / ( (Deficit_MTI_Starved)^1.4 - (Deficit_MTI_Optimal)^1.4 )`
+     *   Divisor calculation: `6.6496 - 0.0000 = 6.6496`
+     *   Solving for the bounds yields:
+         *   Lower bound: `0.9326 / 6.6496 = 0.1403`
+         *   Upper bound: `1.1793 / 6.6496 = 0.1773`
+     *   *Result:* A calibrated weight of **0.1600** represents a **38.8000%** throughput drop, matching the exact midpoint of empirical observations.
+ 
+###### 2. Thermal Dissipation Stability Index (TDSI) Calibration
+*   **Timescale Mismatch & Compression Rationale:** The Thermal Dissipation Stability Index (TDSI) is evaluated using a 20-minute 3DMark Wild Life Extreme (WLE) stress test, which captures long-term thermal saturation and highly amplifies thermal stability differences between devices. In contrast, our multi-core benchmark (Geekbench 6 Multi-Core) is a short-burst test lasting approximately 60 seconds. The penalty weight acts as a compression factor to scale down the long-term amplified TDSI deficit to its actual short-term benchmark impact.
+*   **Hard Empirical Evidence (Same-SoC Isolation):** Comparing the Samsung Galaxy S24 Ultra (59% WLE stability) and the ASUS ROG Phone 8 Pro (71% WLE stability). Both devices share the identical Snapdragon 8 Gen 3 System on Chip (SoC), identical LPDDR5X memory, and identical 12 MB shared cache. The stability percentages translate to TDSI scores using the logarithmic scaling formula defined in Section 6.10:
+     `TDSI = 10 * (log(Stability_Percent) - log(40.0000)) / (log(100.0000) - log(40.0000))` (where `40.0000` represents the minimum thermal stability floor boundary observed across all devices, and `100.0000` represents the maximum stability ceiling).
+     *   **Galaxy S24 Ultra TDSI Derivation:** `10 * (log(59.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 4.24`.
+     *   **ROG Phone 8 Pro TDSI Derivation:** `10 * (log(71.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 6.26`.
+     *   **Physical Cooling Differences:**
+         *   **Samsung Galaxy S24 Ultra:** Employs a passive, fully enclosed vapor chamber integrated under a sealed glass-sandwich chassis, optimized for transient daily burst loads but saturating under sustained workloads.
+         *   **ASUS ROG Phone 8 Pro:** Features a specialized gaming-centric cooling design using a rapid-conduction copper column (a physical copper pillar routing heat directly from the SoC through the Printed Circuit Board (PCB) to internal graphite cooling sheets) and boron nitride thermal interface materials.
+     Because their silicon configurations are identical, the performance gap between these two devices isolates the pure impact of thermal dissipation: under optimal (cold) conditions, both devices achieve a similar peak of ~7,250 points. However, under typical or repeated benchmarking runs, the passive chassis of the Galaxy S24 Ultra throttles performance down to ~6,850 points, whereas the gaming-optimized cooling of the ROG Phone 8 Pro sustains the peak ~7,250 points. This establishes an empirical **5.0000% to 6.0000% typical performance gap** (throughput drop) between the sustained ROG Phone 8 Pro and the thermally saturated Galaxy S24 Ultra.
+*   **CPU Demand Baseline:** `RCTS_norm = 8.8400` (the normalized raw throughput score of the Snapdragon 8 Gen 3 shared by both devices, calculated deterministically in the worked example below, see **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**).
+*   **Deficit Derivations:**
+     *   `Deficit_TDSI_S24 = max(0.0000, RCTS_norm - TDSI_S24) = max(0.0000, 8.8400 - 4.2400) = 4.6000` → scaled: `4.6000 ^ 1.4 = 8.4696`
+     *   `Deficit_TDSI_ROG = max(0.0000, RCTS_norm - TDSI_ROG) = max(0.0000, 8.8400 - 6.2600) = 2.5800` → scaled: `2.5800 ^ 1.4 = 3.7694`
+*   **Logarithmic Translation:** A 5% burst performance drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 6% drop translates to `10 * log(1 / 0.94) / 2.0060 = 0.1340` points.
+*   **Weight Derivation Formula:**
+     `Weight_TDSI = Delta_RCTS_norm / ( (Deficit_TDSI_S24)^1.4 - (Deficit_TDSI_ROG)^1.4 )`
+     *   Divisor calculation: `8.4696 - 3.7694 = 4.7002`
+     *   Solving for the bounds yields:
+         *   Lower bound: `0.1110 / 4.7002 = 0.0236`
+         *   Upper bound: `0.1340 / 4.7002 = 0.0285`
+     *   *Result:* A calibrated weight of **0.0300** (rounded from the 0.0236–0.0285 range) ensures that the highly amplified TDSI score is compressed accurately to predict short-term multi-core benchmark drops.
 
-> ### 🧠 Cache & Fabric Efficiency Index (CFEI)
-> The Cache & Fabric Efficiency Index (CFEI) measures the capacity and physical layout efficiency of the System on Chip (SoC) shared on-chip memory.
-> 
-> **Understanding the Cache Hierarchy:**
-> *   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
-> *   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
-> 
-> For most Systems on Chip (SoCs), the cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
-> 
-> `Effective_Shared_Cache = L3 Cache (MB) + SLC (MB)`
-> 
-> Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the cache efficiency score is calculated continuously:
-> 
-> `CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
-> 
-> *   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
-> 
-> **Worked Continuous Benchmarks (Cache Scores [CFEI]):**
-> *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
-> *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
-> *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
-> *   `12 MB` (e.g., Snapdragon 8 Gen 3 L3 / Exynos 2400) -> **`7.6416`**
-> *   `8 MB` (e.g., Snapdragon 8 Gen 2 L3) -> **`6.6667`**
-> *   `6 MB` (e.g., Snapdragon 8 Gen 1 L3) -> **`5.9749`**
-> *   `4 MB` (e.g., Tensor G3 L3 / Dimensity 8300) -> **`5.0000`**
-> *   `2 MB` (e.g., Snapdragon 7s Gen 2 L3) -> **`3.3333`**
-> *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
-> *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
-> 
-> #### 🔹 CFEI Capacity Calculation & Edge-Case Rules
-> When calculating the cache efficiency score (`CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
-> 
-> 1.  **Combined Manufacturer Reporting:**
->     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly as the `Effective_Shared_Cache` capacity.
->
-> 2.  **Apple SLC-Only Architecture:**
->     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CPU Architecture Score [CAS]) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
->
-> 3.  **Snapdragon 8 Elite Capacity & Coherency Rules:**
->     The Snapdragon 8 Elite uses a unique architecture with large private Level 2 (L2) caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no Level 3 (L3) cache.
->     *   *Capacity Equivalence:* Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip Static Random-Access Memory (SRAM) pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external Dynamic Random-Access Memory (DRAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool. Hence, its baseline capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`, which resolves to a baseline score of `10`.
->     *   *Coherency Penalty:* Because these L2 caches are physically split per cluster and lack a unified L3 cache, cross-cluster cache coherency incurs a significant latency penalty over the Network on Chip (NoC). To reflect this microarchitectural routing latency, a flat penalty of **`-0.5000`** is applied directly to the calculated score, yielding a final score of **`9.5000`**.
->     *   *Justification for the -0.5000 Calibration (order of magnitude):* On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a ~25% effective reduction of the 24 MB L2 cache pool (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
->
-> 4.  **Entry-Level and Legacy SoCs (No L3, No SLC):**
->     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no Level 3 (L3) cache and no SLC. Their Level 2 (L2) caches are strictly private to individual cores or clusters and cannot act as a shared Last Level Cache (LLC) across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5` MB (the minimum baseline of our continuous logarithmic model), yielding a `CFEI` score of `0`.
-> 
-> [!NOTE]
-> **Note on Future Modifications:** Additional fabric topology edge cases could be added in the future to fine-tune the model for other architectures (e.g., standard DSU ring-bus variations), but they are not considered for now due to their low overall impact on the final system score.
+###### 3. Cache & Fabric Efficiency Index (CFEI) Calibration
+*   **Hard Empirical Evidence:** Semiconductor cache scaling studies (evaluating isolated cache-miss latency) show that severe cache starvation (e.g. comparing a flagship CPU complex with a unified 12 MB shared cache vs a budget 2 MB shared cache) yields an **8% to 10%** throughput drop in cache-intensive workloads.
+*   **General Workload Translation:** General multi-core benchmarks (such as Geekbench 6) include a mix of cache-sensitive tasks (e.g., data compression) and cache-insensitive tasks (e.g., compute-bound photo filtering). Thus, general-purpose cache degradation impact is lower than the cache-intensive upper bound, and we can expect it to be in the **5% to 7%** range.
+*   **CPU Demand Baseline:** `RCTS_norm = 7.6400` (chosen because the optimal cache configuration under study—a 12 MB shared cache—has a CFEI score of `7.6400`, which represents the zero-deficit anchor state where cache capacity perfectly satisfies the flagship CPU complex's requirements).
+*   **Subsystem Scores:** 12 MB Cache = 7.64 CFEI; 2 MB Cache = 3.33 CFEI. These Cache & Fabric Efficiency Index (CFEI) scores are calculated continuously from the combined Level 3 (L3) and System Level Cache (SLC) capacity via the logarithmic scaling formula defined in the CFEI subsection below:
+     `CFEI = 10 * (log(Effective_Shared_Cache) - log(0.5000)) / (log(32.0000) - log(0.5000))` (where `0.5000` Megabytes (MB) is the database minimum cache capacity floor and `32.0000` MB is the maximum ceiling):
+     *   **12 MB Cache score:** `10 * (log(12.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 7.64`.
+     *   **2 MB Cache score:** `10 * (log(2.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 3.33`.
+*   **Deficit Derivations:**
+     *   `Deficit_CFEI_Optimal = max(0.0000, RCTS_norm - CFEI_Optimal) = max(0.0000, 7.6400 - 7.6400) = 0.0000` → scaled: `0.0000 ^ 1.3 = 0.0000`
+     *   `Deficit_CFEI_Starved = max(0.0000, RCTS_norm - CFEI_Starved) = max(0.0000, 7.6400 - 3.3300) = 4.3100` → scaled: `4.3100 ^ 1.3 = 6.6807`
+*   **Logarithmic Translation:** A 5% general workload throughput drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 7% drop translates to `10 * log(1 / 0.93) / 2.0060 = 0.1571` points.
+*   **Weight Derivation Formula:**
+     `Weight_CFEI = Delta_RCTS_norm / ( (Deficit_CFEI_Starved)^1.3 - (Deficit_CFEI_Optimal)^1.3 )`
+     *   Divisor calculation: `6.6807 - 0.0000 = 6.6807`
+     *   Solving for the bounds yields:
+         *   Lower bound: `0.1110 / 6.6807 = 0.0166`
+         *   Upper bound: `0.1571 / 6.6807 = 0.0235`
+     *   *Result:* A calibrated weight of **0.0200** (which lies within the 0.0166–0.0235 range) ensures cache starvation is penalized accurately for general multi-core workloads.
 
-> #### 🔹 Master Cache Capacity Reference
-> To eliminate redundancy and ensure a single canonical source of truth, the complete, exhaustive database of all shared cache capacities and fabric routing details for mobile chipsets from 2016 to 2026 is maintained in the [System on Chip (SoC) Reference (references/soc_reference.md)]. 
-> 
-> Researchers and models **must** refer directly to that document to resolve the Level 3 (L3) cache, System Level Cache (SLC) capacity, effective shared cache, and final `CFEI` score for any given SoC model.
-> 
+[!TIP]
+🚀 **POTENTIAL FUTURE MODEL IMPROVEMENTS:**
+To capture physical hardware dependencies even more precisely, subsequent model revisions may evaluate replacing the global `RCTS_norm` baseline with targeted physical demand functions and new component integrations. Furthermore, conducting more precise empirical studies and regression analyses across a wider variety of hardware configurations could help to mathematically fine-tune the calibrated weights and non-linear exponents (representing a generalization of the methodology detailed in *Section 6.1.C.B: Subsystem Deficit Calibration* but with the simultaneous optimization of the beta exponents alongside the weights):
+ 
+###### A. Physical Subsystem Demand Functions (Proposed Options)
+These proposed formulations isolate core-type sensitivities by replacing flat global demands with specialized physical demand curves:
+*   **Thermal Demand Function:** Models thermal load by factoring in high-burst single-core power draw:
+     `Thermal_Demand = 0.75 * RCTS_norm + 0.25 * BestClusterStrength`
+     *(Rationale: Extremely clocked best performing cores generate concentrated, high-voltage heat flux, spiking cooling demand disproportionately compared to other clusters.)*
+*   **Memory Demand Function:** Models memory bus contention by factoring in cooperative background efficiency workloads:
+     `Memory_Demand = 0.65 * RCTS_norm + 0.35 * WorstClusterStrength`
+     *(Rationale: High concurrency of background threads on the lowest-performing active cluster (the worst cluster) generates heavy random RAM fetches, saturating the system bus and starving fast high-performance clusters.)*
+*   **Cache Demand Function:** Models cache demand as a function of workload complexity, core asymmetry, and concurrent task parallelism:
+     `Cache_Demand = 0.65 * RCTS_norm + 0.20 * Core_Asymmetry_Index + 0.15 * Parallelism_Index`
+     `Deficit_Cache = max(0, Cache_Demand - CFEI)`
+     *(Rationale: Cache only becomes critical when active threads exceed private caches and memory synchronization pressure increases. A weaker midrange CPU has fewer cores running less demanding tasks, meaning its data fits easily in private caches and it has very little real-world need for a massive shared cache pool. In contrast, an 8-core flagship running highly parallel threads generates heavy shared-data pressure, making a large cache essential.)*
+ 
+###### B. Dynamic Thread Scheduler Integration (Proposed Option)
+A comprehensive structural refinement could introduce the OS (Operating System) thread scheduler not as an independent score, but as a dynamic **scheduler efficiency coefficient** applied to a **Core Asymmetry Index (CAI)**.
+*   *Context and Physical Impact:* In highly asymmetric CPU layouts, the thread scheduler acts as the physical "traffic cop" of the processor. If the scheduler places a high-priority, time-critical thread on a tiny lower-performance core, or a trivial background thread on a power-hungry best performing core, the CPU stalls (causing UI micro-stutters) and wastes power (triggering thermal throttling). An inefficient scheduler directly prevents highly capable flagship core complexes from ever realizing their theoretical multi-core throughput.
+*   *Core Asymmetry Index (CAI) Formulation:* `CAI = Cluster_Count_Factor * IPC_Disparity * Frequency_Disparity` (where IPC is Instructions Per Cycle). This index mathematically models the physical asymmetry and layout complexity of the CPU core clusters.
+*   *Physical System Demand:* `Scheduler_Demand = RCTS_norm * CAI` (scaling the physical scheduling workload demand directly by silicon asymmetry).
+*   *Software Scheduler Capability:* `Scheduler_Capability` represents the OS (Operating System) scheduling capability scored on a granular `[0, 10]` scale (evaluating Base OS Tiers, Hardware Telemetry Bonuses like Qualcomm Thread Director or ARM Hardware Feedback Interface (HFI), and Original Equipment Manufacturer (OEM) scheduling engines).
+*   *Penalty and Final Score Integration:* Similar to other physical subsystems, the software scheduling capability is compared directly against the physical hardware demand to calculate a deficit: `Deficit_Scheduler = max(0, Scheduler_Demand - Scheduler_Capability)`. If a deficit exists (meaning the OS scheduler is too weak to efficiently orchestrate the physical cluster asymmetry), an exponential penalty is applied (`Penalty_Scheduler = Weight_Scheduler * (Deficit_Scheduler ^ 1.3)`) to directly discount the final multi-core CPU performance score.
+ 
 
-> **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**
-> *   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
-> *   **Actual Specs:** 1x X4 @ 3.3000 GHz, 5x A720 @ 3.2000 GHz, 2x A520 @ 2.3000 GHz
-> *   **Step 1 (Core Yields with Soft-Saturation):**
->     *   Best (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 7.9500 * (1.0000^0.9300) = 7.9500`
->     *   Second Best (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
->     *   Third Best (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
-> *   **Step 2 (CET with PACC):**
->     *   Best: `PACC = 1^1.0000 = 1.0000`. `CET = 7.9500 * 1.0000 = 7.9500`
->     *   Second Best: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
->     *   Third Best: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
-> *   **Step 3 (RCTS):** `7.9500 + 22.3840 + 2.1909 = 32.5249`
-> *   **Step 4 (Global Normalization):**
->     *   `RCTS_norm = 10.0000 * (log(32.5249) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (1.5122 - (-0.2607)) / (1.7453 - (-0.2607)) = 8.8380`
-> *   **Step 5 (Penalties, Final Score & Safety Check):**
->     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `CFEI = 7.0000`.
->     *   `Deficit_MTI = max(0.0000, 8.8380 - 8.0000) = 0.8380`. `Penalty_MTI = 0.1600 * (0.8380^1.4000) = 0.1249`
->     *   `Deficit_TDSI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_TDSI = 0.0300 * (1.8380^1.4000) = 0.0703`
->     *   `Deficit_CFEI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_CFEI = 0.0200 * (1.8380^1.3000) = 0.0441`
->     *   `Total Penalty = 0.1249 + 0.0703 + 0.0441 = 0.2393`
->     *   `Final Score = 8.8380 - 0.2393 = 8.5987` (Bounds Check: 8.5987 is within `[0.0000, 10.0000]` → Pass)
+##### 🧠 Cache & Fabric Efficiency Index (CFEI)
+The Cache & Fabric Efficiency Index (CFEI) measures the capacity and physical layout efficiency of the System on Chip (SoC) shared on-chip memory.
+ 
+**Understanding the Cache Hierarchy:**
+*   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
+*   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
+ 
+For most Systems on Chip (SoCs), the cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
+ 
+`Effective_Shared_Cache = L3 Cache (MB) + SLC (MB)`
+ 
+Cache capacity benefits follow a logarithmic curve due to diminishing performance returns (doubling the cache size yields progressively smaller reductions in cache miss rates). To perfectly align with the continuous, logarithmic nature of `RCTS_norm`, the cache efficiency score is calculated continuously:
+ 
+`CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
+ 
+*   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
+ 
+**Worked Continuous Benchmarks (Cache Scores [CFEI]):**
+ *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
+ *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
+ *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
+ *   `12 MB` (e.g., Snapdragon 8 Gen 3 L3 / Exynos 2400) -> **`7.6416`**
+ *   `8 MB` (e.g., Snapdragon 8 Gen 2 L3) -> **`6.6667`**
+ *   `6 MB` (e.g., Snapdragon 8 Gen 1 L3) -> **`5.9749`**
+ *   `4 MB` (e.g., Tensor G3 L3 / Dimensity 8300) -> **`5.0000`**
+ *   `2 MB` (e.g., Snapdragon 7s Gen 2 L3) -> **`3.3333`**
+ *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
+ *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
+ 
+###### 🔹 CFEI Capacity Calculation & Edge-Case Rules
+When calculating the cache efficiency score (`CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
+ 
+1.  **Combined Manufacturer Reporting:**
+     If "L3 + SLC" is reported as a combined figure by the manufacturer, use that figure directly as the `Effective_Shared_Cache` capacity.
+
+2.  **Apple SLC-Only Architecture:**
+     Apple SoCs bypass standard Level 3 (L3) caches entirely, utilizing massive cluster-private Level 2 (L2) caches (inherently captured in single-core CPU Architecture Score [CAS]) and a large system-wide System Level Cache (SLC). Since no Level 3 (L3) cache exists, their effective shared cache capacity is defined strictly as `SLC (MB)`.
+
+3.  **Snapdragon 8 Elite Capacity & Coherency Rules:**
+     The Snapdragon 8 Elite uses a unique architecture with large private Level 2 (L2) caches per core cluster (12 MB L2 per Oryon cluster, 24 MB total) and a shared 8 MB SLC, but no Level 3 (L3) cache.
+     *   *Capacity Equivalence:* Capacity-wise, 24 MB of cluster-shared L2 + 8 MB SLC acts as a 32 MB on-chip Static Random-Access Memory (SRAM) pool. When a thread misses in its private cache, retrieving data from another cluster's L2 or the SLC still avoids a high-latency trip to external Dynamic Random-Access Memory (DRAM). Therefore, in terms of reducing memory bandwidth bottleneck and maximizing cache hit rate, it is structurally equivalent to a 32 MB L3+SLC pool. Hence, its baseline capacity is combined: `24 MB L2 + 8 MB SLC = 32 MB`, which resolves to a baseline score of `10`.
+     *   *Coherency Penalty:* Because these L2 caches are physically split per cluster and lack a unified L3 cache, cross-cluster cache coherency incurs a significant latency penalty over the Network-on-Chip (NoC). To reflect this microarchitectural routing latency, a flat penalty of **`-0.5000`** is applied directly to the calculated score, yielding a final score of **`9.5000`**.
+     *   *Justification for the -0.5000 Calibration (order of magnitude):* On our 0 to 10 scale, a -0.5 penalty shifts the final CFEI score down from 10 to 9.5. In our continuous logarithmic model, a CFEI score of 9.5 is mathematically equivalent to the efficiency of a unified ~26 MB cache pool. This effectively discounts the split 32 MB total capacity (24 MB L2 + 8 MB SLC) by ~6 MB, which represents a ~25% effective reduction of the 24 MB L2 cache pool (6 MB / 24 MB = 25%). This 25% discount is justified microarchitecturally: because each core cluster only has immediate, low-latency access to its local 12 MB L2 pool, while the remaining 12 MB L2 on the opposite cluster is non-local and requires high-latency NoC fabric traversal. Penalizing this non-local pool's capacity by half (6 MB) provides a good order-of-magnitude estimation of the real-world latency overhead of split caches.
+
+4.  **Entry-Level and Legacy SoCs (No L3, No SLC):**
+     Ultra-low-end or legacy chipsets (e.g., Helio G99, Snapdragon 680) have no Level 3 (L3) cache and no SLC. Their Level 2 (L2) caches are strictly private to individual cores or clusters and cannot act as a shared Last Level Cache (LLC) across the fabric. For these chipsets, the effective shared cache capacity is set to the DynamIQ Shared Unit (DSU) shared cache size (usually 512 KB / 0.5 MB or 1 MB). If no DSU shared cache exists, the capacity is set to `0.5` MB (the minimum baseline of our continuous logarithmic model), yielding a `CFEI` score of `0`.
+ 
+[!NOTE]
+**Note on Future Modifications:** Additional fabric topology edge cases could be added in the future to fine-tune the model for other architectures (e.g., standard DSU ring-bus variations), but they are not considered for now due to their low overall impact on the final system score.
+
+###### 🔹 Master Cache Capacity Reference
+To eliminate redundancy and ensure a single canonical source of truth, the complete, exhaustive database of all shared cache capacities and fabric routing details for mobile chipsets from 2016 to 2026 is maintained in the [System on Chip (SoC) Reference (references/soc_reference.md)]. 
+ 
+Researchers and models **must** refer directly to that document to resolve the Level 3 (L3) cache, System Level Cache (SLC) capacity, effective shared cache, and final `CFEI` score for any given SoC model.
+ 
+
+##### 📝 Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)
+*   **Ref Freqs (§6.1.0):** X4 = 3.3000 GHz, A720 = 2.8000 GHz, A520 = 2.0000 GHz
+*   **Actual Specs:** 1x X4 @ 3.3000 GHz, 5x A720 @ 3.2000 GHz, 2x A520 @ 2.3000 GHz
+*   **Step 1 (Core Yields with Soft-Saturation):**
+     *   Best (X4): `R = 3.3000 / 3.3000 = 1.0000`. `γ(1) = 0.9300`. `CY = 7.9500 * (1.0000^0.9300) = 7.9500`
+     *   Second Best (A720): `R = 3.2000 / 2.8000 = 1.1429`. `γ(5) = 0.9800`. `CY = 5.0000 * (1.1429^0.9800) = 5.6993`
+     *   Third Best (A520): `R = 2.3000 / 2.0000 = 1.1500`. `γ(2) = 0.9500`. `CY = 1.0000 * (1.1500^0.9500) = 1.1420`
+*   **Step 2 (CET with PACC):**
+     *   Best: `PACC = 1^1.0000 = 1.0000`. `CET = 7.9500 * 1.0000 = 7.9500`
+     *   Second Best: `PACC = 5^0.8500 = 3.9275`. `CET = 5.6993 * 3.9275 = 22.3840`
+     *   Third Best: `PACC = 2^0.9400 = 1.9185`. `CET = 1.1420 * 1.9185 = 2.1909`
+*   **Step 3 (RCTS):** `7.9500 + 22.3840 + 2.1909 = 32.5249`
+*   **Step 4 (Global Normalization):**
+     *   `RCTS_norm = 10.0000 * (log(32.5249) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (1.5122 - (-0.2607)) / (1.7453 - (-0.2607)) = 8.8380`
+*   **Step 5 (Penalties, Final Score & Safety Check):**
+     *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `CFEI = 7.0000`.
+     *   `Deficit_MTI = max(0.0000, 8.8380 - 8.0000) = 0.8380`. `Penalty_MTI = 0.1600 * (0.8380^1.4000) = 0.1249`
+     *   `Deficit_TDSI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_TDSI = 0.0300 * (1.8380^1.4000) = 0.0703`
+     *   `Deficit_CFEI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_CFEI = 0.0200 * (1.8380^1.3000) = 0.0441`
+     *   `Total Penalty = 0.1249 + 0.0703 + 0.0441 = 0.2393`
+     *   `Final Score = 8.8380 - 0.2393 = 8.5987` (Bounds Check: 8.5987 is within `[0.0000, 10.0000]` → Pass)
 
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
