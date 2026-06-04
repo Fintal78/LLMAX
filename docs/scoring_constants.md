@@ -12,14 +12,14 @@
 
 **1. Design & Build**
 
-### 1.4 Thickness
-*   `Thickness_mm_Min` = 5.5 (Score 10), `Thickness_mm_Max` = 11.0 (Score 0)
+### 1.4 Ergonomics (Thickness & Width)
+*   `Thickness_mm_Min` = 5.5 (Score 10) [Minimum (Min) thickness in millimeters (mm)]
+*   `Thickness_mm_Max` = 11.0 (Score 0) [Maximum (Max) thickness in millimeters (mm)]
+*   `Width_mm_Min` = 67.3 (Score 10) [Minimum (Min) width in millimeters (mm)]
+*   `Width_mm_Max` = 79.0 (Score 0) [Maximum (Max) width in millimeters (mm)]
 
 ### 1.5 Weight
 *   `Weight_g_Min` = 140 (Score 10), `Weight_g_Max` = 260 (Score 0)
-
-### 1.6 Ergonomics (Width)
-*   `Width_mm_Min` = 67.3 (Score 10), `Width_mm_Max` = 79.0 (Score 0)
 
 
 **2. Display**

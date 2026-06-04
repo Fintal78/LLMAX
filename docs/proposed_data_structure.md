@@ -302,17 +302,28 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "1_4_thickness_mm": {
-      // SCORING GOAL: Scores device thickness in millimeters (excluding camera bump) as a measure of pocketability and hand comfort. Thinner is always better.
-      "value": 8.6,
-      "source": "TBD",
-      "exact_extract": "Proof pending",
+    "1_4_ergonomics": {
+      // SCORING GOAL: Evaluates device physical handling comfort using thickness (depth) and width (one-handed usability). Thickness scores device thickness in millimeters (mm) as a measure of pocketability and hand comfort. Width scores device width as a measure of one-handed ergonomics; beyond a critical threshold, phones become difficult to grip and operate single-handedly.
+      "thickness_mm": {
+        "value": 8.6,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 4.36
+        // SCORING GUIDELINE: Score = 10 * (Thickness_mm_Max − value) / (Thickness_mm_Max − Thickness_mm_Min), clamped 0–10.
+      },
+      "width_mm": {
+        "value": 79.0,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Score = 10 * (1 − ((value − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
+      },
       "scores": {
-        "predicted": 4.36,
-        // SCORING GUIDELINE: Score = 10 − 10 * ((value − Thickness_mm_Min) / (Thickness_mm_Max − Thickness_mm_Min)), clamped 0–10.
+        "predicted": 2.18,
+        // SCORING GUIDELINE: Score = (0.5 * thickness_mm.subscore) + (0.5 * width_mm.subscore).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 4.36,
+          "value": 2.18,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
@@ -326,31 +337,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "exact_extract": "Proof pending",
       "scores": {
         "predicted": 2.33,
-        // SCORING GUIDELINE: Score = 10 − 10 * ((value − Weight_g_Min) / (Weight_g_Max − Weight_g_Min)), clamped 0–10.
+        // SCORING GUIDELINE: Score = 10 * (Weight_g_Max − value) / (Weight_g_Max − Weight_g_Min), clamped 0–10.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 2.33,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
-        }
-      }
-    },
-    "1_6_ergonomics": {
-      // SCORING GOAL: Scores device width as a measure of one-handed ergonomics. Beyond a critical threshold, phones become difficult to grip and operate single-handedly. Note: the positive benefit of a wider screen is already captured in Sections 2.8 (Screen-to-Body Ratio) and 2.9 (Screen Size).
-      "width_mm": {
-        "value": 79.0,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 0.00
-        // SCORING GUIDELINE: Apply the Section 1.6 quadratic formula: Score = 10 * (1 − ((width_mm − Width_mm_Min) / (Width_mm_Max − Width_mm_Min))²), clamped 0–10.
-      },
-      "scores": {
-        "predicted": 0.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits width_mm.subscore.
-        "final": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
@@ -3552,7 +3542,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "width_mm": {
           "value": 79.0,
-          "value_path": "1_design_and_build_quality.1_6_ergonomics.width_mm.value"
+          "value_path": "1_design_and_build_quality.1_4_ergonomics.width_mm.value"
           // GUIDELINE: Overall device width in mm. Critical for radiator surface area calculation.
         },
         "aspect_ratio": {
@@ -3569,7 +3559,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "frame_radiator_area_m2": {
           "value": 0.00353,
-          "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_thickness_mm.value * 0.85 / 1000000"
+          "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_ergonomics.thickness_mm.value * 0.85 / 1000000"
           // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
         },
         "display_surface_area_cm2": {

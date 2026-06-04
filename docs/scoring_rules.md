@@ -201,47 +201,45 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 *   **Entry-Level Reinforced**: Basic chemical tempering with ~1.2m drop certification.
 
 
-### 🔹 1.4 Thickness
+### 🔹 1.4 Ergonomics
+*Description:* Evaluates the physical handling comfort and usability of the device based on its thickness and width. Thinner and narrower devices are easier to hold, fit better in pockets, and are more comfortable to operate single-handedly.
+*   **Measurement:** Device Thickness (depth) and Width.
+*   **Unit:** Composite Score (0.0–10.0)
+*   **Significance:** Affects pocketability, hand grip, and one-handed accessibility.
+*Formula:* `Score = (0.5 * Thickness_Score) + (0.5 * Width_Score)` (Clamped 0.0–10.0)
+*   **Max Score (10.0):** Maximum score on both thickness and width.
+*   **Min Score (0.0):** Minimum score on both thickness and width.
+
+#### 1.4.A Thickness (Depth)
 *Description:* Device thickness excluding camera bump. Thinner phones are easier to hold and fit better in pockets.
 *   **Measurement:** Calipers at the thickest point of the body (excluding camera protrusion).
 *   **Unit:** Millimeters (mm)
 *   **Significance:** Affects pocketability and hand comfort.
-*Formula:* `Score = 10 - 10 * ((Thickness - Thickness_mm_Min) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0-10)
+*Formula:* `Score = 10 * ((Thickness_mm_Max - Thickness) / (Thickness_mm_Max - Thickness_mm_Min))` (Clamped 0.0–10.0)
 *   **Max Score (10.0):** ≤ Thickness_mm_Min
 *   **Min Score (0.0):** ≥ Thickness_mm_Max
 > [!NOTE]
-> **Why Linear?** The discomfort of carrying a thick phone (in a pocket or in the hand) increases by the same amount with each extra millimeter. Think of it like a book: a 9mm hardcover is noticeably thicker than an 8mm one, and a 12mm brick is noticeably thicker than an 11mm one — the penalty is constant. There are no diminishing returns in the practical 6–12mm smartphone range, so a straight linear scale is the most honest model.
+> **Why Linear?** The discomfort of carrying a thick phone (in a pocket or in the hand) increases by the same amount with each extra millimeter (mm). Think of it like a book: a 9 millimeters (mm) hardcover is noticeably thicker than an 8 millimeters (mm) one, and a 12 millimeters (mm) brick is noticeably thicker than an 11 millimeters (mm) one — the penalty is constant. There are no diminishing returns in the practical 6–12 millimeters (mm) smartphone range, so a straight linear scale is the most honest model.
 
-### 🔹 1.5 Weight
-*Description:* Total device weight. Lighter phones are more comfortable to hold for long periods (e.g., reading, watching videos) without wrist strain.
-*   **Measurement:** Digital scale weight including battery.
-*   **Unit:** Grams (g)
-*   **Significance:** Determines long-term holding comfort and fatigue.
-*Formula:* `Score = 10 - 10 * ((Weight - Weight_g_Min) / (Weight_g_Max - Weight_g_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ Weight_g_Min
-*   **Min Score (0.0):** ≥ Weight_g_Max
-> [!NOTE]
-> **Why Linear?** Wrist and arm fatigue from holding a phone scales approximately proportionally with weight — the same way a 200g book feels twice as heavy as a 100g booklet after an extended reading session. Within the practical 130–250g range that covers all modern smartphones, each additional gram adds a constant ergonomic cost. No diminishing returns apply here.
-
-### 🔹 1.6 Ergonomics (Width & Handling)
+#### 1.4.B Width & Handling (One-Handed Usability)
 *Description:* Quantifies the ergonomic handling cost of phone width for one-handed use. Wider phones are harder to grip and operate single-handedly, with the discomfort accelerating beyond a critical threshold tied to human hand anatomy. Note: the positive benefit of a wider phone (bigger screen) is already captured in Section 2.9 (Screen Size) and Section 2.8 (Screen-to-Body Ratio).
 *   **Measurement:** Device Width
 *   **Unit:** Millimeters (mm)
-*   **Significance:** Beyond a critical threshold (~75–77mm), one-handed operation becomes difficult for a large share of users.
-*Formula:* `Score = 10 * (1 - ((Width_mm - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))^2)` (Clamped 0-10)
+*   **Significance:** Beyond a critical threshold (~75–77 millimeters (mm)), one-handed operation becomes difficult for a large share of users.
+*Formula:* `Score = 10 * (1 - ((Width - Width_mm_Min) / (Width_mm_Max - Width_mm_Min))^2)` (Clamped 0.0–10.0)
 *   **Max Score (10.0):** ≤ Width_mm_Min
 *   **Min Score (0.0):** ≥ Width_mm_Max
 > [!NOTE]
 > **Why Quadratic (not Linear)?** Research into hand anthropometry shows that phone width comfort is **not a constant penalty per millimeter** — it has a real physical threshold.
 >
-> **The data:** Average female hand width is 79–83mm; average male is 88–97mm. Modern phones range from 67.3mm (iPhone SE 4th gen) to 79.0mm (Galaxy S24 Ultra). This means:
-> *   A phone under ~71mm is comfortable for almost every user — a linear scale would unfairly apply the same per-mm penalty here as in the uncomfortable range.
-> *   A phone crossing 75–77mm starts causing grip adjustments for roughly 30% of users (most women and smaller-handed men).
-> *   Beyond 78mm, the majority of users rely on two hands for basic navigation — a steep penalty applies.
+> **The data:** Average female hand width is 79–83 millimeters; average male is 88–97 millimeters. Modern phones range from 67.3 millimeters (iPhone Special Edition (SE) 4th gen) to 79 millimeters (Galaxy S24 Ultra). This means:
+> *   A phone under ~71 millimeters is comfortable for almost every user — a linear scale would unfairly apply the same per-millimeter penalty here as in the uncomfortable range.
+> *   A phone crossing 75–77 millimeters starts causing grip adjustments for roughly 30% of users (most women and smaller-handed men).
+> *   Beyond 78 millimeters, the majority of users rely on two hands for basic navigation — a steep penalty applies.
 >
-> **The math:** A quadratic formula `(1 - x²)` stays near 10 in the comfortable narrow range and drops steeply as width approaches the maximum, mirroring this threshold-based reality. A linear scale would naively assign the same cost to going from 68mm to 69mm as to going from 77mm to 78mm, which is factually wrong.
+> **The math:** A quadratic formula `(1 - x²)` stays near 10 in the comfortable narrow range and drops steeply as width approaches the maximum, mirroring this threshold-based reality. A linear scale would naively assign the same cost to going from 68 millimeters to 69 millimeters as to going from 77 millimeters to 78 millimeters, which is factually wrong.
 >
-> **Real-phone reference scores** (Min = 67.3mm, Max = 79.0mm):
+> **Real-phone reference scores** (Min = 67.3 millimeters, Max = 79.0 millimeters):
 >
 > | Phone              | Width  | Score    |
 > | :----------------- | :----- | -------: |
@@ -251,7 +249,18 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 > | Galaxy S24+        | 75.9mm |  **5.3** |
 > | Galaxy S24 Ultra   | 79.0mm |  **0.0** |
 >
-> *Note: The S24 Ultra scoring 0 on this specific metric is correct. Its large screen is already fully rewarded by Section 2.9 and Section 2.8. This metric scores solely the ergonomic handling cost.*
+> *Note: The Galaxy S24 Ultra scoring 0 on this specific metric is correct. Its large screen is already fully rewarded by Section 2.9 (Screen Size) and Section 2.8 (Screen-to-Body Ratio). This metric scores solely the ergonomic handling cost.*
+
+### 🔹 1.5 Weight
+*Description:* Total device weight. Lighter phones are more comfortable to hold for long periods (e.g., reading, watching videos) without wrist strain.
+*   **Measurement:** Digital scale weight including battery.
+*   **Unit:** Grams (g)
+*   **Significance:** Determines long-term holding comfort and fatigue.
+*Formula:* `Score = 10 * ((Weight_g_Max - Weight) / (Weight_g_Max - Weight_g_Min))` (Clamped 0.0–10.0)
+*   **Max Score (10.0):** ≤ Weight_g_Min
+*   **Min Score (0.0):** ≥ Weight_g_Max
+> [!NOTE]
+> **Why Linear?** Wrist and arm fatigue from holding a phone scales approximately proportionally with weight — the same way a 200 grams (g) book feels twice as heavy as a 100 grams (g) booklet after an extended reading session. Within the practical 130–250 grams (g) range that covers all modern smartphones, each additional gram (g) adds a constant ergonomic cost. No diminishing returns apply here.
 
 
 ## 🟣 2. Display
@@ -3571,7 +3580,7 @@ The proposal for SASI is supported by the following industry shifts toward verti
 
 > [!NOTE]
 > **Why are eSIM and iSIM scored identically?**
-> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Thickness)** and **Section 8.1 (Battery Endurance)**.
+> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Ergonomics) (specifically the thickness sub-metric)** and **Section 8.1 (Battery Endurance)**.
 > 
 > **Approximation Note:** This is currently an approximation. While **Section 8.1** rewards overall battery life, the theoretical model does not yet strictly quantify the specific µW savings of iSIM vs eSIM, nor do general benchmarks (like GSMArena) typically isolate this specific variable. However, treating them as functionally equivalent in this section prevents double-counting the engineering benefits that don't directly alter the user's *connectivity* options. 
 
