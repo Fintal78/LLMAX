@@ -2331,9 +2331,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "penalty": {
             "value": 0.0000,
-            "calculation_formula": "0.2000 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+            "calculation_formula": "0.1600 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
           },
-          // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.20 * (Deficit ^ 1.4). Keep 4 decimal places.
+          // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.16 * (Deficit ^ 1.4). Keep 4 decimal places.
         },
         "thermal_subsystem_penalty": {
           "deficit": {
@@ -2341,10 +2341,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
           },
           "penalty": {
-            "value": 1.0156,
-            "calculation_formula": "0.1200 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+            "value": 0.2539,
+            "calculation_formula": "0.0300 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
           },
-          // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.12 * (Deficit ^ 1.4). Keep 4 decimal places.
+          // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.03 * (Deficit ^ 1.4). Keep 4 decimal places.
         },
         "cache_subsystem_penalty": {
           "identifier": "Snapdragon 8 Gen 3",
@@ -2357,13 +2357,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
           },
           "penalty": {
-            "value": 0.0056,
-            "calculation_formula": "0.0400 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
+            "value": 0.0028,
+            "calculation_formula": "0.0200 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
           },
-          // GUIDELINE: Cache Penalty = 0.04 * (Deficit ^ 1.3). Keep 4 decimal places.
+          // GUIDELINE: Cache Penalty = 0.02 * (Deficit ^ 1.3). Keep 4 decimal places.
           // CFEI FALLBACK RULE: If the SoC has no CFEI score (indicated by '?') or is missing, consider a penalty of exactly 0 by setting deficit to 0.0000 and penalty to 0.0000.
         }, 
-        "predicted_score": 7.82,
+        "predicted_score": 8.58,
         "calculation_formula": "normalized_throughput_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value + cache_subsystem_penalty.penalty.value)"
         // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the raw normalized throughput score through the subtraction of the active dynamic penalties from the memory, thermal and cache supporting subsystems.
         // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
@@ -2413,14 +2413,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
         "avg_benchmark_neighbors": 8.6000,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
-        "correction_ratio": 0.9726,
+        "correction_ratio": 1.0672,
         // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-        "interpolated_score": 8.36
+        "interpolated_score": 9.18
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
-        "predicted": 7.82,
+        "predicted": 8.58,
         // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
         "final": {
           "value": 9.11,
