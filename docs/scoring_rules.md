@@ -2502,6 +2502,15 @@ The subsystem penalty weights in the Standard Graphics Pipeline are calibrated a
 | **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.0800**|    **1.4**    |
 | **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.0200**|    **1.4**    |
 
+> [!NOTE]
+> **Mathematical Design of the GPU Penalty System:**
+> The non-linear exponents (`β = 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score.
+> 
+> **Physical Rationale of the Beta Exponents (β):**
+> The non-linear exponents control how rapidly the penalty scales as a deficit widens:
+> 
+> *   **Memory and Thermals (β = 1.4):** Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When Random Access Memory (RAM) bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the System on Chip (SoC) hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon.
+
 ---
 
 **Step 5: Final Predicted Standard Graphics Score (SGS) & Safety Validation**
