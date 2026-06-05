@@ -2741,36 +2741,36 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "api_modifier": {
             // GPU_API_SUPPORT_LOOKUP_TABLE
-              // | Vulkan (Android)  | Metal (iOS)    | OpenGL ES (Leg)    | DirectX (Win Mob)       | Score    |
-              // | :---------------- | :------------- | :----------------- | :---------------------- | :------: |
-              // | Vulkan 1.4        | Metal 4.0      | —                  | D3D 12 (FL 12_2)        | **10.0** |
-              // | —                 | Metal 3.3      | —                  | —                       | **9.8**  |
-              // | —                 | Metal 3.2      | —                  | —                       | **9.6**  |
-              // | —                 | Metal 3.1      | —                  | —                       | **9.4**  |
-              // | Vulkan 1.3        | Metal 3.0      | —                  | D3D 12 (FL 12_1)        | **9.2**  |
-              // | —                 | Metal 2.4      | —                  | —                       | **8.8**  |
-              // | —                 | Metal 2.3      | —                  | —                       | **8.6**  |
-              // | Vulkan 1.2        | —              | —                  | D3D 12 (FL 12_0)        | **8.5**  |
-              // | —                 | Metal 2.2      | —                  | —                       | **8.4**  |
-              // | —                 | Metal 2.1      | —                  | —                       | **8.2**  |
-              // | —                 | Metal 2.0      | —                  | —                       | **8.0**  |
-              // | Vulkan 1.1        | Metal 1.2      | —                  | D3D 12 (FL 11_1)        | **7.5**  |
-              // | —                 | Metal 1.1      | —                  | —                       | **7.2**  |
-              // | Vulkan 1.0        | Metal 1.0      | —                  | D3D 12 (FL 11_0)        | **7.0**  |
-              // | —                 | —              | —                  | D3D 11.2                | **6.8**  |
-              // | —                 | —              | —                  | D3D 11.1                | **6.5**  |
-              // | —                 | —              | —                  | D3D 11.0                | **6.0**  |
-              // | —                 | —              | —                  | D3D 10.1                | **5.5**  |
-              // | —                 | —              | OpenGL ES 3.2      | D3D 10.0                | **5.0**  |
-              // | —                 | —              | —                  | D3D 9.3                 | **4.0**  |
-              // | —                 | —              | —                  | D3D 9.2                 | **3.5**  |
-              // | —                 | —              | OpenGL ES 3.1      | —                       | **3.0**  |
-              // | —                 | —              | —                  | D3D 9.1                 | **2.5**  |
-              // | —                 | —              | —                  | D3D 9.0c                | **2.0**  |
-              // | —                 | —              | OpenGL ES 3.0      | —                       | **1.0**  |
-              // | —                 | —              | OpenGL ES 2.0      | —                       | **0.0**  |
-              // | —                 | —              | OpenGL ES 1.1      | —                       | **0.0**  |
-            //
+              // | Vulkan (Android) | Metal (iOS) | OpenGL ES (Leg) | DirectX (Win Mob) | Score    |
+              // | :--------------- | :---------- | :-------------- | :---------------- | :------: |
+              // | Vulkan 1.4       | Metal 4.0   | —               | —                 | **10.0** |
+              // | —                | Metal 3.3   | —               | —                 | **9.8**  |
+              // | —                | Metal 3.2   | —               | —                 | **9.6**  |
+              // | —                | Metal 3.1   | —               | —                 | **9.4**  |
+              // | Vulkan 1.3       | Metal 3.0   | —               | —                 | **9.2**  |
+              // | —                | Metal 2.4   | —               | —                 | **8.8**  |
+              // | —                | Metal 2.3   | —               | —                 | **8.6**  |
+              // | Vulkan 1.2       | —           | —               | —                 | **8.5**  |
+              // | —                | Metal 2.2   | —               | —                 | **8.4**  |
+              // | —                | Metal 2.1   | —               | —                 | **8.2**  |
+              // | —                | Metal 2.0   | —               | —                 | **8.0**  |
+              // | Vulkan 1.1       | Metal 1.2   | —               | —                 | **7.5**  |
+              // | —                | Metal 1.1   | —               | —                 | **7.2**  |
+              // | Vulkan 1.0       | Metal 1.0   | —               | D3D 12 (FL 11_0)  | **7.0**  |
+              // | —                | —           | —               | D3D 11.2          | **6.8**  |
+              // | —                | —           | —               | D3D 11.1          | **6.5**  |
+              // | —                | —           | —               | D3D 11.0          | **6.0**  |
+              // | —                | —           | —               | D3D 10.1          | **5.5**  |
+              // | —                | —           | OpenGL ES 3.2   | —                 | **5.0**  |
+              // | —                | —           | —               | D3D 9.3           | **4.0**  |
+              // | —                | —           | —               | D3D 9.2           | **3.5**  |
+              // | —                | —           | OpenGL ES 3.1   | —                 | **3.0**  |
+              // | —                | —           | —               | D3D 9.1           | **2.5**  |
+              // | —                | —           | —               | D3D 9.0c          | **2.0**  |
+              // | —                | —           | OpenGL ES 3.0   | —                 | **1.0**  |
+              // | —                | —           | OpenGL ES 2.0   | —                 | **0.0**  |
+              // | —                | —           | OpenGL ES 1.1   | —                 | **0.0**  |
+              //
               // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
               // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
               //
@@ -2798,38 +2798,32 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
               //
               // MATRIX 2: ANDROID (Deep Coverage Mirror)
-              // | Android Launch OS    | GPU Architecture Baseline      | Inferred API  |
-              // | :------------------- | :----------------------------- | :------------ |
-              // | Android 15+          | Adreno 8xx+, Immortalis G92x+  | Vulkan 1.4    |
-              // | Android 13 - 14      | Adreno 7xx, Mali-G71x          | Vulkan 1.3    |
-              // | Android 12           | Adreno 66x, Mali-G710          | Vulkan 1.2    |
-              // | Android 10 - 11      | Adreno 6xx, Mali-G77/G78       | Vulkan 1.1    |
-              // | Android 7.0 - 9.0    | Adreno 5xx, Mali-G71/G72       | Vulkan 1.0    |
-              // | Android 6.0          | Adreno 430 (Snapdragon 810)    | OpenGL ES 3.2 |
-              // | Android 5.0 - 5.1    | Adreno 405/418/420, Mali-T7xx  | OpenGL ES 3.1 |
-              // | Android 4.3 - 4.4    | Adreno 3xx, Mali-T6xx          | OpenGL ES 3.0 |
-              // | Android 2.0 - 4.2    | Adreno 2xx, Mali-400           | OpenGL ES 2.0 |
-              // | Android 1.x          | Adreno 1xx (Adreno 130)        | OpenGL ES 1.1 |
+              // | Android Launch OS | GPU Architecture Baseline     | Inferred API  |
+              // | :---------------- | :---------------------------- | :------------ |
+              // | Android 15+       | Adreno 8xx+, Immortalis G92x+ | Vulkan 1.4    |
+              // | Android 13 - 14   | Adreno 7xx, Mali-G71x         | Vulkan 1.3    |
+              // | Android 12        | Adreno 66x, Mali-G710         | Vulkan 1.2    |
+              // | Android 10 - 11   | Adreno 6xx, Mali-G77/G78      | Vulkan 1.1    |
+              // | Android 7.0 - 9.0 | Adreno 5xx, Mali-G71/G72      | Vulkan 1.0    |
+              // | Android 6.0       | Adreno 430 (Snapdragon 810)   | OpenGL ES 3.2 |
+              // | Android 5.0 - 5.1 | Adreno 405/418/420, Mali-T7xx | OpenGL ES 3.1 |
+              // | Android 4.3 - 4.4 | Adreno 3xx, Mali-T6xx         | OpenGL ES 3.0 |
+              // | Android 2.0 - 4.2 | Adreno 2xx, Mali-400          | OpenGL ES 2.0 |
+              // | Android 1.x       | Adreno 1xx (Adreno 130)       | OpenGL ES 1.1 |
               //
-              // MATRIX 3: WINDOWS MOBILE (Deep Coverage Mirror)
-              // | Windows OS Version     | Era / Reference Hardware         | Inferred API      |
-              // | :--------------------- | :------------------------------- | :---------------- |
-              // | Windows 11 (24H2)      | Snapdragon X Elite (Adreno X1)   | D3D 12 (FL 12_2)  |
-              // | Windows 11 (22H2)      | Snapdragon 8cx Gen 3             | D3D 12 (FL 12_1)  |
-              // | Windows 10/11 ARM      | Snapdragon 850 / 8cx Gen 1/2     | D3D 12 (FL 12_0)  |
-              // | Windows 10 ARM (RS1)   | Snapdragon 835                   | D3D 12 (FL 11_1)  |
-              // | Windows 9 (WP9 Skipped)| Unreleased WP9 Reference Dev Kits| D3D 12 (FL 11_1)  |
-              // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)     | D3D 12 (FL 11_0)  |
-              // | Windows 10 Mobile      | Lumia 950 / 950 XL               | D3D 11.2          |
-              // | Windows Phone 8.1      | Lumia 930 / 1520                 | D3D 11.1          |
-              // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8)  | D3D 11.0          |
-              // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)   | D3D 10.1          |
-              // | Windows Phone 8.0      | Early Surface RT / Tegra 3       | D3D 10.0          |
-              // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)      | D3D 9.3           |
-              // | Windows Phone 8.0      | Early builds / Dev hardware      | D3D 9.2           |
-              // | Windows Phone 7.x      | Lumia 800 / 900                  | D3D 9.1           |
-              // | Windows Phone 7.0      | Samsung Focus / LG Quantum       | D3D 9.0c          |
-              // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung           | OpenGL ES 1.1     |
+              // MATRIX 3: WINDOWS MOBILE & WINDOWS PHONE (Deep Coverage Mirror)
+              // | Windows OS Version     | Era / Reference Hardware        | Inferred API     |
+              // | :--------------------- | :------------------------------ | :--------------- |
+              // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)    | D3D 12 (FL 11_0) |
+              // | Windows 10 Mobile      | Lumia 950 / 950 XL              | D3D 11.2         |
+              // | Windows Phone 8.1      | Lumia 930 / 1520                | D3D 11.1         |
+              // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8) | D3D 11.0         |
+              // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)  | D3D 10.1         |
+              // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)     | D3D 9.3          |
+              // | Windows Phone 8.0      | Early builds / Dev hardware     | D3D 9.2          |
+              // | Windows Phone 7.x      | Lumia 800 / 900                 | D3D 9.1          |
+              // | Windows Phone 7.0      | Samsung Focus / LG Quantum      | D3D 9.0c         |
+              // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung          | OpenGL ES 1.1    |
               // --------------------------------------------------------------------------------- 
             "identifier": "Vulkan 1.3",
             // GUIDELINE: Standardized API version supported by the GPU.
