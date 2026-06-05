@@ -2356,14 +2356,13 @@ Method B is populated for **all** phones (even if Method A is available) to eval
 Instead of just matching the overall predicted score, we find the 3 devices that are statistically closest across the hardware sub-features that dictate graphical throughput. The distance metric mirrors the structure of the Method C prediction pipeline to ensure that Method B bridges Methods A and C coherently.
 *   **Search Space:** All phones with known 3DMark Steel Nomad Light scores (Method A), **excluding the target device** itself.
 *   **Distance Metric:** Euclidean Distance in the space formed by the directly comparable components of the Method C pipeline (the normalized GPU yield and the three penalty values).
-    *   `Distance = Sqrt( (GPU_Yield_norm_Diff)² + (Penalty_MTI_Diff)² + (Penalty_TDSI_Diff)² + (Penalty_CPU_Diff)² )`
+    *   `Distance = Sqrt( (GPU_Yield_norm_Diff)² + (Penalty_MTI_Diff)² + (Penalty_TDSI_Diff)² )`
     *   *Where "Diff" is the absolute difference between the target and the candidate neighbor for each component (Calculated in §6.3.C):*
         *   `GPU_Yield_norm_Diff`: Normalized GPU Yield score.
         *   `Penalty_MTI_Diff`: Memory subsystem penalty value.
         *   `Penalty_TDSI_Diff`: Thermal subsystem penalty value.
-        *   `Penalty_CPU_Diff`: CPU orchestration subsystem penalty value.
-*   **Scientific Rationale:** The Method C pipeline decomposes GPU performance into a normalized yield and three bottleneck penalties. Because the normalized yield (`GPU_Yield_norm`) and all three penalties (`Penalty_MTI`, `Penalty_TDSI`, and `Penalty_CPU`) are expressed on the same perceptual 0–10 scale, they are directly comparable. In contrast, the raw API Support Score or the API modifier ratio are on different scales and cannot be directly compared to normalized scores. By measuring neighbor distance strictly using these four normalized components, Method B selects devices that share the target's specific performance and bottleneck profile — not just its overall score. Two devices with the same final score but very different bottleneck profiles (e.g., one limited by memory, the other by thermals) would be far apart in this space, preventing misleading interpolation.
-    *   **Bottleneck Sensitivity & Outlier Detection:** In practice, because architectural differences between generations are the primary driver of performance, `(GPU_Yield_norm_Diff)²` will most often be much larger than all other components, meaning that using only `GPU_Yield_norm_Diff` would be sufficient for typical devices. However, in extreme cases (such as highly unbalanced devices with severe thermal throttling or severe memory bottlenecks), the other three penalty components can weigh in significantly. Retaining all four components in the distance metric ensures the model successfully detects and groups together these extreme outlier devices with matching subsystem limitations.
+*   **Scientific Rationale:** The Method C pipeline decomposes GPU performance into a normalized yield and three bottleneck penalties. Because the normalized yield (`GPU_Yield_norm`) and penalties (`Penalty_MTI`, `Penalty_TDSI`) are expressed on the same perceptual 0–10 scale, they are directly comparable. In contrast, the raw API Support Score or the API modifier ratio are on different scales and cannot be directly compared to normalized scores. By measuring neighbor distance strictly using these normalized components, Method B selects devices that share the target's specific performance and bottleneck profile — not just its overall score. Two devices with the same final score but very different bottleneck profiles (e.g., one limited by memory, the other by thermals) would be far apart in this space, preventing misleading interpolation.
+    *   **Bottleneck Sensitivity & Outlier Detection:** In practice, because architectural differences between generations are the primary driver of performance, `(GPU_Yield_norm_Diff)²` will most often be much larger than all other components, meaning that using only `GPU_Yield_norm_Diff` would be sufficient for typical devices. However, in extreme cases (such as highly unbalanced devices with severe thermal throttling or severe memory bottlenecks), the other penalty components can weigh in significantly. Retaining all components in the distance metric ensures the model successfully detects and groups together these extreme outlier devices with matching subsystem limitations.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
 **2. Calculate Correction Ratio:**
@@ -2384,7 +2383,7 @@ The prediction pipeline estimates a device's Standard Graphics Score from its ha
 1.  **Step 1 — Core GPU Yield:** Calculate the raw throughput potential of the GPU silicon (architecture score adjusted for frequency).
 2.  **Step 2 — API Efficiency Modifier:** Apply a multiplicative adjustment for the software API (Application Programming Interface) capability that modifies the GPU's effective throughput.
 3.  **Step 3 — Logarithmic Normalization:** Convert the raw yield to a human-perceptual 0–10 scale using logarithmic compression.
-4.  **Step 4 — Deficit Penalties:** Subtract penalty terms for any supporting subsystem (memory, thermal, CPU) that fails to keep up with the GPU's demands.
+4.  **Step 4 — Deficit Penalties:** Subtract penalty terms for any supporting subsystem (memory, thermal) that fails to keep up with the GPU's demands.
 5.  **Step 5 — Final Score & Safety Validation:** Combine the results and validate the output is within physical bounds.
 
 ---
@@ -2417,7 +2416,7 @@ The Core GPU Yield represents the raw throughput potential of the GPU silicon, c
 
 The API (Application Programming Interface) is the software layer through which games and applications communicate with the GPU hardware. More modern APIs allow developers to use more efficient rendering paths, reducing software overhead and directly increasing the GPU's effective throughput.
 
-Unlike the memory, thermal, and CPU subsystems (which act as ceilings — see Step 4), the API genuinely modifies the GPU's intrinsic throughput capability. A GPU running Vulkan 1.3 genuinely renders more frames per second than the same GPU running OpenGL ES 3.2, even if all other hardware is identical and unconstrained. This makes the API a **property of the GPU execution engine itself**, not an external bottleneck.
+Unlike the memory and thermal subsystems (which act as ceilings — see Step 4), the API genuinely modifies the GPU's intrinsic throughput capability. A GPU running Vulkan 1.3 genuinely renders more frames per second than the same GPU running OpenGL ES 3.2, even if all other hardware is identical and unconstrained. This makes the API a **property of the GPU execution engine itself**, not an external bottleneck.
 
 *   **Formula:** `GPU_Yield_Adjusted = GPU_Yield × AFM_Factor`
     *   `AFM_Factor` **(API Feature Modifier Factor):** 
@@ -2488,35 +2487,20 @@ These subsystems act as **bottlenecks**, not contributors: if any subsystem fail
 *   **Step 4.2 — Calculate the Penalty:** The deficit is converted to a score penalty using a non-linear power function. This models the physical reality that small deficits have modest impact (the GPU can partially compensate via caching and buffering), but large deficits cause severe performance collapse (stalls, throttling).
     *   `Penalty_S = Weight_S × (Deficit_S ^ β_S)`
 
+###### A. GPU Subsystem Deficit Calibration
+
+The subsystem penalty weights in the Standard Graphics Pipeline are calibrated as engineering approximations representing bottleneck severity rather than directly measured physical constants. The active bottlenecks model the impact of memory bandwidth starvation and thermal throttling on graphics throughput, while the CPU (Central Processing Unit) orchestration component is neglected.
+
+*   **Memory Throughput Index (MTI):** Retained in the model (weight **0.0800**, exponent **1.4**). Mobile GPUs (Graphics Processing Units) are highly dependent on memory bandwidth for texture mapping and frame buffer operations. Bandwidth starvation (such as pairing a fast GPU with slow RAM (Random Access Memory)) causes shader cores to stall, directly dropping frame rates.
+*   **Thermal Dissipation Stability Index (TDSI):** Retained in the model (weight **0.0200**, exponent **1.4**). While long-term thermal throttling is severe, the primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds where the chassis thermal mass buffers heat. The small weight compresses the long-term TDSI deficit to its actual short-burst benchmark impact.
+*   **CPU Orchestration Index:** Neglected/removed from the active model. The primary graphics benchmark is deliberately GPU-bound to isolate graphics performance, meaning CPU draw call and command submission overhead is negligible in practice.
+
 **Subsystem Penalty Parameters:**
 
-| Subsystem                                              | Source Score (`S`)                  | Weight   | Exponent (β)  |
-| :----------------------------------------------------- | :---------------------------------- | :------: | :-----------: |
-| **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.12** |    **1.4**    |
-| **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.02** |    **1.4**    |
-| **CPU Orchestration Index**                            | §6.1 CPU Multi-Core Final Score     | **0.01** |    **1.3**    |
-
-**Detailed Subsystem Rationale:**
-
-*   **Memory Throughput Index (MTI) — Weight: 0.12, β: 1.4**
-    *   *What it captures:* The speed at which data can travel between the phone's shared system RAM (Random Access Memory) and the GPU.
-    *   *Source:* Section 6.5 RAM Technology — use the **Predicted Score** (to capture raw hardware bandwidth capabilities before system-level boosters are applied). 
-    *   *Physical Rationale:* Mobile GPUs use a shared-memory architecture (called iGPU — integrated GPU — architecture), meaning the GPU reads texture data, vertex buffers, and shader storage directly from the same RAM used by the CPU and operating system. When the GPU requests more data per second than the memory bus can deliver, the shader cores stall (sit idle waiting for data), directly reducing frame rates. Once the memory bus is fast enough to satisfy the GPU's demands, making it even faster provides no additional benefit — the GPU is already receiving all the data it needs. This is the most impactful bottleneck for GPU performance, hence the highest weight.
-    *   *Why Beta = 1.4:* The non-linear exponent of 1.4 reflects the physical reality of memory starvation: small bandwidth shortfalls can be partially hidden by on-chip caches (L2, System Level Cache) and texture compression (e.g., AFBC — Arm Frame Buffer Compression), resulting in moderate performance loss. However, severe shortfalls overwhelm these mitigation mechanisms, causing exponentially worse stalling as every shader core competes for the same saturated bus. This exponent matches the CPU multi-core memory penalty (§6.1), reflecting the same shared-bus physics.
-
-*   **Thermal Dissipation Stability Index (TDSI) — Weight: 0.02, β: 1.4**
-    *   *What it captures:* The phone's ability to dissipate heat from the GPU during intensive rendering.
-    *   *Source:* Section 6.10 TDSI — use the **Final Score** (to capture the proven cooling reality, including manufacturing tolerances, thermal paste quality, and firmware-level throttling curves).
-    *   *Physical Rationale:* High-performance GPUs generate intense heat during rendering. When the phone's chassis cannot dissipate this heat fast enough, the System on Chip (SoC) firmware triggers DVFS (Dynamic Voltage and Frequency Scaling) to reduce the GPU clock speed, directly lowering frame rates. A phone with superior cooling does not add performance beyond the GPU's peak — it simply prevents the GPU from being forced below its peak. Having more cooling headroom than necessary does not increase the maximum frame rate.
-    *   *Why a small weight (0.02):* The primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds. During such short tests, the phone's thermal mass (the physical ability of the chassis materials to absorb heat before reaching critical temperature) provides substantial buffering. Only devices with very poor thermal design (e.g., sealed glass-sandwich phones with minimal vapor chambers) will experience meaningful throttling within this timeframe. The TDSI score, which is measured over a much longer 20-minute stress test, amplifies thermal stability differences far beyond their short-burst impact. The small weight acts as a compression factor to scale the long-term TDSI signal to its actual short-burst benchmark impact.
-    *   *Why Beta = 1.4:* Thermal throttling follows the same non-linear physics as memory starvation: small thermal deficits cause mild clock reductions (the firmware drops frequency by small increments), while severe deficits trigger aggressive emergency throttling that can halve performance. The 1.4 exponent captures this escalating response curve.
-
-*   **CPU Orchestration Index — Weight: 0.01, β: 1.3**
-    *   *What it captures:* The speed at which the CPU (Central Processing Unit) can submit rendering commands to the GPU.
-    *   *Source:* Section 6.1 CPU Multi-Core Performance — use the **Final Score** (to capture actual realized orchestration speed, including scheduling efficiency and OS-level optimizations).
-    *   *Physical Rationale:* The CPU prepares "draw calls" — individual rendering instructions — and submits them to the GPU via command buffers. Modern game engines are highly parallelized, distributing this work across all available CPU cores. If the CPU cannot submit commands fast enough, the GPU sits idle between frames (a "CPU bottleneck"). However, once the CPU is fast enough to keep the GPU's command queue populated, making the CPU even faster has zero additional benefit for graphics rendering.
-    *   *Why the smallest weight (0.01):* Modern GPU benchmarks (like Steel Nomad Light) are deliberately designed to be **GPU-bound**, meaning the GPU is the intentional bottleneck. The CPU orchestration overhead is minimal by design. Only in extreme cases (a very weak CPU paired with a very powerful GPU — e.g., a budget SoC with an aftermarket GPU configuration, which does not exist in practice) would CPU submission speed become a meaningful limiter.
-    *   *Why Beta = 1.3:* A slightly lower exponent than memory and thermal penalties reflects the less severe physical escalation of CPU bottlenecks. CPU submission delays cause the GPU to idle briefly between frames (resulting in lower average FPS) but do not cause the catastrophic stalling or emergency throttling seen with memory starvation or thermal crises. The 1.3 value matches the §6.1 cache subsystem exponent, reflecting a similar "gradual degradation" physical profile.
+| Subsystem                                              | Source Score (`S`)                  | Weight    | Exponent (β)  |
+| :----------------------------------------------------- | :---------------------------------- | :-------: | :-----------: |
+| **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.0800**|    **1.4**    |
+| **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.0200**|    **1.4**    |
 
 ---
 
@@ -2524,12 +2508,12 @@ These subsystems act as **bottlenecks**, not contributors: if any subsystem fail
 
 The final predicted score is computed by subtracting all active deficit penalties from the normalized GPU yield:
 
-`Predicted_Score_SGS = GPU_Yield_norm − (Penalty_MTI + Penalty_TDSI + Penalty_CPU)`
+`Predicted_Score_SGS = GPU_Yield_norm − (Penalty_MTI + Penalty_TDSI)`
 
 > [!CAUTION]
 > ⚠️ **CRITICAL PHYSICAL RANGE VIOLATION — PROCESS ABORT RULE!**
 > Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. 
-> If the raw calculation `Predicted_Score_SGS = GPU_Yield_norm − (Penalty_MTI + Penalty_TDSI + Penalty_CPU)` yields a value outside the physical standard range of `[0.00, 10.00]` (e.g., less than 0.00 or greater than 10.00), **the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY.** 
+> If the raw calculation `Predicted_Score_SGS = GPU_Yield_norm − (Penalty_MTI + Penalty_TDSI)` yields a value outside the physical standard range of `[0.00, 10.00]` (e.g., less than 0.00 or greater than 10.00), **the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY.** 
 > The system must immediately raise the following standardized exception alert and halt execution:
 > 
 > `CRITICAL ANOMALY ALERT: Standard Graphics Score ({Predicted_Score_SGS}) is outside physical standard bounds [0, 10]. Halting scoring process.`
