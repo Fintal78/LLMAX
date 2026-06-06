@@ -2361,7 +2361,7 @@ Instead of just matching the overall predicted score, we find the 3 devices that
         *   `GPU_Yield_norm_Diff`: Normalized GPU Yield score.
         *   `Penalty_MTI_Diff`: Memory subsystem penalty value.
         *   `Penalty_TDSI_Diff`: Thermal subsystem penalty value.
-*   **Scientific Rationale:** The Method C pipeline decomposes GPU performance into a normalized yield and three bottleneck penalties. Because the normalized yield (`GPU_Yield_norm`) and penalties (`Penalty_MTI`, `Penalty_TDSI`) are expressed on the same perceptual 0–10 scale, they are directly comparable. In contrast, the raw API Support Score or the API modifier ratio are on different scales and cannot be directly compared to normalized scores. By measuring neighbor distance strictly using these normalized components, Method B selects devices that share the target's specific performance and bottleneck profile — not just its overall score. Two devices with the same final score but very different bottleneck profiles (e.g., one limited by memory, the other by thermals) would be far apart in this space, preventing misleading interpolation.
+*   **Scientific Rationale:** The Method C pipeline decomposes GPU performance into a normalized yield and bottleneck penalties. Because the normalized yield (`GPU_Yield_norm`) and penalties (`Penalty_MTI`, `Penalty_TDSI`) are expressed on the same perceptual 0–10 scale, they are directly comparable. By measuring neighbor distance strictly using these normalized components, Method B selects devices that share the target's specific performance and bottleneck profile — not just its overall score. Two devices with the same final score but very different bottleneck profiles (e.g., one limited by memory, the other by thermals) would be far apart in this space, preventing misleading interpolation.
     *   **Bottleneck Sensitivity & Outlier Detection:** In practice, because architectural differences between generations are the primary driver of performance, `(GPU_Yield_norm_Diff)²` will most often be much larger than all other components, meaning that using only `GPU_Yield_norm_Diff` would be sufficient for typical devices. However, in extreme cases (such as highly unbalanced devices with severe thermal throttling or severe memory bottlenecks), the other penalty components can weigh in significantly. Retaining all components in the distance metric ensures the model successfully detects and groups together these extreme outlier devices with matching subsystem limitations.
 *   **Selection:** Pick the 3 distinct neighbors with the smallest `Distance`.
 
@@ -2421,19 +2421,10 @@ Unlike the memory and thermal subsystems (which act as ceilings — see Step 4),
 *   **Formula:** `GPU_Yield_Adjusted = GPU_Yield × AFM_Factor`
     *   `AFM_Factor` **(API Feature Modifier Factor):** 
         `AFM_Factor = (1 − Sensitivity_AFM) + Sensitivity_AFM × (AFM_Score / 10.0)`
+        With the sensitivity coefficient `Sensitivity_AFM = 0.40` substituted, the numerical formula is:
+        `AFM_Factor = 0.60 + 0.40 × (AFM_Score / 10.0) = 0.60 + 0.04 × AFM_Score`
         *   `Sensitivity_AFM = 0.40`: The sensitivity coefficient (maximum penalty weight) for graphics API driver overhead. This bounds the modifier range, establishing a safe physical lower limit of 0.60 (40% maximum penalty) for legacy APIs.
         *   `AFM_Score`: The API score of the target device, sourced from the **API Support Score Table** below.
-
-> [!NOTE]
-> **API Sensitivity Calibration & Mathematical Safety:**
-> *   **Preventing Logarithmic Collapses:** In Step 3, raw yield values are normalized logarithmically. If the raw modifier could evaluate to 0, the adjusted yield would collapse to 0.0, rendering log(0) mathematically undefined and crashing the scoring pipeline. By using a blended linear structure, `AFM_Factor` is bounded to a strictly positive range `[0.60, 1.00]`, guaranteeing mathematical continuity and stability.
-> *   **Empirical Calibration via Identical Hardware Configurations:** The sensitivity factor of `0.40` was determined by isolating the performance delta on identical GPU silicon running different API driver stacks:
->     1.  *Adreno 530 (Snapdragon 820):* Vulkan 1.0 (Score 7.0) vs. OpenGL ES 3.2 (Score 5.0). Real-world offscreen GFXBench Manhattan 3.1 results show ~48 FPS on Vulkan vs. ~44 FPS on OpenGL ES (a 1.09x ratio). Resolving `((1-x) + x * 7.0/10.0) / ((1-x) + x * 5.0/10.0) = 1.09` yields `x ≈ 0.37`.
->     2.  *PowerVR G6430 (Apple A7):* Metal 1.0 (Score 7.0) vs. OpenGL ES 3.0 (Score 1.0) under iOS 8. In draw-call-heavy workloads, Metal reduces CPU command processing bottlenecks, yielding a ~1.30x real-world framerate increase over OpenGL ES. Resolving `((1-x) + x * 7.0/10.0) / ((1-x) + x * 1.0/10.0) = 1.30` yields `x ≈ 0.35`.
->     3.  *Mali-G72 MP18 (Exynos 9810):* Vulkan 1.1 (Score 7.5) vs. OpenGL ES 3.2 (Score 5.0). Empirical gaming benchmarks under draw-call pressure show a 1.15x ratio. Resolving `((1-x) + x * 7.5/10.0) / ((1-x) + x * 5.0/10.0) = 1.15` yields `x ≈ 0.46`.
->     4.  *Adreno 540 (Snapdragon 835 Windows on ARM):* D3D 12 FL 11_1 (Score 7.5) vs. D3D 11.1 (Score 6.5) under equivalent workloads. Overhead reductions yield a 1.06x ratio, solving to `x ≈ 0.50`.
->     *   *Conclusion:* The average sensitivity parameter `x ≈ 0.40` represents a highly robust, physically accurate representation of real-world command-processor efficiency gains across both GPU-bound and CPU-bound graphics scenarios.
-> *   **Reference Denominator (10.0):** The denominator is fixed to the maximum API score of 10.0 (representing Vulkan 1.4 / Metal 4.0). Under this normalization, the highest possible API receives no penalty (AFM_Factor = 1.0000), while all other APIs receive a calibrated penalty relative to this theoretical maximum (e.g. a Vulkan 1.3 flagship with a score of 9.2 receives a minor, physically accurate 3.2% penalty).
 
 **API Support Score Table**
 *   **Measurement:** Highest supported Vulkan / Metal / OpenGL ES / DirectX Version.
