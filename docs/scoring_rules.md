@@ -2234,64 +2234,12 @@ This table provides the authoritative GPU architecture scores used throughout th
 
 **Scoring Basis:** Based on GPU generation, compute units, and real-world graphics performance established from cross-platform benchmark analysis (3DMark, GFXBench) across all smartphone GPU generations from 2016 to 2026.
 
-| GPU Model                  |   Standard Graphics   | Ray Tracing | Ref Freq (MHz) | Efficiency | Notes                              |
-| :------------------------- | :-------------------: | :---------: | :------------: | :--------: | :--------------------------------- |
-| **Immortalis-G925 MC12**   |       **9.50**        |  **10.00**  |    **1612**    |  **10.0**  | Dimensity 9400 (2025 flagship)     |
-| **Adreno 830**             |       **9.50**        |  **9.80**   |    **1100**    |  **10.0**  | Snapdragon 8 Elite (2025 flagship) |
-| **Apple GPU (A18 Pro)**    |       **9.00**        |  **8.80**   |    **1490**    |  **10.0**  | iPhone 16 Pro (2024)               |
-| **Adreno 750**             |       **8.90**        |  **8.50**   |    **903**     |  **9.0**   | Snapdragon 8 Gen 3 (2024 flagship) |
-| **Immortalis-G720 MC12**   |       **8.80**        |  **8.40**   |    **1300**    |  **10.0**  | Dimensity 9300 (2024)              |
-| **Apple GPU (A18)**        |       **8.70**        |  **8.20**   |    **1490**    |  **10.0**  | iPhone 16 (2024)                   |
-| **Immortalis-G715 MC11**   |       **8.50**        |  **7.60**   |    **981**     |  **9.0**   | Dimensity 9200 (2023 flagship)     |
-| **Xclipse 940**            |       **8.50**        |  **8.00**   |    **1109**    |  **7.0**   | Exynos 2400 (2024)                 |
-| **Adreno 740**             |       **8.30**        |  **7.00**   |    **680**     |  **9.0**   | Snapdragon 8 Gen 2 (2023)          |
-| **Apple GPU (A17 Pro)**    |       **8.10**        |  **7.50**   |    **1398**    |  **9.0**   | iPhone 15 Pro (2023)               |
-| **Adreno 735**             |       **7.90**        |  **5.50**   |    **950**     |  **8.0**   | Snapdragon 7+ Gen 3 (2024)         |
-| **Adreno 732**             |       **7.80**        |  **4.20**   |    **900**     |  **8.0**   | Snapdragon 7s Gen 3 (2024)         |
-| **Adreno 730**             |       **7.80**        |  **4.00**   |    **900**     |  **7.0**   | Snapdragon 8+ Gen 1 (2022)         |
-| **Adreno 725**             |       **7.80**        |  **3.80**   |    **580**     |  **9.0**   | Snapdragon 7+ Gen 2 (2023)         |
-| **Apple GPU (A16 Bionic)** |       **7.50**        |  **0.00**   |    **1398**    |  **8.0**   | iPhone 14 Pro (2022)               |
-| **Apple GPU (A15 Bionic)** |       **6.80**        |  **0.00**   |    **1296**    |  **8.0**   | iPhone 13 Pro (2021)               |
-| **Mali-G715 MC9**          |       **6.80**        |  **2.20**   |    **850**     |  **9.0**   | Exynos 2200 variant (2023)         |
-| **Xclipse 920**            |       **6.50**        |  **2.50**   |    **1306**    |  **6.0**   | Exynos 2200 (2022)                 |
-| **Mali-G710 MC10**         |       **6.50**        |  **0.00**   |    **850**     |  **8.0**   | Dimensity 9000 (2022)              |
-| **Adreno 660**             |       **6.50**        |  **0.00**   |    **840**     |  **5.0**   | Snapdragon 888 (2021)              |
-| **Mali-G715 (Tensor G3)**  |       **6.20**        |  **2.00**   |    **890**     |  **6.0**   | Google Tensor G3 (2023)            |
-| **Mali-G715 MC7**          |       **6.00**        |  **1.80**   |    **850**     |  **9.0**   | Dimensity 8200 (2023)              |
-| **Apple GPU (A14 Bionic)** |       **5.80**        |  **0.00**   |    **1086**    |  **7.0**   | iPhone 12 (2020)                   |
-| **Adreno 720**             |       **5.20**        |  **0.00**   |    **800**     |  **8.0**   | Snapdragon 7s Gen 2 (2023)         |
-| **Apple GPU (A13 Bionic)** |       **5.00**        |  **0.00**   |    **979**     |  **6.0**   | iPhone 11 (2019)                   |
-| **Adreno 710**             |       **4.80**        |  **0.00**   |    **800**     |  **8.0**   | Snapdragon 7 Gen 1 (2022)          |
-| **Adreno 650**             |       **4.80**        |  **0.00**   |    **587**     |  **6.0**   | Snapdragon 865 (2020)              |
-| **Mali-G610 MC6**          |       **4.80**        |  **0.00**   |    **850**     |  **8.0**   | Dimensity 8100 (2022)              |
-| **Mali-G77 MC9**           |       **4.80**        |  **0.00**   |    **850**     |  **6.0**   | Exynos 990 (2020)                  |
-| **Adreno 642L**            |       **4.50**        |  **0.00**   |    **490**     |  **8.0**   | Snapdragon 778G (2021)             |
-| **Mali-G610 MC4**          |       **4.00**        |  **0.00**   |    **850**     |  **7.0**   | Dimensity 7200 (2023)              |
-| **Adreno 640**             |       **3.80**        |  **0.00**   |    **585**     |  **5.0**   | Snapdragon 855 (2019)              |
-| **Mali-G76 MC12**          |       **3.60**        |  **0.00**   |    **800**     |  **5.0**   | Exynos 9820 / Kirin 980 (2019)     |
-| **Apple GPU (A12 Bionic)** |       **3.50**        |  **0.00**   |    **1050**    |  **6.0**   | iPhone XS (2018)                   |
-| **Mali-G76 MC4**           |       **3.20**        |  **0.00**   |    **800**     |  **5.0**   | Kirin 810 (2019)                   |
-| **Adreno 620**             |       **3.20**        |  **0.00**   |    **625**     |  **6.0**   | Snapdragon 765G (2020)             |
-| **Mali-G68 MC4**           |       **3.20**        |  **0.00**   |    **900**     |  **6.0**   | Dimensity 1300 (2022)              |
-| **Adreno 619**             |       **3.00**        |  **0.00**   |    **825**     |  **6.0**   | Snapdragon 695 (2021)              |
-| **Adreno 618**             |       **2.80**        |  **0.00**   |    **610**     |  **5.0**   | Snapdragon 730G (2019)             |
-| **Mali-G57 MC3**           |       **2.80**        |  **0.00**   |    **950**     |  **5.0**   | Dimensity 700 (2020)               |
-| **Adreno 613**             |       **2.50**        |  **0.00**   |    **955**     |  **6.0**   | Snapdragon 680 (2021)              |
-| **Apple GPU (A11 Bionic)** |       **2.40**        |  **0.00**   |    **1000**    |  **5.0**   | iPhone X (2017)                    |
-| **Mali-G72 MP12**          |       **2.30**        |  **0.00**   |    **800**     |  **4.0**   | Exynos 9810 (2018)                 |
-| **Mali-G72 MP3**           |       **2.10**        |  **0.00**   |    **800**     |  **5.0**   | Kirin 710 (2018)                   |
-| **Adreno 610**             |       **2.00**        |  **0.00**   |    **600**     |  **8.0**   | Snapdragon 665 (2019)              |
-| **Mali-G57 MC2**           |       **1.80**        |  **0.00**   |    **950**     |  **5.0**   | Helio G95 (2020)                   |
-| **Apple GPU (A10 Fusion)** |       **1.70**        |  **0.00**   |    **900**     |  **4.0**   | iPhone 7 (2016)                    |
-| **Adreno 530**             |       **1.60**        |  **0.00**   |    **624**     |  **3.0**   | Snapdragon 820 (2016)              |
-| **Mali-G71 MP8**           |       **1.50**        |  **0.00**   |    **850**     |  **4.0**   | Exynos 8895 (2017)                 |
-| **Mali-G71 MP2**           |       **1.20**        |  **0.00**   |    **770**     |  **4.0**   | Kirin 659 (2017)                   |
-| **Mali-G52 MP2**           |       **1.00**        |  **0.00**   |    **850**     |  **4.0**   | Helio G35 (2020)                   |
-| **Adreno 512**             |       **0.90**        |  **0.00**   |    **725**     |  **4.0**   | Snapdragon 660 (2017)              |
-| **Adreno 509**             |       **0.75**        |  **0.00**   |    **650**     |  **4.0**   | Snapdragon 636 (2018)              |
-| **Adreno 506**             |       **0.60**        |  **0.00**   |    **650**     |  **5.0**   | Snapdragon 625 (2016)              |
-| **Adreno 505**             |       **0.50**        |  **0.00**   |    **450**     |  **3.0**   | Snapdragon 430 (2016)              |
-| **PowerVR GE8320**         |       **0.40**        |  **0.00**   |    **680**     |  **2.0**   | Helio A22 (2018)                   |
+| GPU Model                  |   Standard Graphics   | Ray Tracing | Ref Freq (MHz) | Efficiency |
+| :------------------------- | :-------------------: | :---------: | :------------: | :--------: |
+| **Immortalis-G925 MC12**   |       **9.50**        |  **10.00**  |    **1612**    |  **10.0**  |
+| **Adreno 830**             |       **9.50**        |  **9.80**   |    **1100**    |  **10.0**  |
+| **Apple GPU (A18 Pro)**    |       **9.00**        |  **8.80**   |    **1490**    |  **10.0**  |
+|           [...]            |         [...]         |    [...]    |      [...]     |    [...]   |
 
 > [!IMPORTANT]
 > **Source of Truth:** For the full list of all supported GPU architectures and their authoritative scores, refer to the **GPU_ARCHITECTURE_LOOKUP_TABLE** in [proposed_data_structure.md].

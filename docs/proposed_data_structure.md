@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.2",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-05-29"
+    "last_updated": "2026-06-06"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -2589,48 +2589,62 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     // 
     // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
     // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
-    // | Immortalis-G925 MC12       |       9.5         |    10.00    |      1612      |    10.00   |
-    // | Adreno 830                 |       9.5         |     9.80    |      1100      |    10.00   |
-    // | Apple GPU (A18 Pro)        |       9.0         |     8.80    |      1490      |    10.00   |
-    // | Adreno 750                 |       8.9         |     8.50    |       903      |     9.00   |
-    // | Immortalis-G720 MC12       |       8.8         |     8.40    |      1300      |    10.00   |
-    // | Apple GPU (A18)            |       8.7         |     8.20    |      1490      |    10.00   |
-    // | Immortalis-G715 MC11       |       8.5         |     7.60    |       981      |     9.00   |
-    // | Xclipse 940                |       8.5         |     8.00    |      1109      |     7.00   |
-    // | Adreno 740                 |       8.3         |     7.00    |       680      |     9.00   |
-    // | Apple GPU (A17 Pro)        |       8.1         |     7.50    |      1398      |     9.00   |
-    // | Adreno 735                 |       7.9         |     5.50    |       950      |     8.00   |
-    // | Adreno 732                 |       7.8         |     4.20    |       900      |     8.00   |
-    // | Adreno 730                 |       7.8         |     4.00    |       900      |     7.00   |
-    // | Adreno 725                 |       7.8         |     3.80    |       580      |     9.00   |
-    // | Apple GPU (A16 Bionic)     |       7.5         |     0.00    |      1398      |     8.00   |
-    // | Apple GPU (A15 Bionic)     |       6.8         |     0.00    |      1296      |     8.00   |
-    // | Mali-G715 MC9              |       6.8         |     2.20    |       850      |     9.00   |
-    // | Xclipse 920                |       6.5         |     2.50    |      1306      |     6.00   |
-    // | Mali-G710 MC10             |       6.5         |     0.00    |       850      |     8.00   |
-    // | Adreno 660                 |       6.5         |     0.00    |       840      |     5.00   |
-    // | Mali-G715 (Tensor G3)      |       6.2         |     2.00    |       890      |     6.00   |
-    // | Mali-G715 MC7              |       6.0         |     1.80    |       850      |     9.00   |
-    // | Apple GPU (A14 Bionic)     |       5.8         |     0.00    |      1086      |     7.00   |
-    // | Adreno 720                 |       5.2         |     0.00    |       800      |     8.00   |
-    // | Apple GPU (A13 Bionic)     |       5.0         |     0.00    |       979      |     6.00   |
-    // | Adreno 710                 |       4.8         |     0.00    |       800      |     8.00   |
-    // | Adreno 650                 |       4.8         |     0.00    |       587      |     6.00   |
-    // | Mali-G610 MC6              |       4.8         |     0.00    |       850      |     8.00   |
-    // | Mali-G77 MC9               |       4.8         |     0.00    |       850      |     6.00   |
-    // | Adreno 642L                |       4.5         |     0.00    |       490      |     8.00   |
-    // | Mali-G610 MC4              |       4.0         |     0.00    |       850      |     7.00   |
-    // | Adreno 640                 |       3.8         |     0.00    |       585      |     5.00   |
-    // | Adreno 620                 |       3.2         |     0.00    |       625      |     6.00   |
-    // | Mali-G68 MC4               |       3.2         |     0.00    |       900      |     6.00   |
-    // | Adreno 619                 |       3.0         |     0.00    |       825      |     6.00   |
-    // | Adreno 618                 |       2.8         |     0.00    |       610      |     5.00   |
-    // | Mali-G57 MC3               |       2.8         |     0.00    |       950      |     5.00   |
-    // | Adreno 613                 |       2.5         |     0.00    |       955      |     6.00   |
-    // | Adreno 610                 |       2.0         |     0.00    |       600      |     8.00   |
-    // | Mali-G57 MC2               |       1.8         |     0.00    |       950      |     5.00   |
-    // | Mali-G52 MP2               |       1.0         |     0.00    |       850      |     4.00   |
-    // | PowerVR GE8320             |       0.5         |     0.00    |       680      |     2.00 => 0 ????? |
+    // | Immortalis-G925 MC12       |       9.50        |    10.00    |      1612      |    10.0    |
+    // | Adreno 830                 |       9.50        |    9.80     |      1100      |    10.0    |
+    // | Apple GPU (A18 Pro)        |       9.00        |    8.80     |      1490      |    10.0    |
+    // | Adreno 750                 |       8.90        |    8.50     |      903       |    9.0     |
+    // | Immortalis-G720 MC12       |       8.80        |    8.40     |      1300      |    10.0    |
+    // | Apple GPU (A18)            |       8.70        |    8.20     |      1490      |    10.0    |
+    // | Immortalis-G715 MC11       |       8.50        |    7.60     |      981       |    9.0     |
+    // | Xclipse 940                |       8.50        |    8.00     |      1109      |    7.0     |
+    // | Adreno 740                 |       8.30        |    7.00     |      680       |    9.0     |
+    // | Apple GPU (A17 Pro)        |       8.10        |    7.50     |      1398      |    9.0     |
+    // | Adreno 735                 |       7.90        |    5.50     |      950       |    8.0     |
+    // | Adreno 732                 |       7.80        |    4.20     |      900       |    8.0     |
+    // | Adreno 730                 |       7.80        |    4.00     |      900       |    7.0     |
+    // | Adreno 725                 |       7.80        |    3.80     |      580       |    9.0     |
+    // | Apple GPU (A16 Bionic)     |       7.50        |    0.00     |      1398      |    8.0     |
+    // | Apple GPU (A15 Bionic)     |       6.80        |    0.00     |      1296      |    8.0     |
+    // | Mali-G715 MC9              |       6.80        |    2.20     |      850       |    9.0     |
+    // | Xclipse 920                |       6.50        |    2.50     |      1306      |    6.0     |
+    // | Mali-G710 MC10             |       6.50        |    0.00     |      850       |    8.0     |
+    // | Adreno 660                 |       6.50        |    0.00     |      840       |    5.0     |
+    // | Mali-G715 (Tensor G3)      |       6.20        |    2.00     |      890       |    6.0     |
+    // | Mali-G715 MC7              |       6.00        |    1.80     |      850       |    9.0     |
+    // | Apple GPU (A14 Bionic)     |       5.80        |    0.00     |      1086      |    7.0     |
+    // | Adreno 720                 |       5.20        |    0.00     |      800       |    8.0     |
+    // | Apple GPU (A13 Bionic)     |       5.00        |    0.00     |      979       |    6.0     |
+    // | Adreno 710                 |       4.80        |    0.00     |      800       |    8.0     |
+    // | Adreno 650                 |       4.80        |    0.00     |      587       |    6.0     |
+    // | Mali-G610 MC6              |       4.80        |    0.00     |      850       |    8.0     |
+    // | Mali-G77 MC9               |       4.80        |    0.00     |      850       |    6.0     |
+    // | Adreno 642L                |       4.50        |    0.00     |      490       |    8.0     |
+    // | Mali-G610 MC4              |       4.00        |    0.00     |      850       |    7.0     |
+    // | Adreno 640                 |       3.80        |    0.00     |      585       |    5.0     |
+    // | Mali-G76 MC12              |       3.60        |    0.00     |      800       |    5.0     |
+    // | Apple GPU (A12 Bionic)     |       3.50        |    0.00     |      1050      |    6.0     |
+    // | Mali-G76 MC4               |       3.20        |    0.00     |      800       |    5.0     |
+    // | Adreno 620                 |       3.20        |    0.00     |      625       |    6.0     |
+    // | Mali-G68 MC4               |       3.20        |    0.00     |      900       |    6.0     |
+    // | Adreno 619                 |       3.00        |    0.00     |      825       |    6.0     |
+    // | Adreno 618                 |       2.80        |    0.00     |      610       |    5.0     |
+    // | Mali-G57 MC3               |       2.80        |    0.00     |      950       |    5.0     |
+    // | Adreno 613                 |       2.50        |    0.00     |      955       |    6.0     |
+    // | Apple GPU (A11 Bionic)     |       2.40        |    0.00     |      1000      |    5.0     |
+    // | Mali-G72 MP12              |       2.30        |    0.00     |      800       |    4.0     |
+    // | Mali-G72 MP3               |       2.10        |    0.00     |      800       |    5.0     |
+    // | Adreno 610                 |       2.00        |    0.00     |      600       |    8.0     |
+    // | Mali-G57 MC2               |       1.80        |    0.00     |      950       |    5.0     |
+    // | Apple GPU (A10 Fusion)     |       1.70        |    0.00     |      900       |    4.0     |
+    // | Adreno 530                 |       1.60        |    0.00     |      624       |    3.0     |
+    // | Mali-G71 MP8               |       1.50        |    0.00     |      850       |    4.0     |
+    // | Mali-G71 MP2               |       1.20        |    0.00     |      770       |    4.0     |
+    // | Mali-G52 MP2               |       1.00        |    0.00     |      850       |    4.0     |
+    // | Adreno 512                 |       0.90        |    0.00     |      725       |    4.0     |
+    // | Adreno 509                 |       0.75        |    0.00     |      650       |    4.0     |
+    // | Adreno 506                 |       0.60        |    0.00     |      650       |    5.0     |
+    // | Adreno 505                 |       0.50        |    0.00     |      450       |    3.0     |
+    // | PowerVR GE8320             |       0.40        |    0.00     |      680       |    2.0  => 0 ?????   |
     // ----------------------------------------------------------------------------------------------
     // Understanding Mali/Immortalis "MC" Notation:
     // ARM Mali and Immortalis GPUs use Multi-Core (MC) configurations. The number after "MC" indicates the shader core count.
