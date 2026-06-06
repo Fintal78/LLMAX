@@ -2438,7 +2438,7 @@ Unlike the memory and thermal subsystems (which act as ceilings — see Step 4),
 | [...]            | [...]       | [...]           | [...]             | [...]    |
 
 > [!IMPORTANT]
-> **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, as well as OS/Architecture fallback matrices, refer to the **GPU_API_SUPPORT_LOOKUP_TABLE** and **Ambiguous API Resolution** section in [proposed_data_structure.md].
+> **Source of Truth:** For the full list of all supported Graphics APIs and their authoritative scores, as well as OS (Operating System)/Architecture fallback matrices, refer to the **GPU_API_SUPPORT_LOOKUP_TABLE** and **Ambiguous API Resolution** section in [proposed_data_structure.md]. Note that the operating system version listings in the fallback resolution tables must be fully aligned and synchronized with the canonical reference file [os_version_reference.md].
 
 > [!IMPORTANT]
 > **Multi-API Support & Scoring Logic:**

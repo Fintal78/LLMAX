@@ -40,3 +40,20 @@ The Galaxy S24 Ultra reference model in `proposed_data_structure.md` has been up
 
 ---
 *Verification complete: All downstream effects of the thermal normalization have been identified, calculated, and committed.*
+
+## 📱 Operating System (OS) Version Alignment (Section 6.3)
+
+We have aligned the operating system version references within the graphics and API (Application Programming Interface) modifier resolution matrices of Section 6.3 with the canonical reference source:
+
+### **Changes Made**
+1. **`scoring_rules.md`**: Updated Section 6.3.A's "Source of Truth" callout to state that all operating system version listings in the resolution matrices (specifically Matrix 1: Apple/iOS (iPhone Operating System), Matrix 2: Android, and Matrix 3: Windows Mobile & Windows Phone) are fully synchronized and aligned with the canonical reference file [os_version_reference.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/references/os_version_reference.md).
+2. **`proposed_data_structure.md`**: Updated the "Ambiguous API Resolution" comments in Section 6.3 to clarify the alignment of Matrices 1, 2, and 3 with `os_version_reference.md` and fully defined all associated technical abbreviations, including:
+   - **API**: Application Programming Interface
+   - **OS**: Operating System
+   - **iOS**: iPhone Operating System
+   - **SoC**: System on Chip
+   - **OpenGL ES**: OpenGL for Embedded Systems
+   - **D3D**: Direct3D
+
+### **Verification**
+- Verified the Markdown documentation using the validation scripts `check_constants.py`, `check_sections.py`, and `verify_pipeline.py`. All verification tests completed successfully.

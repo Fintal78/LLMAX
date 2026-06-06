@@ -2772,9 +2772,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // | —                | —           | OpenGL ES 1.1   | —                 | **0.0**  |
               //
               // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
-              // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following exhaustive OS/Architecture fallback matrices.
+              // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following OS/Architecture fallback matrices.
+              // Note that all operating system version listings in these fallback resolution matrices are fully aligned and synchronized with the canonical reference file docs/references/os_version_reference.md.
               //
-              // RATIONALE ON HARDWARE VS OS: Can identical SoCs have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
+              // RATIONALE ON HARDWARE VS OS: Can identical SoCs (System on Chips) have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D (Direct3D) 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
               //
               // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
               // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
