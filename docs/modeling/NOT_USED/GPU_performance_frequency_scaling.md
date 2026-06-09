@@ -1,3 +1,20 @@
+> [!CAUTION]
+> ⚠️ **THIS MODEL IS NO LONGER IN USE**
+>
+> This document describes a frequency scaling model (the **Computed Throughput Index — CTI**) that was developed for and initially integrated into the GPU Standard Graphics scoring pipeline (§ 6.3). It has since been **removed and replaced** by the simpler approach described in the active `scoring_rules.md`.
+>
+> **Why this model was removed:**
+>
+> The CTI model was applied directly to perceptual scores — that is, the GPU's architecture score (GAS, on the 0–10 scale which in that case was supposed to be a perceptual score and NOT a raw performance score) was used as the input to the scoring model. Because the model's diminishing-returns term `(1 − k·G)` grows weaker as the score `G` increases, high-performance GPU configurations were compressed more than low-performance ones relative to their true physical scaling.
+>
+> **Why the current model does not need it:**
+>
+> The active pipeline decouples the two concerns cleanly:
+> 1. **Frequency scaling** is applied first, in the near-linear physics domain: `GPU_Yield = Standard_Graphics_Score × (R ^ γ)`. Here, `Standard_Graphics_Score` is a *linear* proxy for raw throughput (and NOT a perceptual score), and `R ^ γ` is a simple power-law frequency ratio. No perceptual component is introduced at this stage.
+> 2. **Perceptual compression** (Weber-Fechner logarithmic normalization) is applied *afterwards*, in a single, uniform step: `GPU_Yield_norm = 10 × (log(GPU_Yield_Adjusted) − log(GPU_Yield_Adjusted_Min)) / (log(GPU_Yield_Adjusted_Max) − log(GPU_Yield_Adjusted_Min))`. Because the logarithm is applied to the *output* of the physics layer rather than to the input, it compresses all configurations on the same scale — naturally and uniformly squishing high-performance yields more than low-performance yields without any architecture-dependent term.
+
+---
+
 # GPU Performance Frequency Scaling Model: Complete Mathematical Analysis
 
 ## Executive Summary & Context
