@@ -55,7 +55,7 @@ The Thermal Dissipation Stability Index (TDSI) models the chassis' thermal manag
 *   **CPU Single-Core (§6.2) is Negligible:** 
     A single active CPU core generates very little heat (typically less than 2 to 3 Watts). The passive thermal dissipation capacity of a standard smartphone chassis is more than sufficient to keep the temperature below throttling limits indefinitely, rendering thermal stability irrelevant (Weight = **0.0000**).
 *   **CPU Multi-Core (§6.1) vs. GPU Standard Graphics (§6.3):** 
-    - The CPU multi-core benchmark, Geekbench 6 (GB6), consists of a series of short, bursty workloads (e.g. PDF rendering, file compression) lasting 2 to 5 seconds each with pauses in between. The chassis thermal mass acts as a buffer, preventing full thermal saturation. The observed performance drop of a passively cooled device (e.g. Samsung Galaxy S24 Ultra) compared to an actively cooled device (e.g. ASUS ROG Phone 8 Pro) is only about **5.5%** under looped runs, justifying a low TDSI weight of **0.0150**. For the exhaustive step-by-step mathematical derivation and multi-device verification of this 0.0150 TDSI weight, refer to the dedicated [tdsi_calibration_details.md] document.
+    - The CPU multi-core benchmark, Geekbench 6 (GB6), consists of a series of short, bursty workloads (e.g. PDF rendering, file compression) lasting 2 to 5 seconds each with pauses in between. The chassis thermal mass acts as a buffer, preventing full thermal saturation. The observed performance drop of a passively cooled device (e.g. Samsung Galaxy S24 Ultra) compared to an actively cooled device (e.g. ASUS ROG Phone 8 Pro) is only about **5.5%** under looped runs, justifying a low TDSI weight of **0.0150**. For the exhaustive step-by-step mathematical derivation and multi-device verification of this 0.0150 TDSI weight, refer to the dedicated [CPU_tdsi_calibration_details.md] document.
     - The GPU benchmark, 3DMark Steel Nomad Light, is a continuous, sustained 60-second rendering test that runs the GPU at 100% load. This sustained loading quickly heats the passive cooling chassis of standard smartphones, initiating thermal throttling. Because this 60-second run is brief compared to long-loop stress tests, the device does not reach full thermal saturation. Therefore, the GPU TDSI weight is conservatively calibrated to **0.018** by assuming that thermal constraints explain half of the observed short-term performance gap between passive and active chassis. For a detailed breakdown of the empirical verification, assumptions, and physical limits of this weight, see the calibration analysis in **Section 4.2 (Verification of GPU TDSI Weight (0.018))**.
 
 ### 2.3 Cache Weight Rationale
@@ -95,7 +95,7 @@ Exponents model the non-linear compounding nature of physical bottlenecks. We ut
 > **Methodological Scope & Limitations:**
 > Currently, only two formal empirical calibration studies have been conducted to derive and verify the subsystem weights:
 > 1. The Graphics Processing Unit (GPU) Thermal Dissipation Stability Index (TDSI) calibration presented below in Sections 4.1 and 4.2.
-> 2. The Central Processing Unit (CPU) Multi-Core TDSI calibration, which is documented in detail in [tdsi_calibration_details.md].
+> 2. The Central Processing Unit (CPU) Multi-Core TDSI calibration, which is documented in detail in [CPU_tdsi_calibration_details.md].
 > 
 > Ideally, comprehensive empirical studies should be performed to mathematically isolate and establish every single weight and exponent pair across the database. This would require evaluating multiple hardware configurations for each (weight, exponent) pair under test. However, isolating a single variable in consumer mobile devices is exceptionally difficult: it is nearly impossible to find device pairs that are completely identical in silicon architecture, clock speeds, software stacks, and operating conditions, differing *only* in the single subsystem being measured (such as cache size or memory bandwidth).
 > 
@@ -143,22 +143,22 @@ To ground the GPU calibrations in real-world performance, we use verified scores
     2.  **Step 2 — API Efficiency Modifier Application:**
         The software Application Programming Interface (API) overhead modifies the intrinsic throughput capability:
         `GPU_Yield_Adjusted = GPU_Yield * AFM_Factor`
-        - `AFM_Factor` (API Feature Modifier Factor) = `0.6000 + 0.4000 * (AFM_Score / 10.0)`
+        - `AFM_Factor` (API Feature Modifier Factor) = `0.8000 + 0.2000 * (AFM_Score / 10.0)`
         - For Vulkan 1.3 support, the `AFM_Score` = `9.2000` (sourced from the `GPU_API_SUPPORT_LOOKUP_TABLE`).
-        - `AFM_Factor = 0.6000 + 0.4000 * (9.2000 / 10.0) = 0.9680`
-        - `GPU_Yield_Adjusted = 9.7856 * 0.9680 = 9.4725`
+        - `AFM_Factor = 0.8000 + 0.2000 * (9.2000 / 10.0) = 0.9840`
+        - `GPU_Yield_Adjusted = 9.7856 * 0.9840 = 9.6290`
 
     3.  **Step 3 — Logarithmic Normalization:**
         To convert raw throughput to a human-perceptual score on a 0–10 scale:
         `GPU_Yield_norm = 10.0 * (log10(GPU_Yield_Adjusted) - log10(GPU_Yield_Min)) / (log10(GPU_Yield_Max) - log10(GPU_Yield_Min))`
         - Sourcing constants: `GPU_Yield_Min = 0.3000` and `GPU_Yield_Max = 10.3007`.
-        - Substituting: `10.0 * (log10(9.4725) - log10(0.3000)) / (log10(10.3007) - log10(0.3000)) = 10.0 * (0.9765 - (-0.5229)) / (1.0129 - (-0.5229)) = 10.0 * (1.4994 / 1.5358) = 9.7630` (rounded to 4 decimal places).
+        - Substituting: `10.0 * (log10(9.6290) - log10(0.3000)) / (log10(10.3007) - log10(0.3000)) = 10.0 * (0.9836 - (-0.5229)) / (1.0129 - (-0.5229)) = 10.0 * (1.5065 / 1.5358) = 9.8092` (rounded to 4 decimal places).
 
     4.  **Step 4 — Thermal Deficit Calculation:**
-        The S24 Ultra's passive chassis thermal capacity is represented by a TDSI score of `4.2400`, derived from its verified 3DMark Wild Life Extreme Stress Test stability rating of **59.00%** (where a 40.00% stability floor maps to 0.0, and 100.00% maps to 10.0):
+        The S24 Ultra's passive chassis thermal capacity is represented by a TDSI score of `4.2400`, derived from its verified 3DMark Wild Life Extreme Stress Test stability rating of **59.00%** (https://benchmarks.ul.com/hardware/phone/Samsung+Galaxy+S24+Ultra+review), where a 40.00% stability floor maps to 0.0, and 100.00% maps to 10.0:
         `TDSI_S24 = 10.0 * (log10(59.0000) - log10(40.0000)) / (log10(100.0000) - log10(40.0000)) = 4.2416` (rounded to `4.2400` for database alignment).
         This gives a thermal deficit of:
-        `Deficit_TDSI = 9.7630 - 4.2400 = 5.5230`
+        `Deficit_TDSI = 9.8092 - 4.2400 = 5.5692`
 
     5.  **Step 5 — Back-Calculating the Required Penalty from the Target Drop:**
         From Step 0, the target thermal-only drop is **8.14%**. We need to convert this physical percentage drop into the equivalent normalized score penalty, so that we can solve for the weight in Step 6. The penalty is derived directly from the Step 3 normalization formula:
@@ -181,6 +181,6 @@ To ground the GPU calibrations in real-world performance, we use verified scores
 
     6.  **Step 6 — Back-Calculating the Weight:**
         The penalty formula is `Penalty_TDSI = Weight * (Deficit_TDSI ^ 1.4)`. Solving for the weight:
-        `Weight = Penalty_TDSI_target / (Deficit_TDSI ^ 1.4) = 0.1949 / (5.5230 ^ 1.4) = 0.1949 / 10.9576 = 0.0178 ~ 0.018`
+        `Weight = Penalty_TDSI_target / (Deficit_TDSI ^ 1.4) = 0.1949 / (5.5692 ^ 1.4) = 0.1949 / 11.0858 = 0.0176 ~ 0.018`
         This is the calibrated GPU Thermal Dissipation Stability Index (TDSI) weight.
 

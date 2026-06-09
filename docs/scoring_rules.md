@@ -2369,9 +2369,9 @@ Unlike the memory and thermal subsystems (which act as ceilings — see Step 4),
 *   **Formula:** `GPU_Yield_Adjusted = GPU_Yield × AFM_Factor`
     *   `AFM_Factor` **(API Feature Modifier Factor):** 
         `AFM_Factor = (1 − Sensitivity_AFM) + Sensitivity_AFM × (AFM_Score / 10.0)`
-        With the sensitivity coefficient `Sensitivity_AFM = 0.40` substituted, the numerical formula is:
-        `AFM_Factor = 0.60 + 0.40 × (AFM_Score / 10.0) = 0.60 + 0.04 × AFM_Score`
-        *   `Sensitivity_AFM = 0.40`: The sensitivity coefficient (maximum penalty weight) for graphics API driver overhead. This bounds the modifier range, establishing a safe physical lower limit of 0.60 (40% maximum penalty) for legacy APIs.
+        With the sensitivity coefficient `Sensitivity_AFM = 0.20` substituted, the numerical formula is:
+        `AFM_Factor = 0.80 + 0.20 × (AFM_Score / 10.0) = 0.80 + 0.02 × AFM_Score`
+        *   `Sensitivity_AFM = 0.20`: The sensitivity coefficient (maximum penalty weight) for graphics API driver overhead. This bounds the modifier range, establishing a safe physical lower limit of 0.80 (20% maximum penalty) for legacy APIs. This sensitivity coefficient is an estimation and intermediate value based on several studies which led to a range of [0.1-0.4]. But those studies (such as the one presented in [AFM_Sensitivity_Calibration_Proposal.md]) do not use sufficiently real world benchmarks and reliable data, hence more work is needed to establish a more accurate estimate of this coefficient.
         *   `AFM_Score`: The API score of the target device, sourced from the **API Support Score Table** below.
 
 **API Support Score Table**
