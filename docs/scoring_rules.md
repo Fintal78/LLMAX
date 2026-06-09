@@ -2403,10 +2403,10 @@ The raw GPU Yield (from Steps 1–2) is a physical throughput quantity expressed
 
 This normalization applies the Weber-Fechner Law — a fundamental principle of human perception stating that the perceived difference between two stimuli is proportional to the logarithm of their ratio, not their absolute difference.
 
-*   **Formula:** `GPU_Yield_norm = 10.0 × (log(GPU_Yield_Adjusted) − log(GPU_Yield_Min)) / (log(GPU_Yield_Max) − log(GPU_Yield_Min))`
+*   **Formula:** `GPU_Yield_norm = 10.0 × (log(GPU_Yield_Adjusted) − log(GPU_Yield_Adjusted_Min)) / (log(GPU_Yield_Adjusted_Max) − log(GPU_Yield_Adjusted_Min))`
     *   Clamped to [0.0, 10.0].
-    *   `GPU_Yield_Min`: The minimum GPU Yield value across the entire 2016–2026 device range, corresponding to the lowest-performing underclocked GPU with the lowest API modifier. 
-    *   `GPU_Yield_Max`: The maximum GPU Yield value across the 2016–2026 device range, corresponding to the highest-performing GPU at its maximum overclocked frequency with the highest API modifier.
+    *   `GPU_Yield_Adjusted_Min`: The minimum GPU Yield value across the entire 2016–2026 device range, corresponding to the lowest-performing underclocked GPU with the lowest API modifier. 
+    *   `GPU_Yield_Adjusted_Max`: The maximum GPU Yield value across the 2016–2026 device range, corresponding to the highest-performing GPU at its maximum overclocked frequency with the highest API modifier.
 
 ---
 

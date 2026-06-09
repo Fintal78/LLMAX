@@ -111,7 +111,7 @@
 
 ### 6.3 Graphics & Ray Tracing Performance
 *   `GPU_SteelNomad_Score_Min` = 40 (Score 0 | Helio G35 Baseline), `GPU_SteelNomad_Score_Max` = 3120 (Score 10 | D9500 Ceiling)
-*   `GPU_Yield_Min` = 0.3000 (Score 0 | PowerVR GE8320 floor underclocked to 650 MHz with OpenGL ES 3.2), `GPU_Yield_Max` = 10.3007 (Score 10 | Peak graphics yield ceiling corresponding to the maximum actual yield of Adreno 830 at 1200 MHz with Vulkan 1.4 API support)
+*   `GPU_Yield_Adjusted_Min` = 0.3000 (Score 0 | PowerVR GE8320 floor underclocked to 650 MHz with OpenGL ES 3.2), `GPU_Yield_Adjusted_Max` = 10.3007 (Score 10 | Peak graphics yield ceiling corresponding to the maximum actual yield of Adreno 830 at 1200 MHz with Vulkan 1.4 API support)
 
 ### 6.4 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 81600 (Score 10)

@@ -150,8 +150,8 @@ To ground the GPU calibrations in real-world performance, we use verified scores
 
     3.  **Step 3 — Logarithmic Normalization:**
         To convert raw throughput to a human-perceptual score on a 0–10 scale:
-        `GPU_Yield_norm = 10.0 * (log10(GPU_Yield_Adjusted) - log10(GPU_Yield_Min)) / (log10(GPU_Yield_Max) - log10(GPU_Yield_Min))`
-        - Sourcing constants: `GPU_Yield_Min = 0.3000` and `GPU_Yield_Max = 10.3007`.
+        `GPU_Yield_norm = 10.0 * (log10(GPU_Yield_Adjusted) - log10(GPU_Yield_Adjusted_Min)) / (log10(GPU_Yield_Adjusted_Max) - log10(GPU_Yield_Adjusted_Min))`
+        - Sourcing constants: `GPU_Yield_Adjusted_Min = 0.3000` and `GPU_Yield_Adjusted_Max = 10.3007`.
         - Substituting: `10.0 * (log10(9.6290) - log10(0.3000)) / (log10(10.3007) - log10(0.3000)) = 10.0 * (0.9836 - (-0.5229)) / (1.0129 - (-0.5229)) = 10.0 * (1.5065 / 1.5358) = 9.8092` (rounded to 4 decimal places).
 
     4.  **Step 4 — Thermal Deficit Calculation:**
