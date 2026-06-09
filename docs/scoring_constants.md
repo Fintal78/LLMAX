@@ -109,14 +109,15 @@
 *   `CPU_STRS_Score_Min` = 0.4 (Score 0), `CPU_STRS_Score_Max` = 11.5 (Score 10)
 *   `CPU_L2_KB_Min` = 128 (Score 0 | Cortex-A53/A55 private cache floor), `CPU_L2_KB_Max` = 16384 (Score 10 | Apple A16 Bionic cluster L2 ceiling)
 
-### 6.3 GPU Performance
+### 6.3 Graphics & Ray Tracing Performance
 *   `GPU_SteelNomad_Score_Min` = 40 (Score 0 | Helio G35 Baseline), `GPU_SteelNomad_Score_Max` = 3120 (Score 10 | D9500 Ceiling)
+*   `GPU_Yield_Min` = 0.3000 (Score 0 | PowerVR GE8320 floor underclocked to 650 MHz with OpenGL ES 3.2), `GPU_Yield_Max` = 10.3007 (Score 10 | Peak graphics yield ceiling corresponding to the maximum actual yield of Adreno 830 at 1200 MHz with Vulkan 1.4 API support)
 
 ### 6.4 AI Hardware
 *   `AI_GB_Quant_Score_Min` = 500 (Score 0), `AI_GB_Quant_Score_Max` = 81600 (Score 10)
 *   `NPU_TOPS_Min` = 0.5 (Score 0), `NPU_TOPS_Max` = 50 (Score 10)             // ⚠️⚠️⚠️ ATTENTON: direct impact on the NPU Scoring Table !!!  
 
-### 6.5 Memory Technology Efficiency Index (MTEI)
+### 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
 *   `RAM_MTS_Min` = 1600 (Score 0 | LPDDR3 Baseline), `RAM_MTS_Max` = 9600 (Score 10 | LPDDR5T Ceiling) // ⚠️⚠️⚠️ ATTENTON: direct impact on the Scoring Table !!!  
 
 ### 6.6 RAM Capacity

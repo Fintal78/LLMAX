@@ -2431,7 +2431,7 @@ These subsystems act as **bottlenecks**, not contributors: if any subsystem fail
 The subsystem penalty weights in the Standard Graphics Pipeline are calibrated as engineering approximations representing bottleneck severity rather than directly measured physical constants. The active bottlenecks model the impact of memory bandwidth starvation and thermal throttling on graphics throughput, while the CPU (Central Processing Unit) orchestration component is neglected.
 
 *   **Memory Throughput Index (MTI):** Retained in the model (weight **0.0800**, exponent **1.4**). Mobile GPUs (Graphics Processing Units) are highly dependent on memory bandwidth for texture mapping and frame buffer operations. Bandwidth starvation (such as pairing a fast GPU with slow RAM (Random Access Memory)) causes shader cores to stall, directly dropping frame rates.
-*   **Thermal Dissipation Stability Index (TDSI):** Retained in the model (weight **0.0200**, exponent **1.4**). While long-term thermal throttling is severe, the primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds where the chassis thermal mass buffers heat. The small weight compresses the long-term TDSI deficit to its actual short-burst benchmark impact.
+*   **Thermal Dissipation Stability Index (TDSI):** Retained in the model (weight **0.018**, exponent **1.4**). While long-term thermal throttling is severe, the primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds where the chassis thermal mass buffers heat. The small weight compresses the long-term TDSI deficit to its actual short-burst benchmark impact.
 *   **CPU Orchestration Index:** Neglected/removed from the active model. The primary graphics benchmark is deliberately GPU-bound to isolate graphics performance, meaning CPU draw call and command submission overhead is negligible in practice.
 
 **Subsystem Penalty Parameters:**
@@ -2439,7 +2439,7 @@ The subsystem penalty weights in the Standard Graphics Pipeline are calibrated a
 | Subsystem                                              | Source Score (`S`)                  | Weight    | Exponent (β)  |
 | :----------------------------------------------------- | :---------------------------------- | :-------: | :-----------: |
 | **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.0800**|    **1.4**    |
-| **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.0200**|    **1.4**    |
+| **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.0180**|    **1.4**    |
 
 > [!NOTE]
 > **Mathematical Design of the GPU Penalty System:**
