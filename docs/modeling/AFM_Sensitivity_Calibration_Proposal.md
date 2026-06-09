@@ -70,12 +70,12 @@ Windows on ARM devices using Snapdragon 835 were a niche, limited-availability c
 
 ### Audit Summary
 
-| Example | Device | Claimed Ratio | Status |
-| :------ | :----- | :-----------: | :----- |
-| 1 | Adreno 530, Vulkan 1.0 vs. GLES 3.2 | 1.09× | **Unverified** — FPS values not traced to any publication |
-| 2 | A7 G6430, Metal 1.0 vs. GLES 3.0 | **1.30×** | **Falsified** — AnandTech (2015) measures ~1.00× (no improvement) |
-| 3 | Mali-G72 MP18, Vulkan 1.1 vs. GLES 3.2 | 1.15× | **Unverified** — no traceable source |
-| 4 | Adreno 540 WoA, D3D12 vs. D3D11.1 | 1.06× | **Unverified** — extremely niche platform, no source found |
+| Example | Device                                 | Claimed Ratio | Status                                                             |
+| :------ | :------------------------------------- | :-----------: | :----------------------------------------------------------------- |
+| 1       | Adreno 530, Vulkan 1.0 vs. GLES 3.2    |     1.09×     | **Unverified** — FPS values not traced to any publication          |
+| 2       | A7 G6430, Metal 1.0 vs. GLES 3.0       |   **1.30×**   | **Falsified** — AnandTech (2015) measures ~1.00× (no improvement)  |
+| 3       | Mali-G72 MP18, Vulkan 1.1 vs. GLES 3.2 |     1.15×     | **Unverified** — no traceable source                               |
+| 4       | Adreno 540 WoA, D3D12 vs. D3D11.1      |     1.06×     | **Unverified** — extremely niche platform, no source found         |
 
 **None of the four existing examples constitutes verified calibration evidence.** Example 2 is additionally in direct conflict with published measurement. The current `Sensitivity_AFM = 0.40` has no confirmed empirical foundation.
 
@@ -251,13 +251,13 @@ x          = 0.029 / 0.2645
 
 ### Convergence Summary
 
-| Data Point | Device | API Pair | Observed Ratio | Derived x |
-| :--------- | :----- | :------- | :------------: | :-------: |
-| A (iPad Air 2, A8X) | Metal 1.0 vs. GLES 3.0 | 7.0 vs. 1.0 | 1.097 | **0.141** |
-| B (iPhone 5s, A7) | Metal 1.0 vs. GLES 3.0 | 7.0 vs. 1.0 | **~1.000** | ~0.000 (no effect) |
-| C (Adreno 540, Vulkan 1.0) | Vulkan 1.0 vs. GLES 3.2 | 7.0 vs. 5.0 | 1.029 | **0.135** |
-| C (Adreno 540, Vulkan 1.1) | Vulkan 1.1 vs. GLES 3.2 | 7.5 vs. 5.0 | 1.029 | **0.110** |
-| D (Adreno 630) | Vulkan vs. GLES 3.2 | 7.5 vs. 5.0 | **0.800** | **negative** (model cannot represent) |
+| Data Point                 | Device                  | API Pair    | Observed Ratio | Derived x                             |
+| :------------------------- | :---------------------- | :---------- | :------------: | :-----------------------------------: |
+| A (iPad Air 2, A8X)        | Metal 1.0 vs. GLES 3.0  | 7.0 vs. 1.0 |     1.097      |               **0.141**               |
+| B (iPhone 5s, A7)          | Metal 1.0 vs. GLES 3.0  | 7.0 vs. 1.0 |   **~1.000**   |          ~0.000 (no effect)           |
+| C (Adreno 540, Vulkan 1.0) | Vulkan 1.0 vs. GLES 3.2 | 7.0 vs. 5.0 |     1.029      |               **0.135**               |
+| C (Adreno 540, Vulkan 1.1) | Vulkan 1.1 vs. GLES 3.2 | 7.5 vs. 5.0 |     1.029      |               **0.110**               |
+| D (Adreno 630)             | Vulkan vs. GLES 3.2     | 7.5 vs. 5.0 |   **0.800**    | **negative** (model cannot represent) |
 
 **Key observation:** The two independently sourced real-world data points (A8X and Adreno 540) converge on `x ≈ 0.11–0.14`, all in GPU-bound benchmark conditions. The current value of `Sensitivity_AFM = 0.40` is **approximately 3× larger** than what these real measurements support.
 
@@ -354,11 +354,11 @@ This is a viable path but requires an update to the full API score table. It is 
 
 ## Part VII — Summary of Proposed Changes
 
-| Parameter | Current Value | Proposed Value | Basis |
-| :-------- | :-----------: | :------------: | :---- |
-| `Sensitivity_AFM` | 0.40 | **0.13** | Two verified real-world GPU-bound benchmarks (AnandTech 2015 + Techgage 2018) |
-| Maximum AFM penalty | 40% | **13%** | Aligned with real GPU-bound performance delta |
-| Calibration examples | 4 (all unverified or falsified) | 2 (verified) | Only anchors with traced, named sources retained |
+| Parameter            |         Current Value         | Proposed Value | Basis                                                                        |
+| :------------------- | :---------------------------: | :------------: | :--------------------------------------------------------------------------- |
+| `Sensitivity_AFM`    |             0.40              |    **0.13**    | Two verified real-world GPU-bound benchmarks (AnandTech 2015 + Techgage 2018)|
+| Maximum AFM penalty  |              40%              |    **13%**     | Aligned with real GPU-bound performance delta                                |
+| Calibration examples |4 (all unverified or falsified)|  2 (verified)  | Only anchors with traced, named sources retained                             |
 
 **The AFM Score table values (API → numeric score) are NOT proposed to change** under this revision, since the two verified data points are consistent with the existing table when `Sensitivity_AFM = 0.13`.
 
