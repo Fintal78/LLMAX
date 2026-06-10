@@ -3318,95 +3318,97 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "6_7_storage_technology": {
-      // SCORING GOAL: Evaluates internal storage protocol efficiency and sequential throughput using the Storage Technology Efficiency Index (STEI).
-      // Faster storage directly impacts system boot times, app installation speed, and overall OS responsiveness.
-      // Storage throughput is measured in MB/s (Megabytes per second), representing the data bottleneck between the flash memory and the SoC.
+      // SCORING GOAL: Evaluates internal storage protocol efficiency and sequential throughput using the STEI (Storage Technology Efficiency Index).
+      // Faster storage directly impacts system boot times, app installation speed, and overall OS (Operating System) responsiveness.
+      // Storage protocols evaluated include UFS (Universal Flash Storage), eMMC (embedded MultiMediaCard), and NVMe (Non-Volatile Memory express) used over a PCIe (Peripheral Component Interconnect Express) bus.
+      // Performance features include WB (Write Booster) and HPB (Host Performance Booster).
+      // Storage throughput is measured in MB/s (Megabytes per second), representing the data bottleneck between the flash memory and the SoC (System on Chip).
       //
       // ═══════════════════════════════════════════════════════════════════════════
       // STEI SCORING & RESOLUTION MATRIX (AUTONOMOUS REFERENCE)
       // ═══════════════════════════════════════════════════════════════════════════
-      // | Tier    | Denomination (Logic Key)      | Score | MB/s  |
-      // | :------ | :---------------------------- | :---- | :---- |
-      // | Tier 1  | UFS 4.0 Peak / NVMe (A17/18)  | 10.00 | 4200  |
-      // | Tier 2  | UFS 4.0 Base / NVMe (A16)     |  9.10 | 3000  |
-      // | Tier 3  | UFS 3.1 (Enhanced - WB+HPB)   |  8.15 | 2100  |
-      // | Tier 4  | UFS 3.1 Standard / NVMe (A15) |  7.66 | 1750  |
-      // | Tier 5  | UFS 3.0 / NVMe (A14)          |  7.15 | 1450  |
-      // | Tier 6  | UFS 2.2 / NVMe (A13)          |  6.16 | 1000  |
-      // | Tier 7  | UFS 2.1 (Peak)                |  5.72 | 850   |
-      // | Tier 8  | UFS 2.1 Standard / NVMe (A12) |  4.80 | 600   |
-      // | Tier 9  | UFS 2.0 / NVMe (A11)          |  4.02 | 450   |
-      // | Tier 10 | eMMC 5.1 Peak / NVMe (A10)    |  3.20 | 330   |
-      // | Tier 11 | eMMC 5.1 Base / NVMe (A9)     |  2.11 | 220   |
-      // | Tier 12 | eMMC 5.0                      |  1.09 | 150   |
-      // | Tier 13 | eMMC ≤ 4.5 / NVMe (A8 & Older)|  0.00 | 100   |
+      // | Denomination (Logic Key)      | MB/s  | Marketing Terms & Keywords                                  |
+      // | :---------------------------- | :---: | :---------------------------------------------------------- |
+      // | UFS 4.1                       | 4200  | UFS 4.1 Standard (Temporary estimation, see note below)     |
+      // | UFS 4.0 Peak / NVMe (A17/18)  | 4200  | 4.2 GB/s (Gigabytes per second), UFS 4.0 Peak, NVMe Peak    |
+      // | UFS 4.0 Base / NVMe (A16)     | 3000  | UFS 4.0 Base, NVMe Gen 4 Base                               |
+      // | UFS 3.1 (Enhanced - WB+HPB)   | 2100  | UFS 3.1 with Write Booster (WB) & Host Performance Booster  |
+      // | UFS 3.1 Standard / NVMe (A15) | 1750  | UFS 3.1 Standard, NVMe Gen 3 Peak                           |
+      // | UFS 3.0 / NVMe (A14)          | 1450  | UFS 3.0 Standard, NVMe Gen 3 Base                           |
+      // | UFS 2.2 / NVMe (A13)          | 1000  | UFS 2.2 Standard, NVMe Gen 2 Peak                           |
+      // | UFS 2.1 (Peak)                |  850  | UFS 2.1 with Turbo Write / Write Booster (WB)               |
+      // | UFS 2.1 Standard / NVMe (A12) |  600  | UFS 2.1 Standard, NVMe Gen 2 Base                           |
+      // | UFS 2.0 / NVMe (A11)          |  450  | UFS 2.0 Standard, NVMe Gen 1 Peak                           |
+      // | eMMC 5.1 HS400 / NVMe (A10)   |  300  | eMMC 5.1 HS400 (High Speed 400) mode, NVMe Gen 1 Base       |
+      // | eMMC 5.1 Standard / NVMe (A9) |  220  | eMMC 5.1 Standard JEDEC baseline, NVMe Gen 1 Entry          |
+      // | eMMC 5.0                      |  150  | eMMC 5.0 Standard                                           |
+      // | eMMC <= 4.5 / NVMe (A8/Older) |  100  | eMMC legacy, PCIe / NVMe legacy                             |
       //
-      // RESOLUTION LOGIC:
-      // 1. PRIMARY: MB/s VERBATIM -> Match verbatim sequential read speed (e.g., "2100 MB/s") to the nearest Basis.
-      // 2. SECONDARY: TECH + KEYWORDS (Exhaustive Mapping) ->
-      //    - Tier 1 (Peak 4.0): Requires "UFS 4.0" AND ("Peak" OR "High-speed" OR "4.2 GB/s").
-      //    - Tier 3 (Enhanced 3.1): Requires "UFS 3.1" AND ("Write Booster" OR "WB") AND ("HPB" OR "Host Performance Booster").
-      //    - Tier 7 (Peak 2.1): Requires "UFS 2.1" AND ("Turbo Write" OR "Write Booster" OR "WB").
-      //    - Tier 10 (Peak eMMC 5.1): Requires "eMMC 5.1" AND ("Peak" OR "High-speed").
-      // 3. TERTIARY: BASELINE by default (Ambiguous Disclosure) ->
-      //    - Generic "UFS 4.0" -> Tier 2 (Baseline).
-      //    - Generic "UFS 3.1" -> Tier 4 (Baseline).
-      //    - Generic "UFS 2.1" -> Tier 8 (Baseline).
-      //    - Generic "eMMC 5.1" -> Tier 11 (Baseline).
-      // 4. FALLBACK: SoC PARITY -> Map Apple devices exactly as defined in 'Denomination' column.
+      // NOTE ON UFS 4.1 SPECIFICATION & METHODOLOGY:
+      //   Published by JEDEC (Joint Electron Device Engineering Council) in December 2024 (JESD220G), UFS 4.1 retains the physical link layer of UFS 4.0 (MIPI M-PHY 5.0, 23.2 Gbps/lane), meaning its theoretical throughput limit remains 4200 MB/s. Because commercial chips and devices featuring UFS 4.1 are not yet available in the market, this mapping represents the current best estimation to prevent scoring range distortions.
       //
-      "storage_format": {
-        "value": "Tier 1: UFS 4.0 Peak",
-        "value_details": {
-          "Tier 1: \"UFS 4.0 Peak\" OR \"NVMe (A17/18)\"": [
-              { "name": "UFS 4.0 Peak", "source": "TBD", "exact_extract": "Proof pending" }
-          ],
-          "Tier 2: \"UFS 4.0 Base\" OR \"NVMe (A16)\"": [],
-          "Tier 3: \"UFS 3.1 (Enhanced - WB + HPB)\"": [],
-          "Tier 4: \"UFS 3.1 Standard\" OR \"NVMe (A15)\"": [],
-          "Tier 5: \"UFS 3.0\" OR \"NVMe (A14)\"": [],
-          "Tier 6: \"UFS 2.2\" OR \"NVMe (A13)\"": [],
-          "Tier 7: \"UFS 2.1 (Peak)\"": [],
-          "Tier 8: \"UFS 2.1 Standard\" OR \"NVMe (A12)\"": [],
-          "Tier 9: \"UFS 2.0\" OR \"NVMe (A11)\"": [],
-          "Tier 10: \"eMMC 5.1 Peak\" OR \"NVMe (A10)\"": [],
-          "Tier 11: \"eMMC 5.1 Base\" OR \"NVMe (A9)\"": [],
-          "Tier 12: \"eMMC 5.0\"": [],
-          "Tier 13: \"eMMC ≤ 4.5\" OR \"NVMe (A8 & Older)\"": []
-        }
-        // SCORING GUIDELINE: Identify the storage technical denomination strictly via reported protocol or sequential throughput.
-        // Match the device's highest verified specification to the corresponding Tier in the "STEI SCORING & RESOLUTION MATRIX" above.
-        // TRACEABILITY RULE: In the final "value" field, keep ONLY the denomination part that applies to the device to ensure precise traceability.
-        // Use the following exact Tier Names as the basis for "value" (always apply the highest applicable tier) and store the related score in "effective_sequential_read_mbps".
-        //   • Tier 1:  "UFS 4.0 Peak" OR "NVMe (A17/18)"        → 10.00
-        //   • Tier 2:  "UFS 4.0 Base" OR "NVMe (A16)"           → 9.10
-        //   • Tier 3:  "UFS 3.1 (Enhanced - WB + HPB)"          → 8.15
-        //   • Tier 4:  "UFS 3.1 Standard" OR "NVMe (A15)"       → 7.66
-        //   • Tier 5:  "UFS 3.0" OR "NVMe (A14)"                → 7.15
-        //   • Tier 6:  "UFS 2.2" OR "NVMe (A13)"                → 6.16
-        //   • Tier 7:  "UFS 2.1 (Peak)"                         → 5.72
-        //   • Tier 8:  "UFS 2.1 Standard" OR "NVMe (A12)"       → 4.80
-        //   • Tier 9:  "UFS 2.0" OR "NVMe (A11)"                → 4.02
-        //   • Tier 10: "eMMC 5.1 Peak" OR "NVMe (A10)"          → 3.20
-        //   • Tier 11: "eMMC 5.1 Base" OR "NVMe (A9)"           → 2.11
-        //   • Tier 12: "eMMC 5.0"                               → 1.09
-        //   • Tier 13: "eMMC ≤ 4.5" OR "NVMe (A8 & Older)"      → 0.00
-        // VALUE_DETAILS GUIDELINE: To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name/MBps Rate", "source": "URL", "exact_extract": "Verbatim proof"}.
-      },
+      // DATA PRIORITY RULES (Authoritative Logic Hierarchy):
+      // To ensure absolute scoring neutrality and prevent speculative "peak-speed" awarding for undisclosed hardware, the following hierarchy MUST be followed:
+      //
+      //   EXHAUSTIVE SOURCE VERIFICATION MANDATE: Before falling back to Level 3 or Level 4 resolution methods, the agent/classifier MUST perform an exhaustive search across at least three (3) independent, reputable specification databases or official manufacturer documentation pages to verify that the exact storage technology or protocol is truly unrecorded in public sources.
+      //
+      //   JEDEC BASELINE SPEEDS REFERENCE:
+      //     - UFS 4.1     -> resolve to 4200 MB/s (UFS 4.1 Standard baseline)
+      //     - UFS 4.0     -> resolve to 3000 MB/s (UFS 4.0 Base baseline)
+      //     - UFS 3.1     -> resolve to 1750 MB/s (UFS 3.1 Standard baseline)
+      //     - UFS 3.0     -> resolve to 1450 MB/s (UFS 3.0 baseline)
+      //     - UFS 2.2     -> resolve to 1000 MB/s (UFS 2.2 baseline)
+      //     - UFS 2.1     -> resolve to 600 MB/s (UFS 2.1 Standard baseline)
+      //     - UFS 2.0     -> resolve to 450 MB/s (UFS 2.0 baseline)
+      //     - eMMC 5.1    -> resolve to 220 MB/s (eMMC 5.1 Standard baseline)
+      //     - eMMC 5.0    -> resolve to 150 MB/s (eMMC 5.0 baseline)
+      //     - eMMC <= 4.5 -> resolve to 100 MB/s (eMMC <= 4.5 baseline)
+      //
+      //   1. LEVEL 1: VERBATIM THROUGHPUT SPECIFICATION (PRIMARY)
+      //      - Use only if the exact sequential read throughput (e.g., "3500 MB/s", "4.2 GB/s") is officially published by the manufacturer or measured in verified benchmark tests (e.g., AndroBench 5.1 or CPDT using documented testing methodology).
+      //      - Match the exact speed to the closest speed value in the resolution matrix. If conflicting benchmark results exist, the classifier must choose the most conservative verified throughput.
+      //   2. LEVEL 2: DETAILED PROTOCOL & MARKETING BIN MATCHING (SECONDARY)
+      //      - If exact throughput is missing, but a specific protocol generation and detailed performance subtype or marketing bin is explicitly disclosed, match it to the Resolution Matrix:
+      //        - UFS 4.0 Peak / NVMe (A17/18) -> resolve to 4200 MB/s (assigning peak bin speeds requires direct evidence of the peak implementation, not just the protocol name).
+      //        - UFS 3.1 Enhanced (featuring verified Write Booster (WB) and Host Performance Booster (HPB) performance profiles) -> resolve to 2100 MB/s.
+      //        - UFS 2.1 Peak (with verified Turbo Write/Write Booster) -> resolve to 850 MB/s.
+      //        - eMMC 5.1 HS400 -> resolve to 300 MB/s.
+      //        - For standard/base configurations without peak modifiers (e.g., "UFS 4.0 Base", "UFS 3.1 Standard"), resolve directly to the baseline speed defined in the JEDEC BASELINE SPEEDS REFERENCE.
+      //   3. LEVEL 3: CONSERVATIVE GENERATIONAL FALLBACK (TERTIARY)
+      //      - If only a generic generation is disclosed (e.g., "UFS 4.1", "UFS 4.0", "UFS 3.1", "eMMC 5.1"), resolve directly to the baseline speed defined in the JEDEC BASELINE SPEEDS REFERENCE.
+      //      - Peak-performance bins (e.g., UFS 4.0 Peak at 4200 MB/s, UFS 3.1 Enhanced at 2100 MB/s, eMMC 5.1 HS400 at 300 MB/s) are strictly PROHIBITED for generic disclosures without explicit Level 1/2 verification.
+      //   4. LEVEL 4: SYSTEM-ON-CHIP (SoC) PARITY RESOLUTION (QUATERNARY)
+      //      - If the storage protocol and throughput are completely undisclosed but the SoC (System on Chip) model is verified, map to the SoC's reference configuration according to the empirically established reference configuration or maximum supported standard:
+      //        a. Apple Silicon (Unified NVMe / PCIe interface):
+      //           - iPhones are resolved according to empirically established reference configurations based on historical performance benchmarks (since Apple does not officially publish NVMe throughput specs):
+      //             - Apple A18 / A18 Pro / A17 Pro (3nm) -> resolve to 4200 MB/s (NVMe Gen 4 Peak equivalent)
+      //             - Apple A16 Bionic (4nm) -> resolve to 3000 MB/s (NVMe Gen 4 Base equivalent)
+      //             - Apple A15 Bionic (5nm) -> resolve to 1750 MB/s (NVMe Gen 3 Peak equivalent)
+      //             - Apple A14 Bionic (5nm) -> resolve to 1450 MB/s (NVMe Gen 3 Base equivalent)
+      //             - Apple A13 Bionic (7nm) -> resolve to 1000 MB/s (NVMe Gen 2 Peak equivalent)
+      //             - Apple A12 Bionic (7nm) -> resolve to 600 MB/s (NVMe Gen 2 Base equivalent)
+      //             - Apple A11 Bionic (10nm) -> resolve to 450 MB/s (NVMe Gen 1 Peak equivalent)
+      //             - Apple A10 Bionic (16nm) -> resolve to 300 MB/s (NVMe Gen 1 Base empirical equivalent)
+      //             - Apple A9 Bionic (16nm) -> resolve to 220 MB/s (NVMe Gen 1 Entry empirical equivalent)
+      //             - Apple A8 Bionic and older -> resolve to 100 MB/s (legacy NVMe/PCIe empirical equivalent)
+      //        b. Non-Apple / Android SoCs (Qualcomm, MediaTek, Exynos, Tensor, Unisoc):
+      //           - Identify the maximum storage standard officially supported by the verified SoC, and resolve it strictly to its corresponding baseline speed defined in the JEDEC BASELINE SPEEDS REFERENCE.
+      //
       "effective_sequential_read_mbps": {
         "value": 4200,
-        // GUIDELINE: The effective sequential throughput in MB/s.
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Match the "effective_sequential_read_mbps.value" to the "STEI SCORING & RESOLUTION MATRIX" above to retrieve the precise score.
+        // GUIDELINE: The effective sequential throughput in MB/s (Megabytes per second).
+        // TRACEABILITY RULE: Identify the device's verified specification and match it using the DATA PRIORITY RULES above to determine the speed in MB/s. Record the marketing name/data rate, source, and exact extract proof inside value_details.
+        "value_details": [
+          { "name": "UFS 4.0 Peak", "source": "TBD", "exact_extract": "Proof pending" }
+        ]
       },
       "scores": {
-        "predicted": 10.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits effective_sequential_read_mbps.subscore.
+        "predicted": 10.0000,
+        "calculation_formula": "scores.predicted = 10.0 * (log(effective_sequential_read_mbps.value) - log(STORAGE_MBPS_Min)) / (log(STORAGE_MBPS_Max) - log(STORAGE_MBPS_Min)), clamped 0–10.",
+        // SCORING GUIDELINE: The predicted STEI (Storage Technology Efficiency Index) score, computed by logarithmically normalizing the effective sequential read throughput in MB/s (Megabytes per second) between the minimum speed STORAGE_MBPS_Min and the maximum speed STORAGE_MBPS_Max to capture human-perceptual speed scaling and Amdahl's Law saturation. Clamped to [0.00, 10.00].
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
+          "value": 10.0000,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"

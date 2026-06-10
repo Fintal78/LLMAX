@@ -124,7 +124,7 @@
 *   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)
 
 ### 6.7 Storage Technology Efficiency Index (STEI)
-*   `STORAGE_MBPS_Min` = 100 (Score 0 | Legacy eMMC), `STORAGE_MBPS_Max` = 4200 (Score 10 | UFS 4.0/NVMe Gen 4 Peak) // ⚠️⚠️⚠️ ATTENTON: direct impact on the Scoring Table !!!
+*   `STORAGE_MBPS_Min` = 100 (Score 0 | Legacy eMMC), `STORAGE_MBPS_Max` = 4200 (Score 10 | UFS 4.0/NVMe Gen 4 Peak)
 
 ### 6.8 Storage Capacity
 *   `Storage_GB_Min` = 8 (Score 0 | 2016 Modern Era Floor), `Storage_GB_Max` = 2048 (Score 10 | 2026 State-of-the-Art Ceiling)
