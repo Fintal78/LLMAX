@@ -118,7 +118,7 @@
 *   `NPU_TOPS_Min` = 0.5 (Score 0), `NPU_TOPS_Max` = 50 (Score 10)             // ⚠️⚠️⚠️ ATTENTON: direct impact on the NPU Scoring Table !!!  
 
 ### 6.5 RAM Technology - Memory Technology Efficiency Index (MTEI)
-*   `RAM_MTS_Min` = 1600 (Score 0 | LPDDR3 Baseline), `RAM_MTS_Max` = 9600 (Score 10 | LPDDR5T Ceiling) // ⚠️⚠️⚠️ ATTENTON: direct impact on the Scoring Table !!!  
+*   `RAM_MTS_Min` = 1600 (Score 0 | LPDDR3 Baseline), `RAM_MTS_Max` = 10667 (Score 10 | LPDDR5X Ceiling)
 
 ### 6.6 RAM Capacity
 *   `RAM_GB_Min` = 2 (Score 0), `RAM_GB_Max` = 24 (Score 10)
