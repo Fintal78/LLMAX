@@ -3242,12 +3242,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       //
       //   EXHAUSTIVE SOURCE VERIFICATION MANDATE: Before falling back to Level 3 or Level 4 resolution methods, the agent/classifier MUST perform an exhaustive search across at least three (3) independent, reputable specification databases or official manufacturer documentation pages to verify that the exact MT/s (Megatransfers per second) speed or marketing terminology is truly unrecorded in public sources.
       //
+      //   JEDEC (Joint Electron Device Engineering Council) BASELINE SPEEDS REFERENCE:
+      //     - LPDDR5X   -> resolve to 7500 MT/s (LPDDR5X-7500 baseline)
+      //     - LPDDR5    -> resolve to 5500 MT/s (LPDDR5-5500 baseline)
+      //     - LPDDR4X   -> resolve to 3733 MT/s (LPDDR4X-3733 baseline)
+      //     - LPDDR4    -> resolve to 3200 MT/s (LPDDR4-3200 baseline; resolving to 3200 MT/s is justified because the vast majority of mobile Systems on Chip (SoCs) and smartphones released from 2016 onwards utilizing LPDDR4 implement the standard 3200 MT/s JEDEC speed grade, whereas the 2133 MT/s speed grade is limited to legacy pre-2016 architectures or specific low-power embedded platforms)
+      //     - LPDDR3    -> resolve to 1600 MT/s (LPDDR3-1600 or older baseline)
+      //
       //   1. LEVEL 1: VERBATIM SPECIFICATION (PRIMARY)
       //      - Use only if the exact MT/s (Megatransfers per second) (e.g., "8533 MT/s") is found in the official technical specification or verified hardware teardown.
       //   2. LEVEL 2: DETERMINISTIC MARKETING BIN (SECONDARY)
       //      - If MT/s is missing but qualified marketing terms (e.g., "Turbo", "9.6 Gbps", "Full-blooded") are used, match them directly to the Resolution Matrix above.
-      //   3. LEVEL 3: SYSTEM-ON-CHIP (SoC) PARITY RESOLUTION (TERTIARY)
-      //      - If exact RAM speed is not disclosed but the SoC (System on Chip) model is verified, map to the SoC's reference configuration according to manufacturer-approved standards:
+      //   3. LEVEL 3: CONSERVATIVE GENERATIONAL FALLBACK (TERTIARY)
+      //      - If only a generic generation is disclosed (e.g., "LPDDR5X", "LPDDR5"), resolve directly to the baseline speed defined in the JEDEC BASELINE SPEEDS REFERENCE defined above.
+      //      - Peak bin speeds (e.g., 8533 MT/s, 9600 MT/s, 10667 MT/s) are strictly PROHIBITED for generic disclosures without explicit Level 1/2 verification.
+      //   4. LEVEL 4: SYSTEM-ON-CHIP (SoC) PARITY RESOLUTION (QUATERNARY)
+      //      - If the RAM technology and speed are completely undisclosed but the SoC (System on Chip) model is verified, map to the SoC's reference configuration according to manufacturer-approved standards:
       //        a. Apple Silicon (Unified Memory):
       //           - Apple A18 / A18 Pro (3nm) -> resolve to LPDDR5X-7500 (7500 MT/s)
       //           - Apple A17 Pro (3nm) / Apple A16 Bionic (4nm) -> resolve to LPDDR5-6400 (6400 MT/s)
@@ -3255,25 +3265,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       //           - Apple A10 Bionic (16nm) -> resolve to LPDDR4-3200 (3200 MT/s)
       //           - Apple A9 Bionic and older -> resolve to LPDDR3-1600 or older (1600 MT/s)
       //        b. Non-Apple / Android SoCs (Qualcomm, MediaTek, Exynos, Tensor, Unisoc):
-      //           - Rather than hardcoding device-specific speeds which can be underclocked by manufacturers, resolve strictly based on the SoC's maximum officially supported JEDEC (Joint Electron Device Engineering Council) memory standard:
-      //             - If the SoC officially supports LPDDR5X -> resolve to Tier 3 (LPDDR5X-7500, 7500 MT/s) JEDEC baseline.
-      //             - Else if the SoC officially supports LPDDR5 -> resolve to Tier 5 (LPDDR5-5500, 5500 MT/s) JEDEC baseline.
-      //             - Else if the SoC officially supports LPDDR4X -> resolve to Tier 7 (LPDDR4X-3733, 3733 MT/s) JEDEC baseline.
-      //             - Else if the SoC officially supports LPDDR4 -> resolve to Tier 8 (LPDDR4-3200, 3200 MT/s) JEDEC baseline (resolving to 3200 MT/s is justified as virtually all mobile processors utilizing LPDDR4 since 2016 run at this standard speed).
-      //             - Else if the SoC officially supports LPDDR3 or older -> resolve to Tier 10 (LPDDR3-1600 or older, 1600 MT/s) JEDEC baseline.
-      //   4. LEVEL 4: CONSERVATIVE GENERATIONAL FALLBACK (QUATERNARY)
-      //      - If only a generic generation is disclosed (e.g., "LPDDR5X", "LPDDR5") and the SoC is unlisted or generic, the agent MUST resolve to the JEDEC baseline for that generation:
-      //        - Generic "LPDDR5X" -> resolves to 7500 MT/s
-      //        - Generic "LPDDR5"  -> resolves to 5500 MT/s
-      //        - Generic "LPDDR4X" -> resolves to 3733 MT/s
-      //        - Generic "LPDDR4"  -> resolves to 3200 MT/s (Resolving to 3200 MT/s is justified because the vast majority of mobile SoCs and smartphones released from 2016 onwards utilizing LPDDR4 implement the standard 3200 MT/s JEDEC speed grade, whereas the 2133 MT/s speed grade is limited to legacy pre-2016 architectures or specific low-power embedded platforms).
-      //        - Generic "LPDDR3"  -> resolves to 1600 MT/s
-      //      - Peak bin speeds (e.g., 8533 MT/s, 9600 MT/s, 10667 MT/s) are strictly PROHIBITED for generic disclosures without verification.
+      //           - Identify the maximum RAM standard officially supported by the verified SoC, and resolve it strictly to its corresponding baseline speed defined in the JEDEC BASELINE SPEEDS REFERENCE defined above.
       //
       "effective_speed_mts": {
         "value": 8533,
         // GUIDELINE: The effective transfer rate in MT/s (Megatransfers per second).
-        // TRACEABILITY RULE: Identify the device's highest verified specification and match it using the DATA PRIORITY RULES above to determine the speed in MT/s. Record the marketing name/data rate, source, and exact extract proof inside value_details.
+        // TRACEABILITY RULE: Identify the device's verified specification and match it using the DATA PRIORITY RULES above to determine the speed in MT/s. Record the marketing name/data rate, source, and exact extract proof inside value_details.
         "value_details": [
           { "name": "Full-blooded LPDDR5X", "source": "TBD", "exact_extract": "Proof pending" }
         ],
