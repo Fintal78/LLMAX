@@ -16,7 +16,7 @@ The following table presents the target calibration values for all supporting su
 | Section        | Subsystem Metric           | Weight | Exponent | Bottleneck Nature      | Within-Section Priority | Cross-Section Priority     |
 | :------------- | :------------------------- | :----: | :------: | :--------------------- | :---------------------- | :------------------------- |
 | **§6.1 CPU Multi-Core**                     |        |          |                        |                         |                            |
-| §6.1 Multi-CPU | Memory (MTI)               | 0.1500 |   1.4    | Hard (bus congestion)  | Primary (bandwidth)     | Multi-Core > Single-Core   |
+| §6.1 Multi-CPU | Memory (MTI)               | 0.0900 |   1.4    | Hard (bus congestion)  | Primary (bandwidth)     | Multi-Core > Single-Core   |
 | §6.1 Multi-CPU | Cache (CFEI)               | 0.0200 |   1.3    | Soft (latency delay)   | Secondary (latency)     | Multi-Core < Single-Core   |
 | §6.1 Multi-CPU | Thermal (TDSI)             | 0.0150 |   1.4    | Hard (thermal DVFS)    | Tertiary (burst)        | Multi-Core ~ GPU           |
 | **§6.2 CPU Single-Core**                    |        |          |                        |                         |                            |
@@ -24,7 +24,7 @@ The following table presents the target calibration values for all supporting su
 | §6.2 Mono-CPU  | Memory (MTI)               | 0.0300 |   1.3    | Soft (latency delay)   | Secondary (bandwidth)   | Single-Core < Multi-Core   |
 | §6.2 Mono-CPU  | Thermal (TDSI)             | 0.0000 |    —     | Negligible             | Negligible              | Single-Core negligible     |
 | **§6.3 GPU Standard Graphics**              |        |          |                        |                         |                            |
-| §6.3 GPU (SGS) | Memory (MTI)               | 0.1600 |   1.4    | Hard (bus congestion)  | Primary (bandwidth)     | GPU ~ Multi-Core           |
+| §6.3 GPU (SGS) | Memory (MTI)               | 0.1000 |   1.4    | Hard (bus congestion)  | Primary (bandwidth)     | GPU ~ Multi-Core           |
 | §6.3 GPU (SGS) | Thermal (TDSI)             | 0.0180 |   1.4    | Hard (thermal DVFS)    | Secondary (thermal)     | GPU ~ Multi-Core           |
 | §6.3 GPU (SGS) | CPU Orchestration          | 0.0000 |    —     | Negligible             | Negligible              | GPU negligible             |
 
@@ -40,15 +40,14 @@ The following table presents the target calibration values for all supporting su
 
 ---
 
-
 ## 2. Relative Weight Comparisons & Physical Justifications
 
 ### 2.1 Memory Throughput Index (MTI) Weight Rationale
-The Memory Throughput Index (MTI) represents the system's ability to feed data to the processor's execution units. Its weight varies significantly based on execution parallelism:
+The Memory Throughput Index (MTI) represents the system's ability to feed data to the processor's execution units. Its weight varies significantly based on execution parallelism. For an in-depth analysis of memory constraints, same-SoC (System on Chip) device comparisons, and the mathematical justifications of these calibrated values, refer to the dedicated study in [MTI_Bottleneck_Penalty_Weight_Calibration_CPU_and_GPU.md].
 *   **CPU Multi-Core (§6.1) vs. CPU Single-Core (§6.2):** 
-    In multi-core CPU workloads, all active cores compete simultaneously for the shared system memory bus. This concurrent demand triggers memory bus contention, queue delays, and cache thrashing, turning RAM speed into a hard performance limit (Weight = **0.1500**). Conversely, a single active CPU core generates very light memory bus traffic that is easily accommodated by modern LPDDR5X (Low Power Double Data Rate 5X) memory channels, making memory bandwidth a secondary latency factor (Weight = **0.0300**).
+    In multi-core CPU workloads, all active cores compete simultaneously for the shared system memory bus. This concurrent demand triggers memory bus contention, queue delays, and cache thrashing, turning RAM speed into a hard performance limit (Weight = **0.0900**). Conversely, a single active CPU core generates very light memory bus traffic that is easily accommodated by modern LPDDR5X (Low Power Double Data Rate 5X) memory channels, making memory bandwidth a secondary latency factor (Weight = **0.0300**).
 *   **GPU Standard Graphics (§6.3) vs. CPU Multi-Core (§6.1):** 
-    Modern mobile Graphics Processing Units (GPUs) are massively parallel throughput engines executing thousands of threads simultaneously. They process massive volumes of texture coordinates, vertex buffers, and framebuffer operations, making them extremely hungry for memory bandwidth under peak workloads. While mobile GPUs utilize Tile-Based Deferred Rendering (TBDR) architectures to reduce external memory transactions, high-resolution rendering at high frame rates (such as 3DMark Steel Nomad Light) saturates the system bus, making memory throughput a slightly harder bottleneck (Weight = **0.1600**) than multi-core CPUs performing general-purpose random memory access (Weight = **0.1500**).
+    Modern mobile Graphics Processing Units (GPUs) are massively parallel throughput engines executing thousands of threads simultaneously. They process massive volumes of texture coordinates, vertex buffers, and framebuffer operations, making them extremely hungry for memory bandwidth under peak workloads. While mobile GPUs utilize Tile-Based Deferred Rendering (TBDR) architectures to reduce external memory transactions, high-resolution rendering at high frame rates (such as 3DMark Steel Nomad Light) saturates the system bus, making memory throughput a slightly harder bottleneck (Weight = **0.1000**) than multi-core CPUs performing general-purpose random memory access (Weight = **0.0900**).
 
 ### 2.2 Thermal Dissipation Stability Index (TDSI) Weight Rationale
 The Thermal Dissipation Stability Index (TDSI) models the chassis' thermal management capability. The calibrated weights directly reflect the duration and intensity of the corresponding benchmark workloads:
@@ -93,13 +92,14 @@ Exponents model the non-linear compounding nature of physical bottlenecks. We ut
 
 > [!NOTE]
 > **Methodological Scope & Limitations:**
-> Currently, only two formal empirical calibration studies have been conducted to derive and verify the subsystem weights:
+> Currently, only three formal empirical calibration studies have been conducted to derive and verify the subsystem weights:
 > 1. The Graphics Processing Unit (GPU) Thermal Dissipation Stability Index (TDSI) calibration presented below in Sections 4.1 and 4.2.
 > 2. The Central Processing Unit (CPU) Multi-Core TDSI calibration, which is documented in detail in [CPU_tdsi_calibration_details.md].
+> 3. The Memory Throughput Index (MTI) calibration, which is documented in detail in [MTI_Bottleneck_Penalty_Weight_Calibration_CPU_and_GPU.md].
 > 
 > Ideally, comprehensive empirical studies should be performed to mathematically isolate and establish every single weight and exponent pair across the database. This would require evaluating multiple hardware configurations for each (weight, exponent) pair under test. However, isolating a single variable in consumer mobile devices is exceptionally difficult: it is nearly impossible to find device pairs that are completely identical in silicon architecture, clock speeds, software stacks, and operating conditions, differing *only* in the single subsystem being measured (such as cache size or memory bandwidth).
 > 
-> Consequently, both completed studies are inherently imperfect in isolating pure variables and provide estimated weight ranges rather than absolute physical constants.
+> Consequently, all three completed studies are inherently imperfect in isolating pure variables and provide estimated weight ranges rather than absolute physical constants.
 
 ### 4.1 3DMark Steel Nomad Light Benchmark References
 To ground the GPU calibrations in real-world performance, we use verified scores from the official UL (Underwriters Laboratories) Solutions benchmark database:

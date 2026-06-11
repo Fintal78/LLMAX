@@ -1,5 +1,5 @@
 > [!CAUTION]
-> ⚠️ **THIS MODEL IS NO LONGER IN USE**
+> ⚠️⚠️⚠️ **THIS MODEL IS NO LONGER IN USE**
 >
 > This document describes a frequency scaling model (the **Computed Throughput Index — CTI**) that was developed for and initially integrated into the GPU Standard Graphics scoring pipeline (§ 6.3). It has since been **removed and replaced** by the simpler approach described in the active `scoring_rules.md`.
 >
