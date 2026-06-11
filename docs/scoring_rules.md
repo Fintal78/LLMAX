@@ -1767,11 +1767,11 @@ Subsystems are treated as *constraints*, not bonuses. A subsystem only impacts t
     When a bottleneck occurs, its severity compounds non-linearly. We apply specific weights and exponents (`β`) based on the architectural impact of each subsystem:
     `Penalty_S = Weight_S * (Deficit_S ^ β)`
 
-    *   **Memory (MTI - 0.16 Weight, β=1.4):** Modern cooperative workloads are fundamentally memory-bound. If the CPU requests data faster than the RAM can supply it, the cores stall. Sourced from the **Predicted Score** of **Section 6.5 (Memory Technology & Bandwidth)** to isolate the raw hardware capabilities of the memory bus and RAM technology before downstream boosters are applied.
-        `Penalty_MTI = 0.16 * (Deficit_MTI ^ 1.4)`
+    *   **Memory (MTI - 0.09 Weight, β=1.4):** Modern cooperative workloads are fundamentally memory-bound. If the CPU requests data faster than the RAM can supply it, the cores stall. Sourced from the **Predicted Score** of **Section 6.5 (Memory Technology & Bandwidth)** to isolate the raw hardware capabilities of the memory bus and RAM technology before downstream boosters are applied.
+        `Penalty_MTI = 0.09 * (Deficit_MTI ^ 1.4)`
 
-    *   **Thermals (TDSI - 0.03 Weight, β=1.4):** Sustained multi-core saturation generates immense heat. Insufficient cooling will forcibly throttle the CPU regardless of its theoretical peak speed. Sourced from the **Final Score** of **Section 6.10 (Thermal Dissipation Stability Index)** to capture the actual, real-world physical cooling assembly capabilities as proven by sustained hardware performance testing.
-        `Penalty_TDSI = 0.03 * (Deficit_TDSI ^ 1.4)`
+    *   **Thermals (TDSI - 0.015 Weight, β=1.4):** Sustained multi-core saturation generates immense heat. Insufficient cooling will forcibly throttle the CPU regardless of its theoretical peak speed. Sourced from the **Final Score** of **Section 6.10 (Thermal Dissipation Stability Index)** to capture the actual, real-world physical cooling assembly capabilities as proven by sustained hardware performance testing.
+        `Penalty_TDSI = 0.015 * (Deficit_TDSI ^ 1.4)`
         
     *   **Cache & Fabric Efficiency (CFEI - 0.02 Weight, β=1.3):** Evaluates the shared on-chip memory (L3 + SLC). A smaller shared cache forces the CPU to rely more heavily on external RAM, increasing latency. Sourced from the **Cache Index Score** derived from the continuous Cache & Fabric Efficiency Index (CFEI) logarithmic scaling formula (§6.1.C) to represent the capacity that minimizes latency-heavy fetches from the external DRAM (Dynamic Random Access Memory).
         `Penalty_CFEI = 0.02 * (Deficit_CFEI ^ 1.3)`
@@ -1790,7 +1790,7 @@ The non-linear exponents control how rapidly the penalty scales as a deficit wid
 1.  **Memory and Thermals (β = 1.4):** Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When RAM bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the SoC's hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon. These cascading physical limits are modeled with a high exponent of 1.4.
 2.  **Cache Capacity (β = 1.3):** A deficit in cache capacity represents a routing latency penalty rather than a hard physical stop. When a thread misses in the Level 3 (L3) or System Level Cache (SLC), the data must be retrieved from external DRAM. Although DRAM access takes longer, the CPU's out-of-order execution engine can overlap instructions to hide some of the latency. Thus, cache deficits degrade performance at a slightly less aggressive rate than memory bandwidth starvation or thermal throttling, modeled with a slightly lower exponent of 1.3. 
 
-The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **5.17** (`0.16*(10^1.4) + 0.03*(10^1.4) + 0.02*(10^1.3)`). 
+The maximum theoretical penalty (if a perfect 10.0 CPU was paired with 0.0 hardware across the board) is strictly bounded to **3.04** (`0.09*(10^1.4) + 0.015*(10^1.4) + 0.02*(10^1.3)`). 
 While this design keeps the penalty system naturally self-limiting under high-performance scenarios, it does not guarantee absolute safety under all possible imbalanced or low-to-mid performance configurations. 
 
 [!CAUTION]
@@ -1806,86 +1806,17 @@ An out-of-bounds score indicates a structural model breakdown, mathematical over
  
 ##### 🔬 Empirical Calibration & Physical Rationale
 
-To ensure mathematical alignment with real-world physical throughput, the penalty coefficients (weights) and non-linear exponents (beta values) are calibrated using verifiable hardware benchmarks and isolated scaling tests.
- 
-###### A. Common Mathematical Translation Framework
-The scoring model converts raw multi-threaded throughput drops to normalized score deltas. Under our global normalization (Weber-Fechner Law), the normalized Raw CPU Throughput Score (RCTS_norm) is:
-`RCTS_norm = 10 * (log(RCTS) - log(CPU_RCTS_Min)) / (log(CPU_RCTS_Max) - log(CPU_RCTS_Min))`
- 
-Utilizing the following canonical anchors representing the full performance spectrum of 2016-2026 devices:
-*   `CPU_RCTS_Min = 0.5487`
-*   `CPU_RCTS_Max = 55.6302`
-*   `Global Scaling Range = log(55.6302) - log(0.5487) = 1.7453 - (-0.2607) = 2.0060`
- 
-Thus, any raw throughput degradation from an optimal state (T_optimal) to a compromised state (T_compromised) translates to a normalized score delta:
-`Delta_RCTS_norm = 10 * log(T_optimal / T_compromised) / 2.0060`
- 
-###### B. Subsystem Deficit Calibration
- 
-| Bottleneck Type         | Input Metric | Weight | Exponent (β) | Target Workload           | Empirical Drop | Score Delta     |
-| :---------------------- | :----------- | :----: | :----------: | :------------------------ | :------------: | :-------------: |
-| **Memory Bandwidth**    | MTI          |  0.16  |     1.4      | SPEC CPU2017 (Multi-core) |   35% - 42%    | 0.9326 - 1.1793 |
-| **Thermal Dissipation** | TDSI         |  0.03  |     1.4      | Geekbench 6 Multi-Core    |    5% - 6%     | 0.1110 - 0.1340 |
-| **Cache Capacity**      | CFEI         |  0.02  |     1.3      | General multi-core mix    |    5% - 7%     | 0.1110 - 0.1571 |
- 
-###### 1. Memory Technology Index (MTI) Calibration
-*   **Hard Empirical Evidence:** Down-clocking memory from a quad-channel Low Power Double Data Rate 5X (LPDDR5X) configuration at 8533 MT/s to a dual-channel Low Power Double Data Rate 4X (LPDDR4X) configuration at 4266 MT/s results in a measured 35% to 42% throughput drop in multi-threaded integer and floating-point workloads (tested via Standard Performance Evaluation Corporation (SPEC) CPU2017).
-*   **CPU Demand Baseline:** `RCTS_norm = 9.3400` (matching the optimal LPDDR5X-8533 memory score, representing the zero-deficit anchor state where memory bandwidth perfectly satisfies flagship CPU requests).
-*   **Subsystem Scores:** LPDDR5X-8533 = 9.3400; LPDDR4X-4266 = 5.4700 (derived from Section 6.5).
-*   **Deficit Derivations:**
-     *   `Deficit_MTI_Optimal = max(0.0000, RCTS_norm - MTI_Optimal) = max(0.0000, 9.3400 - 9.3400) = 0.0000` → scaled: `0.0000 ^ 1.4 = 0.0000`
-     *   `Deficit_MTI_Starved = max(0.0000, RCTS_norm - MTI_Starved) = max(0.0000, 9.3400 - 5.4700) = 3.8700` → scaled: `3.8700 ^ 1.4 = 6.6496`
-*   **Logarithmic Translation:** A 35% throughput drop translates to a score delta of `10 * log(1 / 0.65) / 2.0060 = 0.9326` points. A 42% drop translates to `10 * log(1 / 0.58) / 2.0060 = 1.1793` points.
-*   **Weight Derivation Formula:**
-     `Weight_MTI = Delta_RCTS_norm / ( (Deficit_MTI_Starved)^1.4 - (Deficit_MTI_Optimal)^1.4 )`
-     *   Divisor calculation: `6.6496 - 0.0000 = 6.6496`
-     *   Solving for the bounds yields:
-         *   Lower bound: `0.9326 / 6.6496 = 0.1403`
-         *   Upper bound: `1.1793 / 6.6496 = 0.1773`
-     *   *Result:* A calibrated weight of **0.1600** represents a **38.8000%** throughput drop, matching the exact midpoint of empirical observations.
- 
-###### 2. Thermal Dissipation Stability Index (TDSI) Calibration
-*   **Timescale Mismatch & Compression Rationale:** The Thermal Dissipation Stability Index (TDSI) is evaluated using a 20-minute 3DMark Wild Life Extreme (WLE) stress test, which captures long-term thermal saturation and highly amplifies thermal stability differences between devices. In contrast, our multi-core benchmark (Geekbench 6 Multi-Core) is a short-burst test lasting approximately 60 seconds. The penalty weight acts as a compression factor to scale down the long-term amplified TDSI deficit to its actual short-term benchmark impact.
-*   **Hard Empirical Evidence (Same-SoC Isolation):** Comparing the Samsung Galaxy S24 Ultra (59% WLE stability) and the ASUS ROG Phone 8 Pro (71% WLE stability). Both devices share the identical Snapdragon 8 Gen 3 System on Chip (SoC), identical LPDDR5X memory, and identical 12 MB shared cache. The stability percentages translate to TDSI scores using the logarithmic scaling formula defined in Section 6.10:
-     `TDSI = 10 * (log(Stability_Percent) - log(40.0000)) / (log(100.0000) - log(40.0000))` (where `40.0000` represents the minimum thermal stability floor boundary observed across all devices, and `100.0000` represents the maximum stability ceiling).
-     *   **Galaxy S24 Ultra TDSI Derivation:** `10 * (log(59.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 4.24`.
-     *   **ROG Phone 8 Pro TDSI Derivation:** `10 * (log(71.0000) - log(40.0000)) / (log(100.0000) - log(40.0000)) ~ 6.26`.
-     *   **Physical Cooling Differences:**
-         *   **Samsung Galaxy S24 Ultra:** Employs a passive, fully enclosed vapor chamber integrated under a sealed glass-sandwich chassis, optimized for transient daily burst loads but saturating under sustained workloads.
-         *   **ASUS ROG Phone 8 Pro:** Features a specialized gaming-centric cooling design using a rapid-conduction copper column (a physical copper pillar routing heat directly from the SoC through the Printed Circuit Board (PCB) to internal graphite cooling sheets) and boron nitride thermal interface materials.
-     Because their silicon configurations are identical, the performance gap between these two devices isolates the pure impact of thermal dissipation: under optimal (cold) conditions, both devices achieve a similar peak of ~7,250 points. However, under typical or repeated benchmarking runs, the passive chassis of the Galaxy S24 Ultra throttles performance down to ~6,850 points, whereas the gaming-optimized cooling of the ROG Phone 8 Pro sustains the peak ~7,250 points. This establishes an empirical **5.0000% to 6.0000% typical performance gap** (throughput drop) between the sustained ROG Phone 8 Pro and the thermally saturated Galaxy S24 Ultra.
-*   **CPU Demand Baseline:** `RCTS_norm = 8.8400` (the normalized raw throughput score of the Snapdragon 8 Gen 3 shared by both devices, calculated deterministically in the worked example below, see **Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)**).
-*   **Deficit Derivations:**
-     *   `Deficit_TDSI_S24 = max(0.0000, RCTS_norm - TDSI_S24) = max(0.0000, 8.8400 - 4.2400) = 4.6000` → scaled: `4.6000 ^ 1.4 = 8.4696`
-     *   `Deficit_TDSI_ROG = max(0.0000, RCTS_norm - TDSI_ROG) = max(0.0000, 8.8400 - 6.2600) = 2.5800` → scaled: `2.5800 ^ 1.4 = 3.7694`
-*   **Logarithmic Translation:** A 5% burst performance drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 6% drop translates to `10 * log(1 / 0.94) / 2.0060 = 0.1340` points.
-*   **Weight Derivation Formula:**
-     `Weight_TDSI = Delta_RCTS_norm / ( (Deficit_TDSI_S24)^1.4 - (Deficit_TDSI_ROG)^1.4 )`
-     *   Divisor calculation: `8.4696 - 3.7694 = 4.7002`
-     *   Solving for the bounds yields:
-         *   Lower bound: `0.1110 / 4.7002 = 0.0236`
-         *   Upper bound: `0.1340 / 4.7002 = 0.0285`
-     *   *Result:* A calibrated weight of **0.0300** (rounded from the 0.0236–0.0285 range) ensures that the highly amplified TDSI score is compressed accurately to predict short-term multi-core benchmark drops.
+To approximate alignment with real-world physical throughput, the penalty coefficients (weights) and non-linear exponents (beta values) are calibrated as engineering approximations based on available empirical data and microarchitectural constraints. Because isolating a single hardware variable (such as cache size or memory bandwidth) in commercial smartphones is exceptionally difficult due to confounding differences in silicon design, operating system (OS) governors, and board layouts, these calibrations are inherently imperfect in isolating pure variables and represent target scaling ranges rather than absolute physical constants.
 
-###### 3. Cache & Fabric Efficiency Index (CFEI) Calibration
-*   **Hard Empirical Evidence:** Semiconductor cache scaling studies (evaluating isolated cache-miss latency) show that severe cache starvation (e.g. comparing a flagship CPU complex with a unified 12 MB shared cache vs a budget 2 MB shared cache) yields an **8% to 10%** throughput drop in cache-intensive workloads.
-*   **General Workload Translation:** General multi-core benchmarks (such as Geekbench 6) include a mix of cache-sensitive tasks (e.g., data compression) and cache-insensitive tasks (e.g., compute-bound photo filtering). Thus, general-purpose cache degradation impact is lower than the cache-intensive upper bound, and we can expect it to be in the **5% to 7%** range.
-*   **CPU Demand Baseline:** `RCTS_norm = 7.6400` (chosen because the optimal cache configuration under study—a 12 MB shared cache—has a CFEI score of `7.6400`, which represents the zero-deficit anchor state where cache capacity perfectly satisfies the flagship CPU complex's requirements).
-*   **Subsystem Scores:** 12 MB Cache = 7.64 CFEI; 2 MB Cache = 3.33 CFEI. These Cache & Fabric Efficiency Index (CFEI) scores are calculated continuously from the combined Level 3 (L3) and System Level Cache (SLC) capacity via the logarithmic scaling formula defined in the CFEI subsection below:
-     `CFEI = 10 * (log(Effective_Shared_Cache) - log(0.5000)) / (log(32.0000) - log(0.5000))` (where `0.5000` Megabytes (MB) is the database minimum cache capacity floor and `32.0000` MB is the maximum ceiling):
-     *   **12 MB Cache score:** `10 * (log(12.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 7.64`.
-     *   **2 MB Cache score:** `10 * (log(2.0000) - log(0.5000)) / (log(32.0000) - log(0.5000)) ~ 3.33`.
-*   **Deficit Derivations:**
-     *   `Deficit_CFEI_Optimal = max(0.0000, RCTS_norm - CFEI_Optimal) = max(0.0000, 7.6400 - 7.6400) = 0.0000` → scaled: `0.0000 ^ 1.3 = 0.0000`
-     *   `Deficit_CFEI_Starved = max(0.0000, RCTS_norm - CFEI_Starved) = max(0.0000, 7.6400 - 3.3300) = 4.3100` → scaled: `4.3100 ^ 1.3 = 6.6807`
-*   **Logarithmic Translation:** A 5% general workload throughput drop translates to a score delta of `10 * log(1 / 0.95) / 2.0060 = 0.1110` points. A 7% drop translates to `10 * log(1 / 0.93) / 2.0060 = 0.1571` points.
-*   **Weight Derivation Formula:**
-     `Weight_CFEI = Delta_RCTS_norm / ( (Deficit_CFEI_Starved)^1.3 - (Deficit_CFEI_Optimal)^1.3 )`
-     *   Divisor calculation: `6.6807 - 0.0000 = 6.6807`
-     *   Solving for the bounds yields:
-         *   Lower bound: `0.1110 / 6.6807 = 0.0166`
-         *   Upper bound: `0.1571 / 6.6807 = 0.0235`
-     *   *Result:* A calibrated weight of **0.0200** (which lies within the 0.0166–0.0235 range) ensures cache starvation is penalized accurately for general multi-core workloads.
+| Bottleneck Type         | Input Metric | Weight | Exponent (β) | Target Workload           |
+| :---------------------- | :----------- | :----: | :----------: | :------------------------ |
+| **Memory Bandwidth**    | MTI          | 0.0900 |     1.4      | SPEC CPU2017 (Multi-core) |
+| **Thermal Dissipation** | TDSI         | 0.0150 |     1.4      | Geekbench 6 Multi-Core    |
+| **Cache Capacity**      | CFEI         | 0.0200 |     1.3      | General multi-core mix    |
+
+> [!IMPORTANT]
+> **Source of Truth for Subsystem Penalty Calibrations:**
+> For the full physical, microarchitectural and empirical calibration rationales, refer directly to [performance_scoring_weights_rationale.md].
 
 [!TIP]
 🚀 **POTENTIAL FUTURE MODEL IMPROVEMENTS:**
@@ -1929,19 +1860,7 @@ Cache capacity benefits follow a logarithmic curve due to diminishing performanc
 `CFEI = 10 * (log(Effective_Shared_Cache) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) (Clamped 0-10)`
  
 *   **Inputs:** `Effective_Shared_Cache = max(0.5000, L3 (MB) + SLC (MB))` (a safety clamp at `0.5000` MB is applied to prevent undefined mathematical operations for SoCs with no shared cache).
- 
-**Worked Continuous Benchmarks (Cache Scores [CFEI]):**
- *   `>= 32 MB` (e.g., Apple A15 Bionic SLC) -> **`10.0000`**
- *   `24 MB` (e.g., Apple A16 Pro SLC) -> **`9.3082`**
- *   `16 MB` (e.g., Dimensity 9300 / 8 MB L3 + 8 MB SLC) -> **`8.3333`**
- *   `12 MB` (e.g., Snapdragon 8 Gen 3 L3 / Exynos 2400) -> **`7.6416`**
- *   `8 MB` (e.g., Snapdragon 8 Gen 2 L3) -> **`6.6667`**
- *   `6 MB` (e.g., Snapdragon 8 Gen 1 L3) -> **`5.9749`**
- *   `4 MB` (e.g., Tensor G3 L3 / Dimensity 8300) -> **`5.0000`**
- *   `2 MB` (e.g., Snapdragon 7s Gen 2 L3) -> **`3.3333`**
- *   `1 MB` (e.g., Snapdragon 695 DSU L3) -> **`1.6667`**
- *   `<= 0.5 MB` (e.g., Helio G99 / Legacy A53 setups with no shared cache) -> **`0.0000`**
- 
+  
 ###### 🔹 CFEI Capacity Calculation & Edge-Case Rules
 When calculating the cache efficiency score (`CFEI`), researchers must evaluate specific microarchitectural designs according to these rules:
  
@@ -1985,11 +1904,11 @@ Researchers and models **must** refer directly to that document to resolve the L
      *   `RCTS_norm = 10.0000 * (log(32.5249) - log(0.5487)) / (log(55.6302) - log(0.5487)) = 10.0000 * (1.5122 - (-0.2607)) / (1.7453 - (-0.2607)) = 8.8380`
 *   **Step 5 (Penalties, Final Score & Safety Check):**
      *   Assume the device has: `MTI = 8.0000`, `TDSI = 7.0000`, `CFEI = 7.0000`.
-     *   `Deficit_MTI = max(0.0000, 8.8380 - 8.0000) = 0.8380`. `Penalty_MTI = 0.1600 * (0.8380^1.4000) = 0.1249`
-     *   `Deficit_TDSI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_TDSI = 0.0300 * (1.8380^1.4000) = 0.0703`
+     *   `Deficit_MTI = max(0.0000, 8.8380 - 8.0000) = 0.8380`. `Penalty_MTI = 0.0900 * (0.8380^1.4000) = 0.0703`
+     *   `Deficit_TDSI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_TDSI = 0.0150 * (1.8380^1.4000) = 0.0352`
      *   `Deficit_CFEI = max(0.0000, 8.8380 - 7.0000) = 1.8380`. `Penalty_CFEI = 0.0200 * (1.8380^1.3000) = 0.0441`
-     *   `Total Penalty = 0.1249 + 0.0703 + 0.0441 = 0.2393`
-     *   `Final Score = 8.8380 - 0.2393 = 8.5987` (Bounds Check: 8.5987 is within `[0.0000, 10.0000]` → Pass)
+     *   `Total Penalty = 0.0703 + 0.0352 + 0.0441 = 0.1496`
+     *   `Final Score = 8.8380 - 0.1496 = 8.6884` (Bounds Check: 8.6884 is within `[0.0000, 10.0000]` → Pass)
 
 
 ### 🔹 6.2 CPU Architecture & Single-Core Efficiency
@@ -2133,79 +2052,22 @@ The remaining two subsystem penalties are calibrated as follows:
 
 > [!TIP]
 > **Understanding the Shift in Subsystem Penalties vs Multi-Core (Section 6.1)**
-> Why do the penalty weights here look so different from the Multi-Core model and how can they be justified? It boils down to the physical and mathematical calibration of single-threaded execution bottlenecks. Those will be described in detail below for the cache and memory components.
-> 
-> *   **Perceptual Score Drop Calculation Rule:** Under the active logarithmic score normalization formula defined in §6.2 Step 2:
->     `STRS_norm = 10 * (log(CY) - log(0.4)) / (log(11.5) - log(0.4)) ≈ 6.8557 * (log(CY) - log(0.4))`
->     When a physical bottleneck degrades the raw compute yield from its baseline peak throughput (CY_Peak) down to a bottlenecked throughput (CY_Bottlenecked), the constant absolute drop in our perceived scoring system is computed by the ratio of these values:
->     `Score_Drop = 6.8557 * log(CY_Peak / CY_Bottlenecked)`
+> Why do the penalty weights here look so different from the Multi-Core model and how can they be justified? It boils down to the physical and mathematical calibration of single-threaded execution bottlenecks. Those are described below for the cache and memory components.
 > 
 > **1. Cache Penalty Redesign: Severe Sensitivity to Private L2 Cache Capacity (Weight: 0.06, Exponent: 1.4)**
 > *   *In Multi-Core (6.1):* We look at the massive shared L3/SLC cache (CFEI), which acts as a traffic controller preventing multiple cores from fighting over RAM. The cache penalty weight is lower because bus bandwidth and thermal density dominate multi-threaded limits.
-> *   *In Single-Core (6.2):* There is no fighting. A single thread relies entirely on having its data immediately accessible. L2 cache misses introduce devastating pipeline bubbles: the CPU must stall for **100 to 200+ cycles** waiting to fetch data from L3 or system RAM, reducing execution efficiency by **over 50%** in memory-bound threads. The heavier weight of `0.06` and exponent of `1.4` (giving a maximum deficit penalty of **`1.51` points**) mathematically reflects this massive latency penalty. We isolate and evaluate the **Private L2 Cache** capacity rather than other memory hierarchy levels for key architectural reasons:
+> *   *In Single-Core (6.2):* There is no fighting. A single thread relies entirely on having its data immediately accessible. L2 cache misses introduce devastating pipeline bubbles: the CPU must stall for **100 to 200+ cycles** waiting to fetch data from L3 or system RAM, reducing execution efficiency by **over 50%** in memory-bound threads. The heavier weight of `0.06` and exponent of `1.4` mathematically reflects this massive latency penalty. We isolate and evaluate the **Private L2 Cache** capacity rather than other memory hierarchy levels for key architectural reasons:
 >     *   **Exclusion of Level 1 (L1) Cache:** Although Level 1 cache offers the lowest access latency, its extremely restricted capacity (typically 64KB to 128KB) is tightly integrated directly within the core's execution pipeline. Its latency impact is constant across platforms and is therefore inherently captured by the core's baseline Compute Architecture Score (CAS).
 >     *   **Exclusion of Shared Level 3 (L3) / System Level Cache (SLC):** The shared L3/SLC pool resides outside the core boundary, requiring data requests to traverse the chip's interconnect fabric. This fabric traversal introduces variable cross-silicon latency penalty cycles that degrade the immediate, deterministic response speed required for snappy single-threaded user interface (UI) loops.
 >     *   **Selection of Private Level 2 (L2) Cache:** Private L2 cache represents the largest memory buffer tightly coupled to a specific CPU core or cluster. Massive L2 allocations (e.g., 16MB on Apple A16 or 12MB on Qualcomm Oryon) allow the best core to retain working sets locally, bypassing fabric transaction delays entirely. L2 capacity therefore serves as the primary hardware-configurable bottleneck dictating single-core IPC scaling and UI fluid responsiveness.
 
-*   *Private Level 2 Cache Subsystem (L2CS) Calibration & Physical Verification:*
-
-    To ensure the L2CS penalty formula accurately models physical processor behavior, the mathematical parameters are verified using a rigorous, silicon-grounded flagship core cache starvation case study:
-
-    #### Physical Calibration Case Study: Flagship Wide-Core Cache Starvation
-
-    ##### Processor Profile & Baseline Configuration
-    A top-tier out-of-order flagship core (capable of achieving a peak normalized Single-Threaded Raw Score (STRS_norm) of `STRS_norm = 10.00` under its native design configuration) is paired with its standard cluster-shared Level 2 (L2) cache capacity of **16 Megabytes (MB)** (`16384` Kilobytes (KB)), scoring a perfect `L2CS_Score = 10.00` under our global formula. Under this ideal peak setup, the core experiences zero cache deficit:
-    *   `Deficit_L2CS_Standard = max(0, 10.00 - 10.00) = 0.00`
-    *   This yields a standard baseline model penalty of exactly `0.000` points.
-
-    ##### Starved Bottleneck Configuration
-    If this same high Instructions Per Cycle (IPC) core is integrated into a highly compromised budget platform that restricts the accessible Level 2 cache to a tiny **512 Kilobytes (KB)** floor (scoring `L2CS_Score = 2.86`), the resulting cache deficit is:
-    *   `Deficit_L2CS_Starved = max(0, 10.00 - 2.86) = 7.14`
-
-    ##### Empirical Slowdown
-    Silicon die scaling audits and microarchitectural simulation analyses published by *AnandTech & Geekerwan* show that starving a wide, aggressive out-of-order execution engine of local cache (shrinking the available Level 2 hierarchy down to 512KB) results in a severe increase in Dynamic Random-Access Memory (DRAM) access latency stalls, causing a **28%** physical execution throughput slowdown in memory-intensive single-threaded workloads (measured under the Standard Performance Evaluation Corporation (SPEC) CPU2017 single-threaded base benchmark suite).
-
-    ##### Perceived Score Drop (Weber-Fechner Psychophysical Scaling)
-    A 28% drop in physical execution throughput (reducing Compute Yield (CY) from a reference `1.00` down to `0.72`) translates to an absolute perceived score drop of:
-    *   `Score_Drop = 6.8557 * log(1.00 / 0.72) = 0.978 points`
-
-    ##### Predictive Model Penalty Delta
-    The net increase in the predictive model's L2 Cache penalty due to starvation is:
-    *   `Penalty_Delta = (0.06 * (7.14 ^ 1.4)) - 0.00 = 0.940 points`
-    *   *Relative Error:* This matches the real perceived physical drop with good precision (yielding a relative error of less than **`3.9%`**).
-
-
 **2. Memory Penalty Optimization: Decreased Single-Thread Bandwidth Sensitivity (Weight: 0.03, Exponent: 1.3)**
 *   *In Multi-Core (6.1):* Several cores firing at once will easily saturate and choke standard RAM bandwidth, making memory speed highly critical.
-*   *In Single-Core (6.2):* A single core running a single task simply cannot pull enough data fast enough to completely choke modern RAM. Multi-platform benchmark testing (comparing LPDDR5X memory speed scaling from 6400 MT/s to 8533 MT/s) reveals that massive RAM bandwidth changes have a **negligible impact** on single-core CPU performance, yielding only a **3% to 4% delta in Geekbench single-core scores** and under 2% in Cinebench R23. Slower legacy memory still imposes a persistent latency tax, which is why the penalty weight is reduced to a light `0.03` (yielding a maximum penalty of **`0.60` points**).
+*   *In Single-Core (6.2):* A single active Central Processing Unit (CPU) core rarely saturates modern system memory bandwidth. While clean, same System-on-Chip (SoC) mobile memory speed isolation tests are not available (representing an evidence gap), microarchitectural analysis shows that memory bandwidth changes have a negligible impact on single-threaded performance. Slower legacy Random Access Memory (RAM) still imposes a persistent latency tax, which is why the penalty weight is reduced to a light `0.03`.
 
-*   *Memory Technology Index (MTI) Calibration & Physical Verification:*
-
-    To ensure the memory penalty formula remains physically grounded, the parameters are verified using a rigorous out-of-order microarchitectural memory latency starvation case study:
-
-    #### Physical Calibration Case Study: Flagship Wide-Core Latency Starvation
-
-    ##### Processor Profile & Baseline Configuration
-    A top-tier out-of-order flagship core (achieving a peak normalized Single-Threaded Raw Score (STRS_norm) of `STRS_norm = 10.00` under standard conditions) is integrated with peak high-speed **Low-Power Double Data Rate 5 Turbo (LPDDR5T-9600) memory** (scoring `MTI_Score = 10.00` under Section 6.5). Under this ideal setup, there is zero memory deficit:
-    *   `Deficit_MTI_Standard = max(0, 10.00 - 10.00) = 0.00`
-    *   This yields a standard baseline model penalty of exactly `0.000` points.
-
-    ##### Bottlenecked Configuration
-    If this same high Instructions Per Cycle (IPC) core is integrated into a compromised budget platform using legacy **Low-Power Double Data Rate 4 (LPDDR4-3200) memory** (scoring `MTI_Score = 3.87` under Section 6.5), the resulting memory deficit is:
-    *   `Deficit_MTI_Starved = max(0, 10.00 - 3.87) = 6.13`
-
-    ##### Empirical Slowdown
-    Silicon latency scaling audits and microarchitectural simulation analyses published by *AnandTech & Geekerwan* (evaluating wide, out-of-order execution engines running latency-sensitive workloads like SPEC CPU2017 memory-bound subsets) show that downgrading main system memory from high-speed LPDDR5T-9600 to legacy LPDDR4-3200 increases memory access latency by approximately ~40 nanoseconds, causing a **10%** execution throughput slowdown.
-
-    ##### Perceived Score Drop (Weber-Fechner Psychophysical Scaling)
-    A 10% drop in physical execution throughput (reducing Compute Yield (CY) from a reference `1.00` down to `0.90`) translates to an absolute perceived score drop of:
-    *   `Score_Drop = 6.8557 * log(1.00 / 0.90) = 0.314 points`
-
-    ##### Predictive Model Penalty Delta
-    The net increase in the predictive model's memory penalty is:
-    *   `Penalty_Delta = (0.03 * (6.13 ^ 1.3)) - 0.00 = 0.317 points`
-    *   *Relative Error:* This matches the real perceived physical drop with great alignment (yielding a relative error of less than **`1.0%`**).
-
+> [!IMPORTANT]
+> **Calibration Basis for Single-Core Penalty Parameters:**
+> Note that [performance_scoring_weights_rationale.md] does not contain formal empirical calibration studies or quantitative System-on-Chip (SoC) isolation tests for single-core Central Processing Unit (CPU) performance. Instead, the single-core penalty parameters are qualitatively estimated by comparing single-threaded microarchitectural constraints—specifically, heightened sensitivity to cache latency versus reduced sensitivity to memory bus bandwidth—against the multi-core baseline.
 
 **Step 4: Final Score & Safety Validation**
 
@@ -2428,17 +2290,17 @@ These subsystems act as **bottlenecks**, not contributors: if any subsystem fail
 
 ###### A. GPU Subsystem Deficit Calibration
 
-The subsystem penalty weights in the Standard Graphics Pipeline are calibrated as engineering approximations representing bottleneck severity rather than directly measured physical constants. The active bottlenecks model the impact of memory bandwidth starvation and thermal throttling on graphics throughput, while the CPU (Central Processing Unit) orchestration component is neglected.
+The subsystem penalty weights in the Standard Graphics Pipeline are calibrated as engineering approximations representing bottleneck severity rather than directly measured physical constants. The active bottlenecks model the impact of memory bandwidth starvation and thermal throttling on graphics throughput, while the Central Processing Unit (CPU) orchestration component is neglected.
 
-*   **Memory Throughput Index (MTI):** Retained in the model (weight **0.0800**, exponent **1.4**). Mobile GPUs (Graphics Processing Units) are highly dependent on memory bandwidth for texture mapping and frame buffer operations. Bandwidth starvation (such as pairing a fast GPU with slow RAM (Random Access Memory)) causes shader cores to stall, directly dropping frame rates.
-*   **Thermal Dissipation Stability Index (TDSI):** Retained in the model (weight **0.018**, exponent **1.4**). While long-term thermal throttling is severe, the primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds where the chassis thermal mass buffers heat. The small weight compresses the long-term TDSI deficit to its actual short-burst benchmark impact.
+*   **Memory Throughput Index (MTI):** Retained in the model (weight **0.1000**, exponent **1.4**). Mobile Graphics Processing Units (GPUs) are highly dependent on memory bandwidth for texture mapping and frame buffer operations. Bandwidth starvation (such as pairing a fast GPU with slow Random Access Memory (RAM)) causes shader cores to stall, directly dropping frame rates.
+*   **Thermal Dissipation Stability Index (TDSI):** Retained in the model (weight **0.0180**, exponent **1.4**). While long-term thermal throttling is severe, the primary benchmark (3DMark Steel Nomad Light) is a short-burst test lasting approximately 60 seconds where the chassis thermal mass buffers heat. The small weight compresses the long-term TDSI deficit to its actual short-burst benchmark impact.
 *   **CPU Orchestration Index:** Neglected/removed from the active model. The primary graphics benchmark is deliberately GPU-bound to isolate graphics performance, meaning CPU draw call and command submission overhead is negligible in practice.
 
 **Subsystem Penalty Parameters:**
 
 | Subsystem                                              | Source Score (`S`)                  | Weight    | Exponent (β)  |
 | :----------------------------------------------------- | :---------------------------------- | :-------: | :-----------: |
-| **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.0800**|    **1.4**    |
+| **Memory Throughput Index (MTI)**                      | §6.5 RAM Technology Predicted Score | **0.1000**|    **1.4**    |
 | **Thermal Dissipation Stability Index (TDSI)**         | §6.10 TDSI Final Score              | **0.0180**|    **1.4**    |
 
 > [!NOTE]
@@ -2446,10 +2308,11 @@ The subsystem penalty weights in the Standard Graphics Pipeline are calibrated a
 > The non-linear exponents (`β = 1.4`) ensure that minor imbalances are forgiven, but severe starvation crushes the final score.
 > 
 > **Physical Rationale of the Beta Exponents (β):**
-> The non-linear exponents control how rapidly the penalty scales as a deficit widens:
-> 
-> *   **Memory and Thermals (β = 1.4):** Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When Random Access Memory (RAM) bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the System on Chip (SoC) hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon.
+> The non-linear exponents control how rapidly the penalty scales as a deficit widens: Memory bandwidth starvation and thermal throttling impose hard, cascading physical boundaries. When Random Access Memory (RAM) bandwidth is exhausted, execution pipelines stall completely while waiting for memory access, causing a sharp, non-linear collapse in execution efficiency. Similarly, when thermal thresholds are exceeded, the System on Chip (SoC) hardware-level thermal management triggers aggressive voltage-frequency scaling steps that degrade performance rapidly to protect the silicon.
 
+> [!IMPORTANT]
+> **Source of Truth for Subsystem Penalty Calibrations:**
+> For the full physical, microarchitectural and empirical calibration rationales, refer directly to [performance_scoring_weights_rationale.md].
 ---
 
 **Step 5: Final Predicted Standard Graphics Score (SGS) & Safety Validation**
@@ -2477,7 +2340,7 @@ The final predicted score is computed by subtracting all active deficit penaltie
 > **Methodology Decision:** Although benchmarks like **3DMark Solar Bay** exist to measure Ray Tracing performance, they have been discarded as primary scoring drivers. Since Ray Tracing currently accounts for only **10%** of the overall Graphics score, the added complexity of a multi-method (A/B/C) model is not justified. Instead, a streamlined Predictive Model is used to assess a device's RT potential based on its RT score and memory bandwidth.
 
 > [!WARNING]
-> **Future Alignment Note:** The Ray Tracing model below uses a simplified bottleneck formula (`min(RT_Score, 0.70 * RT_Score + 0.30 * MTI)`) rather than the deficit-penalty framework used by the Standard Graphics pipeline (§6.3.A Method C). This is an acknowledged approximation, accepted because RT currently represents only 10% of the total §6.3 score. When/if RT's weight increases in future model revisions (as mobile ray tracing hardware matures and game adoption grows), this subsection could be refactored to adopt the same deficit-penalty structure as §6.3.A for full cross-section consistency.
+> **Future Alignment Note:** The Ray Tracing model below uses a simplified bottleneck formula (`min(RT_Score, 0.70 * RT_Score + 0.30 * MTI)`) rather than the deficit-penalty framework used by the Standard Graphics pipeline (§6.3.A Method C). This is an acknowledged approximation, accepted because RT currently represents only 10% of the total §6.3 score. When/if RT's weight increases in future model revisions (as mobile ray tracing hardware matures and game adoption grows), this subsection could be refactored to adopt the same deficit-penalty structure as §6.3.A.
 
 ##### Ray Tracing Performance (Predictive Model)
 The Ray Tracing Score (RTS) is calculated using a two-factor predictive model that accounts for hardware acceleration capability and memory bandwidth bottlenecks.
