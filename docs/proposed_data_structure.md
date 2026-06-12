@@ -2316,14 +2316,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "memory_subsystem_penalty": {
           "deficit": {
-            "value": 0.0000,
+            "value": 0.0145,
             "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
           },
           "penalty": {
-            "value": 0.0000,
-            "calculation_formula": "0.1600 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+            "value": 0.0002,
+            "calculation_formula": "0.09 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+            // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.09 * (Deficit ^ 1.4). Keep 4 decimal places.
           },
-          // GUIDELINE: Memory bandwidth starvation penalty. The Memory Support Score inherits the Section 6.5 predicted score. Penalty = 0.16 * (Deficit ^ 1.4). Keep 4 decimal places.
         },
         "thermal_subsystem_penalty": {
           "deficit": {
@@ -2331,29 +2331,36 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
           },
           "penalty": {
-            "value": 0.2539,
-            "calculation_formula": "0.0300 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+            "value": 0.1269,
+            "calculation_formula": "0.015 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+            // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.015 * (Deficit ^ 1.4). Keep 4 decimal places.
           },
-          // GUIDELINE: Thermodynamic throttling penalty. TDSI (Thermal Dissipation Stability Index) inherits the Section 6.10 final score. Penalty = 0.03 * (Deficit ^ 1.4). Keep 4 decimal places.
         },
         "cache_subsystem_penalty": {
           "identifier": "Snapdragon 8 Gen 3",
           "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.value",
           "reference_table": "references/soc_reference.md",
-          "CFEI": 8.6165,
-          // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is fetched from references/soc_reference.md.
+          "shared_cache_mb": 18.0,
+          // GUIDELINE: The sum of Level 3 (L3) and System Level Cache (SLC) capacity fetched from references/soc_reference.md.
+          "CFEI": {
+            "value": 8.6165,
+            "calculation_formula": "10.0 * (log(shared_cache_mb) - log(CPU_CFEI_Min)) / (log(CPU_CFEI_Max) - log(CPU_CFEI_Min)) - interconnect_latency_penalty"
+            // GUIDELINE: CFEI (Cache & Fabric Efficiency Index) is calculated continuously using a logarithmic formula from the effective shared cache, minus interconnect_latency_penalty. This penalty is defined as 0.5 for the Snapdragon 8 Elite and 0 for all other cases. Keep 4 decimal places.
+            // SPECIAL RULES:
+            // 1. For Snapdragon 8 Elite, CFEI capacity is combined: 24 MB L2 + 8 MB SLC = 32 MB. A flat penalty of -0.5 is applied directly to the calculated score due to split cluster coherency latency.
+            // 2. If the SoC has no cache data (indicated by '?' or is missing), set CFEI value to 'N/A' and set deficit to 0 and penalty to 0 (no penalty).
+          },
           "deficit": {
             "value": 0.2214,
-            "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI)"
+            "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI.value)"
           },
           "penalty": {
             "value": 0.0028,
-            "calculation_formula": "0.0200 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
+            "calculation_formula": "0.02 * (cache_subsystem_penalty.deficit.value ^ 1.3)"
+            // GUIDELINE: Cache Penalty = 0.02 * (Deficit ^ 1.3). Keep 4 decimal places.
           },
-          // GUIDELINE: Cache Penalty = 0.02 * (Deficit ^ 1.3). Keep 4 decimal places.
-          // CFEI FALLBACK RULE: If the SoC has no CFEI score (indicated by '?') or is missing, consider a penalty of exactly 0 by setting deficit to 0.0000 and penalty to 0.0000.
         }, 
-        "predicted_score": 8.58,
+        "predicted_score": 8.71,
         "calculation_formula": "normalized_throughput_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value + cache_subsystem_penalty.penalty.value)"
         // SCORING GUIDELINE: The final predicted performance score is computed by adjusting the raw normalized throughput score through the subtraction of the active dynamic penalties from the memory, thermal and cache supporting subsystems.
         // BOUNDS CHECK ABORT PROCEDURE: Under no circumstances should the system silently clamp or allow an out-of-bounds score in production. If the raw calculation predicted_score yields a value outside the physical standard range of [0.00, 10.00] (less than 0 or greater than 10), the entire scoring pipeline for the target device MUST BE ABORTED IMMEDIATELY. The system must immediately raise a high-priority exception: "CRITICAL ANOMALY ALERT: Raw multi-core CPU score ({predicted_score}) is outside physical standard bounds [0, 10]. Halting scoring process." and halt execution.
@@ -2403,14 +2410,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
         "avg_benchmark_neighbors": 8.6000,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
-        "correction_ratio": 1.0672,
+        "correction_ratio": 1.0833,
         // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_CPU_multi.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
-        "interpolated_score": 9.18
+        "interpolated_score": 9.32
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
-        "predicted": 8.58,
+        "predicted": 8.71,
         // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_CPU_multi.predicted_score.
         "final": {
           "value": 9.11,
@@ -2492,19 +2499,19 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "penalty": {
             "value": 0.3350,
-            "calculation_formula": "penalty.value = 0.0600 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
+            "calculation_formula": "penalty.value = 0.06 * (cache_subsystem_penalty.deficit.value ^ 1.4)"
             // GUIDELINE: Models non-linear memory-stall performance penalties caused by cache capacity constraints using a scaling factor of 0.06 and exponent of 1.4. Keep 4 decimal places.
           }
         },
         "memory_subsystem_penalty": {
           "deficit": {
-            "value": 0.0000,
+            "value": 0.3066,
             "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
             // GUIDELINE: Calculates the deficit between normalized CPU core requirements and the supporting system DRAM (Dynamic Random-Access Memory) Technology score (from Section 6.5). Keep 4 decimal places.
           },
           "penalty": {
-            "value": 0.0000,
-            "calculation_formula": "penalty.value = 0.0300 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
+            "value": 0.0065,
+            "calculation_formula": "penalty.value = 0.03 * (memory_subsystem_penalty.deficit.value ^ 1.3)"
             // GUIDELINE: Models fabric latency and transfer bandwidth bottlenecks under peak single-core throughput using a scaling factor of 0.03 and exponent of 1.3. Keep 4 decimal places.
           }
         },

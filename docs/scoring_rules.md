@@ -1587,13 +1587,11 @@ This table provides the authoritative CPU core architecture scores used througho
 
 **Scoring Basis:** Based on IPC (Instructions Per Cycle—the number of instructions a processor executes in a single clock cycle) performance and modern architecture capabilities.
 
-| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Typical L2 (KB) | ISA Gen          | ISA Gen Score |
+| CPU Core Architecture        | CPU Score | Ref Freq (GHz) | Typical L2 (KB) |      ISA Gen     | ISA Gen Score |
 |:-----------------------------|:---------:|:--------------:|:---------------:|:-----------------|:-------------:|
-| **C1-Ultra (Lumex)**         |   10.00   |      4.21      |      2048       | ARMv9.3          |     1.10      |
-| **Apple Everest (A18/Pro)**  |   10.00   |      4.05      |     16384       | ARMv9.2          |     1.08      |
-| **Qualcomm Oryon Gen 2**     |   9.80    |      4.32      |     12288       | ARMv8.7          |     1.05      |
-| **Cortex-X925**              |   9.00    |      3.60      |      3072       | ARMv9.2          |     1.08      |
-| **Apple A17 Pro Cores**      |   9.10    |      3.78      |     16384       | ARMv8.6          |     1.04      |
+| **C1-Ultra (Lumex)**         |   10.00   |      4.21      |      2048       |      ARMv9.3     |     1.10      |
+| **Apple Everest (A18/Pro)**  |   10.00   |      4.05      |     16384       |      ARMv9.2     |     1.08      |
+| **Qualcomm Oryon Gen 2**     |   9.80    |      4.32      |     12288       |      ARMv8.7     |     1.05      |
 - [...] *(See full list in [proposed_data_structure.md])*
 
 [!NOTE]
@@ -1848,7 +1846,8 @@ A comprehensive structural refinement could introduce the OS (Operating System) 
 The Cache & Fabric Efficiency Index (CFEI) measures the capacity and physical layout efficiency of the System on Chip (SoC) shared on-chip memory.
  
 **Understanding the Cache Hierarchy:**
-*   **Level 1 (L1) / Level 2 (L2) Caches:** Small, ultra-fast Level 1 (L1) or Level 2 (L2) memory private to individual cores (L1) or clusters (L2). Their performance benefit is inherently captured by the CPU Architecture Score (CAS).
+*   **Level 1 (L1) Cache:** Small, ultra-fast memory private to individual processor cores. Its performance benefit is inherently captured by the CPU Architecture Score (CAS).
+*   **Level 2 (L2) Cache:** Faster intermediate memory private to individual cores or shared within core clusters. Unlike L1, the capacity and latency of L2 caches are explicitly evaluated using the Private Cache Penalty (L2CS) in single-core CPU performance calculations (Section 6.2), on top of the CAS baseline.
 *   **Level 3 (L3) Cache / System Level Cache (SLC):** Large, shared pools of memory accessible by all cores across the entire SoC. They prevent the CPU from having to fetch data from the much slower external Random Access Memory (RAM), avoiding massive speed penalties.
  
 For most Systems on Chip (SoCs), the cache capacity is calculated by summing the Level 3 (L3) Cache and the System Level Cache (SLC):
@@ -1885,7 +1884,7 @@ When calculating the cache efficiency score (`CFEI`), researchers must evaluate 
 ###### 🔹 Master Cache Capacity Reference
 To eliminate redundancy and ensure a single canonical source of truth, the complete, exhaustive database of all shared cache capacities and fabric routing details for mobile chipsets from 2016 to 2026 is maintained in the [System on Chip (SoC) Reference (references/soc_reference.md)]. 
  
-Researchers and models **must** refer directly to that document to resolve the Level 3 (L3) cache, System Level Cache (SLC) capacity, effective shared cache, and final `CFEI` score for any given SoC model.
+Researchers and models **must** refer directly to that document to resolve the Level 3 (L3) cache, System Level Cache (SLC) capacity and effective shared cache for any given SoC model.
  
 
 ##### 📝 Worked Example: Snapdragon 8 Gen 3 (Balanced Flagship)
