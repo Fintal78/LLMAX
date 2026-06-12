@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "6.2",
+    "schema_version": "6.3",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-06-06"
+    "last_updated": "2026-06-12"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -2162,7 +2162,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
             },
             "soft_saturation_exponent": {
-              "value": 0.9300,
+              "value": 0.93,
               "calculation_formula": "gamma = Look up based on cluster core count (best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
               // GUIDELINE: Saturation factor (gamma) modeling frequency scaling dimishing returns.
             },
@@ -2206,7 +2206,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
             },
             "soft_saturation_exponent": {
-              "value": 0.9800,
+              "value": 0.98,
               "calculation_formula": "gamma = Look up based on cluster core count (second_best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
             },
             "core_yield": {
@@ -2214,7 +2214,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "calculation_formula": "second_best.architecture_mapping.core_architecture_score * ((second_best.actual_frequency_ghz.value / second_best.architecture_mapping.reference_frequency_ghz) ^ second_best.soft_saturation_exponent.value)"
             },
             "pacc_decay_exponent": {
-              "value": 0.8500,
+              "value": 0.85,
               "calculation_formula": "Look up based on cluster core count (second_best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
             },
             "parallel_adjusted_core_count": {
@@ -2245,7 +2245,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               // GUIDELINE: The maximum advertised frequency for this specific core cluster in GHz.
             },
             "soft_saturation_exponent": {
-              "value": 0.9500,
+              "value": 0.95,
               "calculation_formula": "gamma = Look up based on cluster core count (third_best.core_count.value): 1 core = 0.93, 2 = 0.95, 3 = 0.96, 4 = 0.97, 5-6 = 0.98, 7 or more = 0.99"
             },
             "core_yield": {
@@ -2253,7 +2253,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
               "calculation_formula": "third_best.architecture_mapping.core_architecture_score * ((third_best.actual_frequency_ghz.value / third_best.architecture_mapping.reference_frequency_ghz) ^ third_best.soft_saturation_exponent.value)"
             },
             "pacc_decay_exponent": {
-              "value": 0.9400,
+              "value": 0.94,
               "calculation_formula": "Look up based on cluster core count (third_best.core_count.value): 1 core = 1, 2 = 0.94, 3 = 0.90, 4 = 0.87, 5 = 0.85, 6 = 0.83, 7 = 0.81, 8 = 0.80"
             },
             "parallel_adjusted_core_count": {
@@ -2317,7 +2317,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "memory_subsystem_penalty": {
           "deficit": {
             "value": 0.0145,
-            "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
+            "calculation_formula": "max(0, normalized_throughput_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)" 
           },
           "penalty": {
             "value": 0.0002,
@@ -2328,7 +2328,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "thermal_subsystem_penalty": {
           "deficit": {
             "value": 4.5979,
-            "calculation_formula": "max(0.0000, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
+            "calculation_formula": "max(0, normalized_throughput_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
           },
           "penalty": {
             "value": 0.1269,
@@ -2352,7 +2352,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "deficit": {
             "value": 0.2214,
-            "calculation_formula": "max(0.0000, normalized_throughput_score.value - cache_subsystem_penalty.CFEI.value)"
+            "calculation_formula": "max(0, normalized_throughput_score.value - cache_subsystem_penalty.CFEI.value)"
           },
           "penalty": {
             "value": 0.0028,
@@ -2478,7 +2478,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "core_yield": {
           "value": 8.5860,
-          "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.9300) * architecture_mapping.isa_gen_score",
+          "calculation_formula": "core_yield.value = architecture_mapping.core_architecture_score * ((actual_frequency_ghz.value / architecture_mapping.reference_frequency_ghz) ^ 0.93) * architecture_mapping.isa_gen_score",
           // GUIDELINE: Core Yield (CY) = CAS * (Actual_Freq / Ref_Freq)^gamma * ISA_Multiplier. Fixed single-core frequency scaling soft-saturation exponent (gamma) of 0.93 representing the extreme burst behavior of the best core pushed to physical limits. Keep 4 decimal places.
         },
         "normalized_core_yield": {
@@ -2494,7 +2494,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           },
           "deficit": {
             "value": 3.4157,
-            "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
+            "calculation_formula": "deficit.value = max(0, normalized_core_yield.value - cache_subsystem_penalty.l2_cache_score.value)"
             // GUIDELINE: Calculates the deficit between the normalized CPU core requirements (normalized_core_yield) and the cache subsystem capability (l2_cache_score). Keep 4 decimal places.
           },
           "penalty": {
@@ -2506,7 +2506,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "memory_subsystem_penalty": {
           "deficit": {
             "value": 0.3066,
-            "calculation_formula": "deficit.value = max(0.0000, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
+            "calculation_formula": "deficit.value = max(0, normalized_core_yield.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
             // GUIDELINE: Calculates the deficit between normalized CPU core requirements and the supporting system DRAM (Dynamic Random-Access Memory) Technology score (from Section 6.5). Keep 4 decimal places.
           },
           "penalty": {
@@ -2695,8 +2695,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 1430,
           "source": "https://www.3dmark.com/search",
           "exact_extract": "Samsung Galaxy S24 Ultra [...] 1430",
-          "subscore": 8.20
-          // SCORING GUIDELINE: primary benchmark is 3DMark Steel Nomad Light.
+          "subscore": 8.21
+          // SCORING GUIDELINE: Primary benchmark is 3DMark Steel Nomad Light.
           // • WHERE TO FIND IT: Search 3dmark.com search index or GSMArena/NotebookCheck reviews.
           // • EXTRACTION RULE: Use the "Steel Nomad Light" score. Ensure it is not the desktop "Steel Nomad" or older "Wild Life" benchmarks.
           // SCORING GUIDELINE: subscore = 10 * (log(method_a_benchmark_GPU.value) − log(GPU_SteelNomad_Score_Min)) / (log(GPU_SteelNomad_Score_Max) − log(GPU_SteelNomad_Score_Min)), clamped 0–10. If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
@@ -2706,190 +2706,179 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // METHOD C — Graphics Performance Prediction Model (Tertiary / baseline for Method B)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_c_prediction_model_GPU": {
-          // SCORING RATIONALE: This model predicts rasterization performance by analyzing the hardware's peak theoretical throughput (CTI) modified by software efficiency (AFM), data availability (MTI), command orchestration speed (CPU), and chassis-level thermal burst capacity (via TDSI).
-          // EXTERNAL GRAPHICS SYSTEM INPUTS
-          // SCORING GUIDELINE: These three parameters are external environmental and system factors outside the core Graphics Processing Unit (GPU) itself that directly bottleneck or facilitate graphics rendering performance under load.
-          "memory_throughput_index": {
-            "value": 9.34,
-            "identifier_path": "6_5_ram_technology.scores.predicted"
-            // GUIDELINE: Already-normalized Memory Technology Index (MTI) score from Section 6.5. This represents the memory bandwidth available for data access.
+          // SCORING RATIONALE: This model predicts rasterization performance by analyzing the hardware's peak theoretical throughput (GPU Yield) modified by software API efficiency (AFM), and applying dynamic non-linear deficit penalties for supporting subsystems: system memory bandwidth availability (MTI) and chassis-level thermal burst capacity (via TDSI). CPU orchestration overhead is neglected from the active graphics penalty model as the primary benchmark is GPU-bound.
+          "architecture_mapping": {
+            "identifier": "Adreno 750",
+            "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
+            "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+            "standard_graphics_score": 8.90,
+            // GUIDELINE: Performance score from the "Standard Graphics" column of the lookup table.
+            "reference_frequency_mhz": 903.00
+            // GUIDELINE: Reference frequency from the "Ref Freq (MHz)" column of the lookup table in Megahertz (MHz).
           },
-          "cpu_orchestration_index": {
-            "value": 8.63,
-            "identifier_path": "6_1_cpu_multi_core_performance.scores.final.value"
-            // GUIDELINE: Central Processing Unit (CPU) Orchestration Index. PRIORITY: Use the Final Score. This represents the command submission speed, including software/scheduling modifiers.
+          "actual_frequency_mhz": {
+            "value": 1000,
+            "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+            "exact_extract": "Adreno 750 (1 GHz)"
+            // GUIDELINE: The maximum advertised frequency of the GPU in MHz (Megahertz). Note: 1 GHz (Gigahertz) = 1000 MHz.
           },
-          "tdsi_index": {
-            "value": 4.24,
-            "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value"
-            // GUIDELINE: Thermal Dissipation Stability Index (TDSI). PRIORITY: Use the Final Score. This represents real-world chassis cooling reality and assembly tolerances.
-          },
-          "compute_throughput_index": {
-            // SCORING GOAL: Captures the raw mathematical work the Graphics Processing Unit (GPU) cores can perform per second (Compute Throughput Index (CTI)).
-            "architecture_mapping": {
-              "identifier": "Adreno 750",
-              "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
-              "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
-              "standard_graphics_score": 8.90,
-              // GUIDELINE: Performance score from the "Standard Graphics" column of the lookup table.
-              "reference_frequency_mhz": 903.00
-              // GUIDELINE: Reference frequency from the "Ref Freq (MHz)" column of the lookup table in Megahertz (MHz).
-            },
-            "actual_frequency_mhz": {
-              "value": 1000,
-              "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
-              "exact_extract": "Adreno 750 (1 GHz)"
-              // GUIDELINE: The maximum advertised frequency of the Graphics Processing Unit (GPU) in Megahertz (MHz). Note: 1 GHz = 1000 MHz.
-            },
-            "compute_throughput_index_raw": {
-              "value": 9.1966,
-              "calculation_formula": "CLAMP(0.0, 10.0, (actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) * architecture_mapping.standard_graphics_score / (1.0 + 0.075 * architecture_mapping.standard_graphics_score * ((actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) - 1.0)))"
-              // GUIDELINE: Theoretical range-clamped perceptual graphics scaling using Weber-Fechner Law. Keep 4 decimal places.
-            },
-            "system_support_index": {
-              "value": 7.9585,
-              "calculation_formula": "(0.60 * memory_throughput_index.value) + (0.25 * tdsi_index.value) + (0.15 * cpu_orchestration_index.value)"
-              // GUIDELINE: The System Support Index (SSI) represents the aggregate capability of non-GPU components supporting the graphics processor. Keep 4 decimal places.
-            },
-            "transmission_factor": {
-              "value": 0.8762,
-              "calculation_formula": "system_support_index.value >= compute_throughput_index_raw.value ? 1.0 : 1.0 - (compute_throughput_index_raw.value - system_support_index.value) / 10.0"
-              // GUIDELINE: The dynamic bottleneck transmission factor naturally bounded within [0.0, 1.0]. Keep 4 decimal places.
-            },
-            "subscore": 9.1599,
-            "calculation_formula": "architecture_mapping.standard_graphics_score + (compute_throughput_index_raw.value - architecture_mapping.standard_graphics_score) * transmission_factor.value"
-            // GUIDELINE: Represents the final computed throughput index (CTI) after physical bottleneck adjustment. Keep 4 decimal places.
+          "gpu_yield": {
+            "value": 9.7859,
+            "calculation_formula": "gpu_yield = architecture_mapping.standard_graphics_score * ((actual_frequency_mhz.value / architecture_mapping.reference_frequency_mhz) ^ 0.93)"
+            // GUIDELINE: Models raw silicon throughput capability. Keep 4 decimal places.
           },
           "api_modifier": {
-            // GPU_API_SUPPORT_LOOKUP_TABLE
-              // | Vulkan (Android) | Metal (iOS) | OpenGL ES (Leg) | DirectX (Win Mob) | Score    |
-              // | :--------------- | :---------- | :-------------- | :---------------- | :------: |
-              // | Vulkan 1.4       | Metal 4.0   | —               | —                 | **10.0** |
-              // | —                | Metal 3.3   | —               | —                 | **9.8**  |
-              // | —                | Metal 3.2   | —               | —                 | **9.6**  |
-              // | —                | Metal 3.1   | —               | —                 | **9.4**  |
-              // | Vulkan 1.3       | Metal 3.0   | —               | —                 | **9.2**  |
-              // | —                | Metal 2.4   | —               | —                 | **8.8**  |
-              // | —                | Metal 2.3   | —               | —                 | **8.6**  |
-              // | Vulkan 1.2       | —           | —               | —                 | **8.5**  |
-              // | —                | Metal 2.2   | —               | —                 | **8.4**  |
-              // | —                | Metal 2.1   | —               | —                 | **8.2**  |
-              // | —                | Metal 2.0   | —               | —                 | **8.0**  |
-              // | Vulkan 1.1       | Metal 1.2   | —               | —                 | **7.5**  |
-              // | —                | Metal 1.1   | —               | —                 | **7.2**  |
-              // | Vulkan 1.0       | Metal 1.0   | —               | D3D 12 (FL 11_0)  | **7.0**  |
-              // | —                | —           | —               | D3D 11.2          | **6.8**  |
-              // | —                | —           | —               | D3D 11.1          | **6.5**  |
-              // | —                | —           | —               | D3D 11.0          | **6.0**  |
-              // | —                | —           | —               | D3D 10.1          | **5.5**  |
-              // | —                | —           | OpenGL ES 3.2   | —                 | **5.0**  |
-              // | —                | —           | —               | D3D 9.3           | **4.0**  |
-              // | —                | —           | —               | D3D 9.2           | **3.5**  |
-              // | —                | —           | OpenGL ES 3.1   | —                 | **3.0**  |
-              // | —                | —           | —               | D3D 9.1           | **2.5**  |
-              // | —                | —           | —               | D3D 9.0c          | **2.0**  |
-              // | —                | —           | OpenGL ES 3.0   | —                 | **1.0**  |
-              // | —                | —           | OpenGL ES 2.0   | —                 | **0.0**  |
-              // | —                | —           | OpenGL ES 1.1   | —                 | **0.0**  |
-              //
+            // GPU API Support Lookup Table (GPU_API_SUPPORT_LOOKUP_TABLE)
+            // | Vulkan (Android) | Metal (iOS) | OpenGL ES (Leg) | DirectX (Win Mob) | Score    |
+            // | :--------------- | :---------- | :-------------- | :---------------- | :------: |
+            // | Vulkan 1.4       | Metal 4.0   | —               | —                 | **10.0** |
+            // | —                | Metal 3.3   | —               | —                 | **9.8**  |
+            // | —                | Metal 3.2   | —               | —                 | **9.6**  |
+            // | —                | Metal 3.1   | —               | —                 | **9.4**  |
+            // | Vulkan 1.3       | Metal 3.0   | —               | —                 | **9.2**  |
+            // | —                | Metal 2.4   | —               | —                 | **8.8**  |
+            // | —                | Metal 2.3   | —               | —                 | **8.6**  |
+            // | Vulkan 1.2       | —           | —               | —                 | **8.5**  |
+            // | —                | Metal 2.2   | —               | —                 | **8.4**  |
+            // | —                | Metal 2.1   | —               | —                 | **8.2**  |
+            // | —                | Metal 2.0   | —               | —                 | **8.0**  |
+            // | Vulkan 1.1       | Metal 1.2   | —               | —                 | **7.5**  |
+            // | —                | Metal 1.1   | —               | —                 | **7.2**  |
+            // | Vulkan 1.0       | Metal 1.0   | —               | D3D 12 (FL 11_0)  | **7.0**  |
+            // | —                | —           | —               | D3D 11.2          | **6.8**  |
+            // | —                | —           | —               | D3D 11.1          | **6.5**  |
+            // | —                | —           | —               | D3D 11.0          | **6.0**  |
+            // | —                | —           | —               | D3D 10.1          | **5.5**  |
+            // | —                | —           | OpenGL ES 3.2   | —                 | **5.0**  |
+            // | —                | —           | —               | D3D 9.3           | **4.0**  |
+            // | —                | —           | —               | D3D 9.2           | **3.5**  |
+            // | —                | —           | OpenGL ES 3.1   | —                 | **3.0**  |
+            // | —                | —           | —               | D3D 9.1           | **2.5**  |
+            // | —                | —           | —               | D3D 9.0c          | **2.0**  |
+            // | —                | —           | OpenGL ES 3.0   | —                 | **1.0**  |
+            // | —                | —           | OpenGL ES 2.0   | —                 | **0.0**  |
+            // | —                | —           | OpenGL ES 1.1   | —                 | **0.0**  |
+            //
               // AMBIGUOUS API RESOLUTION (MANDATORY FALLBACK CENSUS)
               // If the explicit API version is NOT disclosed on the primary spec sheet, the agent MUST resolve the score using the following OS/Architecture fallback matrices.
-              // Note that all operating system version listings in these fallback resolution matrices are fully aligned and synchronized with the canonical reference file docs/references/os_version_reference.md.
-              //
+              // Note that all operating system version listings in these fallback resolution matrices are fully aligned and synchronized with the canonical reference file references/os_version_reference.md.
+            //
               // RATIONALE ON HARDWARE VS OS: Can identical SoCs (System on Chips) have different APIs? YES. An API is a software abstraction layer. A capable hardware chip (e.g., Apple A7 or Snapdragon 800) will support newer API versions (e.g., moving from OpenGL ES to Metal, or D3D (Direct3D) 9.3 to D3D 11) when the device receives major OS updates that upgrade the graphics stack. These matrices resolve ambiguity by finding the intersection of Hardware architecture and OS version.
-              //
-              // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
-              // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
-              // | :------------------ | :------------------- | :------------------- |
-              // | iOS 19+             | A19, M5 (Future)     | Metal 4.0            |
-              // | iOS 18.x            | A18, M4              | Metal 3.3            |
-              // | iOS 17.x            | A17 Pro, M3          | Metal 3.2            |
-              // | iOS 16.x            | A16, M2              | Metal 3.1            |
-              // | iOS 15.x            | A14 - A15, M1        | Metal 3.0            |
-              // | iOS 14.x            | A12 - A13            | Metal 2.4            |
-              // | iOS 13.x            | A11 Bionic           | Metal 2.3            |
-              // | iOS 12.x            | A10 / A10X Fusion    | Metal 2.2            |
-              // | iOS 11.x            | A9 / A9X             | Metal 2.1            |
-              // | iOS 10.x            | A8 / A8X             | Metal 2.0            |
-              // | iOS 10.x - 12.x     | A7 (64-bit Baseline) | Metal 1.2            |
-              // | iOS 9.x             | A7 (64-bit Baseline) | Metal 1.1            |
-              // | iOS 8.x             | A7 (64-bit Baseline) | Metal 1.0            |
-              // | iOS 7.x             | A7 (64-bit Baseline) | OpenGL ES 3.0        |
-              // | iOS 6.x             | A6 / A6X             | OpenGL ES 2.0        |
-              // | iOS 4.x - 5.x       | A4 / A5 / A5X        | OpenGL ES 2.0        |
-              // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
-              //
-              // MATRIX 2: ANDROID (Deep Coverage Mirror)
-              // | Android Launch OS | GPU Architecture Baseline     | Inferred API  |
-              // | :---------------- | :---------------------------- | :------------ |
-              // | Android 15+       | Adreno 8xx+, Immortalis G92x+ | Vulkan 1.4    |
-              // | Android 13 - 14   | Adreno 7xx, Mali-G71x         | Vulkan 1.3    |
-              // | Android 12        | Adreno 66x, Mali-G710         | Vulkan 1.2    |
-              // | Android 10 - 11   | Adreno 6xx, Mali-G77/G78      | Vulkan 1.1    |
-              // | Android 7.0 - 9.0 | Adreno 5xx, Mali-G71/G72      | Vulkan 1.0    |
-              // | Android 6.0       | Adreno 430 (Snapdragon 810)   | OpenGL ES 3.2 |
-              // | Android 5.0 - 5.1 | Adreno 405/418/420, Mali-T7xx | OpenGL ES 3.1 |
-              // | Android 4.3 - 4.4 | Adreno 3xx, Mali-T6xx         | OpenGL ES 3.0 |
-              // | Android 2.0 - 4.2 | Adreno 2xx, Mali-400          | OpenGL ES 2.0 |
-              // | Android 1.x       | Adreno 1xx (Adreno 130)       | OpenGL ES 1.1 |
-              //
-              // MATRIX 3: WINDOWS MOBILE & WINDOWS PHONE (Deep Coverage Mirror)
-              // | Windows OS Version     | Era / Reference Hardware        | Inferred API     |
-              // | :--------------------- | :------------------------------ | :--------------- |
-              // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)    | D3D 12 (FL 11_0) |
-              // | Windows 10 Mobile      | Lumia 950 / 950 XL              | D3D 11.2         |
-              // | Windows Phone 8.1      | Lumia 930 / 1520                | D3D 11.1         |
-              // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8) | D3D 11.0         |
-              // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)  | D3D 10.1         |
-              // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)     | D3D 9.3          |
-              // | Windows Phone 8.0      | Early builds / Dev hardware     | D3D 9.2          |
-              // | Windows Phone 7.x      | Lumia 800 / 900                 | D3D 9.1          |
-              // | Windows Phone 7.0      | Samsung Focus / LG Quantum      | D3D 9.0c         |
-              // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung          | OpenGL ES 1.1    |
-              // --------------------------------------------------------------------------------- 
+            //
+            // MATRIX 1: APPLE / iOS (Deep Coverage Mirror)
+            // | OS Version Baseline | Apple SoC Generation | Inferred API Version |
+            // | :------------------ | :------------------- | :------------------- |
+            // | iOS 19+             | A19, M5 (Future)     | Metal 4.0            |
+            // | iOS 18.x            | A18, M4              | Metal 3.3            |
+            // | iOS 17.x            | A17 Pro, M3          | Metal 3.2            |
+            // | iOS 16.x            | A16, M2              | Metal 3.1            |
+            // | iOS 15.x            | A14 - A15, M1        | Metal 3.0            |
+            // | iOS 14.x            | A12 - A13            | Metal 2.4            |
+            // | iOS 13.x            | A11 Bionic           | Metal 2.3            |
+            // | iOS 12.x            | A10 / A10X Fusion    | Metal 2.2            |
+            // | iOS 11.x            | A9 / A9X             | Metal 2.1            |
+            // | iOS 10.x            | A8 / A8X             | Metal 2.0            |
+            // | iOS 10.x - 12.x     | A7 (64-bit Baseline) | Metal 1.2            |
+            // | iOS 9.x             | A7 (64-bit Baseline) | Metal 1.1            |
+            // | iOS 8.x             | A7 (64-bit Baseline) | Metal 1.0            |
+            // | iOS 7.x             | A7 (64-bit Baseline) | OpenGL ES 3.0        |
+            // | iOS 6.x             | A6 / A6X             | OpenGL ES 2.0        |
+            // | iOS 4.x - 5.x       | A4 / A5 / A5X        | OpenGL ES 2.0        |
+            // | iPhone OS 1 - 3     | iPhone 1st Gen / 3G  | OpenGL ES 1.1        |
+            //
+            // MATRIX 2: ANDROID (Deep Coverage Mirror)
+            // | Android Launch OS | GPU Architecture Baseline     | Inferred API  |
+            // | :---------------- | :---------------------------- | :------------ |
+            // | Android 15+       | Adreno 8xx+, Immortalis G92x+ | Vulkan 1.4    |
+            // | Android 13 - 14   | Adreno 7xx, Mali-G71x         | Vulkan 1.3    |
+            // | Android 12        | Adreno 66x, Mali-G710         | Vulkan 1.2    |
+            // | Android 10 - 11   | Adreno 6xx, Mali-G77/G78      | Vulkan 1.1    |
+            // | Android 7.0 - 9.0 | Adreno 5xx, Mali-G71/G72      | Vulkan 1.0    |
+            // | Android 6.0       | Adreno 430 (Snapdragon 810)   | OpenGL ES 3.2 |
+            // | Android 5.0 - 5.1 | Adreno 405/418/420, Mali-T7xx | OpenGL ES 3.1 |
+            // | Android 4.3 - 4.4 | Adreno 3xx, Mali-T6xx         | OpenGL ES 3.0 |
+            // | Android 2.0 - 4.2 | Adreno 2xx, Mali-400          | OpenGL ES 2.0 |
+            // | Android 1.x       | Adreno 1xx (Adreno 130)       | OpenGL ES 1.1 |
+            //
+            // MATRIX 3: WINDOWS MOBILE & WINDOWS PHONE (Deep Coverage Mirror)
+            // | Windows OS Version     | Era / Reference Hardware        | Inferred API     |
+            // | :--------------------- | :------------------------------ | :--------------- |
+            // | Windows 10 Mobile (RS) | Snapdragon 820 (HP Elite x3)    | D3D 12 (FL 11_0) |
+            // | Windows 10 Mobile      | Lumia 950 / 950 XL              | D3D 11.2         |
+            // | Windows Phone 8.1      | Lumia 930 / 1520                | D3D 11.1         |
+            // | Windows Phone 8 GDR    | Snapdragon 800 / 400 (Late WP8) | D3D 11.0         |
+            // | Windows Phone 8.0      | Lumia 520 / 620 (Entry Adreno)  | D3D 10.1         |
+            // | Windows Phone 8.0      | Lumia 920 / 1020 (Baseline)     | D3D 9.3          |
+            // | Windows Phone 8.0      | Early builds / Dev hardware     | D3D 9.2          |
+            // | Windows Phone 7.x      | Lumia 800 / 900                 | D3D 9.1          |
+            // | Windows Phone 7.0      | Samsung Focus / LG Quantum      | D3D 9.0c         |
+            // | Pre-WP7 Legacy         | Pre-2010 HTC / Samsung          | OpenGL ES 1.1    |
+            // --------------------------------------------------------------------------------- 
             "identifier": "Vulkan 1.3",
             // GUIDELINE: Standardized API version supported by the GPU.
             "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667.php",
-            "exact_extract": "Vulkan 1.3 support", 
+            "exact_extract": "Vulkan 1.3 support",
             "reference_table": "GPU_API_SUPPORT_LOOKUP_TABLE",
-            "score": 9.20
-            // GUIDELINE: Performance score from the "Score" column of the lookup table. If unspecified, execute AMBIGUOUS API RESOLUTION
+            "score": 9.20,
+            // GUIDELINE: Sourced from the GPU_API_SUPPORT_LOOKUP_TABLE or via the AMBIGUOUS API RESOLUTION fallback matrix in comments.
+            "factor": {
+              "value": 0.9840,
+              "calculation_formula": "factor = 0.80 + 0.02 * api_modifier.score"
+              // GUIDELINE: Models driver-level draw call efficiency. Keep 4 decimal places.
+            }
           },
-          "predicted_score": 8.8655
-          // SCORING GUIDELINE: predicted_score = (0.60 * compute_throughput_index.subscore) + (0.15 * api_modifier.score) + (0.15 * memory_throughput_index.value) + (0.0625 * tdsi_index.value) + (0.0375 * cpu_orchestration_index.value), clamped 0–10. This is the score used for Method B (Nearest Neighbor Interpolation) neighbors. Keep 4 decimal places.
+          "gpu_yield_adjusted": {
+            "value": 9.6293,
+            "calculation_formula": "gpu_yield_adjusted = gpu_yield.value * api_modifier.factor.value"
+            // GUIDELINE: Models hardware potential combined with API efficiency. Keep 4 decimal places.
+          },
+          "normalized_yield_score": {
+            "value": 9.8094,
+            "calculation_formula": "normalized_yield_score = 10.0 * (log(gpu_yield_adjusted.value) - log(GPU_Yield_Adjusted_Min)) / (log(GPU_Yield_Adjusted_Max) - log(GPU_Yield_Adjusted_Min)), clamped [0.0, 10.0]"
+            // GUIDELINE: Logarithmic normalization to map physical throughput to human perception (Weber-Fechner Law). Keep 4 decimal places.
+          },
+          "memory_subsystem_penalty": {
+            "deficit": {
+              "value": 0.9860,
+              "calculation_formula": "deficit.value = max(0, normalized_yield_score.value - 6_processing_power_and_performance.6_5_ram_technology.scores.predicted)"
+              // GUIDELINE: Deficit between the normalized GPU yield score requirements and the supporting Memory Throughput Index (MTI) from Section 6.5 (predicted score). Keep 4 decimal places.
+            },
+            "penalty": {
+              "value": 0.0980,
+              "calculation_formula": "penalty.value = 0.10 * (memory_subsystem_penalty.deficit.value ^ 1.4)"
+              // GUIDELINE: Models execution stalls from memory bandwidth starvation using a scaling factor of 0.10 and exponent of 1.4. Keep 4 decimal places.
+            }
+          },
+          "thermal_subsystem_penalty": {
+            "deficit": {
+              "value": 5.5694,
+              "calculation_formula": "deficit.value = max(0, normalized_yield_score.value - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value)"
+              // GUIDELINE: Deficit between the normalized GPU yield score requirements and the Thermal Dissipation Stability Index (TDSI) from Section 6.10 (final score). Keep 4 decimal places.
+            },
+            "penalty": {
+              "value": 0.1993,
+              "calculation_formula": "penalty.value = 0.0180 * (thermal_subsystem_penalty.deficit.value ^ 1.4)"
+              // GUIDELINE: Models thermal throttling impact under burst graphics testing using a scaling factor of 0.0180 and exponent of 1.4. Keep 4 decimal places.
+            }
+          },
+          "predicted_score": 9.51,
+          "calculation_formula": "predicted_score = normalized_yield_score.value - (memory_subsystem_penalty.penalty.value + thermal_subsystem_penalty.penalty.value)"
+          // SCORING GUIDELINE: The predicted SGS (Standard Graphics Score), computed by subtracting both memory and thermal subsystem penalties from the normalized yield score.
+          // BOUNDS CHECK ABORT PROCEDURE: If the predicted score is outside the physical standard bounds of [0.00, 10.00] (less than 0.00 or greater than 10.00), the scoring system MUST HALT execution immediately to prevent data pollution. The engine MUST raise a high-priority exception: "CRITICAL ANOMALY ALERT: Standard Graphics Score ({Predicted_Score}) is outside physical standard bounds [0, 10]. Halting scoring process."
         },
 
         // ═══════════════════════════════════════════════════════════════════════════
         // METHOD B — Nearest Neighbor Interpolation (Secondary)
         // ═══════════════════════════════════════════════════════════════════════════
         "method_b_neighbor_interpolation_GPU": {
-          // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all phones with a known 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-          // Step 1: Find the 3 distinct devices with the smallest Weighted Euclidean Distance in the
-          //         5-dimensional hardware feature space:
-          //         Distance = √( 0.60 * CTI_Diff² + 0.15 * AFM_Diff² + 0.15 * MTI_Diff² + 0.0625 * TDSI_Diff² + 0.0375 * CPU_Diff² )
-          //         Where the difference terms for a candidate neighbor are calculated as:
-          //           • CTI_Diff = Target_CTI - Neighbor_CTI
-          //             - Target_CTI & Neighbor_CTI are the Compute Throughput Index scores
-          //               sourced from the compute_throughput_index.subscore field.
-          //           • AFM_Diff = Target_AFM - Neighbor_AFM
-          //             - Target_AFM & Neighbor_AFM are the API & Feature Modifier scores
-          //               sourced from the api_modifier.score field.
-          //           • MTI_Diff = Target_MTI - Neighbor_MTI
-          //             - Target_MTI & Neighbor_MTI are sourced from Section 6.5 (RAM Technology)
-          //               Predicted Score (scores.predicted) to isolate raw hardware bandwidth
-          //               capabilities before system-level boosters are applied. 
-          //               Current path: 6_5_ram_technology.scores.predicted
-          //           • TDSI_Diff = Target_TDSI - Neighbor_TDSI
-          //             - Target_TDSI & Neighbor_TDSI are sourced from Section 6.10 (TDSI)
-          //               Final Score (scores.final.value) to represent physical cooling stability. 
-          //               Current path: 6_10_thermal_dissipation_stability.scores.final.value
-          //           • CPU_Diff = Target_CPU - Neighbor_CPU
-          //             - Target_CPU & Neighbor_CPU are sourced from Section 6.1 (CPU Multi-Core)
-          //               Final Score (scores.final.value) to capture command submission speed.
-          //               Current path: 6_1_cpu_multi_core_performance.scores.final.value
-          //         Search space: all phones with a known 3DMark Steel Nomad Light score (Method A),
-          //         excluding the target device itself.
-          // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+          // SCORING GUIDELINE: Method B is calculated for ALL phones (even if Method A is available) for precision validation. The interpolation search space includes all distinct phones in the database with a verified 3DMark Steel Nomad Light score (Method A), excluding the target device itself. The interpolation MUST utilize exactly 3 distinct neighbor devices.
+          // Step 1 (Neighbor Selection): Find the 3 distinct candidate devices with the smallest Euclidean Distance, calculated as:
+          // Distance = Sqrt( (GPU_Yield_norm_Diff)^2 + (Penalty_MTI_Diff)^2 + (Penalty_TDSI_Diff)^2 )
+          // Where the metric component differences are derived from the following paths:
+          // • GPU_Yield_norm_Diff (Normalized GPU Yield Difference) = (target.method_c_prediction_model_GPU.normalized_yield_score.value) - (neighbor.method_c_prediction_model_GPU.normalized_yield_score.value)
+          // • Penalty_MTI_Diff (MTI Penalty Difference) = (target.method_c_prediction_model_GPU.memory_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_GPU.memory_subsystem_penalty.penalty.value)
+          // • Penalty_TDSI_Diff (TDSI Penalty Difference) = (target.method_c_prediction_model_GPU.thermal_subsystem_penalty.penalty.value) - (neighbor.method_c_prediction_model_GPU.thermal_subsystem_penalty.penalty.value)
+          // Step 2: Compute the average predicted and average benchmark scores of the neighbors, calculate the correction ratio, and apply it to derive the final interpolated score.
           "neighbors": [
             {
               // Neighbor1
@@ -2918,20 +2907,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             }
           ],
           "avg_predicted_neighbors": 9.4200,
-          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
+          // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3. Keep 4 decimal places.
           "avg_benchmark_neighbors": 7.8933,
-          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-          "correction_ratio": 0.9411,
-          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_GPU.predicted_score / avg_predicted_neighbors.
-          "interpolated_score": 7.43
+          // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3. Keep 4 decimal places.
+          "correction_ratio": 1.0096,
+          // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_GPU.predicted_score / avg_predicted_neighbors. Keep 4 decimal places.
+          "interpolated_score": 7.97
           // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
         },
         "scores": {
-          "predicted": 8.8655,
+          "predicted": 9.51,
           // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_GPU.predicted_score.
           "final": {
-            "value": 8.20,
-            // SCORING GUIDELINE: Use Method A if method_a_benchmark_GPU is available (method_a_benchmark_GPU.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_GPU.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_GPU.predicted_score).
+            "value": 8.21,
+            // GUIDELINE: Resolved strictly by the A->B->C hierarchy: Use Method A if method_a_benchmark_GPU (Method A GPU Benchmark) is available (method_a_benchmark_GPU.subscore becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_GPU.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_GPU.predicted_score).
             "method_used": "Benchmark (3DMark)",
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
@@ -2955,26 +2944,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "identifier_path": "6_3_0_gpu_architecture_reference.gpu_model.value",
           "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
           "ray_tracing_score_raw": 8.50
-          // GUIDELINE: Maps to the "Ray Tracing" column.
+          // GUIDELINE: Maps to the "Ray Tracing" column in the GPU Architecture Lookup Table (GPU_ARCHITECTURE_LOOKUP_TABLE).
         },
-        "memory_throughput_index": {
-          "value": 9.34,
-          "identifier_path": "6_5_ram_technology.scores.predicted"
-          // GUIDELINE: Sourced from Section 6.5 predicted score to capture hardware bandwidth capabilities.
-        },
-        "subscore": 8.7520,
-        "calculation_formula": "(architecture_mapping.ray_tracing_score_raw * 0.70) + (memory_throughput_index.value * 0.30), clamped 0–10. Keep 4 decimal places.",
+        "subscore": 8.50,
+        "calculation_formula": "min(architecture_mapping.ray_tracing_score_raw, (architecture_mapping.ray_tracing_score_raw * 0.70) + (6_processing_power_and_performance.6_5_ram_technology.scores.predicted * 0.30)), clamped 0–10."
+        // GUIDELINE: Sourced from the Ray Tracing Performance bottleneck formula. Final Ray Tracing Score = min(RT_Score, 0.70 * RT_Score + 0.30 * MTI).
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
       // Final score (STANDARD GRAPHICS PERFORMANCE & Ray Tracing) 
       // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 8.85,
+        "predicted": 9.41,
         // SCORING GUIDELINE: Final predicted graphics score including ray tracing. Formula: (standard_graphics.scores.predicted * 0.90) + (ray_tracing.subscore * 0.10).
         "final": {
-          "value": 8.26,
-          // SCORING GUIDELINE: Final Score combines rasterization (via Standard Graphics Score) and ray tracing capability according to the A→B→C hierarchy. Formula: (standard_graphics.scores.final.value * 0.90) + (ray_tracing.subscore * 0.10).
+          "value": 8.24,
+          // SCORING GUIDELINE: Final Score combines rasterization via Standard Graphics Score (according to the A→B→C hierarchy) and ray tracing capability. Formula: (standard_graphics.scores.final.value * 0.90) + (ray_tracing.subscore * 0.10).
           "method_used": "Benchmark (3DMark)",
           // SCORING GUIDELINE: inherits standard_graphics.scores.final.method_used
           "booster": "No",
@@ -2984,6 +2969,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
+
     // █ SOC_NEURAL_PROCESSING_UNIT_(NPU)_/_AI_ACCELERATOR_LOOKUP_TABLE
     //
     // TOPS values prefixed with ~ are estimates from vendor relative claims and family cross-referencing.
