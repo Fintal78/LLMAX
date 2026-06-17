@@ -148,12 +148,11 @@
 **8. Battery & Charging**
 
 ### 8.1 Battery Endurance (Model)
-*   `Battery_Energy_Wh_Min` = 8 (Score 0), `Battery_Energy_Wh_Max` = 25 (Score 10)
-*   `Battery_Refresh_Effective_Hz_Min` = 30 (Score 10), `Battery_Refresh_Effective_Hz_Max` = 165 (Score 0) (*Lower is better for efficiency*)
-*   `Battery_Resolution_MP_Min` = 1.0 (Score 10), `Battery_Resolution_MP_Max` = 8.3 (Score 0) (*Lower is better for efficiency*)
-*   `Battery_GSMArena_Hours_Min` = 7.8 (Score 0), `Battery_GSMArena_Hours_Max` = 23.12 (Score 10)
-*   `Battery_PhoneArena_Hours_Min` = 3.6 (Score 0), `Battery_PhoneArena_Hours_Max` = 11.42 (Score 10)
-*   `Battery_DXO_Score_Min` = 50 (Score 0), `Battery_DXO_Score_Max` = 160 (Score 10)
+*   `Battery_Energy_Wh_Min` = 8 (Score 0) [Minimum (Min) battery energy in Watt-hours (Wh)]
+*   `Battery_Energy_Wh_Max` = 25 (Score 10) [Maximum (Max) battery energy in Watt-hours (Wh)]
+*   `Battery_GSMArena_Hours_Min` = 7.8 (Score 0) [Minimum (Min) GSMArena unified active-equivalent hours]
+*   `Battery_GSMArena_Hours_Max` = 25.0 (Score 10) [Maximum (Max) GSMArena unified active-equivalent hours]
+*   `Battery_DXO_Score_Min` = 50 (Score 0), `Battery_DXO_Score_Max` = 160 (Score 10) [Reserved for Future Use (DXOMARK overall battery score is currently excluded from the model)]
 
 ### 8.2 Wired Charging
 *   `Battery_Wired_Charging_W_Min` = 5 (Score 0), `Battery_Wired_Charging_W_Max` = 120 (Score 10)
