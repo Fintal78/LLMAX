@@ -152,7 +152,8 @@
 *   `Battery_Energy_Wh_Max` = 25 (Score 10) [Maximum (Max) battery energy in Watt-hours (Wh)]
 *   `Battery_GSMArena_Hours_Min` = 7.8 (Score 0) [Minimum (Min) GSMArena unified active-equivalent hours]
 *   `Battery_GSMArena_Hours_Max` = 25.0 (Score 10) [Maximum (Max) GSMArena unified active-equivalent hours]
-*   `Battery_DXO_Score_Min` = 50 (Score 0), `Battery_DXO_Score_Max` = 160 (Score 10) [Reserved for Future Use (DXOMARK overall battery score is currently excluded from the model)]
+*   `Battery_Predictor_Hours_Min` = 5.0 (Score 0) [Minimum (Min) predictor active endurance hours]
+*   `Battery_Predictor_Hours_Max` = 18.0 (Score 10) [Maximum (Max) predictor active endurance hours]
 
 ### 8.2 Wired Charging
 *   `Battery_Wired_Charging_W_Min` = 5 (Score 0), `Battery_Wired_Charging_W_Max` = 120 (Score 10)

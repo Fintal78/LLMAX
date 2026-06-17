@@ -3715,51 +3715,41 @@ Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
 
 ## 🟣 8. Battery & Charging
 
-### 🔹 8.1 Battery Endurance Score (Model v3.3)
+### 🔹 8.1 Battery Endurance Score
 *Description:* Evaluates smartphone battery life by prioritizing **real-world performance data** over theoretical specifications via a **Benchmark-First Approach with Physics-Based Predictive Interpolation**.
 *   **Measurement:** Standardized battery life tests (or predictive model).
 *   **Unit:** Benchmark Score (0.0 to 10.0)
 *   **Significance:** Determines how long the phone lasts on a single charge under real-world usage.
 
----
-
-#### 8.1.1 Overview and Physical Supply/Demand Framework
-Evaluating a smartphone's battery life based solely on its charge capacity in milliampere-hours (mAh) is chemically and physically inaccurate. A phone with a large battery capacity and a high-draw display or an inefficient chipset can deplete its energy reserves much faster than a device with a smaller battery capacity but a highly optimized hardware and software stack.
-
-To resolve this, the model characterizes a smartphone's battery endurance using the physical relationship between electrical energy storage and average power consumption under a standardized mixed-use workload:
-
-`Endurance Hours (T_predicted) = Supply (E_supply) / Demand (P_demand)`
-
-Where:
-1. **Supply (E_supply, in Watt-hours - Wh):** The total energy capacity of the battery. We use Watt-hours (Wh) because it accounts for nominal operating voltage (V) differences across single-cell and dual-cell battery configurations.
-2. **Demand (P_demand, in Watts - W):** The average electrical power consumed by the device under active mixed-use conditions (web browsing, media streaming, voice calls, user interface interaction, and background synchronization).
-
 The model operates on a hierarchy of data availability:
-- **Method A: Canonical Benchmark Validation (Primary Path):** If real-world benchmark data from the canonical source (GSMArena) is available, it is normalized to determine the final score.
-- **Method B: Nearest Neighbor Interpolation (Secondary Path):** If direct benchmark data is missing, we use a technical predictive model to locate similar "nearest neighbor" devices (devices with similar hardware profiles that *do* have benchmark data) and estimate the target device's performance based on their real-world outcomes.
-- **Method C: Technical Predictor Model (Tertiary Path):** The physical supply/demand model that generates the device's technical profile, serving as the coordinates for finding nearest neighbors in Method B.
+- **Method A: Canonical Benchmark Validation (Primary Path — §8.1.1):** If real-world benchmark data from the canonical source (GSMArena) is available, it is normalized to determine the final score.
+- **Method B: Nearest Neighbor Interpolation (Secondary Path — §8.1.2):** If direct benchmark data is missing, we use a technical predictive model to locate similar "nearest neighbor" devices (devices with similar hardware profiles that *do* have benchmark data) and estimate the target device's performance based on their real-world outcomes.
+- **Method C: Technical Predictor Model (Tertiary Path — §8.1.3):** The physical supply/demand model that generates the device's technical profile, serving as the coordinates for finding nearest neighbors in Method B.
 
 ---
 
-#### 8.1.2 Benchmark Exclusions and Canonical Data Source Justification
+#### 8.1.1 Method A: Canonical Benchmark Validation (Primary Path)
+When real-world battery testing data from GSMArena is available, it is normalized to a 0.0 to 10.0 score.
+
+##### 8.1.1.1 Benchmark Exclusions and Canonical Data Source Justification
 To ensure consistency, objectivity, and eliminate statistical noise, the following design decisions have been implemented:
 
 1. **Exclusion of PhoneArena:**
    - *Reason for Removal:* An analysis of database coverage shows that PhoneArena's battery database covers approximately 250 to 300 unique models (focusing strictly on high-profile United States (US) market flagships). This is a strict subset of GSMArena's database, which covers over 1,200+ unique models globally since 2016. Because GSMArena tests all of these flagships in addition to global mid-range and budget models, incorporating a PhoneArena fallback path adds significant mathematical conversion complexity for less than 1% net coverage gain in our database. Therefore, PhoneArena has been removed entirely to prevent statistical alignment noise.
 2. **Exclusion of DXOMARK:**
-   - *Reason for Removal:* DXOMARK (a commercial technology testing laboratory) publishes a composite battery score. However, this score is heavily weighted (approximately 66%) toward charging speeds and charging efficiency. Since charging speeds are already fully evaluated in Section 8.2 (Wired Charging) and Section 8.3 (Wireless Charging), including DXOMARK here would double-count charging capabilities and distort the endurance-only metric. Additionally, its database has limited coverage and relies on proprietary testing parameters that are not open or reproducible.
-3. **Exclusion of Foundry-Based Process Node Bonuses:**
-   - *Reason for Removal:* Sourcing process node efficiency purely from the physical transistor gate length in nanometers (nm) on a logarithmic scale removes subjective foundry-based weightings (such as favoring Taiwan Semiconductor Manufacturing Company (TSMC) over Samsung or Intel) and data availability issues, keeping the model strictly objective, neutral, and verifiable.
-4. **Establishment of GSMArena as the Canonical Source:**
+   - *Reason for Removal:* DXOMARK (a commercial technology testing laboratory) publishes a composite battery score. However, this score is heavily weighted toward charging speeds and charging efficiency. Since charging speeds are already fully evaluated in Section 8.2 (Wired Charging) and Section 8.3 (Wireless Charging), including DXOMARK here would double-count charging capabilities and distort the endurance-only metric. Additionally, its database has limited coverage and relies on proprietary testing parameters that are not open or reproducible.
+3. **Establishment of GSMArena as the Canonical Source:**
    - *Reason:* GSMArena (a global mobile technology publication) features the most comprehensive, standardized, and publicly available smartphone battery testing database in the world, covering major, minor, and regional brands. This provides a single, clean, and highly reliable target for real-world validation.
 
----
+##### 8.1.1.2 Unified Active-Equivalent Hours (T_unified)
+GSMArena (Global System for Mobile Communications Arena) updated its battery testing protocol from Version 1.0 (v1.0), which reported an "Endurance Rating" (ER) in hours, to Version 2.0 (v2.0), which reports a standardized "Active Use Score" (AUS) in hours.
 
-#### 8.1.3 Method A: Canonical Benchmark Validation (Primary Path)
-When real-world battery testing data from GSMArena is available, it is normalized to a 0.0 to 10.0 score.
+> [!NOTE]
+> **Key Differences between GSMArena v1.0 and v2.0 Protocols:**
+> *   **Version 1.0 (v1.0) Endurance Rating (ER):** Simulates how long a device lasts under a light-use daily cycle. It assumes a fixed daily workload of 1 hour of voice calls, 1 hour of web browsing, and 1 hour of local video playback, with the remaining 21 hours spent in idle standby. Consequently, the final rating is heavily driven by idle standby efficiency.
+> *   **Version 2.0 (v2.0) Active Use Score (AUS):** Measures continuous active runtime until the battery is fully depleted, representing Screen-On Time (SOT) under active workloads. Standby/idle time is completely excluded. The score is a composite of four active usage pillars: calls over 4G/VoLTE (Voice over Long-Term Evolution) cellular networks, dynamic web browsing (simulating active scrolling/touch interaction), video streaming over Wi-Fi (Wireless Fidelity) via YouTube, and 3D (Three-Dimensional) gaming (testing the Graphics Processing Unit, or GPU, under load).
 
-##### 1. Unified Active-Equivalent Hours (T_unified)
-GSMArena updated its battery testing protocol from Version 1.0 (v1.0), which reported an "Endurance Rating" in hours, to Version 2.0 (v2.0), which reports a standardized "Active Use Score" in hours. To reconcile these databases, we use a unified time metric:
+To reconcile these databases, we use a unified time metric:
 - **Case 1: GSMArena Active Use Score (v2.0) is available:**
   `T_unified = GSMArena Active Use Score (v2.0) Hours`
 - **Case 2: Only GSMArena Endurance Rating (v1.0) is available:**
@@ -3767,28 +3757,26 @@ GSMArena updated its battery testing protocol from Version 1.0 (v1.0), which rep
   `T_unified = GSMArena Endurance Rating (v1.0) Hours / C_gsm_conversion`
   - Where `C_gsm_conversion` is a provisional conversion constant set to `8.4` (derived from the median ratio of overlapping bridge devices across generations).
 
-##### 2. Linear Normalization
+##### 8.1.1.3 Linear Normalization
 Battery endurance follows a strictly linear utility curve (a device that lasts 16 hours of active use is exactly twice as valuable to a user as one that lasts 8 hours). Thus, hours are normalized linearly:
 - **Formula:**
-  `Score = 10 * (T_unified - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)`
-  - Where the constants (defined in `scoring_constants.md`) are:
-    - `Battery_GSMArena_Hours_Min = 7.8 hours` (The minimum baseline floor, yielding a score of 0.0)
-    - `Battery_GSMArena_Hours_Max = 25.0 hours` (The maximum ceiling, yielding a score of 10.0. This ceiling is widened to prevent clipping the scores of exceptionally long-lasting devices).
-- The resulting score is clamped between 0.0 and 10.0.
+  `Score = 10 * (T_unified - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)` (Clamped 0.0-10.0)
+    *   **Max Score (10.0):** ≥ `Battery_GSMArena_Hours_Max`
+    *   **Min Score (0.0):** ≤ `Battery_GSMArena_Hours_Min`
 
 ---
 
-#### 8.1.4 Method B: Nearest Neighbor Interpolation (Secondary Path)
-When the target device lacks direct benchmark data, we use a technical predictive model to locate the **3 most physically similar reference devices** that *do* have benchmark data (Condition 1 devices), and interpolate the target device's score.
+#### 8.1.2 Method B: Nearest Neighbor Interpolation (Secondary Path)
+When the target device lacks direct benchmark data, we use a technical predictive model to locate the **3 most physically similar reference devices** that *do* have benchmark data, and interpolate the target device's score.
 
-##### 1. The 6-Axis Similarity Space
+##### 8.1.2.1 The 6-Axis Similarity Space
 To prevent multi-collinearity (where highly correlated variables distort the similarity search), we project devices into a 6-axis coordinate space where each axis represents a distinct, independent physical or architectural dimension. All coordinates are normalized between 0.0 and 1.0:
 
 1. **Battery Energy Axis (Weight = 30%):**
    - *Metric:* Total energy capacity in Watt-hours (Wh).
    - *Normalization:*
      `E_norm = (E_supply - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min)`
-     - Where `Battery_Energy_Wh_Min = 8.0 Wh` and `Battery_Energy_Wh_Max = 25.0 Wh`.
+     - Where `Battery_Energy_Wh_Min` and `Battery_Energy_Wh_Max` are defined in [scoring_constants.md].
 2. **Display Power Axis (Weight = 25%):**
    - *Metric:* Display active power consumption (P_display) in Watts (W).
    - *Normalization:*
@@ -3817,14 +3805,14 @@ To prevent multi-collinearity (where highly correlated variables distort the sim
 
 *Note:* The remaining 5% of variance represents unmodeled physical components (such as display panel controller leakage, battery internal chemical resistance drift, and antenna impedance mismatch) that cannot be reliably captured from public specifications.
 
-##### 2. Feature Distance Formula
+##### 8.1.2.2 Feature Distance Formula
 The similarity between the target device and a reference device is computed using the **Weighted Euclidean Distance** across the 6 axes:
 - **Formula:**
   `Distance = Sqrt( 0.30 * (Diff_E_norm)^2 + 0.25 * (Diff_Display_Power_norm)^2 + 0.18 * (Diff_SoC_Eff_norm)^2 + 0.10 * (Diff_Connectivity_norm)^2 + 0.07 * (Diff_Software_norm)^2 + 0.05 * (Diff_TDSI_norm)^2 )`
   - Where `Diff_Axis_norm = Axis_norm_Target - Axis_norm_Reference`.
 - We select the **3 distinct Reference Devices** with the smallest `Distance` (excluding the target device itself).
 
-##### 3. Interpolation and Correction
+##### 8.1.2.3 Interpolation and Correction
 1. Calculate the average predicted score of the 3 neighbors (from Method C):
    `Avg_Predicted_Neighbors = (Predicted_Neighbor1 + Predicted_Neighbor2 + Predicted_Neighbor3) / 3`
 2. Compute the Correction Ratio, which measures how the target device's profile structurally differs from its neighbors:
@@ -3836,7 +3824,7 @@ The similarity between the target device and a reference device is computed usin
    `Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors`
 - The resulting score is clamped between 0.0 and 10.0.
 
-##### 4. Worked Example: "FuturePhone 5" (Untested Device)
+##### 8.1.2.4 Worked Example: "FuturePhone 5" (Untested Device)
 - **Target Device Profile (Method C):** `Predicted_Target = 8.50`
 - **Neighbors Found (Via Weighted Euclidean Similarity):**
   - **Neighbor 1:** Predicted Score = `8.49`, Real Benchmark Score (Normalized) = `7.20`
@@ -3850,62 +3838,62 @@ The similarity between the target device and a reference device is computed usin
 
 ---
 
-#### 8.1.5 Method C: Technical Predictor Model (Tertiary Path)
-Method C establishes the physical supply/demand equations for the smartphone. It calculates the theoretical active endurance hours (`T_predicted`) and converts them to a predicted score.
+#### 8.1.3 Method C: Technical Predictor Model (Tertiary Path)
+Evaluating a smartphone's battery life based solely on its charge capacity in milliampere-hours (mAh) is chemically and physically inaccurate. A phone with a large battery capacity and a high-draw display or an inefficient chipset can deplete its energy reserves much faster than a device with a smaller battery capacity but a highly optimized hardware and software stack.
 
-##### 1. The Fundamental Equation
+To resolve this, Method C establishes the physical supply/demand equations for the smartphone. It characterizes a smartphone's battery endurance using the physical relationship between electrical energy storage and average power consumption under a standardized mixed-use workload. It calculates the theoretical active endurance hours (`T_predicted`) and converts them to a predicted score.
+
+##### 8.1.3.1 The Fundamental Equation
 The relationship between battery capacity (Supply) and average power consumption (Demand) is defined as:
 `T_predicted = E_supply / P_demand`
 - **Endurance Hours (T_predicted):** The predicted runtime in hours under active mixed-use conditions.
-- **Supply (E_supply):** Total stored energy in Watt-hours (Wh).
-- **Demand (P_demand):** Average electrical power consumption in Watts (W).
+- **Supply (E_supply, in Watt-hours - Wh):** The total energy capacity of the battery.
+- **Demand (P_demand, in Watts - W):** The average electrical power consumed by the device under active mixed-use conditions (web browsing, media streaming, voice calls, user interface interaction, and background synchronization).
 
-##### 2. Supply Modeling (E_supply)
-Battery energy capacity must be evaluated in Watt-hours (Wh) rather than milliampere-hours (mAh) because it accounts for operating voltage differences across single-cell and dual-cell battery configurations.
+##### 8.1.3.2 Supply Modeling (E_supply)
+Battery capacity must be evaluated as energy capacity in Watt-hours (Wh) rather than charge capacity in milliampere-hours (mAh) because it accounts for operating voltage differences across single-cell and dual-cell battery configurations.
 - **Formula:**
   `E_supply = (mAh * V_nominal) / 1000`
-  - Where `mAh` is the battery charge capacity.
-  - `V_nominal` is the nominal battery voltage.
+  - Where `mAh` is the battery charge capacity in milliampere-hours (mAh).
+  - `V_nominal` is the nominal battery voltage in Volts (V).
 
-###### Nominal Voltage Detection Logic:
+**Nominal Voltage Detection Logic:**
 To correctly identify `V_nominal`, we apply the following prioritized hierarchy:
 1. **Explicit Voltage:** If the database contains a numeric value for `battery_voltage_v`, use that value.
 2. **Dual-Cell configuration:** If the text field `battery_cell_configuration` contains "Dual-cell", "Dual cell", "2S", or "dual-cell" (case-insensitive), use **7.70 V** (two 3.85V cells in series).
 3. **High-Power Charging Heuristic:** If the maximum wired charging speed is **120 Watts or higher**, use **7.70 V** (ultra-fast charging architectures require dual-cell configurations to halve current and prevent excessive thermal losses).
 4. **Default Fallback:** Otherwise, use **3.85 V** (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
 
-- **Energy Score Normalization:**
-  `Energy_Score = 10 * (E_supply - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min)`
-  - Sourced from `scoring_constants.md`: `Battery_Energy_Wh_Min = 8.0 Wh`, `Battery_Energy_Wh_Max = 25.0 Wh`. The score is clamped between 0.0 and 10.0.
-
-##### 3. Demand Modeling (P_demand)
+##### 8.1.3.3 Demand Modeling (P_demand)
 Average power demand is the sum of active component draws scaled by software and thermal efficiency factors:
 `P_demand = (P_display + P_soc + P_connectivity) * F_software_overhead * F_thermal_overhead`
 
-###### A. Display Power Demand (P_display)
+###### 8.1.3.3.1 Display Power Demand (P_display)
 The display screen is typically the single largest consumer of power in a smartphone. Its power demand is modeled as a function of physical surface area, panel technology, dynamic refresh rate, and resolution:
 `P_display = display_surface_area_cm2 * C_panel * F_refresh * F_resolution`
 
 - **Display Surface Area (display_surface_area_cm2):**
   Calculated using the physical screen diagonal and aspect ratio, as defined in Section 6.10:
-  `display_surface_area_cm2 = (diagonal_inch * 2.54)^2 * (R / (R^2 + 1.0))`
+  `display_surface_area_cm2 = (diagonal_inch * 2.54)^2 * (R / (R^2 + 1))`
   - Where `diagonal_inch` is the screen diagonal in inches, and `R` is the aspect ratio (height divided by width, e.g. 19.5/9 = 2.167).
 - **Panel Efficiency Constant (C_panel, in Watts per square centimeter - W/cm2):**
   Represents the base power draw to illuminate 1 square centimeter of screen at a standardized reference brightness of 200 nits:
-  - **0.0035 W/cm2:** Low-Temperature Polycrystalline Oxide (LTPO) OLED or Tandem OLED panels (highly efficient backplanes).
-  - **0.0045 W/cm2:** Standard OLED or Active-Matrix OLED (AMOLED) panels.
-  - **0.0060 W/cm2:** Liquid Crystal Display (LCD) or In-Plane Switching (IPS) panels (requiring continuous, active LED backlights that cannot be turned off for individual pixels).
+  - **0.0035 W/cm2:** Low-Temperature Polycrystalline Oxide (LTPO) Organic Light-Emitting Diode (OLED) or Tandem OLED panels (highly efficient backplanes).
+  - **0.0045 W/cm2:** Standard OLED or Active-Matrix Organic Light-Emitting Diode (AMOLED) panels.
+  - **0.0060 W/cm2:** Liquid Crystal Display (LCD) or In-Plane Switching (IPS) panels (requiring continuous, active Light-Emitting Diode (LED) backlights that cannot be turned off for individual pixels).
 - **Refresh Rate Factor (F_refresh):**
   Adjusts power demand based on screen update frequency:
   `effective_hz = adaptive ? (0.65 * min_hz + 0.35 * max_hz) : max_hz`
   `F_refresh = 1.0 + 0.0025 * (effective_hz - 60.0)`
-  - *Justification:* Active screen redrawing incurs electrical power overhead in both the panel itself and the display driver integrated circuit. Dynamic refresh rates (e.g. LTPO dropping to 1 Hz during static content) yield an effective average rate below 60 Hz, reducing power demand (`F_refresh < 1.0`). Conversely, high-refresh-rate gaming or scrolling at 120 Hz or 144 Hz increases dynamic draw. The calibrated slope of 0.25% per Hertz matches empirical lab measurements.
+  - *Range of Variation:* Under typical configurations, the effective screen refresh rate in Hertz (Hz) ranges from 10 Hz (highly optimized adaptive screens under static displays) to 144 Hz (high-performance gaming screen rates). This yields a factor range of **0.875 to 1.210** (representing a -12.5% reduction to a +21.0% increase in display base power consumption).
+  - *Justification:* Active screen redrawing incurs electrical power overhead in both the panel itself and the display driver integrated circuit (IC). Dynamic refresh rates (e.g. Low-Temperature Polycrystalline Oxide (LTPO) panels dropping to 1 Hertz (Hz) during static content) yield an effective average rate below 60 Hz, reducing power demand (`F_refresh < 1.0`). Conversely, high-refresh-rate gaming or scrolling at 120 Hz or 144 Hz increases dynamic draw.
 - **Resolution Factor (F_resolution):**
   Adjusts power demand based on pixel density:
   `F_resolution = 1.0 + 0.025 * (megapixels_mp - 1.0)`
-  - *Justification:* Packing more pixels into a fixed area reduces the aperture ratio of individual subpixels (the light-emitting area relative to wiring), requiring higher drive currents to maintain brightness. It also increases the GPU bus rendering overhead. The calibrated slope of 2.5% per Megapixel (MP) adds a +3.75% display power penalty at Full High Definition plus (FHD+ ≈ 2.5 MP) and a +8.75% penalty at Quad High Definition plus (QHD+ ≈ 4.5 MP).
+  - *Range of Variation:* For screen resolutions ranging from a basic High Definition (HD) baseline of 1.0 Megapixel (MP) to extreme 4K Ultra High Definition (UHD) resolutions of 8.3 Megapixels (MP), this factor ranges from **1.000 to 1.1825** (representing a 0% baseline to a +18.25% increase in display base power consumption).
+  - *Justification:* Packing more pixels into a fixed area reduces the aperture ratio of individual subpixels (the light-emitting area relative to wiring), requiring higher drive currents to maintain brightness. It also increases the Graphics Processing Unit (GPU) bus rendering overhead.
 
-###### B. System-on-Chip Power Demand (P_soc)
+###### 8.1.3.3.2 System-on-Chip Power Demand (P_soc)
 The System-on-Chip (SoC) power draw represents the processing platform's consumption. Rather than using arbitrary values, we directly anchor our model in the physical logic board parameters defined in Section 6.10:
 `P_soc = (0.40 + 0.0075 * power_peak_soc) * F_node * F_cpu * F_gpu`
 
@@ -3916,165 +3904,174 @@ The System-on-Chip (SoC) power draw represents the processing platform's consump
   - *Justification for the 0.75% Scaling Factor:* Although chipsets can draw up to 15W to 20W under synthetic peak benchmarks, daily mixed-use consists primarily of low-load states. The scaling factor of `0.0075` (0.75% of peak power) models the leakage and active power overhead that correlates with chip complexity. A massive, high-performance chipset has a slightly higher baseline active draw than a smaller, budget chipset before architectural multipliers are applied.
 - **Process Node Factor (F_node):**
   `F_node = 1.0 + 0.04 * (10 - Process_Node_Score)`
-  - *Process Node Score:* Sourced from the logarithmic derivation based purely on the physical transistor gate length in nanometers (nm), with no foundry-based bonuses (see §8.1.6).
+  - *Range of Variation:* With the Process Node Score ranging from 0.0 (representing legacy 20 nanometer (nm) silicon nodes) to 10.0 (representing cutting-edge 3 nanometer (nm) silicon nodes), this factor ranges from **1.400 to 1.000** (representing a +40.0% increase to a 0% baseline in System-on-Chip (SoC) power consumption).
+  - *Process Node Score Derivation:* To resolve the documentation gap and ensure strict, verifiable neutrality, the **Process Node Score** is calculated purely as a function of the physical transistor gate length in nanometers (nm) on a logarithmic scale:
+    `Process_Node_Score = 10 * (log(SoC_Process_Node_nm_Max) - log(process_nm)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
+    - Where the constants (defined in `scoring_constants.md`) are:
+      - `SoC_Process_Node_nm_Min = 3` (3nm, representing the state-of-the-art ceiling, score 10.0)
+      - `SoC_Process_Node_nm_Max = 20` (20nm, representing the legacy floor, score 0.0)
+      - `process_nm` is the chipset's physical process node in nanometers (e.g. 3, 4, 5, 7, 12, etc.).
+  - *Exclusion of Foundry-Based Process Node Bonuses:* Sourcing process node efficiency purely from the physical transistor gate length in nanometers (nm) on a logarithmic scale removes subjective foundry-based weightings (such as favoring Taiwan Semiconductor Manufacturing Company (TSMC) over Samsung or Intel) and data availability issues. This keeps the model strictly objective, neutral, and verifiable, avoiding speculative adjustments based on the manufacturing foundry.
+    - To evaluate this exclusion, we analyze the impact of these parameters using simple orders of magnitude:
+      1. **Real Impact of the Process Node Parameter:** The physical process node size in nanometers (nm) has a significant, mathematically verifiable impact on the final battery score. The Process Node Factor (F_node) introduces up to a **40%** variation in System-on-Chip (SoC) power demand (P_soc) (ranging from 1.0 at 3nm to 1.4 at 20nm). Since the SoC itself represents **40% to 50%** of the device's total average power demand (P_demand), the entire process node parameter accounts for a **16% to 20%** shift in total power consumption. This translates to a shift in the predicted active endurance hours (T_predicted) of up to **~15%** (representing an intermediate value between a `1 - 1/1.20 = 16.7%` decrease and a `1 - 1/1.16 = 13.8%` decrease).
+      2. **Negligible Impact of Foundry Variations:** The fabrication foundry (and its subtle differences in cell libraries or layout) has a much smaller impact, representing at most **10%** of the node's total efficiency influence.
+      3. **Cascaded Impact:** Cascading this 10% foundry-specific variation through the model yields a final impact on predicted active endurance hours (T_predicted) of roughly **~1.5%** (10% of the ~15% node impact).
+    - Consequently, while the physical process node size itself is a critical parameter with a substantial impact (~15% runtime shift) and is fully modeled, incorporating subjective foundry-specific adjustments adds significant database maintenance overhead for a minor shift (~1.5% runtime shift) that is generally lost in model rounding.
 - **CPU Architecture Factor (F_cpu):**
   `F_cpu = 1.0 + 0.04 * (10 - CPU_AES_Score)`
-  - *CPU Architecture Efficiency Score (CPU_AES_Score):* Evaluated as the core-weighted average Instructions Per Cycle (IPC) capability score of the CPU cluster, as detailed in §8.1.7.
+  - *Range of Variation:* With the CPU Architecture Efficiency Score (CPU_AES_Score) ranging from a minimum of 0.0 (representing legacy core designs) to a theoretical maximum of 10.0 (representing cutting-edge high-efficiency core designs), this factor ranges from **1.400 to 1.000** (representing a +40.0% increase to a 0% baseline in System-on-Chip (SoC) power consumption).
+  - *CPU Architecture Efficiency Score (CPU_AES_Score):* The CPU Architecture Efficiency Score represents the average structural efficiency of the CPU cores. It is the core-weighted average of the core-level architectural scores:
+    `CPU_AES_Score = Sum(Core_Score_i * Core_Count_i) / Total_Core_Count`
+    - Where `Core_Score_i` is the performance score of core architecture `i`, sourced directly from the **CPU Score** column of the Section 6.1.0 CPU Core Architecture Reference Table.
+    - `Core_Count_i` is the number of cores of that specific architecture.
+    - `Total_Core_Count` is the total number of CPU cores in the processor.
+  - *Technical Justification for CPU Core Score as an Efficiency Proxy:* Integrating a separate efficiency column is redundant. The standard IPC-based **CPU Score** serves as an excellent proxy for low-load energy efficiency due to three microprocessor principles:
+    1. **The "Race-to-Sleep" Paradigm:** Smartphone daily usage is characterized by short, bursty tasks. A processor with higher IPC completes these tasks in fewer clock cycles, returning the processor core to deep, low-power sleep states (C-states) faster, minimizing the duration of active electrical current draw.
+    2. **Dynamic Voltage and Frequency Scaling (DVFS) Optimization:** Silicon power draw scales quadratically with voltage (`P_dynamic = C * V^2 * f`). A high-IPC core can achieve the same target performance at a lower clock frequency (`f`), allowing the Power Management Integrated Circuit (PMIC) to supply a lower operating voltage (`V`), avoiding exponential power penalties.
+    3. **Reduced Architectural Execution Overhead:** Advanced branch predictors and wider instruction execution windows in high-IPC cores prevent wasted operations on mispredicted paths and minimize execution pipeline stalls, meaning fewer physical gate-switching actions per task (lower Joules per instruction).
+  - *Concrete Worked Example: Snapdragon 8 Gen 3 (Configured with 8 total cores):*
+    - **Cluster 1 (Best):** 1 x Cortex-X4
+      - Core Score (from §6.1.0 Table) = `7.95`
+      - Core Count = `1`
+      - Weighted Score = `7.95 * 1 = 7.95`
+    - **Cluster 2 (Second Best):** 5 x Cortex-A720
+      - Core Score (from §6.1.0 Table) = `5.00`
+      - Core Count = `5`
+      - Weighted Score = `5.00 * 5 = 25.00`
+    - **Cluster 3 (Third Best):** 2 x Cortex-A520
+      - Core Score (from §6.1.0 Table) = `1.00`
+      - Core Count = `2`
+      - Weighted Score = `1.00 * 2 = 2.00`
+    - **Calculations:**
+      - Sum of Weighted Scores = `7.95 + 25.00 + 2.00 = 34.95`
+      - Total CPU Cores = `1 + 5 + 2 = 8`
+      - `CPU_AES_Score = 34.95 / 8 = 4.36875` (This score matches the active database value)
 - **GPU Architecture Factor (F_gpu):**
   `F_gpu = 1.0 + 0.01 * (10 - GPU_Efficiency_Score)`
+  - *Range of Variation:* With the GPU Efficiency Score ranging from 0.0 (representing obsolete graphic engines) to 10.0 (representing cutting-edge efficient graphic engines), this factor ranges from **1.100 to 1.000** (representing a +10.0% increase to a 0% baseline in System-on-Chip (SoC) power consumption).
   - *GPU Efficiency Score:* Sourced from the architectural performance-per-watt efficiency score in Section 6.3.0.
 
-###### C. Connectivity Power Demand (P_connectivity)
+###### 8.1.3.3.3 Connectivity Power Demand (P_connectivity)
 Models the average power drawn by cellular modems and Wi-Fi chips during active synchronization and data transfer:
 `P_connectivity = P_cellular + P_wifi`
 
 - **Cellular Modem Active Power (P_cellular):**
   - **0.18 W:** 5G millimeter-Wave (mmWave) + Sub-6 GHz (Global band coverage, requiring high-frequency radio front-end power).
   - **0.14 W:** 5G Sub-6 GHz (Full or regional band coverage).
-  - **0.09 W:** 4G LTE-Advanced or basic Long Term Evolution (LTE).
+  - **0.09 W:** 4G LTE-Advanced (Long-Term Evolution Advanced) or basic LTE.
   - **0.05 W:** 3G or 2G legacy modems.
 - **Wi-Fi Active Power (P_wifi):**
   - **0.05 W:** Wi-Fi 7 (broadband 320 MHz channels).
   - **0.04 W:** Wi-Fi 6 or Wi-Fi 6E (160 MHz channels).
   - **0.03 W:** Wi-Fi 5, Wi-Fi 4, or older standards.
 
-###### D. Software Inefficiency Modifier (F_software_overhead)
-Operating system execution efficiency and background application loads act as multipliers on hardware power demand:
+###### 8.1.3.3.4 Software Inefficiency Modifier (F_software_overhead)
+Operating system (OS) execution efficiency and background application loads act as multipliers on hardware power demand:
 `F_software_overhead = 1.0 + 0.10 * (10 - OS_Gen_Score)/10 + 0.10 * (10 - SCC_Score)/10`
 
+- *Range of Variation:* Under typical configurations, this modifier ranges from **1.000** (optimal baseline: current Operating System (OS) version with zero third-party preinstalled bloatware, where OS_Gen_Score = 10.0 and SCC_Score = 10.0) to **1.200** (worst case: obsolete OS version with heavily bloated backgrounds, where OS_Gen_Score = 0.0 and SCC_Score = 0.0). This represents a 0% to +20.0% increase multiplier on overall power demand.
 - **OS Generation Score (OS_Gen_Score):**
-  Sourced from Section 8.1.8. Modern operating systems implement aggressive background process freezing and kernel scheduler optimizations that minimize idle wakeups.
+  Modern operating systems implement aggressive background process freezing and kernel scheduler optimizations that minimize idle wakeups. The score is sourced from the Operating System Generation Reference Table below.
 - **System Cleanliness & Control Score (SCC_Score):**
   Sourced from Section 5.2. A lower score indicates significant pre-installed manufacturer bloatware and background services, which prevent the processor from entering deep sleep states.
 
-###### E. Thermal Efficiency Modifier (F_thermal_overhead)
+**Operating System Generation Reference Table**
+
+Operating system efficiency is scored based on the OS version at launch, reflecting native process freezing, alarm scheduling, and scheduler-level power awareness.
+
+| Operating System Generation (Android)    | Operating System Generation (iOS)    | Score    | Status                 |
+| :--------------------------------------- | :----------------------------------- | :------- | :--------------------- |
+| **Android 14 or higher**                 | **iOS 17 or higher**                 | **10.0** | Current / Cutting Edge |
+| **Android 13**                           | **iOS 16**                           | **9.0**  | Recent Modern          |
+| **Android 12**                           | **iOS 15**                           | **8.0**  | Modern Standard        |
+| **Android 10 to 11**                     | **iOS 13 to 14**                     | **6.0**  | Legacy Support         |
+| **Android 8 to 9**                       | **iOS 11 to 12**                     | **4.0**  | Aging                  |
+| **Android older than 8**                 | **iOS older than 11**                | **0.0**  | Obsolete               |
+
+###### 8.1.3.3.5 Thermal Efficiency Modifier (F_thermal_overhead)
 Heat increases electrical current leakage in silicon transistors and raises the internal resistance of battery cells, degrading efficiency:
 `F_thermal_overhead = 1.0 + 0.03 * (10 - TDSI_Score)/10`
 
+- *Range of Variation:* Based on the Thermal Dissipation & Stability Index (TDSI) score, this modifier ranges from **1.000** (optimal baseline: elite thermal design, where TDSI_Score = 10.0) to **1.030** (worst case: poor heat-dissipation plastic body, where TDSI_Score = 0.0). This represents a 0% to +3.0% thermal leakage multiplier on overall power demand.
 - **Thermal Dissipation & Stability Index Score (TDSI_Score):**
   Sourced from Section 6.10.
   - *Justification:* Unlike peak performance thermal throttling (which is highly severe), long-duration mixed-use generates very little thermal stress. Therefore, the maximum possible thermal penalty is restricted to **3%** (when the TDSI score is 0.0, representing poor thermal dissipation), preventing heavy-load thermal data from distorting baseline endurance.
 
-##### 4. Predicted Score Calculation
-Once `T_predicted` is calculated:
-`Predicted_Score = 10 * (T_predicted - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)`
-- Normalized against the same constants as Method A: `Battery_GSMArena_Hours_Min = 7.8` and `Battery_GSMArena_Hours_Max = 25.0`. The result is clamped between 0.0 and 10.0.
+##### 8.1.3.4 Predicted Endurance Hours and Score Calculation
+Once both the battery energy supply (`E_supply`) and total power demand (`P_demand`) are computed under the physical model, the active endurance hours (`T_predicted`) and the corresponding predicted score are determined.
 
----
+###### 8.1.3.4.1 Endurance Hours (T_predicted)
+The predicted active runtime of the device in hours is calculated using the fundamental physical relationship:
+`T_predicted = E_supply / P_demand`
+- **Supply (E_supply):** Total stored energy in Watt-hours (Wh).
+- **Demand (P_demand):** Average electrical power consumption in Watts (W).
 
-#### 8.1.6 Process Node Score Derivation
-To resolve the documentation gap and ensure strict, verifiable neutrality, the **Process Node Score** is calculated purely as a function of the physical transistor gate length in nanometers (nm) on a logarithmic scale:
-`Process_Node_Score = 10 * (log(SoC_Process_Node_nm_Max) - log(process_nm)) / (log(SoC_Process_Node_nm_Max) - log(SoC_Process_Node_nm_Min))`
-- Where the constants (defined in `scoring_constants.md`) are:
-  - `SoC_Process_Node_nm_Min = 3` (3nm, representing the state-of-the-art ceiling, score 10.0)
-  - `SoC_Process_Node_nm_Max = 20` (20nm, representing the legacy floor, score 0.0)
-  - `process_nm` is the chipset's physical process node in nanometers (e.g. 3, 4, 5, 7, 12, etc.).
+###### 8.1.3.4.2 Predicted Score Normalization
+To convert the physical active endurance hours (`T_predicted`) to the standardized 0.0 to 10.0 score, the value is normalized linearly relative to the database bounds defined in `scoring_constants.md` specifically for this physical modeling methodology.
 
----
+Because `T_predicted` models continuous active screen-on usage (which draws high power continuously), its scale is physically lower than benchmark tests like GSMArena's Active Use Score (which includes screen-off standby and low-power voice call time). To prevent a mismatch ("comparing apples with pears"), `T_predicted` is normalized against the predictor-specific hours constants `Battery_Predictor_Hours_Min` (5.0 hours) and `Battery_Predictor_Hours_Max` (18.0 hours):
+`Predicted_Score = 10 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min)` (Clamped 0.0-10.0)
+- **Max Score (10.0):** Achieved when `T_predicted` >= `Battery_Predictor_Hours_Max` (18.0 hours).
+- **Min Score (0.0):** Achieved when `T_predicted` <= `Battery_Predictor_Hours_Min` (5.0 hours).
 
-#### 8.1.7 CPU Architecture Efficiency Score (CPU_AES_Score)
-The CPU Architecture Efficiency Score represents the average structural efficiency of the CPU cores. It is the core-weighted average of the core-level architectural scores:
-`CPU_AES_Score = Sum(Core_Score_i * Core_Count_i) / Total_Core_Count`
-- Where `Core_Score_i` is the performance score of core architecture `i`, sourced directly from the **CPU Score** column of the Section 6.1.0 CPU Core Architecture Reference Table.
-- `Core_Count_i` is the number of cores of that specific architecture.
-- `Total_Core_Count` is the total number of CPU cores in the processor.
+##### 8.1.3.5 Model Validation Worked Examples
 
-##### Technical Justification for CPU Core Score as an Efficiency Proxy
-Integrating a separate efficiency column is redundant. The standard IPC-based **CPU Score** serves as an excellent proxy for low-load energy efficiency due to three microprocessor principles:
-1. **The "Race-to-Sleep" Paradigm:** Smartphone daily usage is characterized by short, bursty tasks. A processor with higher IPC completes these tasks in fewer clock cycles, returning the processor core to deep, low-power sleep states (C-states) faster, minimizing the duration of active electrical current draw.
-2. **Dynamic Voltage and Frequency Scaling (DVFS) Optimization:** Silicon power draw scales quadratically with voltage (`P_dynamic = C * V^2 * f`). A high-IPC core can achieve the same target performance at a lower clock frequency (`f`), allowing the Power Management Integrated Circuit (PMIC) to supply a lower operating voltage (`V`), avoiding exponential power penalties.
-3. **Reduced Architectural Execution Overhead:** Advanced branch predictors and wider instruction execution windows in high-IPC cores prevent wasted operations on mispredicted paths and minimize execution pipeline stalls, meaning fewer physical gate-switching actions per task (lower Joules per instruction).
-
-##### Concrete Worked Example: Snapdragon 8 Gen 3 (Configured with 8 total cores)
-- **Cluster 1 (Best):** 1 x Cortex-X4
-  - Core Score (from §6.1.0 Table) = `7.95`
-  - Core Count = `1`
-  - Weighted Score = `7.95 * 1 = 7.95`
-- **Cluster 2 (Second Best):** 5 x Cortex-A720
-  - Core Score (from §6.1.0 Table) = `5.00`
-  - Core Count = `5`
-  - Weighted Score = `5.00 * 5 = 25.00`
-- **Cluster 3 (Third Best):** 2 x Cortex-A520
-  - Core Score (from §6.1.0 Table) = `1.00`
-  - Core Count = `2`
-  - Weighted Score = `1.00 * 2 = 2.00`
-- **Calculations:**
-  - Sum of Weighted Scores = `7.95 + 25.00 + 2.00 = 34.95`
-  - Total CPU Cores = `1 + 5 + 2 = 8`
-  - `CPU_AES_Score = 34.95 / 8 = 4.36875` (This score matches the active database value)
-
----
-
-#### 8.1.8 Operating System Generation Reference Table
-Operating system efficiency is scored based on the OS version at launch, reflecting native process freezing, alarm scheduling, and scheduler-level power awareness.
-
-| Operating System Generation (Android) | Operating System Generation (iOS) | Score | Status |
-| :--- | :--- | :--- | :--- |
-| **Android 14 or higher** | **iOS 17 or higher** | **10.0** | Current / Cutting Edge |
-| **Android 13** | **iOS 16** | **9.0** | Recent Modern |
-| **Android 12** | **iOS 15** | **8.0** | Modern Standard |
-| **Android 10 to 11** | **iOS 13 to 14** | **6.0** | Legacy Support |
-| **Android 8 to 9** | **iOS 11 to 12** | **4.0** | Aging |
-| **Android older than 8** | **iOS older than 11** | **0.0** | Obsolete |
-
----
-
-#### 8.1.9 Model Validation Worked Examples
-
-##### 1. Ultra-Flagship Device
+###### 8.1.3.5.1 Ultra-Flagship Device
 - **Specifications:**
   - **Chipset:** Snapdragon 8 Elite (Peak Package Power = `19.5 W`, TSMC 3nm Node yielding Process Node Score = `10.0`, CPU_AES_Score = `7.50`, GPU_Efficiency_Score = `10.0`)
   - **Battery:** 5000 mAh at 3.85V (`E_supply = 19.25 Wh`)
-  - **Display:** 115.0 cm² display area, LTPO OLED panel (`C_panel = 0.0035 W/cm²`), 90 Hz adaptive browsing (`effective_hz = 90 Hz`), FHD+ resolution (`megapixels_mp = 2.5`)
+  - **Display:** 115.0 cm² display area, LTPO OLED panel (`C_panel = 0.0035 W/cm²`), 90 Hz adaptive browsing (`effective_hz = 90 Hz`), QHD+ resolution (`megapixels_mp = 4.5`)
   - **Connectivity:** 5G Sub-6 modem (`P_cellular = 0.14 W`) + Wi-Fi 7 (`P_wifi = 0.05 W`)
   - **Modifiers:** OS_Gen_Score = `10.0`, SCC_Score = `10.0` (yields F_software_overhead = `1.00`), TDSI_Score = `10.0` (yields F_thermal_overhead = `1.00`)
 - **Calculations:**
   - **SoC Draw (P_soc):**
-    - `P_soc_base = 0.40 + 0.0075 * 19.5 = 0.54625 W`
+    - `P_soc_base = 0.40 + 0.0075 * 19.5 = 0.5463 W`
     - `F_node = 1.0 + 0.04 * (10 - 10) = 1.00`
     - `F_cpu = 1.0 + 0.04 * (10 - 7.5) = 1.10`
     - `F_gpu = 1.0 + 0.01 * (10 - 10) = 1.00`
-    - `P_soc = 0.54625 * 1.00 * 1.10 * 1.00 = 0.6009 W`
+    - `P_soc = 0.5463 * 1.00 * 1.10 * 1.00 = 0.6009 W`
   - **Display Draw (P_display):**
     - `F_refresh = 1.0 + 0.0025 * (90 - 60) = 1.075`
-    - `F_resolution = 1.0 + 0.025 * (2.5 - 1.0) = 1.0375`
-    - `P_display = 115.0 * 0.0035 * 1.075 * 1.0375 = 0.4488 W`
+    - `F_resolution = 1.0 + 0.025 * (4.5 - 1.0) = 1.0875`
+    - `P_display = 115.0 * 0.0035 * 1.075 * 1.0875 = 0.4705 W`
   - **Connectivity Draw (P_connectivity):**
     - `P_connectivity = 0.14 + 0.05 = 0.1900 W`
   - **Total Demand (P_demand):**
-    - `P_demand = (0.4488 + 0.6009 + 0.1900) * 1.00 * 1.00 = 1.2397 W`
+    - `P_demand = (0.4705 + 0.6009 + 0.1900) * 1.00 * 1.00 = 1.2614 W`
   - **Theoretical Endurance (T_predicted):**
-    - `T_predicted = 19.25 Wh / 1.2397 W = 15.53 Hours`
+    - `T_predicted = 19.25 Wh / 1.2614 W = 15.26 Hours`
   - **Predicted Score:**
-    - `Predicted_Score = 10 * (15.53 - 7.8) / (25.0 - 7.8) = 4.49` (Out of 10.0)
+    - `Predicted_Score = 10 * (15.26 - 5.0) / (18.0 - 5.0) = 7.89` (Out of 10.0)
 
-##### 2. Budget Device
+###### 8.1.3.5.2 Budget Device
 - **Specifications:**
   - **Chipset:** Helio G99 (Peak Package Power = `4.5 W`, TSMC 6nm Node yielding Process Node Score = `6.35`, CPU_AES_Score = `2.92`, GPU_Efficiency_Score = `5.0`)
   - **Battery:** 5000 mAh at 3.85V (`E_supply = 19.25 Wh`)
   - **Display:** 108.0 cm² display area, standard LCD panel (`C_panel = 0.0060 W/cm²`), 120 Hz static refresh rate (`effective_hz = 120 Hz`), FHD+ resolution (`megapixels_mp = 2.5`)
   - **Connectivity:** 4G LTE-Advanced (`P_cellular = 0.09 W`) + Wi-Fi 5 (`P_wifi = 0.03 W`)
-  - **Modifiers:** OS_Gen_Score = `10.0`, SCC_Score = `10.0` (yields F_software_overhead = `1.00`), TDSI_Score = `10.0` (yields F_thermal_overhead = `1.00`)
+  - **Modifiers:** OS_Gen_Score = `8.0` (Modern standard), SCC_Score = `4.0` (Significant background bloatware draw), TDSI_Score = `4.0` (Plastic build, basic chassis cooling)
 - **Calculations:**
   - **SoC Draw (P_soc):**
-    - `P_soc_base = 0.40 + 0.0075 * 4.5 = 0.43375 W`
+    - `P_soc_base = 0.40 + 0.0075 * 4.5 = 0.4338 W`
     - `F_node = 1.0 + 0.04 * (10 - 6.35) = 1.1460`
     - `F_cpu = 1.0 + 0.04 * (10 - 2.92) = 1.2832`
     - `F_gpu = 1.0 + 0.01 * (10 - 5.0) = 1.0500`
-    - `P_soc = 0.43375 * 1.1460 * 1.2832 * 1.0500 = 0.6702 W`
+    - `P_soc = 0.4338 * 1.1460 * 1.2832 * 1.0500 = 0.6702 W`
   - **Display Draw (P_display):**
     - `F_refresh = 1.0 + 0.0025 * (120 - 60) = 1.150`
     - `F_resolution = 1.0 + 0.025 * (2.5 - 1.0) = 1.0375`
-    - `P_display = 108.0 * 0.0060 * 1.150 * 1.0375 = 0.7738 W`
+    - `P_display = 108.0 * 0.0060 * 1.150 * 1.0375 = 0.7731 W`
   - **Connectivity Draw (P_connectivity):**
     - `P_connectivity = 0.09 + 0.03 = 0.1200 W`
   - **Total Demand (P_demand):**
-    - `P_demand = (0.7738 + 0.6702 + 0.1200) * 1.00 * 1.00 = 1.5640 W`
+    - `P_demand_base = 0.7731 + 0.6702 + 0.1200 = 1.5633 W`
+    - `F_software_overhead = 1.0 + 0.10 * (10 - 8.0)/10 + 0.10 * (10 - 4.0)/10 = 1.0800`
+    - `F_thermal_overhead = 1.0 + 0.03 * (10 - 4.0)/10 = 1.0180`
+    - `P_demand = 1.5633 * 1.0800 * 1.0180 = 1.7188 W`
   - **Theoretical Endurance (T_predicted):**
-    - `T_predicted = 19.25 Wh / 1.5640 W = 12.31 Hours`
+    - `T_predicted = 19.25 Wh / 1.7188 W = 11.20 Hours`
   - **Predicted Score:**
-    - `Predicted_Score = 10 * (12.31 - 7.8) / (25.0 - 7.8) = 2.62` (Out of 10.0)
-
+    - `Predicted_Score = 10 * (11.20 - 5.0) / (18.0 - 5.0) = 4.77` (Out of 10.0)
 
 
 ### 🔹 8.2 Wired Charging Speed
