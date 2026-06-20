@@ -3821,32 +3821,53 @@ Battery endurance follows a strictly linear utility curve (a device that lasts 1
 #### 8.1.2 Method B: Nearest Neighbor Interpolation (Secondary Path)
 When the target device lacks direct benchmark data, we use a technical predictive model to locate the **3 most physically similar reference devices** that *do* have benchmark data, and interpolate the target device's score.
 
+To establish what makes two devices "physically similar," we leverage the core physics-based equations from **Method C: Technical Predictor Model** (detailed in §8.1.3). Under Method C, a device's predicted active battery runtime (`T_predicted`, in hours) is modeled as the ratio of its nominal battery energy capacity (`E_supply`, in Watt-hours - Wh) to its average active power demand (`P_demand`, in Watts - W):
+
+`T_predicted = E_supply / P_demand`
+
+The average active power demand (`P_demand`) is computed by summing the power consumed by the display (`P_display`), processing platform (`P_soc`), and connectivity module (`P_connectivity`), scaled by software efficiency and thermal loss overheads:
+
+`P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead`
+
+We decompose this active power demand into three effective subsystem components:
+
+`P_demand = (P_display * F_thermal_overhead) + (P_soc * F_software_overhead * F_thermal_overhead) + (P_connectivity * F_software_overhead * F_thermal_overhead)`
+
+- **Effective Display Power (`P_display_eff`):** `P_display * F_thermal_overhead`
+- **Effective System-on-Chip (SoC) Power (`P_soc_eff`):** `P_soc * F_software_overhead * F_thermal_overhead`
+- **Effective Connectivity Power (`P_connectivity_eff`):** `P_connectivity * F_software_overhead * F_thermal_overhead`
+
+Therefore, the total power demand is simply the sum of these three effective subsystem powers:
+`P_demand = P_display_eff + P_soc_eff + P_connectivity_eff`
+
 ##### 8.1.2.1 The 4-Component Physical Similarity Space
-To ensure that similarity is based on real physical operating scales rather than arbitrary normalization, we project devices into a 4-component physical similarity space. Each component is expressed in units of Watts (W), making the coordinate space dimensionally homogeneous and naturally weighted 1-to-1 by physical impact.
+To map devices into a dimensionally homogeneous coordinate system where every dimension is expressed in Watts (W), we combine the three effective power demand differences (`Diff_P_display_eff`, `Diff_P_soc_eff`, and `Diff_P_connectivity_eff`) with a fourth component representing the equivalent battery power difference (`Diff_P_battery_equiv`), which converts the difference in nominal battery energy capacity (`E_supply_target - E_supply_neighbor`) into an equivalent power draw delta.
 
-The 4 physical axes represent the component-level differences in active energy storage and power consumption:
+Projecting devices into this 4-component physical similarity space ensures that similarity is based on real physical operating scales rather than arbitrary normalization. It weights the coordinates naturally 1-to-1 by physical impact and prevents components with large values (such as battery capacity in milliampere-hours, or mAh) from skewing the similarity distance calculation compared to low-numerical-value power metrics.
 
-1. **Equivalent Battery Power Difference (Diff_P_battery_equiv, in Watts - W):**
-   Converts the difference in nominal battery energy capacity (E_supply, in Watt-hours - Wh) between the target device and a candidate neighbor device into an equivalent power draw delta (in Watts - W). This is scaled relative to the target device's specific power-to-energy ratio (which is the inverse of its predicted runtime, 1/T_predicted):
+The 4 physical axes representing the component-level differences in active energy storage and power consumption are:
+
+1. **Equivalent Battery Power Difference (`Diff_P_battery_equiv`, in Watts - W):**
+   Converts the difference in nominal battery energy capacity (`E_supply`, in Watt-hours - Wh) between the target device and a candidate neighbor device into an equivalent power draw delta (in Watts - W). This is scaled relative to the target device's specific power-to-energy ratio (which is the inverse of its predicted runtime, `1 / T_predicted`):
    `Diff_P_battery_equiv = (P_demand_target / E_supply_target) * (E_supply_target - E_supply_neighbor)`
-   - Where `E_supply_target` is the target device's nominal battery energy capacity in Watt-hours (Wh) calculated using the nominal voltage detection logic in §8.1.3.2.
-   - `P_demand_target` is the target device's total active power demand in Watts (W) calculated using the demand model in §8.1.3.3.
+   - Where `E_supply_target` is the target device's nominal battery energy capacity in Watt-hours (Wh).
+   - `P_demand_target` is the target device's total active power demand in Watts (W).
    - `E_supply_neighbor` is the neighbor device's nominal battery energy capacity in Watt-hours (Wh).
 
-2. **Effective Display Power Difference (Diff_P_display_eff, in Watts - W):**
+2. **Effective Display Power Difference (`Diff_P_display_eff`, in Watts - W):**
    The difference in display active power consumption scaled by thermal leakage overhead:
    `Diff_P_display_eff = P_display_eff_target - P_display_eff_neighbor`
-   - Where `P_display_eff = P_display * F_thermal_overhead` (with `P_display` defined in §8.1.3.3.1 and `F_thermal_overhead` defined in §8.1.3.3.5).
+   - Where `P_display_eff = P_display * F_thermal_overhead`.
 
-3. **Effective System-on-Chip (SoC) Power Difference (Diff_P_soc_eff, in Watts - W):**
+3. **Effective System-on-Chip (SoC) Power Difference (`Diff_P_soc_eff`, in Watts - W):**
    The difference in processing platform active power consumption scaled by software and thermal overheads:
    `Diff_P_soc_eff = P_soc_eff_target - P_soc_eff_neighbor`
-   - Where `P_soc_eff = P_soc * F_software_overhead * F_thermal_overhead` (with `P_soc` defined in §8.1.3.3.2, `F_software_overhead` defined in §8.1.3.3.4, and `F_thermal_overhead` defined in §8.1.3.3.5). Here, System-on-Chip (SoC) represents the integrated circuit that contains all the processing units, such as the Central Processing Unit (CPU) and Graphics Processing Unit (GPU), on a single silicon chip.
+   - Where `P_soc_eff = P_soc * F_software_overhead * F_thermal_overhead`. Here, System-on-Chip (SoC) represents the integrated circuit that contains all the processing units, such as the Central Processing Unit (CPU) and Graphics Processing Unit (GPU), on a single silicon chip.
 
-4. **Effective Connectivity Power Difference (Diff_P_connectivity_eff, in Watts - W):**
+4. **Effective Connectivity Power Difference (`Diff_P_connectivity_eff`, in Watts - W):**
    The difference in wireless modem and Wireless Fidelity (Wi-Fi) active power consumption scaled by software and thermal overheads:
    `Diff_P_connectivity_eff = P_connectivity_eff_target - P_connectivity_eff_neighbor`
-   - Where `P_connectivity_eff = P_connectivity * F_software_overhead * F_thermal_overhead` (with `P_connectivity` defined in §8.1.3.3.3, `F_software_overhead` defined in §8.1.3.3.4, and `F_thermal_overhead` defined in §8.1.3.3.5).
+   - Where `P_connectivity_eff = P_connectivity * F_software_overhead * F_thermal_overhead`.
 
 ##### 8.1.2.2 Feature Distance Formula
 The similarity between the target device and a candidate neighbor device is computed using the **Euclidean Distance** across the 4 physical components:
