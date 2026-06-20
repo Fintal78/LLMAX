@@ -1836,12 +1836,16 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "5_2_system_cleanliness_control": {
-      // SCORING GOAL: Evaluates the out-of-box software experience by analyzing Preinstalled App Load, User Control, and System Ads.
+      // SCORING GOAL: Evaluates the out-of-box software experience by analyzing Preinstalled App Load (PAL), User Control (UC), and System Advertisements (SA).
       "skin": {
         "value": "Samsung One UI",
         "source": "TBD",
-        "exact_extract": "Proof pending"
+        "exact_extract": "Proof pending",
+        "alert": "N/A"
         // DATA GUIDELINE: Record the software skin / platform name. The value MUST exactly match one of the entries in the `SKIN_LOOKUP_TABLE` below to enable automated mapping.
+        // For regional builds (e.g., Chinese Read-Only Memory (ROM) vs. European Union (EU) ROM vs. Global ROM builds), the cleanliness scores can differ significantly from the consumer baseline.
+        // If a specific regional build deviates from the baseline in the lookup table (for example, a Chinese build having pre-installed apps or advertisements not present in the Global build),
+        // then the scores can be adjusted accordingly. In that case the field "alert" must justify the overrides with verified references (valid URLs). If no override, set the field "alert" to "N/A".
         //
         // █ SKIN_LOOKUP_TABLE:
         // | Platform / Skin              | preinstalled_app_load_score (40%) | user_control_score (30%) | system_ads_score (30%) | *Composite* |

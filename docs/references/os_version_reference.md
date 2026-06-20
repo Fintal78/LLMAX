@@ -7,10 +7,9 @@
 >
 > **Consumers of this file:**
 > - §5.1 Support Longevity (OS cadence calculations)
-> - §5.2 System Cleanliness & Control (skin lookup)
 > - §6.3 GPU Performance → API Modifier (Ambiguous API Resolution Matrices 1, 2, 3)
 > - §6.4 AI System → Software Stack Scoring (OS-based boolean rules)
-> - §8.1 Battery Endurance → Layer C: Software Optimization Index (OS Power Management Architecture)
+> - §8.1 Battery Endurance → Software Inefficiency Modifier (F_software_overhead)
 
 ---
 
@@ -21,33 +20,33 @@ Covers all iPhone models from the latest iOS (2026+) to the original iPhone OS 1
 > [!NOTE]
 > In 2025, Apple changed its iOS versioning: the successor to iOS 18 is **iOS 26** (not iOS 19). This aligns iOS version numbers with the calendar year across all Apple platforms. There is no iOS 19 through iOS 25.
 
-| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline |
-| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- |
-| **iOS 27+**                | 2026+           | Apple iOS               | Darwin/XNU                   | Future Apple                |
-| **iOS 26.x**               | 2025–2026       | Apple iOS               | Darwin/XNU                   | Apple A16–A19, M5           |
-| **iOS 18.x**               | 2024–2025       | Apple iOS               | Darwin/XNU                   | Apple A14–A18, M4           |
-| **iOS 17.x**               | 2023–2024       | Apple iOS               | Darwin/XNU                   | Apple A12–A17, M3           |
-| **iOS 16.x**               | 2022–2023       | Apple iOS               | Darwin/XNU                   | Apple A11–A16, M2           |
-| **iOS 15.x**               | 2021–2022       | Apple iOS               | Darwin/XNU                   | Apple A9–A15, M1            |
-| **iOS 14.x**               | 2020–2021       | Apple iOS               | Darwin/XNU                   | Apple A9–A14                |
-| **iOS 13.x**               | 2019–2020       | Apple iOS               | Darwin/XNU                   | Apple A9–A13                |
-| **iOS 12.x**               | 2018–2019       | Apple iOS               | Darwin/XNU                   | Apple A7–A12                |
-| **iOS 11.x**               | 2017–2018       | Apple iOS               | Darwin/XNU                   | Apple A9–A11                |
-| **iOS 10.x**               | 2016–2017       | Apple iOS               | Darwin/XNU                   | Apple A7–A10                |
-| **iOS 9.x**                | 2015–2016       | Apple iOS               | Darwin/XNU                   | Apple A7–A9X                |
-| **iOS 8.x**                | 2014–2015       | Apple iOS               | Darwin/XNU                   | Apple A7–A8X                |
-| **iOS 7.x**                | 2013–2014       | Apple iOS               | Darwin/XNU                   | Apple A7 (64-bit)           |
-| **iOS 6.x**                | 2012–2013       | Apple iOS               | Darwin/XNU                   | Apple A6/A6X                |
-| **iOS 5.x**                | 2011–2012       | Apple iOS               | Darwin/XNU                   | Apple A5/A5X                |
-| **iOS 4.x**                | 2010–2011       | Apple iOS               | Darwin/XNU                   | Apple A4                    |
-| **iPhone OS 3.2**          | 2010            | Apple iOS               | Darwin/XNU                   | Apple A4 (iPad)             |
-| **iPhone OS 3.1**          | 2009–2010       | Apple iOS               | Darwin/XNU                   | Samsung A8                  |
-| **iPhone OS 3.0**          | 2009            | Apple iOS               | Darwin/XNU                   | Samsung A8                  |
-| **iPhone OS 2.2**          | 2008–2009       | Apple iOS               | Darwin/XNU                   | Samsung 1176                |
-| **iPhone OS 2.1**          | 2008            | Apple iOS               | Darwin/XNU                   | Samsung 1176                |
-| **iPhone OS 2.0**          | 2008            | Apple iOS               | Darwin/XNU                   | Samsung 1176                |
-| **iPhone OS 1.1**          | 2007–2008       | Apple iOS               | Darwin/XNU                   | Samsung 1176                |
-| **iPhone OS 1.0**          | 2007            | Apple iOS               | Darwin/XNU                   | Samsung 1176                |
+| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline | OS Generation Score |
+| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- | :------------------ |
+| **iOS 27+**                | 2026+           | Apple iOS               | Darwin/XNU                   | Future Apple                | 10.0                |
+| **iOS 26.x**               | 2025–2026       | Apple iOS               | Darwin/XNU                   | Apple A16–A19, M5           | 9.5                 |
+| **iOS 18.x**               | 2024–2025       | Apple iOS               | Darwin/XNU                   | Apple A14–A18, M4           | 9.0                 |
+| **iOS 17.x**               | 2023–2024       | Apple iOS               | Darwin/XNU                   | Apple A12–A17, M3           | 8.5                 |
+| **iOS 16.x**               | 2022–2023       | Apple iOS               | Darwin/XNU                   | Apple A11–A16, M2           | 7.5                 |
+| **iOS 15.x**               | 2021–2022       | Apple iOS               | Darwin/XNU                   | Apple A9–A15, M1            | 6.5                 |
+| **iOS 14.x**               | 2020–2021       | Apple iOS               | Darwin/XNU                   | Apple A9–A14                | 5.5                 |
+| **iOS 13.x**               | 2019–2020       | Apple iOS               | Darwin/XNU                   | Apple A9–A13                | 4.5                 |
+| **iOS 12.x**               | 2018–2019       | Apple iOS               | Darwin/XNU                   | Apple A7–A12                | 3.5                 |
+| **iOS 11.x**               | 2017–2018       | Apple iOS               | Darwin/XNU                   | Apple A9–A11                | 2.5                 |
+| **iOS 10.x**               | 2016–2017       | Apple iOS               | Darwin/XNU                   | Apple A7–A10                | 0.0                 |
+| **iOS 9.x**                | 2015–2016       | Apple iOS               | Darwin/XNU                   | Apple A7–A9X                | 0.0                 |
+| **iOS 8.x**                | 2014–2015       | Apple iOS               | Darwin/XNU                   | Apple A7–A8X                | 0.0                 |
+| **iOS 7.x**                | 2013–2014       | Apple iOS               | Darwin/XNU                   | Apple A7 (64-bit)           | 0.0                 |
+| **iOS 6.x**                | 2012–2013       | Apple iOS               | Darwin/XNU                   | Apple A6/A6X                | 0.0                 |
+| **iOS 5.x**                | 2011–2012       | Apple iOS               | Darwin/XNU                   | Apple A5/A5X                | 0.0                 |
+| **iOS 4.x**                | 2010–2011       | Apple iOS               | Darwin/XNU                   | Apple A4                    | 0.0                 |
+| **iPhone OS 3.2**          | 2010            | Apple iOS               | Darwin/XNU                   | Apple A4 (iPad)             | 0.0                 |
+| **iPhone OS 3.1**          | 2009–2010       | Apple iOS               | Darwin/XNU                   | Samsung A8                  | 0.0                 |
+| **iPhone OS 3.0**          | 2009            | Apple iOS               | Darwin/XNU                   | Samsung A8                  | 0.0                 |
+| **iPhone OS 2.2**          | 2008–2009       | Apple iOS               | Darwin/XNU                   | Samsung 1176                | 0.0                 |
+| **iPhone OS 2.1**          | 2008            | Apple iOS               | Darwin/XNU                   | Samsung 1176                | 0.0                 |
+| **iPhone OS 2.0**          | 2008            | Apple iOS               | Darwin/XNU                   | Samsung 1176                | 0.0                 |
+| **iPhone OS 1.1**          | 2007–2008       | Apple iOS               | Darwin/XNU                   | Samsung 1176                | 0.0                 |
+| **iPhone OS 1.0**          | 2007            | Apple iOS               | Darwin/XNU                   | Samsung 1176                | 0.0                 |
 
 ---
 
@@ -59,41 +58,41 @@ Covers all Android versions from the latest (2026) to the original Android 1.x (
 > **Android Version Gaps:**
 > There are no Android versions between Android 1.1 (Bender) and Android 1.5 (Cupcake). Google skipped versions 1.2, 1.3, and 1.4, proceeding directly from 1.1 to 1.5 when introducing the standard confectionery-themed dessert naming scheme.
 
-| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline |
-| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- |
-| **Android 17.0**           | 2026            | Android                 | AOSP/Linux                   | Next-gen GPU                |
-| **Android 16.0**           | 2025            | Android                 | AOSP/Linux                   | Adreno 8xx+, G9             |
-| **Android 15.0**           | 2024–2025       | Android                 | AOSP/Linux                   | Adreno 8xx, G925            |
-| **Android 14.0**           | 2023–2024       | Android                 | AOSP/Linux                   | Adreno 7xx, G720            |
-| **Android 13.0**           | 2022–2023       | Android                 | AOSP/Linux                   | Adreno 7xx, G715            |
-| **Android 12L**            | 2022            | Android                 | AOSP/Linux                   | Same as Android 12.0        |
-| **Android 12.0**           | 2021–2022       | Android                 | AOSP/Linux                   | Adreno 66x, G710            |
-| **Android 11.0**           | 2020–2021       | Android                 | AOSP/Linux                   | Adreno 6xx, G78             |
-| **Android 10.0**           | 2019–2020       | Android                 | AOSP/Linux                   | Adreno 6xx, G77             |
-| **Android 9.0**            | 2018–2019       | Android                 | AOSP/Linux                   | Adreno 6xx, G76             |
-| **Android 8.1**            | 2017–2018       | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          |
-| **Android 8.0**            | 2017            | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          |
-| **Android 7.1**            | 2016–2017       | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          |
-| **Android 7.0**            | 2016            | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          |
-| **Android 6.0**            | 2015–2016       | Android                 | AOSP/Linux                   | Adreno 430 (SD810)          |
-| **Android 5.1**            | 2015            | Android                 | AOSP/Linux                   | Adreno 4xx, T7xx            |
-| **Android 5.0**            | 2014–2015       | Android                 | AOSP/Linux                   | Adreno 4xx, T7xx            |
-| **Android 4.4**            | 2013–2014       | Android                 | AOSP/Linux                   | Adreno 3xx, T6xx            |
-| **Android 4.3**            | 2013            | Android                 | AOSP/Linux                   | Adreno 3xx, T6xx            |
-| **Android 4.2**            | 2012–2013       | Android                 | AOSP/Linux                   | Adreno 2xx, M400            |
-| **Android 4.1**            | 2012            | Android                 | AOSP/Linux                   | Adreno 2xx, M400            |
-| **Android 4.0**            | 2011–2012       | Android                 | AOSP/Linux                   | Adreno 2xx, M400            |
-| **Android 3.2**            | 2011–2012       | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              |
-| **Android 3.1**            | 2011            | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              |
-| **Android 3.0**            | 2011            | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              |
-| **Android 2.3**            | 2010–2011       | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             |
-| **Android 2.2**            | 2010            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             |
-| **Android 2.1**            | 2010            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             |
-| **Android 2.0**            | 2009            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             |
-| **Android 1.6**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  |
-| **Android 1.5**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  |
-| **Android 1.1**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  |
-| **Android 1.0**            | 2008–2009       | Android                 | AOSP/Linux                   | Adreno 130                  |
+| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline | OS Generation Score |
+| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- | :------------------ |
+| **Android 17.0**           | 2026            | Android                 | AOSP/Linux                   | Next-gen GPU                | 10.0                |
+| **Android 16.0**           | 2025            | Android                 | AOSP/Linux                   | Adreno 8xx+, G9             | 9.5                 |
+| **Android 15.0**           | 2024–2025       | Android                 | AOSP/Linux                   | Adreno 8xx, G925            | 9.0                 |
+| **Android 14.0**           | 2023–2024       | Android                 | AOSP/Linux                   | Adreno 7xx, G720            | 8.5                 |
+| **Android 13.0**           | 2022–2023       | Android                 | AOSP/Linux                   | Adreno 7xx, G715            | 7.5                 |
+| **Android 12L**            | 2022            | Android                 | AOSP/Linux                   | Same as Android 12.0        | 7.5                 |
+| **Android 12.0**           | 2021–2022       | Android                 | AOSP/Linux                   | Adreno 66x, G710            | 6.5                 |
+| **Android 11.0**           | 2020–2021       | Android                 | AOSP/Linux                   | Adreno 6xx, G78             | 5.5                 |
+| **Android 10.0**           | 2019–2020       | Android                 | AOSP/Linux                   | Adreno 6xx, G77             | 4.5                 |
+| **Android 9.0**            | 2018–2019       | Android                 | AOSP/Linux                   | Adreno 6xx, G76             | 3.5                 |
+| **Android 8.1**            | 2017–2018       | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          | 2.5                 |
+| **Android 8.0**            | 2017            | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          | 2.5                 |
+| **Android 7.1**            | 2016–2017       | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          | 0.0                 |
+| **Android 7.0**            | 2016            | Android                 | AOSP/Linux                   | Adreno 5xx, G71/72          | 0.0                 |
+| **Android 6.0**            | 2015–2016       | Android                 | AOSP/Linux                   | Adreno 430 (SD810)          | 0.0                 |
+| **Android 5.1**            | 2015            | Android                 | AOSP/Linux                   | Adreno 4xx, T7xx            | 0.0                 |
+| **Android 5.0**            | 2014–2015       | Android                 | AOSP/Linux                   | Adreno 4xx, T7xx            | 0.0                 |
+| **Android 4.4**            | 2013–2014       | Android                 | AOSP/Linux                   | Adreno 3xx, T6xx            | 0.0                 |
+| **Android 4.3**            | 2013            | Android                 | AOSP/Linux                   | Adreno 3xx, T6xx            | 0.0                 |
+| **Android 4.2**            | 2012–2013       | Android                 | AOSP/Linux                   | Adreno 2xx, M400            | 0.0                 |
+| **Android 4.1**            | 2012            | Android                 | AOSP/Linux                   | Adreno 2xx, M400            | 0.0                 |
+| **Android 4.0**            | 2011–2012       | Android                 | AOSP/Linux                   | Adreno 2xx, M400            | 0.0                 |
+| **Android 3.2**            | 2011–2012       | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              | 0.0                 |
+| **Android 3.1**            | 2011            | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              | 0.0                 |
+| **Android 3.0**            | 2011            | Android                 | AOSP/Linux                   | NVIDIA Tegra 2              | 0.0                 |
+| **Android 2.3**            | 2010–2011       | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             | 0.0                 |
+| **Android 2.2**            | 2010            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             | 0.0                 |
+| **Android 2.1**            | 2010            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             | 0.0                 |
+| **Android 2.0**            | 2009            | Android                 | AOSP/Linux                   | Adreno 2xx, SGX             | 0.0                 |
+| **Android 1.6**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  | 0.0                 |
+| **Android 1.5**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  | 0.0                 |
+| **Android 1.1**            | 2009            | Android                 | AOSP/Linux                   | Adreno 130                  | 0.0                 |
+| **Android 1.0**            | 2008–2009       | Android                 | AOSP/Linux                   | Adreno 130                  | 0.0                 |
 
 ---
 
@@ -105,24 +104,24 @@ These operating systems were developed by smartphone manufacturers as custom alt
 
 Launched by **Huawei** in 2019 following US trade restrictions that blacklisted the company and barred them from using licensed Google Mobile Services (GMS) and the Google Play Store on future devices. Rather than merely creating a cosmetic theme, Huawei developed HarmonyOS to establish a complete, self-sustaining operating system platform. Designed from the ground up for the "Super Device" era, it aims to seamlessly unite smartphones, tablets, smart screens, wearables, and Internet of Things (IoT) appliances. Versions 2.0 through 4.0 maintained a hybrid kernel with Android (AOSP) code compatibility to ease app migration. However, **HarmonyOS 5.0 NEXT** marked a total architectural break, dropping all legacy AOSP code and Linux dependencies entirely in favor of Huawei's high-efficiency, native **HongMeng Microkernel** for maximum system fluidness, context-switching speed, and robust security.
 
-| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline |
-| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- |
-| **HarmonyOS 6.0**          | 2025–2026       | Custom                  | HongMeng Native              | HiSilicon Kirin             |
-| **HarmonyOS 5.0 (NEXT)**   | 2024–2025       | Custom                  | HongMeng Native              | HiSilicon Kirin             |
-| **HarmonyOS 4.0**          | 2023–2024       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            |
-| **HarmonyOS 3.0**          | 2022–2023       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            |
-| **HarmonyOS 2.0**          | 2021–2022       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            |
-| **HarmonyOS 1.0**          | 2019–2020       | Custom                  | LiteOS/Linux                 | HiSilicon Honghu            |
+| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline | OS Generation Score |
+| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- | :------------------ |
+| **HarmonyOS 6.0**          | 2025–2026       | Custom                  | HongMeng Native              | HiSilicon Kirin             | 9.5                 |
+| **HarmonyOS 5.0 (NEXT)**   | 2024–2025       | Custom                  | HongMeng Native              | HiSilicon Kirin             | 9.0                 |
+| **HarmonyOS 4.0**          | 2023–2024       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            | 8.5                 |
+| **HarmonyOS 3.0**          | 2022–2023       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            | 7.5                 |
+| **HarmonyOS 2.0**          | 2021–2022       | Custom                  | AOSP/Linux 4.9+              | Kirin/Snapdragon            | 6.5                 |
+| **HarmonyOS 1.0**          | 2019–2020       | Custom                  | LiteOS/Linux                 | HiSilicon Honghu            | 4.5                 |
 
 ### 3.2 HyperOS (Xiaomi)
 
 Introduced by **Xiaomi** in 2023 to replace their long-standing MIUI User Interface (UI) skin. Rather than just updating the visual design, Xiaomi engineered HyperOS to completely unify their massive and diverse product ecosystem—encompassing smartphones, smart home appliances, wearables, and smart electric vehicles (such as the Xiaomi SU7)—under a single consolidated kernel layer. HyperOS achieves this by merging highly-optimized Android/Linux system frameworks with Xiaomi's proprietary Vela software platform at the kernel level (collectively named the **HyperCore** kernel) and coordinating it using an advanced cross-device interconnectivity framework called **HyperConnect**.
 
-| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline |
-| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- |
-| **HyperOS 3.0**            | 2025–2026       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           |
-| **HyperOS 2.0**            | 2024–2025       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           |
-| **HyperOS 1.0**            | 2023–2024       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           |
+| Canonical OS Version Label | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline | OS Generation Score |
+| :------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- | :------------------ |
+| **HyperOS 3.0**            | 2025–2026       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           | 9.5                 |
+| **HyperOS 2.0**            | 2024–2025       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           | 9.0                 |
+| **HyperOS 1.0**            | 2023–2024       | Custom                  | HyperCore/Linux              | Qualcomm/MediaTek           | 8.5                 |
 
 ---
 
@@ -144,19 +143,19 @@ This section covers Microsoft's dedicated smartphone-specific operating systems.
 >   - **1607** (Anniversary Update): Compiled in July 2016, publicly released in August 2016.
 >   - **1511** (Initial Launch): Compiled in November 2015, publicly released in November 2015.
 
-| Canonical OS Version Label   | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline |
-| :--------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- |
-| **Windows 10 Mobile (1709)** | 2017–2020       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          |
-| **Windows 10 Mobile (1703)** | 2017            | Windows                 | Windows NT Mobile            | Snapdragon 820/400          |
-| **Windows 10 Mobile (1607)** | 2016–2017       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          |
-| **Windows 10 Mobile (1511)** | 2015–2016       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          |
-| **Windows Phone 8.1**        | 2014–2015       | Windows                 | Windows Phone NT             | Snapdragon 800/400          |
-| **Windows Phone 8 GDR**      | 2013–2014       | Windows                 | Windows Phone NT             | Snapdragon 800/400          |
-| **Windows Phone 8.0**        | 2012–2013       | Windows                 | Windows Phone NT             | Snapdragon S4               |
-| **Windows Phone 7.8**        | 2013            | Windows                 | Windows CE                   | Snapdragon S2               |
-| **Windows Phone 7.5**        | 2011–2012       | Windows                 | Windows CE                   | Snapdragon S2               |
-| **Windows Phone 7.0**        | 2010–2011       | Windows                 | Windows CE                   | Snapdragon S1               |
-| **Windows Mobile 6.5**       | 2009–2010       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            |
-| **Windows Mobile 6.1**       | 2008–2009       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            |
-| **Windows Mobile 6.0**       | 2007–2008       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            |
-| **Windows Mobile 5.0**       | 2005–2007       | Windows                 | Windows CE 5/6               | Intel XScale/OMAP           |
+| Canonical OS Version Label   | Release Year(s) | Operating System Family | Underlying Platform & Kernel | Hardware / Silicon Baseline | OS Generation Score |
+| :--------------------------- | :-------------- | :---------------------- | :--------------------------- | :-------------------------- | :------------------ |
+| **Windows 10 Mobile (1709)** | 2017–2020       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          | 2.5                 |
+| **Windows 10 Mobile (1703)** | 2017            | Windows                 | Windows NT Mobile            | Snapdragon 820/400          | 2.5                 |
+| **Windows 10 Mobile (1607)** | 2016–2017       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          | 0.0                 |
+| **Windows 10 Mobile (1511)** | 2015–2016       | Windows                 | Windows NT Mobile            | Snapdragon 820/400          | 0.0                 |
+| **Windows Phone 8.1**        | 2014–2015       | Windows                 | Windows Phone NT             | Snapdragon 800/400          | 0.0                 |
+| **Windows Phone 8 GDR**      | 2013–2014       | Windows                 | Windows Phone NT             | Snapdragon 800/400          | 0.0                 |
+| **Windows Phone 8.0**        | 2012–2013       | Windows                 | Windows Phone NT             | Snapdragon S4               | 0.0                 |
+| **Windows Phone 7.8**        | 2013            | Windows                 | Windows CE                   | Snapdragon S2               | 0.0                 |
+| **Windows Phone 7.5**        | 2011–2012       | Windows                 | Windows CE                   | Snapdragon S2               | 0.0                 |
+| **Windows Phone 7.0**        | 2010–2011       | Windows                 | Windows CE                   | Snapdragon S1               | 0.0                 |
+| **Windows Mobile 6.5**       | 2009–2010       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            | 0.0                 |
+| **Windows Mobile 6.1**       | 2008–2009       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            | 0.0                 |
+| **Windows Mobile 6.0**       | 2007–2008       | Windows                 | Windows CE 5/6               | Marvell PXA/OMAP            | 0.0                 |
+| **Windows Mobile 5.0**       | 2005–2007       | Windows                 | Windows CE 5/6               | Intel XScale/OMAP           | 0.0                 |

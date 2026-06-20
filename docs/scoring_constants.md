@@ -148,10 +148,8 @@
 **8. Battery & Charging**
 
 ### 8.1 Battery Endurance (Model)
-*   `Battery_Energy_Wh_Min` = 8 (Score 0) [Minimum (Min) battery energy in Watt-hours (Wh)]
-*   `Battery_Energy_Wh_Max` = 25 (Score 10) [Maximum (Max) battery energy in Watt-hours (Wh)]
-*   `Battery_GSMArena_Hours_Min` = 7.8 (Score 0) [Minimum (Min) GSMArena unified active-equivalent hours]
-*   `Battery_GSMArena_Hours_Max` = 25.0 (Score 10) [Maximum (Max) GSMArena unified active-equivalent hours]
+*   `Battery_GSMArena_Hours_Min` = 6.0 (Score 0) [Minimum (Min) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover low-end or legacy 2016 devices]
+*   `Battery_GSMArena_Hours_Max` = 25.0 (Score 10) [Maximum (Max) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover high-end or highly efficient flagships]
 *   `Battery_Predictor_Hours_Min` = 5.0 (Score 0) [Minimum (Min) predictor active endurance hours]
 *   `Battery_Predictor_Hours_Max` = 18.0 (Score 10) [Maximum (Max) predictor active endurance hours]
 
