@@ -3865,7 +3865,7 @@ The 4 physical axes representing the component-level differences in active energ
    - Where `P_soc_eff = P_soc * F_software_overhead * F_thermal_overhead`. Here, System-on-Chip (SoC) represents the integrated circuit that contains all the processing units, such as the Central Processing Unit (CPU) and Graphics Processing Unit (GPU), on a single silicon chip.
 
 4. **Effective Connectivity Power Difference (`Diff_P_connectivity_eff`, in Watts - W):**
-   The difference in wireless modem and Wireless Fidelity (Wi-Fi) active power consumption scaled by software and thermal overheads:
+   The difference in sequential time-weighted connectivity power consumption (Cellular and Wireless Fidelity, or Wi-Fi) scaled by software and thermal overheads:
    `Diff_P_connectivity_eff = P_connectivity_eff_target - P_connectivity_eff_neighbor`
    - Where `P_connectivity_eff = P_connectivity * F_software_overhead * F_thermal_overhead`.
 
@@ -4032,8 +4032,15 @@ The System-on-Chip (SoC) power draw represents the processing platform's consump
        * If peak graphics performance were used as the sole proxy for daily rendering efficiency, the model would incorrectly predict that the massive flagship GPU is more efficient under light workloads than the compact entry-level GPU on the same node. Using a separate GPU Efficiency Score ensures microarchitectural layout overhead is modeled independently of the fabrication node.
 
 ###### 8.1.3.3.3 Connectivity Power Demand (P_connectivity)
-Models the average power drawn by cellular modems and Wi-Fi chips during active synchronization and data transfer:
-`P_connectivity = P_cellular + P_wifi`
+Models the average power drawn by the cellular modem and Wireless Fidelity (Wi-Fi) chip under active mixed-use daily scenarios. In real-world operation and under the empirical test sequences of the canonical benchmark (Method A), active high-power data transmission over cellular networks and Wi-Fi is mutually exclusive (e.g., a device uses Wi-Fi when connected and falls back to cellular fourth-generation (4G) or fifth-generation (5G) networks when on the move, but does not actively transmit user data on both concurrently).
+
+To align the theoretical model with the sequential, non-concurrent nature of the benchmark tests, we apply a time-weighted sequential power model:
+`P_connectivity = 0.20 * P_cellular + 0.70 * P_wifi`
+
+- **Sequential Weighting Justification:**
+  - **20% Cellular Modem Duty Cycle (0.20 multiplier):** Models active cellular data transmission, reflecting the Voice over Long-Term Evolution (VoLTE) call testing portion of the active use cycle.
+  - **70% Wi-Fi Radio Duty Cycle (0.70 multiplier):** Models active Wi-Fi data transmission, representing the dynamic web browsing and continuous YouTube video streaming portions of the active use cycle.
+  - **10% Idle Standby Duty Cycle (Omitted from active summation):** Represents local, offline three-dimensional (3D) gaming and standby transitions where both connectivity interfaces are in a low-power idle state drawing negligible active current.
 
 - **Cellular Modem Active Power (P_cellular):**
   The cellular modem power draw is determined by matching the cellular specification of the device directly to the corresponding technology row in **Section 7.1 (Cellular Capabilities)** without ambiguity. The predicted score of Section 7.1 must be used for mapping (rather than the final score) to avoid any potential scoring bias that could be introduced by dynamic booster adjustments:
@@ -4125,7 +4132,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 
 > [!NOTE]
 > **Omission of Active Connectivity Power in the Thermal Model (Section 6.10):**
-> While active connectivity draw (`P_connectivity = P_cellular + P_wifi`) ranges from ~ `0.08 W` to `0.23 W` during active daily data transfers, it is omitted from the sustained thermal model in Section 6.10 because:
+> While sequential time-weighted connectivity draw (`P_connectivity = 0.20 * P_cellular + 0.70 * P_wifi`) ranges from ~ `0.03 W` to `0.07 W` during active daily mixed usage (and up to `0.23 W` if both radios were fully active simultaneously), it is omitted from the sustained thermal model in Section 6.10 because:
 > 1. **Offline Benchmark Execution:** Standardized graphics stress tests (such as 3DMark Wild Life Extreme) are executed locally with devices placed in Airplane Mode to eliminate testing variance. Dynamic data transfer power is therefore zero.
 > 2. **Baseline Leakage Encapsulation:** The static, low-power leakage of inactive cellular and Wi-Fi silicon is already fully accounted for in the system's baseline logic board heat (`power_static_base = 0.40 W`), specifically within the baseline logic and baseband idle segment (~0.15 W).
 > 3. **Thermal Scale Comparison:** Even under active online gaming conditions, the maximum dynamic modem draw (~0.23 W) represents less than 5% of the total thermal budget (e.g. 4.81 W for the Galaxy S24 Ultra), making it negligible compared to display heat (~1.18 W) and active SoC heat (~3.23 W).
@@ -4158,15 +4165,15 @@ To ensure complete clarity and physical consistency across the scoring framework
     - `F_resolution = 1.0 + 0.025 * (megapixels_mp - 2.0) = 1.0 + 0.025 * (4.5 - 2.0) = 1.0625`
     - `P_display = display_surface_area_cm2 * C_panel * F_refresh * F_resolution = 115.0 * 0.0035 * 1.075 * 1.0625 = 0.4597 W`
   - **Connectivity Draw (P_connectivity):**
-    - `P_connectivity = P_cellular + P_wifi = 0.14 + 0.05 = 0.1900 W`
+    - `P_connectivity = 0.20 * P_cellular + 0.70 * P_wifi = 0.20 * 0.14 + 0.70 * 0.05 = 0.0280 + 0.0350 = 0.0630 W`
   - **Total Demand (P_demand):**
     - `F_software_overhead = 1.0 + 0.10 * (10.0 - OS_Gen_Score)/10.0 + 0.10 * (10.0 - SCC_Score)/10.0 = 1.0 + 0.10 * (10.0 - 10.0)/10.0 + 0.10 * (10.0 - 10.0)/10.0 = 1.0000`
     - `F_thermal_overhead = 1.0 + 0.03 * (10.0 - TDSI_Score)/10.0 = 1.0 + 0.03 * (10.0 - 10.0)/10.0 = 1.0000`
-    - `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead = (0.4597 + (0.6009 + 0.1900) * 1.0000) * 1.0000 = 1.2506 W`
+    - `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead = (0.4597 + (0.6009 + 0.0630) * 1.0000) * 1.0000 = 1.1236 W`
   - **Theoretical Endurance (T_predicted):**
-    - `T_predicted = E_supply / P_demand = 19.25 Wh / 1.2506 W = 15.39 Hours`
+    - `T_predicted = E_supply / P_demand = 19.25 Wh / 1.1236 W = 17.13 Hours`
   - **Predicted Score:**
-    - `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (15.39 - 5.0) / (18.0 - 5.0) = 7.99` (Out of 10.0)
+    - `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (17.13 - 5.0) / (18.0 - 5.0) = 9.33` (Out of 10.0)
 
 ###### 8.1.3.6.2 Budget Device
 - **Specifications:**
@@ -4187,15 +4194,15 @@ To ensure complete clarity and physical consistency across the scoring framework
     - `F_resolution = 1.0 + 0.025 * (megapixels_mp - 2.0) = 1.0 + 0.025 * (2.5 - 2.0) = 1.0125`
     - `P_display = display_surface_area_cm2 * C_panel * F_refresh * F_resolution = 108.0 * 0.0060 * 1.150 * 1.0125 = 0.7545 W`
   - **Connectivity Draw (P_connectivity):**
-    - `P_connectivity = P_cellular + P_wifi = 0.09 + 0.03 = 0.1200 W`
+    - `P_connectivity = 0.20 * P_cellular + 0.70 * P_wifi = 0.20 * 0.09 + 0.70 * 0.03 = 0.0180 + 0.0210 = 0.0390 W`
   - **Total Demand (P_demand):**
     - `F_software_overhead = 1.0 + 0.10 * (10.0 - OS_Gen_Score)/10.0 + 0.10 * (10.0 - SCC_Score)/10.0 = 1.0 + 0.10 * (10.0 - 8.0)/10.0 + 0.10 * (10.0 - 4.0)/10.0 = 1.0800`
     - `F_thermal_overhead = 1.0 + 0.03 * (10.0 - TDSI_Score)/10.0 = 1.0 + 0.03 * (10.0 - 4.0)/10.0 = 1.0180`
-    - `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead = (0.7545 + (0.6700 + 0.1200) * 1.0800) * 1.0180 = (0.7545 + 0.8532) * 1.0180 = 1.6366 W`
+    - `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead = (0.7545 + (0.6700 + 0.0390) * 1.0800) * 1.0180 = (0.7545 + 0.7657) * 1.0180 = 1.5476 W`
   - **Theoretical Endurance (T_predicted):**
-    - `T_predicted = E_supply / P_demand = 19.25 Wh / 1.6366 W = 11.76 Hours`
+    - `T_predicted = E_supply / P_demand = 19.25 Wh / 1.5476 W = 12.44 Hours`
   - **Predicted Score:**
-    - `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (11.76 - 5.0) / (18.0 - 5.0) = 5.20` (Out of 10.0)
+    - `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (12.44 - 5.0) / (18.0 - 5.0) = 5.72` (Out of 10.0)
 
 
 ### 🔹 8.2 Wired Charging Speed
