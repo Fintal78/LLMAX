@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.4",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-06-15"
+    "last_updated": "2026-06-24"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -3621,9 +3621,34 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_ergonomics.thickness_mm.value * 0.85 / 1000000"
           // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
         },
+        "diagonal_inches": {
+          "value": 6.8,
+          "value_path": "2_9_screen_size_diagonal_inches.value"
+          // GUIDELINE: Display diagonal in inches.
+        },
+        "display_panel_type": {
+          "value": "Tier 2: LTPO OLED",
+          "value_path": "2_1_panel_architecture.panel_type.value"
+          // GUIDELINE: Display panel architecture type.
+        },
+        "display_max_refresh_rate_hz": {
+          "value": 120,
+          "value_path": "2_6_motion_smoothness.maximum_refresh_rate_hz.value"
+          // GUIDELINE: Display maximum refresh rate in Hertz (Hz).
+        },
+        "resolution_width_px": {
+          "value": 1440,
+          "value_path": "2_5_resolution_density.resolution_width_px.value"
+          // GUIDELINE: Display resolution width in pixels.
+        },
+        "resolution_height_px": {
+          "value": 3120,
+          "value_path": "2_5_resolution_density.resolution_height_px.value"
+          // GUIDELINE: Display resolution height in pixels.
+        },
         "display_surface_area_cm2": {
           "value": 113.5,
-          "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio / (aspect_ratio^2 + 1))"
+          "calculation_formula": "(diagonal_inches.value * 2.54)^2 * (aspect_ratio.value / (aspect_ratio.value^2 + 1))"
           // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat.
         },
 
@@ -3812,14 +3837,51 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
 
         // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
+        "c_panel_w_cm2": {
+          "identifier": "Tier 2: LTPO OLED",
+          "identifier_path": "6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_panel_type.value",
+          "c_panel_w_cm2": 0.0035
+          // GUIDELINE: Technology-dependent panel constant representing the base power draw to illuminate 1 cm² of screen at 200 nits.
+          // Maps display_panel_type.value to C_panel:
+          //   • "Tier 1: Tandem OLED"                   → 0.0035
+          //   • "Tier 2: LTPO OLED"                     → 0.0035
+          //   • "Tier 3: Standard OLED/AMOLED (LTPS)"   → 0.0045
+          //   • "Tier 4: IPS LCD"                       → 0.0060
+          //   • "Tier 5: TFT or PLS LCD"                → 0.0060
+          //   • "Tier 6: TN LCD or Legacy"              → 0.0060
+        },
+        "f_refresh_intensive": {
+          "value": 1.1500,
+          "calculation_formula": "1.0 + 0.0025 * (display_max_refresh_rate_hz.value - 60.0)"
+          // GUIDELINE: Refresh Rate Factor. Evaluated at maximum refresh rate (max_hz) in Hertz (Hz) because gaming locks screen refresh to its peak.
+        },
+        "display_megapixels_mp": {
+          "value": 4.5,
+          "calculation_formula": "round((resolution_width_px.value * resolution_height_px.value) / 1000000, 1)"
+          // GUIDELINE: Screen resolution in Megapixels (MP) rounded to 1 decimal place.
+        },
+        "f_resolution": {
+          "value": 1.0625,
+          "calculation_formula": "1.0 + 0.025 * (display_megapixels_mp.value - 2.0)"
+          // GUIDELINE: Resolution Factor. Accounts for rendering and aperture ratio overhead centered around a 2.0 Megapixels (MP) baseline.
+        },
+        "power_static_base_w": {
+          "value": 0.40
+          // GUIDELINE: Static logic board baseline power consumption in Watts (W) representing PMIC conversion efficiency losses (~0.25 W) and active logic overhead (~0.15 W).
+        },
+        "power_display_heat_w": {
+          "value": 1.1530,
+          "calculation_formula": "display_surface_area_cm2.value * (c_panel_w_cm2.c_panel_w_cm2 * 2.5) * f_refresh_intensive.value * f_resolution.value * 0.95"
+          // GUIDELINE: Thermal heat generated by display panel. Brightness scaling multiplier is 2.5 (from 200 to 500 nits) and heat conversion factor is 0.95.
+        },
         "power_base_needs_w": {
-          "value": 1.25,
-          "calculation_formula": "0.4 + (0.0075 * display_surface_area_cm2)"
+          "value": 1.5530,
+          "calculation_formula": "power_static_base_w.value + power_display_heat_w.value"
           // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
         },
         "power_admissible_soc_w": {
-          "value": 3.57,
-          "calculation_formula": "power_admissible_w - power_base_needs_w"
+          "value": 3.2670,
+          "calculation_formula": "power_admissible_w.value - power_base_needs_w.value"
           // GUIDELINE: Net admissible wattage available exclusively for the SoC workload after accounting for baseline system heat.
         },
         "system_on_chip": {
@@ -3871,18 +3933,18 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // | **Snapdragon 625**                        | **2.5**        | 14nm  | Samsung |
           // | **Unisoc T606**                           | **2.2**        | 12nm  | TSMC    |
         "power_ratio": {
-          "value": 0.255,
-          "calculation_formula": "power_admissible_soc_w / system_on_chip.power_peak_soc_w"
-          // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (system_on_chip.power_peak_soc_w) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
+          "value": 0.2334,
+          "calculation_formula": "power_admissible_soc_w.value / system_on_chip.power_peak_soc_w.value"
+          // GUIDELINE: Raw thermal headroom ratio. Defines the percentage of the SoC's peak power draw (system_on_chip.power_peak_soc_w.value) that the chassis can sustain throughout the 1200-second (20-minute) evaluation window within ergonomic safety limits. A ratio > 1.0 indicates a surplus cooling margin.
         },
         "predicted_stability_percentage": {
-          "value": 63.4,
-          "calculation_formula": "100 * (power_ratio ^ 0.333) (Clamped 0-100)"
+          "value": 61.5,
+          "calculation_formula": "100 * (power_ratio.value ^ 0.333) (Clamped 0-100)"
           // GUIDELINE: Cube root law bridging thermal power to physical Stability (Frames per second (FPS)). Capped at 100.
         },
         "predicted_tdsi_score": {
-          "value": 5.03,
-          "calculation_formula": "10 * (log(predicted_stability_percentage) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10."
+          "value": 4.70,
+          "calculation_formula": "10 * (log(predicted_stability_percentage.value) - log(Thermal_Stability_Min)) / (log(Thermal_Stability_Max) - log(Thermal_Stability_Min)), clamped 0-10."
           // GUIDELINE: Final score mapping. Normalizes the predicted stability percentage against industry thresholds (Thermal_Stability_Min/Max).
         }
       },
@@ -3932,14 +3994,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
         "avg_benchmark_neighbors": 4.4667,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-        "correction_ratio": 1.0371,
+        "correction_ratio": 0.9691,
         // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_TDSI.predicted_tdsi_score.value / avg_predicted_neighbors.
-        "interpolated_score": 4.63
+        "interpolated_score": 4.33
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
-        "predicted": 5.03,
+        "predicted": 4.70,
         // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_TDSI.predicted_tdsi_score.value.
         "final": {
           "value": 4.24,
@@ -4399,7 +4461,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: soc_efficiency_index = (0.50 * node) + (0.30 * cpu) + (0.20 * gpu).
           },
           "display_efficiency_mapping": {
-            "identifier": "LTPO OLED",
+            "identifier": "Tier 2: LTPO OLED",
             "identifier_path": "2_1_panel_architecture.panel_type.value",
             "reference_table": "2_1_panel_technology_scoring_table",
             "panel_tech_score": 10.0,
