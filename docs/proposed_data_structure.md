@@ -3621,34 +3621,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "calculation_formula": "2 * (height_mm + width_mm) * 1_design_and_build_quality.1_4_ergonomics.thickness_mm.value * 0.85 / 1000000"
           // GUIDELINE: Effective convection area (in m^2) of the device's perimeter frame. The 0.85 (Chi factor) accounts for ergonomic corner chamfers and display curves that reduce the effective frame band height.
         },
-        "diagonal_inches": {
-          "value": 6.8,
-          "value_path": "2_9_screen_size_diagonal_inches.value"
-          // GUIDELINE: Display diagonal in inches.
-        },
-        "display_panel_type": {
-          "value": "Tier 2: LTPO OLED",
-          "value_path": "2_1_panel_architecture.panel_type.value"
-          // GUIDELINE: Display panel architecture type.
-        },
-        "display_max_refresh_rate_hz": {
-          "value": 120,
-          "value_path": "2_6_motion_smoothness.maximum_refresh_rate_hz.value"
-          // GUIDELINE: Display maximum refresh rate in Hertz (Hz).
-        },
-        "resolution_width_px": {
-          "value": 1440,
-          "value_path": "2_5_resolution_density.resolution_width_px.value"
-          // GUIDELINE: Display resolution width in pixels.
-        },
-        "resolution_height_px": {
-          "value": 3120,
-          "value_path": "2_5_resolution_density.resolution_height_px.value"
-          // GUIDELINE: Display resolution height in pixels.
-        },
         "display_surface_area_cm2": {
           "value": 113.5,
-          "calculation_formula": "(diagonal_inches.value * 2.54)^2 * (aspect_ratio.value / (aspect_ratio.value^2 + 1))"
+          "calculation_formula": "(2_9_screen_size_diagonal_inches.value * 2.54)^2 * (aspect_ratio.value / (aspect_ratio.value^2 + 1))"
           // GUIDELINE: Calculated active screen area (in cm^2). Used to determine the radiant Joule heating contribution of the panel to the system base heat.
         },
 
@@ -3839,35 +3814,33 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // --- [4] SoC (SYSTEM-ON-CHIP) POWER BUDGET & PREDICTION ---
         "c_panel_w_cm2": {
           "identifier": "Tier 2: LTPO OLED",
-          "identifier_path": "6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_panel_type.value",
+          "identifier_path": "2_1_panel_architecture.panel_type.value",
           "c_panel_w_cm2": 0.0035
-          // GUIDELINE: Technology-dependent panel constant representing the base power draw to illuminate 1 cm² of screen at 200 nits.
-          // Maps display_panel_type.value to C_panel:
-          //   • "Tier 1: Tandem OLED"                   → 0.0035
-          //   • "Tier 2: LTPO OLED"                     → 0.0035
-          //   • "Tier 3: Standard OLED/AMOLED (LTPS)"   → 0.0045
-          //   • "Tier 4: IPS LCD"                       → 0.0060
-          //   • "Tier 5: TFT or PLS LCD"                → 0.0060
-          //   • "Tier 6: TN LCD or Legacy"              → 0.0060
+          // GUIDELINE: Technology-dependent panel constant representing the base power draw to illuminate 1 square centimeter (cm²) of screen at 200 nits.
+          // Maps the display panel type to the panel constant c_panel_w_cm2 (Watts per square centimeter - W/cm²) using the following table:
+          // | Display Panel Type (Section 2.1)       | c_panel_w_cm2 (W/cm²) |
+          // | :------------------------------------- | :-------------------: |
+          // | **Tier 1: Tandem OLED**                |        0.0035         |
+          // | **Tier 2: LTPO OLED**                  |        0.0035         |
+          // | **Tier 3: Standard OLED/AMOLED (LTPS)**|        0.0045         |
+          // | **Tier 4: IPS LCD**                    |        0.0060         |
+          // | **Tier 5: TFT or PLS LCD**             |        0.0060         |
+          // | **Tier 6: TN LCD or Legacy**           |        0.0060         |
         },
         "f_refresh_intensive": {
           "value": 1.1500,
-          "calculation_formula": "1.0 + 0.0025 * (display_max_refresh_rate_hz.value - 60.0)"
+          "calculation_formula": "1 + 0.0025 * (2_6_motion_smoothness.maximum_refresh_rate_hz.value - 60)"
           // GUIDELINE: Refresh Rate Factor. Evaluated at maximum refresh rate (max_hz) in Hertz (Hz) because gaming locks screen refresh to its peak.
         },
         "display_megapixels_mp": {
-          "value": 4.5,
-          "calculation_formula": "round((resolution_width_px.value * resolution_height_px.value) / 1000000, 1)"
-          // GUIDELINE: Screen resolution in Megapixels (MP) rounded to 1 decimal place.
+          "value": 4.4928,
+          "calculation_formula": "2_5_resolution_density.resolution_width_px.value * 2_5_resolution_density.resolution_height_px.value / 1000000"
+          // GUIDELINE: Screen resolution in Megapixels (MP).
         },
         "f_resolution": {
           "value": 1.0625,
           "calculation_formula": "1.0 + 0.025 * (display_megapixels_mp.value - 2.0)"
           // GUIDELINE: Resolution Factor. Accounts for rendering and aperture ratio overhead centered around a 2.0 Megapixels (MP) baseline.
-        },
-        "power_static_base_w": {
-          "value": 0.40
-          // GUIDELINE: Static logic board baseline power consumption in Watts (W) representing PMIC conversion efficiency losses (~0.25 W) and active logic overhead (~0.15 W).
         },
         "power_display_heat_w": {
           "value": 1.1530,
@@ -3876,8 +3849,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         },
         "power_base_needs_w": {
           "value": 1.5530,
-          "calculation_formula": "power_static_base_w.value + power_display_heat_w.value"
-          // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components (PMIC losses, logic overhead, and display radiant heat).
+          "calculation_formula": "0.4 + power_display_heat_w.value"
+          // GUIDELINE: Steady-state heat (Watts) generated by non-SoC components. Logic Board Baseline (constant 0.4W) + Display radiant heat (power_display_heat_w.value)
         },
         "power_admissible_soc_w": {
           "value": 3.2670,
