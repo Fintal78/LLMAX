@@ -3927,12 +3927,13 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // ═══════════════════════════════════════════════════════════════════════════
       "method_b_neighbor_interpolation_TDSI": {
         // SCORING GUIDELINE: Method B is populated for ALL phones (even if Method A is available) to evaluate the precision of the interpolation model. The interpolation MUST be performed using exactly 3 distinct neighbor devices, explicitly excluding the target device itself.
-        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance using the physical system parameters defined in the thermodynamic model (Method C), excluding the target device itself.
-        //         Formula: Distance = Sqrt( 0.40 * %Diff(system_on_chip.power_peak_soc_w)^2 + 0.30 * %Diff(resistance_total_k_w)^2 + 0.20 * %Diff(thermal_capacitance_j_k)^2 + 0.10 * %Diff(power_base_needs_w)^2 )
-        //         Where:
-        //         - %Diff(X) = abs(X_Target - X_Neighbor) / X_Target
-        //         - X: The exact parameter name from the thermodynamic model (Method C) defined above.
-        //         - Target: The device currently being scored (whose stability is being predicted).
+        // Step 1: Find the 3 distinct devices with the smallest Euclidean distance in the 3-component homogeneous power space (expressed in Watts - W), excluding the target device itself.
+        //         Formula: Distance = Sqrt( (Diff_P_soc_peak)^2 + (Diff_P_base)^2 + (Diff_P_admissible)^2 )
+        //         Where the metric component differences are derived from the following paths:
+        //         - Diff_P_soc_peak (Peak SoC Power Difference) = (target.method_c_prediction_model_TDSI.system_on_chip.power_peak_soc_w) - (neighbor.method_c_prediction_model_TDSI.system_on_chip.power_peak_soc_w)
+        //         - Diff_P_base (Base System Power Difference) = (target.method_c_prediction_model_TDSI.power_base_needs_w.value) - (neighbor.method_c_prediction_model_TDSI.power_base_needs_w.value)
+        //         - Diff_P_admissible (Total Admissible Power Difference) = (target.method_c_prediction_model_TDSI.power_admissible_w.value) - (neighbor.method_c_prediction_model_TDSI.power_admissible_w.value)
+        //         - Target: The device currently being scored.
         //         - Neighbor: Any device in the database with a known benchmark score (Method A), except the Target itself.
         //         Search space: all phones that have a known 3DMark Wild Life Extreme score (Method A), excluding the target device itself.
         // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
@@ -3942,7 +3943,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "device_id_1": "apple_iphone_15_pro_max",
             // GUIDELINE: The identity.id of the neighbor device (e.g., "apple_iphone_15_pro_max").
             "euclidean_distance_1": 0.0450,
-            // GUIDELINE: Weighted Euclidean distance from Step 1.
+            // GUIDELINE: Euclidean distance in Watts from Step 1.
             "predicted_score_1": 4.65,
             // GUIDELINE: The neighbor's own Method C predicted score.
             "benchmark_score_1": 4.40
