@@ -3257,18 +3257,18 @@ Peak heat generation is computed by identifying the specific **Peak SoC Thermal 
 > 
 > Imagine a modern supercar vs. a 1920s tractor: The supercar is more efficient, but its engine is so much more powerful that it still burns more fuel at top speed. In Table 1, we measure the "Top Speed" (Max Capacity) of each SoC.
 
-**Table 1: Master SoC Peak Power Matrix (Extract)**
+**Table 1: Master SoC Peak Power Reference (Extract)**
 *Values represent verified Package Power (Watts) measured under maximum peak synthetic load. For the full exhaustive database of all mobile silicon (2016–2026), refer to the Source of Truth.*
 
-| SoC Model                           | Peak Power (power_peak_soc) [Watts]  | Node  | Foundry |
-| :---------------------------------- | :----------------------------------: | :---: | :-----: |
-| **Snapdragon 8 Elite**              | **19.5**                             | 3nm   | TSMC    |
-| **Snapdragon 8 Gen 1**              | **16.5**                             | 4nm   | Samsung |
-| **Dimensity 9400**                  | **15.5**                             | 3nm   | TSMC    |
-| **[...]**                           | **[...]**                            | [...] | [...]   |
+| SoC Model                           | Peak Power (power_peak_soc) [Watts]  | Node  |
+| :---------------------------------- | :----------------------------------: | :---: |
+| **Snapdragon 8 Elite**              | **19.5**                             | 3nm   |
+| **Snapdragon 8 Gen 1**              | **16.5**                             | 4nm   |
+| **Dimensity 9400**                  | **15.5**                             | 3nm   |
+| **[...]**                           | **[...]**                            | [...] |
 
 > [!IMPORTANT]
-> **Source of Truth:** The full authoritative lookup table for all smartphone SoCs (2016–2026) is located in [proposed_data_structure.md] under **SOC_PEAK_POWER_MATRIX**.
+> **Source of Truth:** The full authoritative lookup table for all smartphone SoCs (2016–2026) is located in the [System on Chip (SoC) Reference (references/soc_reference.md)].
 
 **Calculated Peak Generation (power_peak_soc):**
 `power_peak_soc = Master_Matrix_Value`
@@ -3975,7 +3975,7 @@ The System-on-Chip (SoC) power draw represents the processing platform's consump
     2. **Power-Gating & Core Scheduling:** Flagships aggressively power-gate unused cores or Neural Processing Units (NPUs) and schedule light tasks onto high-efficiency cores that complete tasks quickly and sleep (high dynamic "Race-to-Sleep" efficiency). Budget chips lack fine-grained power gating and have lower Instructions Per Cycle (IPC), forcing them to remain in active states longer.
     *Conclusion (Capacity Correction):* As a consequence of these low-load physics, simply scaling peak power linearly (`0.0075 * power_peak_soc`) would predict that a 19.5 W flagship draws 4x more power at low load than a 4.5 W budget chip, which is physically false. The efficiency multipliers therefore act as low-load capacity correction factors, adjusting the capacity-based term to prevent unfairly penalizing high-capacity, highly optimized processors.
 - **Peak SoC Power (power_peak_soc):**
-  The peak thermal design power of the chipset in Watts (W) sourced from the master database (referenced in Section 6.10).
+  The peak thermal design power of the chipset in Watts (W) sourced from the canonical reference (references/soc_reference.md).
 - **Process Node Factor (F_node):**
   `F_node = 1.0 + 0.4855 * log(process_nm / 3.0)` where `process_nm` is the chipset's physical process node in nanometers (nm) (e.g., 3, 4, 5, 7, 12, etc.).
   - *Range of Variation:* With the physical process node size (`process_nm`) currently ranging from 3.0 nanometers (nm) (representing cutting-edge Gate-All-Around silicon) to 20.0 nanometers (nm) (representing legacy planar silicon), this factor ranges from **1.000 to 1.400** (representing a 0% baseline to a +40.0% increase in System-on-Chip (SoC) power consumption).

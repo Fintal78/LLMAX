@@ -495,9 +495,9 @@ In this particular case the fields are optional to enable flexibility. Use only 
 "power_peak_soc_w": {
   "identifier": "Snapdragon 8 Gen 3",
   "identifier_path": "identity.hardware_configuration.chipset.value",
-  "reference_table": "SOC_PEAK_POWER_MATRIX",
+  "reference_table": "references/soc_reference.md",
   "power_peak_soc_w": 14.0
-  // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the "Peak Power (W)" column.
+  // GUIDELINE: Value retrieved from the `reference_table` by matching the `identifier` and selecting the "power_peak_soc_w" column.
 }
 ```
 
