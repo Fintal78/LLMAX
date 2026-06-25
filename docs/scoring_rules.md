@@ -3487,16 +3487,32 @@ The proposal for SASI is supported by the following industry shifts toward verti
 *   **Significance:** Connectivity speed and global roaming capability.
 *   **Battery Model Mapping:** The exact technology string from this table is mapped directly in the battery endurance scoring of **Section 8.1** to determine cellular modem active power consumption (P_cellular).
 
+| Score    | Technology                                            | 
+| :------- | :---------------------------------------------------- | 
+| **10.0** | **Tier 1: 5G mmWave + Sub-6 (Global band coverage)**  | 
+| **9.0**  | **Tier 2: 5G Sub-6 (Full Global Bands)**              |
+| **8.0**  | **Tier 3: 5G Sub-6 (Limited/regional bands)**         |
+| **6.0**  | **Tier 4: 4G LTE-Advanced Pro**                       |
+| **4.0**  | **Tier 5: 4G LTE (Basic)**                            |
+| **2.0**  | **Tier 6: 3G**                                        |
+| **0.0**  | **Tier 7: 2G Only**                                   |
 
-| Score    | Technology                                   | 
-| :------- | :------------------------------------------- | 
-| **10.0** | **5G mmWave + Sub-6 (Global band coverage)** | 
-| **9.0**  | **5G Sub-6 (Full Global Bands)**             |
-| **8.0**  | **5G Sub-6 (Limited/regional bands)**        |
-| **6.0**  | **4G LTE-Advanced Pro**                      |
-| **4.0**  | **4G LTE (Basic)**                           |
-| **2.0**  | **3G fallback only**                         |
-| **0.0**  | **2G Only**                                  |
+> [!NOTE]
+> **Terminology & Abbreviations:**
+> *   **5G (5th Generation):** The fifth generation of cellular networks, bringing higher speed and capacity.
+> *   **mmWave (millimeter-Wave):** High-frequency 5G bands (typically above 24 GHz) providing ultra-fast speeds over short distances.
+> *   **Sub-6 (Sub-6 Gigahertz):** Lower-frequency 5G bands (below 6 GHz) providing long-range coverage and penetration.
+> *   **4G (4th Generation) / LTE (Long-Term Evolution):** The fourth generation of mobile networks.
+> *   **LTE-Advanced Pro:** An enhanced 4G standard (sometimes called 4.5G) representing Category (Cat) 16 or higher modems with download speeds of 1.0 Gigabits per second (Gbps) or higher.
+> *   **3G (3rd Generation):** Legacy third generation networks (such as Universal Mobile Telecommunications System / UMTS or High-Speed Downlink Packet Access / HSDPA).
+> *   **2G (2nd Generation):** Legacy second generation networks (such as Global System for Mobile Communications / GSM).
+>
+> **Why is there no "5G mmWave Alone" category?**
+> Millimeter-Wave frequencies suffer from severe path attenuation and signal blockages, making them incapable of acting as standalone coverage layers. In real-world networks, a device requires a Sub-6 GHz (or 4G LTE) connection anchor to maintain coverage. Therefore, all millimeter-Wave-capable devices are hybrid solutions supporting both millimeter-Wave and Sub-6 GHz bands; a device supporting millimeter-Wave alone is physically and operationally non-viable.
+>
+> **Ambiguity & Insufficient Data Fallback Rules:**
+> To ensure absolute consistency and eliminate duplication of scoring logic, all step-by-step ambiguity resolution, System-on-Chip (SoC) lookup pathways, and generic generational fallback rules for cellular capability grading are defined exclusively in the schema guidelines of the database definition file [proposed_data_structure.md]. Automated agents must execute that multi-step logic hierarchy to resolve missing or incomplete specifications.
+
 
 ### 🔹 7.2 SIM Capabilities
 *Description:* Evaluates the device's support for cellular subscriber identity modules (SIM), prioritizing flexibility and modern standards like eSIM and iSIM. Dual SIM lets you have two numbers (e.g., work/personal) or use a local SIM when traveling.
@@ -3542,15 +3558,20 @@ The proposal for SASI is supported by the following industry shifts toward verti
 *   **Significance:** Local network speed and congestion management.
 *   **Battery Model Mapping:** The exact standard string from this table is mapped directly in the battery endurance scoring of **Section 8.1** to determine Wi-Fi chip active power consumption (P_wifi).
 
+| Score    | Standard             | 
+| :------- | :------------------- | 
+| **10.0** | **Tier 1: Wi-Fi 7**  | 
+| **8.0**  | **Tier 2: Wi-Fi 6E** | 
+| **7.0**  | **Tier 3: Wi-Fi 6**  | 
+| **5.0**  | **Tier 4: Wi-Fi 5**  | 
+| **3.0**  | **Tier 5: Wi-Fi 4**  | 
+| **0.0**  | **Tier 6: Wi-Fi ≤3** |
 
-| Score    | Standard     | 
-| :------- | :----------- | 
-| **10.0** | **Wi-Fi 7**  | 
-| **8.0**  | **Wi-Fi 6E** | 
-| **7.0**  | **Wi-Fi 6**  | 
-| **5.0**  | **Wi-Fi 5**  | 
-| **3.0**  | **Wi-Fi 4**  | 
-| **0.0**  | **Wi-Fi ≤3** |
+> [!NOTE]
+> **Terminology & Abbreviations:**
+> *   **Wi-Fi (Wireless Fidelity):** The standard technology for local wireless network connections.
+> *   **QAM (Quadrature Amplitude Modulation):** A method of packing data onto radio signals. Wi-Fi 7 uses 4K QAM to transmit more data per signal.
+> *   **MLO (Multi-Link Operation):** A feature in Wi-Fi 7 that allows devices to transmit and receive data across multiple frequency bands (2.4 GHz, 5 GHz and 6 GHz) simultaneously.
 
 > [!NOTE]
 > **Understanding the score gaps:** Not all Wi-Fi upgrades are equal leaps, and the scoring reflects this:
@@ -4068,12 +4089,12 @@ To align the theoretical model with the sequential, non-concurrent nature of the
   - **0.18 W:** `5G mmWave + Sub-6 (Global band coverage)` — 5th Generation (5G) networks supporting both high-frequency millimeter-Wave (mmWave) and Sub-6 Gigahertz (GHz) bands, requiring additional front-end hardware power.
   - **0.14 W:** `5G Sub-6 (Full Global Bands)` or `5G Sub-6 (Limited/regional bands)` — standard 5G networks operating on Sub-6 GHz frequencies.
   - **0.09 W:** `4G LTE-Advanced Pro` or `4G LTE (Basic)` — 4th Generation (4G) Long-Term Evolution (LTE) modems.
-  - **0.05 W:** `3G fallback only` or `2G Only` — legacy 3rd Generation (3G) or 2nd Generation (2G) modems.
+  - **0.05 W:** `3G` or `2G Only` — legacy 3rd Generation (3G) or 2nd Generation (2G) modems.
 - **Wi-Fi Active Power (P_wifi):**
   The Wi-Fi chip power draw is determined by matching the Wi-Fi specification of the device directly to the corresponding standard category in **Section 7.3 (Wi-Fi Standard)**. The device's Wi-Fi hardware solution is mapped to one of the following baseline power values:
   - **0.05 W:** `Wi-Fi 7` — Wi-Fi 7 (802.11be) standard utilizing wide 320 Megahertz (MHz) channels and Multi-Link Operation (MLO).
   - **0.04 W:** `Wi-Fi 6E` or `Wi-Fi 6` — Wi-Fi 6 or 6E (802.11ax) standards utilizing 160 MHz channels.
-  - **0.03 W:** `Wi-Fi 5`, `Wi-Fi 4`, or `Wi-Fi <=3` — Wi-Fi 5 (802.11ac), Wi-Fi 4 (802.11n), or older legacy Wi-Fi standards.
+  - **0.03 W:** `Wi-Fi 5`, `Wi-Fi 4`, or `Wi-Fi ≤3` — Wi-Fi 5 (802.11ac), Wi-Fi 4 (802.11n), or older legacy Wi-Fi standards.
 
 ###### 8.1.3.3.4 Software Inefficiency Modifier (F_software_overhead)
 Operating system (OS) execution efficiency and background application loads act as multipliers on hardware power demand:

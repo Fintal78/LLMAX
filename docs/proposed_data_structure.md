@@ -3963,18 +3963,49 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 10.00
         // SCORING GUIDELINE: Identify the highest cellular technology supported. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
         //   • "Tier 1: 5G mmWave + Sub-6 (Global band coverage)" → 10.00
-        //     Definition: Supports both mmWave (high frequency, short range) and Sub-6 (lower frequency, long range) 5G spectrums, covering all major global frequency bands.
-        //   • "Tier 2: 5G Sub-6 (Global band coverage)"          → 8.50
-        //     Definition: Supports 5G on Sub-6GHz frequencies with extensive band coverage for global roaming.
-        //   • "Tier 3: 5G Sub-6 (Regional band coverage)"        → 7.50
-        //     Definition: Supports 5G on Sub-6GHz but with band coverage limited to specific markets.
-        //   • "Tier 4: 4G LTE-A (Cat 24+)"                       → 5.00
-        //     Definition: 4G LTE Advanced with support for high-order carrier aggregation and 4x4 MIMO.
-        //   • "Tier 5: 4G LTE"                                   → 2.50
-        //     Definition: Standard 4G Long-Term Evolution without advanced carrier aggregation.
-        //   • "Tier 6: 3G / Legacy"                              → 0.00
-        //     Definition: Limited to 3G (UMTS/HSPA) or older technologies.
-      },
+        //     - Definition: Supports both mmWave (millimeter-Wave) and Sub-6 (Sub-6 Gigahertz) 5G (5th Generation) spectrums, covering all major global frequency bands.
+        //     - Specification Parsing: Specs explicitly list "5G mmWave", "mmWave", or high-frequency band codes (e.g., n257, n258, n260, n261), AND support Sub-6 bands.
+        //   • "Tier 2: 5G Sub-6 (Full Global Bands)"              → 9.00
+        //     - Definition: Supports 5G on Sub-6 GHz frequencies with extensive band coverage (typically 10+ bands) for global roaming.
+        //     - Specification Parsing: Specs list "5G" or band codes starting with lowercase "n" (e.g., n1, n3, n78), with 10 or more distinct Sub-6 bands including major global roaming bands (n1, n3, n78, n28, n77).
+        //   • "Tier 3: 5G Sub-6 (Limited/regional bands)"         → 8.00
+        //     - Definition: Supports 5G on Sub-6 GHz but with band coverage limited to specific markets/regions (typically < 10 bands).
+        //     - Specification Parsing: Specs list "5G" or band codes starting with lowercase "n", but with fewer than 10 distinct Sub-6 bands or restricted to regional configurations (e.g., carrier-locked model).
+        //   • "Tier 4: 4G LTE-Advanced Pro"                       → 6.00
+        //     - Definition: 4G (4th Generation) LTE (Long-Term Evolution) Advanced Pro supporting Category (Cat) 16 or higher modems (speeds >= 1.0 Gigabits per second / Gbps download).
+        //     - Specification Parsing: Specs list "4G", "LTE", or "LTE-A" (LTE-Advanced), AND explicitly document Category 16 or higher or download speeds of 1.0 Gbps or higher, without 5G.
+        //   • "Tier 5: 4G LTE (Basic)"                            → 4.00
+        //     - Definition: Standard 4G LTE supporting up to Category 15 modems (speeds < 1.0 Gbps download) without advanced carrier aggregation.
+        //     - Specification Parsing: Specs list "4G" or "LTE", AND document Category 1 to 15 or download speeds below 1.0 Gbps, without 5G.
+        //   • "Tier 6: 3G"                                        → 2.00
+        //     - Definition: Limited to 3G (3rd Generation) or older technologies, without 4G LTE support.
+        //     - Specification Parsing: Specs list "3G", "UMTS", "HSDPA", "WCDMA", "CDMA2000", or "HSPA", without 4G/5G.
+        //   • "Tier 7: 2G Only"                                   → 0.00
+        //     - Definition: Limited to 2G (2nd Generation) technologies only.
+        //     - Specification Parsing: Specs list only "2G", "GSM", "GPRS", or "EDGE", without 3G/4G/5G.
+        //
+        // AMBIGUITY RESOLUTION & MAPPING RULES (MANDATORY):
+        //   Automated agents must resolve incomplete or ambiguous cellular specifications using the following 3-step logic hierarchy:
+        //
+        //   1. Step 1: Secondary Resolution (SoC Lookup)
+        //      If any parameters (e.g. mmWave support, 5G band count, 4G Category/speed, or overall generation) are unstated or ambiguous in the specs, retrieve the chipset name from identity.hardware_configuration.chipset.value, look it up in the canonical System-on-Chip (SoC) Reference (references/soc_reference.md), and check its cellular_tier column:
+        //        • If the SoC's cellular_tier is "Tier 1" but device specs do not confirm mmWave bands, default to Tier 3 (or Tier 2 if 10+ global bands are explicitly verified).
+        //        • If the SoC's cellular_tier is "Tier 2" or "Tier 3" but specs do not confirm global bands, default to Tier 3.
+        //        • If the SoC's cellular_tier is "Tier 4" → Map to Tier 4.
+        //        • If the SoC's cellular_tier is "Tier 5" → Map to Tier 5.
+        //        • If the SoC's cellular_tier is "Tier 6" → Map to Tier 6.
+        //        • If the SoC's cellular_tier is "Tier 7" → Map to Tier 7.
+        //        • Resolving 4G-Only Device Models with 5G Chipsets: If the primary specification parsing determines the device is 4G-only (disclosing 4G/LTE bands but no 5G bands) but the specific Category or speed is unstated, look up its SoC. If the SoC is listed as a 5G chipset (cellular_tier of "Tier 1", "Tier 2", or "Tier 3"), map the device to Tier 4: 4G LTE-Advanced Pro (since the SoC's integrated modem backend natively supports Advanced Pro speeds when operating on 4G networks).
+        //
+        //   2. Step 2: Tertiary Resolution (Generic Generation Fallbacks)
+        //      If the SoC is unknown or not listed in references/soc_reference.md, but the cellular generation has been verified (e.g., specs state "5G" or "4G LTE" but lack any other technical details):
+        //        • 5G Verified → Default to Tier 3: 5G Sub-6 (Limited/regional bands).
+        //        • 4G Verified → Default to Tier 5: 4G LTE (Basic).
+        //        • 3G Verified → Default to Tier 6: 3G.
+        //        • 2G Verified → Default to Tier 7: 2G Only.
+        //
+        //   3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
+        //      If the cellular specifications are completely missing, and the device's SoC is unknown or not listed in references/soc_reference.md, assign the device to Tier 7: 2G Only as a strict fail-safe to prevent over-scoring, and flag the entry for manual verification.
       "scores": {
         "predicted": 10.00,
         // SCORING GUIDELINE: scores.predicted directly inherits network_technology.subscore.
@@ -4027,16 +4058,25 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "exact_extract": "Proof pending",
         "subscore": 10.00
         // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: Wi-Fi 7"   → 10.00
-        //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 MHz channels, 4K QAM, and Multi-Link Operation (MLO).
-        //   • "Tier 2: Wi-Fi 6E"  → 8.00
-        //     Definition: 802.11ax standard adding support for the 6GHz spectrum, reducing congestion.
-        //   • "Tier 3: Wi-Fi 6"   → 6.00
-        //     Definition: 802.11ax standard on 2.4/5GHz. Improved efficiency and performance in dense environments.
-        //   • "Tier 4: Wi-Fi 5"   → 3.00
+        //   • "Tier 1: Wi-Fi 7"    → 10.00
+        //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 Megahertz (MHz) channels, 4K Quadrature Amplitude Modulation (QAM), and Multi-Link Operation (MLO).
+        //   • "Tier 2: Wi-Fi 6E"   → 8.00
+        //     Definition: 802.11ax standard adding support for the 6 Gigahertz (GHz) spectrum, reducing congestion.
+        //   • "Tier 3: Wi-Fi 6"    → 7.00
+        //     Definition: 802.11ax standard on 2.4 GHz and 5 GHz bands. Improved efficiency and performance in dense environments.
+        //   • "Tier 4: Wi-Fi 5"    → 5.00
         //     Definition: 802.11ac standard.
-        //   • "Tier 5: Legacy"    → 0.00
-        //     Definition: 802.11n (Wi-Fi 4) or older technology.
+        //   • "Tier 5: Wi-Fi 4"    → 3.00
+        //     Definition: 802.11n standard.
+        //   • "Tier 6: Wi-Fi ≤3"   → 0.00
+        //     Definition: 802.11g or older legacy wireless technologies.
+        //
+        // AMBIGUITY RESOLUTION & MAPPING RULES (MANDATORY):
+        //   1. Wi-Fi 6E vs Wi-Fi 6: Spec sheets often list "Wi-Fi 6" or "802.11ax" generically. To qualify for Tier 2 (Wi-Fi 6E), the specifications must explicitly list "Wi-Fi 6E", "6 GHz band support", or "Tri-band" (2.4 GHz + 5 GHz + 6 GHz). If it lists only "802.11ax" or "Wi-Fi 6" without 6 GHz or tri-band, default to Tier 3 (Wi-Fi 6).
+        //   2. Legacy Standard Mappings:
+        //       - Map "Wi-Fi 802.11ac" or "Wi-Fi ac" to Tier 4 (Wi-Fi 5).
+        //       - Map "Wi-Fi 802.11n" or "Wi-Fi n" to Tier 5 (Wi-Fi 4).
+        //       - Map "Wi-Fi 802.11b/g", "Wi-Fi a/b/g", or any older standard to Tier 6 (Wi-Fi ≤3).
       },
       "scores": {
         "predicted": 10.00,
