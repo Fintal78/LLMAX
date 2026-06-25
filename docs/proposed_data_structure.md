@@ -4059,24 +4059,30 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "subscore": 10.00
         // SCORING GUIDELINE: Identify the highest supported Wi-Fi standard. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
         //   • "Tier 1: Wi-Fi 7"    → 10.00
-        //     Definition: 802.11be standard (Extremely High Throughput). Supports 320 Megahertz (MHz) channels, 4K Quadrature Amplitude Modulation (QAM), and Multi-Link Operation (MLO).
+        //     - Definition: 802.11be standard (Extremely High Throughput). Supports 320 Megahertz (MHz) channels, 4K Quadrature Amplitude Modulation (QAM), and Multi-Link Operation (MLO).
+        //     - Specification Parsing: Specs list "Wi-Fi 7", "802.11be", or "Wi-Fi be".
         //   • "Tier 2: Wi-Fi 6E"   → 8.00
-        //     Definition: 802.11ax standard adding support for the 6 Gigahertz (GHz) spectrum, reducing congestion.
+        //     - Definition: 802.11ax standard adding support for the 6 Gigahertz (GHz) spectrum, reducing congestion.
+        //     - Specification Parsing: Specs list "Wi-Fi 6E", "802.11ax (6 GHz)", "6 GHz band support", or "Tri-band" (2.4 GHz + 5 GHz + 6 GHz).
         //   • "Tier 3: Wi-Fi 6"    → 7.00
-        //     Definition: 802.11ax standard on 2.4 GHz and 5 GHz bands. Improved efficiency and performance in dense environments.
+        //     - Definition: 802.11ax standard on 2.4 GHz and 5 GHz bands. Improved efficiency and performance in dense environments.
+        //     - Specification Parsing: Specs list "Wi-Fi 6", "802.11ax" (generically without 6 GHz or tri-band specified), or "Wi-Fi ax".
         //   • "Tier 4: Wi-Fi 5"    → 5.00
-        //     Definition: 802.11ac standard.
+        //     - Definition: 802.11ac standard.
+        //     - Specification Parsing: Specs list "Wi-Fi 5", "802.11ac", or "Wi-Fi ac".
         //   • "Tier 5: Wi-Fi 4"    → 3.00
-        //     Definition: 802.11n standard.
+        //     - Definition: 802.11n standard.
+        //     - Specification Parsing: Specs list "Wi-Fi 4", "802.11n", or "Wi-Fi n".
         //   • "Tier 6: Wi-Fi ≤3"   → 0.00
-        //     Definition: 802.11g or older legacy wireless technologies.
+        //     - Definition: 802.11g or older legacy wireless technologies.
+        //     - Specification Parsing: Specs list "802.11a/b/g", "802.11b/g", or any older wireless standard.
         //
         // AMBIGUITY RESOLUTION & MAPPING RULES (MANDATORY):
-        //   1. Wi-Fi 6E vs Wi-Fi 6: Spec sheets often list "Wi-Fi 6" or "802.11ax" generically. To qualify for Tier 2 (Wi-Fi 6E), the specifications must explicitly list "Wi-Fi 6E", "6 GHz band support", or "Tri-band" (2.4 GHz + 5 GHz + 6 GHz). If it lists only "802.11ax" or "Wi-Fi 6" without 6 GHz or tri-band, default to Tier 3 (Wi-Fi 6).
-        //   2. Legacy Standard Mappings:
-        //       - Map "Wi-Fi 802.11ac" or "Wi-Fi ac" to Tier 4 (Wi-Fi 5).
-        //       - Map "Wi-Fi 802.11n" or "Wi-Fi n" to Tier 5 (Wi-Fi 4).
-        //       - Map "Wi-Fi 802.11b/g", "Wi-Fi a/b/g", or any older standard to Tier 6 (Wi-Fi ≤3).
+        //   If the Wi-Fi standard is completely unstated or missing in the device specifications, assign a conservative standard based on the device's release year:
+        //     - Release year 2024 or later → Default to Tier 3: Wi-Fi 6.
+        //     - Release year 2019 to 2023  → Default to Tier 4: Wi-Fi 5.
+        //     - Release year 2016 to 2018  → Default to Tier 5: Wi-Fi 4.
+        //     - Release year before 2016   → Default to Tier 6: Wi-Fi ≤3.
       },
       "scores": {
         "predicted": 10.00,

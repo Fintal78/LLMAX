@@ -3568,17 +3568,11 @@ The proposal for SASI is supported by the following industry shifts toward verti
 | **0.0**  | **Tier 6: Wi-Fi ≤3** |
 
 > [!NOTE]
-> **Terminology & Abbreviations:**
-> *   **Wi-Fi (Wireless Fidelity):** The standard technology for local wireless network connections.
-> *   **QAM (Quadrature Amplitude Modulation):** A method of packing data onto radio signals. Wi-Fi 7 uses 4K QAM to transmit more data per signal.
-> *   **MLO (Multi-Link Operation):** A feature in Wi-Fi 7 that allows devices to transmit and receive data across multiple frequency bands (2.4 GHz, 5 GHz and 6 GHz) simultaneously.
-
-> [!NOTE]
 > **Understanding the score gaps:** Not all Wi-Fi upgrades are equal leaps, and the scoring reflects this:
 >
-> *   **Wi-Fi 4 → 5 (+2) and Wi-Fi 5 → 6 (+2):** Both brought significant new architectures. Wi-Fi 6 in particular introduced OFDMA — like switching from a single checkout lane to a supermarket with many lanes open at once — massively improving performance in crowded homes or offices.
+> *   **Wi-Fi 4 → 5 (+2) and Wi-Fi 5 → 6 (+2):** Both brought significant new architectures. Wi-Fi 6 in particular introduced OFDMA (Orthogonal Frequency Division Multiple Access). Instead of the router communicating with only one smartphone at a time while forcing all other devices in the room to wait their turn to send or receive data, OFDMA splits a single frequency channel into multiple smaller sub-channels (called Resource Units / RUs). This allows the router to transmit data packets to, and receive data packets from, multiple different smartphones simultaneously — like switching from a single checkout lane to a supermarket with many lanes open at once — massively improving connection responsiveness in crowded homes or offices.
 > *   **Wi-Fi 6 → 6E (+1):** This is **not a new protocol**. Wi-Fi 6E runs the exact same technology as Wi-Fi 6 (both are 802.11ax), simply extended to an additional frequency band (6GHz) for less congestion. Meaningful, but incremental — hence only a 1-point gap.
-> *   **Wi-Fi 6E → 7 (+2):** Wi-Fi 7 is a **brand new protocol** (802.11be) with three fundamental advances: **Multi-Link Operation** (the phone uses 2.4GHz, 5GHz, and 6GHz simultaneously — like having three roads instead of one), **doubled channel width** (320MHz vs 160MHz for faster data bursts), and a new signal encoding that packs ~20% more data per transmission. Real-world speeds roughly double vs. Wi-Fi 6E. This earns its full 2-point gap.
+> *   **Wi-Fi 6E → 7 (+2):** Wi-Fi 7 is a **brand new protocol** (802.11be) with three fundamental advances: **Multi-Link Operation** (MLO, the phone uses 2.4GHz, 5GHz, and 6GHz simultaneously — like having three roads instead of one), **doubled channel width** (320MHz vs 160MHz for faster data bursts), and a new signal encoding that packs ~20% more data per transmission. Real-world speeds roughly double vs. Wi-Fi 6E. This earns its full 2-point gap.
 
 ### 🔹 7.4 Bluetooth & Audio Codecs
 *Description:* Bluetooth quality. Newer versions offer stability and efficiency, while superior codecs ensure high-fidelity audio.
