@@ -450,6 +450,17 @@ In this particular case the fields are optional to enable flexibility. Use only 
 | `subscore_path`       | **[OPTIONAL]** Path to the subscore value: `"Section_Subsection.parameter.subscore"`.                              |
 | `calculation_formula` | **[OPTIONAL]** The formula used to derive `subscore`. Omit if `subscore_path` is present. Placed after `subscore`. |
 
+#### Alternative Structure: Calculated Parameter Block
+When a parameter is calculated internally from other variables (rather than referenced directly via `value_path` or scraped from an external source), it uses an alternative structure containing only `value` and `calculation_formula`.
+In this configuration, the fields are restricted to:
+
+| Field                 | Description                                                                                                        |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| `value`               | The calculated parameter value.                                                                                    |
+| `calculation_formula` | The mathematical formula used to calculate the `value` itself.                                                     |
+
+*Constraint:* To avoid ambiguity regarding what field `calculation_formula` is applied to (the `value` or the `subscore`), this calculated parameter block MUST NOT contain any subscore fields. If the calculated parameter itself needs to be evaluated (yielding a subscore), the scoring fields (`subscore` and its corresponding `calculation_formula`) must be placed in a separate, dedicated data block.
+
 **Example where the path `subscore_path` is not used:**
 ```json
 "1_2_durability": {

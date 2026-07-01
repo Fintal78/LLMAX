@@ -149,7 +149,7 @@
 
 ### 8.1 Battery Endurance (Model)
 *   `Battery_GSMArena_Hours_Min` = 6.0 (Score 0) [Minimum (Min) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover low-end or legacy 2016 devices]
-*   `Battery_GSMArena_Hours_Max` = 25.0 (Score 10) [Maximum (Max) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover high-end or highly efficient flagships]
+*   `Battery_GSMArena_Hours_Max` = 21.0 (Score 10) [Maximum (Max) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover the highest-performing flagship of the period (Xiaomi 17 Pro Max at 20:50h)]
 *   `Battery_Predictor_Hours_Min` = 5.0 (Score 0) [Minimum (Min) predictor active endurance hours]
 *   `Battery_Predictor_Hours_Max` = 18.0 (Score 10) [Maximum (Max) predictor active endurance hours]
 

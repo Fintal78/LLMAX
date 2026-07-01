@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "6.5",
+    "schema_version": "6.7",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-06-24"
+    "last_updated": "2026-06-26"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -1992,91 +1992,91 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ PERFORMANCE / PRIME CORES — Flagship tier (highest IPC, used in prime and high-performance clusters)             │
     // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-    // | C1-Ultra (Lumex)             |          10.00          |           4.21           |      2048     |  ARMv9.3  |      1.10     |
-    // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |     16384     |  ARMv9.2  |      1.08     |
-    // | Oryon Gen 2                  |           9.80          |           4.32           |     12288     |  ARMv8.7  |      1.05     |
-    // | Apple A17 Pro Cores          |           9.10          |           3.78           |     16384     |  ARMv8.6  |      1.04     |
-    // | Cortex-X925                  |           9.00          |           3.60           |      3072     |  ARMv9.2  |      1.08     |
-    // | C1-Premium (Lumex)           |           8.45          |           3.50           |      1024     |  ARMv9.3  |      1.10     |
-    // | Apple A16 Bionic             |           8.25          |           3.46           |     16384     |  ARMv8.6  |      1.04     |
-    // | Cortex-X4                    |           7.95          |           3.30           |      2048     |  ARMv9.2  |      1.08     |
-    // | Apple A15 Bionic             |           7.30          |           3.22           |     12288     |  ARMv8.6  |      1.04     |
-    // | Cortex-X3                    |           7.15          |           3.20           |      1024     |  ARMv9.0  |      1.06     |
-    // | Apple A14 Bionic             |           6.70          |           3.10           |      8192     |  ARMv8.4  |      1.02     |
-    // | Cortex-X2                    |           6.40          |           3.00           |      1024     |  ARMv9.0  |      1.06     |
-    // | Apple A13 Lightning          |           5.80          |           2.65           |      8192     |  ARMv8.4  |      1.02     |
-    // | Cortex-X1                    |           5.60          |           2.84           |      1024     |  ARMv8.2  |      1.00     |
-    // | Apple A12 Vortex             |           4.95          |           2.49           |      8192     |  ARMv8.3  |      1.01     |
-    // | Apple A11 Monsoon            |           4.15          |           2.39           |      8192     |  ARMv8.2  |      1.00     |
-    // | Qualcomm Kryo 585            |           3.60          |           2.84           |       512     |  ARMv8.2  |      1.00     |
-    // | Exynos M5 (Lion)             |           3.30          |           2.73           |       512     |  ARMv8.2  |      1.00     |
-    // | Qualcomm Kryo 485            |           3.00          |           2.84           |       512     |  ARMv8.2  |      1.00     |
-    // | Apple A10 Hurricane          |           2.90          |           2.34           |      3072     |  ARMv8.1  |      0.97     |
-    // | Exynos M4 (Cheetah)          |           2.65          |           2.73           |       512     |  ARMv8.2  |      1.00     |
-    // | Qualcomm Kryo 385            |           2.30          |           2.80           |      2048     |  ARMv8.2  |      1.00     |
-    // | Exynos M3 (Meerkat)          |           2.20          |           2.70           |       512     |  ARMv8.0  |      0.96     |
-    // | Qualcomm Kryo 280            |           1.90          |           2.45           |      2048     |  ARMv8.0  |      0.96     |
-    // | Exynos M2                    |           1.80          |           2.30           |      2048     |  ARMv8.0  |      0.96     |      
-    // | Exynos M1 (Mongoose)         |           1.70          |           2.30           |      2048     |  ARMv8.0  |      0.96     |
-    // | Qualcomm Kryo (2.40 GHz)     |           1.76          |           2.40           |      1024     |  ARMv8.0  |      0.96     |
-    // | Qualcomm Kryo (2.15 GHz)     |           1.60          |           2.15           |      1024     |  ARMv8.0  |      0.96     |
-    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score | idle_efficiency_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|:---------------------:|
+    // | C1-Ultra (Lumex)             |          10.00          |           4.21           |      2048     |  ARMv9.3  |      1.10     |          0.30         |
+    // | Apple Everest (A18/Pro)      |          10.00          |           4.05           |     16384     |  ARMv9.2  |      1.08     |          1.30         |
+    // | Oryon Gen 2                  |           9.80          |           4.32           |     12288     |  ARMv8.7  |      1.05     |          1.00         |
+    // | Apple A17 Pro Cores          |           9.10          |           3.78           |     16384     |  ARMv8.6  |      1.04     |          1.10         |
+    // | Cortex-X925                  |           9.00          |           3.60           |      3072     |  ARMv9.2  |      1.08     |          0.80         |
+    // | C1-Premium (Lumex)           |           8.45          |           3.50           |      1024     |  ARMv9.3  |      1.10     |          0.60         |
+    // | Apple A16 Bionic             |           8.25          |           3.46           |     16384     |  ARMv8.6  |      1.04     |          0.90         |
+    // | Cortex-X4                    |           7.95          |           3.30           |      2048     |  ARMv9.2  |      1.08     |          0.50         |
+    // | Apple A15 Bionic             |           7.30          |           3.22           |     12288     |  ARMv8.6  |      1.04     |          0.80         |
+    // | Cortex-X3                    |           7.15          |           3.20           |      1024     |  ARMv9.0  |      1.06     |          0.30         |
+    // | Apple A14 Bionic             |           6.70          |           3.10           |      8192     |  ARMv8.4  |      1.02     |          0.60         |
+    // | Cortex-X2                    |           6.40          |           3.00           |      1024     |  ARMv9.0  |      1.06     |          0.10         |
+    // | Apple A13 Lightning          |           5.80          |           2.65           |      8192     |  ARMv8.4  |      1.02     |          0.40         |
+    // | Cortex-X1                    |           5.60          |           2.84           |      1024     |  ARMv8.2  |      1.00     |          0.00         |
+    // | Apple A12 Vortex             |           4.95          |           2.49           |      8192     |  ARMv8.3  |      1.01     |          0.30         |
+    // | Apple A11 Monsoon            |           4.15          |           2.39           |      8192     |  ARMv8.2  |      1.00     |          0.20         |
+    // | Qualcomm Kryo 585            |           3.60          |           2.84           |       512     |  ARMv8.2  |      1.00     |          2.30         |
+    // | Exynos M5 (Lion)             |           3.30          |           2.73           |       512     |  ARMv8.2  |      1.00     |          1.30         |
+    // | Qualcomm Kryo 485            |           3.00          |           2.84           |       512     |  ARMv8.2  |      1.00     |          2.60         |
+    // | Apple A10 Hurricane          |           2.90          |           2.34           |      3072     |  ARMv8.1  |      0.97     |          0.10         |
+    // | Exynos M4 (Cheetah)          |           2.65          |           2.73           |       512     |  ARMv8.2  |      1.00     |          1.00         |
+    // | Qualcomm Kryo 385            |           2.30          |           2.80           |      2048     |  ARMv8.2  |      1.00     |          2.00         |
+    // | Exynos M3 (Meerkat)          |           2.20          |           2.70           |       512     |  ARMv8.0  |      0.96     |          0.80         |
+    // | Qualcomm Kryo 280            |           1.90          |           2.45           |      2048     |  ARMv8.0  |      0.96     |          1.80         |
+    // | Exynos M2                    |           1.80          |           2.30           |      2048     |  ARMv8.0  |      0.96     |          0.60         |
+    // | Exynos M1 (Mongoose)         |           1.70          |           2.30           |      2048     |  ARMv8.0  |      0.96     |          0.30         |
+    // | Qualcomm Kryo (2.40 GHz)     |           1.76          |           2.40           |      1024     |  ARMv8.0  |      0.96     |          1.40         |
+    // | Qualcomm Kryo (2.15 GHz)     |           1.60          |           2.15           |      1024     |  ARMv8.0  |      0.96     |          1.30         |
+    // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------+-----------------------|
     // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ PERFORMANCE / MID CORES — Used in performance clusters (high IPC but lower than prime cores)                     │
     // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-    // | C1-Pro (Lumex)               |           5.35          |           2.70           |       512     |  ARMv9.3  |      1.10     |
-    // | Cortex-A725                  |           5.25          |           2.80           |       512     |  ARMv9.2  |      1.08     |
-    // | Cortex-A720                  |           5.00          |           2.80           |       512     |  ARMv9.2  |      1.08     |
-    // | Cortex-A715                  |           4.40          |           2.50           |       512     |  ARMv9.0  |      1.06     |
-    // | Cortex-A710                  |           4.15          |           2.50           |       512     |  ARMv9.0  |      1.06     |
-    // | Cortex-A78                   |           3.80          |           2.40           |       512     |  ARMv8.2  |      1.00     |
-    // | Cortex-A77                   |           3.55          |           2.40           |       512     |  ARMv8.2  |      1.00     |
-    // | Cortex-A76                   |           2.90          |           2.20           |       512     |  ARMv8.2  |      1.00     |
-    // | Cortex-A75                   |           2.20          |           2.00           |       512     |  ARMv8.2  |      1.00     |
-    // | Cortex-A73                   |           1.80          |           2.00           |      1024     |  ARMv8.0  |      0.96     |
-    // | Cortex-A72                   |           1.60          |           2.50           |      1024     |  ARMv8.0  |      0.96     |
-    // | Cortex-A57                   |           1.45          |           2.00           |      2048     |  ARMv8.0  |      0.96     |
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score | idle_efficiency_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|:---------------------:|
+    // | C1-Pro (Lumex)               |           5.35          |           2.70           |       512     |  ARMv9.3  |      1.10     |          5.20         |
+    // | Cortex-A725                  |           5.25          |           2.80           |       512     |  ARMv9.2  |      1.08     |          5.00         |
+    // | Cortex-A720                  |           5.00          |           2.80           |       512     |  ARMv9.2  |      1.08     |          4.80         |
+    // | Cortex-A715                  |           4.40          |           2.50           |       512     |  ARMv9.0  |      1.06     |          4.50         |
+    // | Cortex-A710                  |           4.15          |           2.50           |       512     |  ARMv9.0  |      1.06     |          4.20         |
+    // | Cortex-A78                   |           3.80          |           2.40           |       512     |  ARMv8.2  |      1.00     |          4.00         |
+    // | Cortex-A77                   |           3.55          |           2.40           |       512     |  ARMv8.2  |      1.00     |          3.50         |
+    // | Cortex-A76                   |           2.90          |           2.20           |       512     |  ARMv8.2  |      1.00     |          3.00         |
+    // | Cortex-A75                   |           2.20          |           2.00           |       512     |  ARMv8.2  |      1.00     |          2.50         |
+    // | Cortex-A73                   |           1.80          |           2.00           |      1024     |  ARMv8.0  |      0.96     |          2.00         |
+    // | Cortex-A72                   |           1.60          |           2.50           |      1024     |  ARMv8.0  |      0.96     |          1.50         |
+    // | Cortex-A57                   |           1.45          |           2.00           |      2048     |  ARMv8.0  |      0.96     |          1.00         |
     // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
     // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ EFFICIENCY CORES — ARM standard efficiency cores (low IPC, optimized for power savings)                          │
     // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-    // | C1-Nano (Lumex)              |           1.00          |           2.00           |       128     |  ARMv9.3  |      1.10     |
-    // | Cortex-A525                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
-    // | Cortex-A520                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |
-    // | Cortex-A510                  |           1.00          |           2.00           |       128     |  ARMv9.0  |      1.06     |
-    // | Cortex-A55                   |           0.60          |           1.80           |       128     |  ARMv8.2  |      1.00     |
-    // | Cortex-A53                   |           0.50          |           1.80           |       512     |  ARMv8.0  |      0.96     |
-    // | Cortex-A35                   |           0.45          |           1.50           |       512     |  ARMv8.0  |      0.96     |
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score | idle_efficiency_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|:---------------------:|
+    // | C1-Nano (Lumex)              |           1.00          |           2.00           |       128     |  ARMv9.3  |      1.10     |         10.00         |
+    // | Cortex-A525                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |         10.00         |
+    // | Cortex-A520                  |           1.00          |           2.00           |       128     |  ARMv9.2  |      1.08     |         10.00         |
+    // | Cortex-A510                  |           1.00          |           2.00           |       128     |  ARMv9.0  |      1.06     |         10.00         |
+    // | Cortex-A55                   |           0.60          |           1.80           |       128     |  ARMv8.2  |      1.00     |          8.00         |
+    // | Cortex-A53                   |           0.50          |           1.80           |       512     |  ARMv8.0  |      0.96     |          7.00         |
+    // | Cortex-A35                   |           0.45          |           1.50           |       512     |  ARMv8.0  |      0.96     |          8.00         |
     // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
     // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ APPLE EFFICIENCY CORES — Apple custom efficiency cores (used in the efficiency cluster of Apple SoCs)            │
     // │ NOTE: Apple efficiency cores differ substantially from their performance counterparts in IPC and pipeline        │
     // │ width. They MUST be listed separately to ensure correct multi-core throughput calculations for all iPhones.      │
     // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-    // | Apple A18 E-core (Sawtooth)  |           1.00          |           2.42           |      4096     |  ARMv9.2  |      1.08     |
-    // | Apple A17 Pro E-core         |           1.00          |           2.11           |      4096     |  ARMv8.6  |      1.04     |
-    // | Apple A16 E-core (Sawtooth)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
-    // | Apple A15 E-core (Blizzard)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |
-    // | Apple A14 E-core (Icestorm)  |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
-    // | Apple A13 E-core (Thunder)   |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |
-    // | Apple A12 E-core (Tempest)   |           0.60          |           1.60           |      2048     |  ARMv8.3  |      1.01     |
-    // | Apple A11 E-core (Mistral)   |           0.55          |           1.42           |      1024     |  ARMv8.2  |      1.00     |
-    // | Apple A10 E-core (Zephyr)    |           0.45          |           1.05           |      3072     |  ARMv8.1  |      0.97     |
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score | idle_efficiency_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|:---------------------:|
+    // | Apple A18 E-core (Sawtooth)  |           1.00          |           2.42           |      4096     |  ARMv9.2  |      1.08     |         10.00         |
+    // | Apple A17 Pro E-core         |           1.00          |           2.11           |      4096     |  ARMv8.6  |      1.04     |         10.00         |
+    // | Apple A16 E-core (Sawtooth)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |         10.00         |
+    // | Apple A15 E-core (Blizzard)  |           1.00          |           2.02           |      4096     |  ARMv8.6  |      1.04     |         10.00         |
+    // | Apple A14 E-core (Icestorm)  |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |          9.50         |
+    // | Apple A13 E-core (Thunder)   |           0.80          |           1.80           |      4096     |  ARMv8.4  |      1.02     |          9.00         |
+    // | Apple A12 E-core (Tempest)   |           0.60          |           1.60           |      2048     |  ARMv8.3  |      1.01     |          8.50         |
+    // | Apple A11 E-core (Mistral)   |           0.55          |           1.42           |      1024     |  ARMv8.2  |      1.00     |          8.00         |
+    // | Apple A10 E-core (Zephyr)    |           0.45          |           1.05           |      3072     |  ARMv8.1  |      0.97     |          7.00         |
     // |------------------------------+-------------------------+--------------------------+---------------+-----------+---------------|
     // ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ LEGACY APPLE PERFORMANCE CORES — Pre-2016 borderline entries retained for completeness                           │
     // └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score |
-    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|
-    // | Apple A9 (Twister)           |           0.50          |           1.85           |      3072     |  ARMv8.0  |      0.96     |
+    // | CPU Core Architecture        | core_architecture_score | reference_frequency_ghz  | typical_l2_kb |  isa_gen  | isa_gen_score | idle_efficiency_score |
+    // |:-----------------------------|:-----------------------:|:------------------------:|:-------------:|:---------:|:-------------:|:---------------------:|
+    // | Apple A9 (Twister)           |           0.50          |           1.85           |      3072     |  ARMv8.0  |      0.96     |          4.00         |
     // ---------------------------------------------------------------------------------------------------------------------------------------
 
     "6_1_0_system_on_chip_reference": {
@@ -4006,6 +4006,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //
         //   3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
         //      If the cellular specifications are completely missing, and the device's SoC is unknown or not listed in references/soc_reference.md, assign the device to Tier 7: 2G Only as a strict fail-safe to prevent over-scoring, and flag the entry for manual verification.
+      },
       "scores": {
         "predicted": 10.00,
         // SCORING GUIDELINE: scores.predicted directly inherits network_technology.subscore.
@@ -4383,113 +4384,186 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // SCORING GOAL: Evaluates smartphone battery life by prioritizing real-world performance data over theoretical specifications via a Benchmark-First Approach with Predictive Interpolation.
       
       // ═══════════════════════════════════════════════════════════════════════════
-      // METHOD A — Benchmark Validation (Primary)
+      // METHOD A — Benchmark Validation (Primary Path)
       // ═══════════════════════════════════════════════════════════════════════════
       "method_a_benchmark_Battery": {
         "gsmarena_active_use_score_v2": {
-          "value": 16.75,
-          "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2667p3.php",
-          "exact_extract": "Active use score: 16:45h",
-          "subscore": 9.45
-          // SCORING GUIDELINE: source is GSMArena.
-          // • WHERE TO FIND IT: GSMarena.com review (Battery page).
-          // • EXTRACTION RULE: Use the "Active use score" (e.g., "16:45h"). 
-          // • CALCULATION: Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the normalization formula.
-          // SCORING GUIDELINE: subscore = 10 * (value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10.
-          // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
+          "value": 13.80,
+          "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2670p3.php",
+          "exact_extract": "Active use score: 13:48h"
+          // SCORING GUIDELINE: Sourced from Global System for Mobile Communications Arena (GSMArena) review (Battery page). Use the "Active use score" (format HH:MM). Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the value. If not available, set value to "Not found" and source/exact_extract to "N/A".
+          // In November 2023, GSMArena updated its battery test from Version 1.0 (v1.0) to Version 2.0 (v2.0). The v2.0 Active Use Score (gsmarena_active_use_score_v2) measures continuous active runtime in hours (representing Screen-On Time under calls, web browsing, YouTube streaming, and gaming, completely excluding standby time). The legacy v1.0 Endurance Rating (gsmarena_endurance_rating_v1) measures total elapsed hours including 21 hours of daily standby. The v2.0 score is the primary metric and must be used whenever available.
         },
-        "phonearena_battery_life_estimate": {
-          "value": 15.50,
-          "source": "https://www.phonearena.com/phones/Samsung-Galaxy-S24-Ultra_id12151/benchmarks",
-          "exact_extract": "Combined battery life: 15h 30min",
-          "subscore": 9.20
-          // SCORING GUIDELINE: source is PhoneArena.
-          // • WHERE TO FIND IT: PhoneArena.com device specs page, under "Ratings and Benchmarks".
-          // • EXTRACTION RULE: Use the "Combined battery life" estimate.
-          // SCORING GUIDELINE: subscore = 10 * (value - Battery_PhoneArena_Hours_Min) / (Battery_PhoneArena_Hours_Max - Battery_PhoneArena_Hours_Min), clamped 0-10.
-          // If no benchmark score is available set value to "Not found" and source, exact_extract and subscore to "N/A".
-        }
+        "gsmarena_endurance_rating_v1": {
+          "value": "Not found",
+          "source": "N/A",
+          "exact_extract": "N/A"
+          // SCORING GUIDELINE: Sourced from Global System for Mobile Communications Arena (GSMArena) review (Battery page) legacy tests. Use the "Endurance Rating" in hours (e.g., 140). If not available, set value to "Not found" and source/exact_extract to "N/A".
+          // Both fields for v1.0 and v2.0 must always be populated if their respective data can be found on GSMArena (even when v2.0 is available, extracting v1.0 is highly valuable to help validate and fine-tune the conversion ratio of 8.4).
+        },
+        "t_unified_hours": {
+          "value": 13.80,
+          "calculation_formula": "gsmarena_active_use_score_v2.value != 'Not found' ? gsmarena_active_use_score_v2.value : (gsmarena_endurance_rating_v1.value != 'Not found' ? gsmarena_endurance_rating_v1.value / 8.4 : 'Not found')",
+          // SCORING GUIDELINE: Converts the legacy Endurance Rating (ER) to an Active Use Score (AUS) equivalent if v2 is missing by dividing by the conversion constant of 8.4.
+        },
+        "subscore": 5.20,
+        "calculation_formula": "10.0 * (t_unified_hours.value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)"
+        // SCORING GUIDELINE: Normalized score (subscore) is calculated using linear bounds from scoring_constants.md (clamped to [0.00, 10.00]). Set subscore to "N/A" if t_unified_hours.value is "Not found".
       },
       
       // ═══════════════════════════════════════════════════════════════════════════
       // METHOD C — Technical Prediction Model (Tertiary / baseline for Method B)
       // ═══════════════════════════════════════════════════════════════════════════
       "method_c_prediction_model_Battery": {
-        "layer_a_energy_score": {
-          "energy_capacity_wh": {
-            "value": 19.25,
-            "value_path": "theoretical_calculation",
-            "subscore": 6.62
-            // GUIDELINE: Energy (Wh) = (mAh * V) / 1000. 
-            // VOLTAGE LOGIC: Use identity.hardware_configuration.battery_nominal_voltage_v. If N/A, fallback to 3.85V (Single-cell) if wired_charging_watts < 120W, otherwise 7.7V (Dual-cell).
-            // SCORING GUIDELINE: subscore = 10 * (Wh - Battery_Energy_Wh_Min) / (Battery_Energy_Wh_Max - Battery_Energy_Wh_Min).
-          },
-          "predicted_score": 6.62
-          // SCORING GUIDELINE: Directly inherits energy_capacity_wh.subscore.
+        // SCORING GOAL: Predicts the active battery runtime in hours using a physical supply-and-demand model and converts it to a predicted score.
+        
+        // --- [1] SUPPLY MODELING (E_supply) ---
+        "battery_capacity_mah": {
+          "value": 5000,
+          "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
+          "exact_extract": "BATTERY [...] Li-Ion 5000 mAh, non-removable"
+          // SCORING GUIDELINE: Total charge capacity in milliampere-hours (mAh).
         },
-        "layer_b_hardware_efficiency_score": {
-          // SCORING GUIDELINE (Section 8.1 Layer B): HEI = (0.40 * SoC) + (0.40 * Display) + (0.10 * Connectivity) + (0.10 * Thermal).
-          "soc_efficiency_mapping": {
+        "battery_nominal_voltage_v": {
+          "value": 3.85,
+          "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+          "exact_extract": "Nominal Voltage: 3.85V"
+          // SCORING GUIDELINE: Nominal operating voltage in Volts (V). To correctly identify this value, apply the following prioritized Nominal Voltage Detection Logic:
+          //   1. Explicit Voltage: If manufacturer specifications or reliable teardown data contains an explicit numeric value for the battery voltage in Volts (V), use that value.
+          //   2. Dual-Cell Configuration: If the battery configuration is verified to be dual-cell (e.g., text descriptions in specifications or teardowns contain "Dual-cell", "Dual cell", "2S", or "dual-cell" [case-insensitive]), use 7.70 Volts (V) (representing two 3.85 Volts [V] cells connected in series).
+          //   3. High-Power Charging Heuristic: If the maximum wired charging speed is 120 Watts (W) or higher, use 7.70 Volts (V) (as ultra-fast charging architectures require dual-cell configurations to halve charging current and prevent excessive thermal losses).
+          //   4. Default Fallback: Otherwise, use 3.85 Volts (V) (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
+        },
+          "energy_capacity_wh": {
+          "value": 19.2500,
+          "calculation_formula": "(battery_capacity_mah.value * battery_nominal_voltage_v.value) / 1000",
+          // Stored energy in Watt-hours (Wh).
+        },
+
+        // --- [2] DEMAND MODELING (P_demand) ---
+        "display_power_demand_w": {
+          "refresh_rate_min_hz": {
+            "value": 1,
+            "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2670p3.php",
+            "exact_extract": "The Galaxy S24 Ultra's display refresh rate can vary in the 1Hz to 120Hz range"
+            // SCORING GUIDELINE: Minimum display refresh rate in Hertz (Hz) for variable displays (Low-Temperature Polycrystalline Oxide (LTPO) panels). Set to "N/A" if the display does not support adaptive dynamic refresh rates.
+          },
+          "f_refresh": {
+            "effective_frequency_hz": {
+              "value": 42.6500,
+              "calculation_formula": "refresh_rate_min_hz.value != 'N/A' ? (0.65 * refresh_rate_min_hz.value + 0.35 * 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value) : 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value",
+            },
+            "value": 0.9566,
+            "calculation_formula": "1 + 0.0025 * (effective_frequency_hz.value - 60)",
+            // SCORING GUIDELINE: Refresh Rate Factor. Adjusts panel draw based on dynamic frequency. Under adaptive display, effective_frequency_hz models the 65% static (min. refresh rate) and 35% peak (max. refresh rate) motion duty cycle. Without adaptive display, the maximum refresh rate is used instead (sourced from Section 2.6).
+          },
+          "f_resolution": {
+            "value": 1.0623,
+            "calculation_formula": "1 + 0.025 * (6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_megapixels_mp.value - 2)"
+            // SCORING GUIDELINE: Resolution Factor. Models pixel density driving current and Graphics Processing Unit (GPU) rendering overhead, centered around a standard 2.0 Megapixels (MP) baseline. References Megapixels from Section 6.10. Note: While f_resolution could be directly fetched from Section 6.10 (as it shares the same base formula), it is kept as a separate calculation here because Section 8.1 battery endurance modeling and Section 6.10 thermal dissipation modeling may require different correction factors or scaling behaviors in the future, allowing for independent model fine-tuning.
+          },
+          "p_display": {
+            "value": 0.4037,
+            "calculation_formula": "6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_surface_area_cm2.value * 6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.panel_efficiency.c_panel_w_cm2 * f_refresh.value * f_resolution.value"
+            // SCORING GUIDELINE: Display active power demand in Watts (W). Directly references display surface area in square centimeters (cm²) and panel efficiency constant c_panel_w_cm2 (Watts per square centimeter - W/cm²) from Section 6.10.
+          }
+        },
+
+        "soc_power_demand_w": {
+          "soc_mapping": {
             "identifier": "Snapdragon 8 Gen 3",
             "identifier_path": "identity.hardware_configuration.chipset.value",
             "reference_table": "references/soc_reference.md",
-            "process_node_score": 9.0, // Mapped from references/soc_reference.md
-            "cpu_efficiency_score": 9.2, // AES calculated from Section 6.1.0
-            "gpu_efficiency_score": 8.8, // Efficiency score from Section 6.3.0
-            "soc_efficiency_index": 9.02,
-            "weight": 0.40
-            // GUIDELINE: soc_efficiency_index = (0.50 * node) + (0.30 * cpu) + (0.20 * gpu).
+            "power_peak_soc_w": 14.0,
+            "node_nm": 4.0
+            // SCORING GUIDELINE: Retrieve the peak SoC power in Watts (W) and the process node size in nanometers (nm) from references/soc_reference.md by matching the chipset identifier.
           },
-          "display_efficiency_mapping": {
-            "identifier": "Tier 2: LTPO OLED",
-            "identifier_path": "2_1_panel_architecture.panel_type.value",
-            "reference_table": "2_1_panel_technology_scoring_table",
-            "panel_tech_score": 10.0,
-            "refresh_efficiency_score": 9.5,
-            "resolution_efficiency_score": 8.5,
-            "display_efficiency_index": 9.375,
-            "weight": 0.40
-            // GUIDELINE: display_efficiency_index = (0.35 * panel) + (0.35 * refresh) + (0.30 * resolution).
+          "f_node": {
+            "value": 1.0607,
+            "calculation_formula": "1 + 0.4855 * log(soc_mapping.node_nm / 3)"
+            // SCORING GUIDELINE: Process Node Factor. Models silicon-level dynamic power and leakage scaling, anchored on a 3.0 nm fabrication baseline.
           },
-          "connectivity_efficiency_mapping": {
-            "identifier": "5G Full / WiFi 7",
-            "cellular_score": 1.0,
-            "wifi_score": 0.0,
-            "connectivity_efficiency_index": 0.70,
-            "weight": 0.10
-            // GUIDELINE: connectivity_efficiency_index = (0.70 * cellular) + (0.30 * wifi).
+          "cpu_aes_score": {
+            "value": 4.4579,
+            "calculation_formula": "10.0 * (((CPU_multi_clusters.best.core_count.value * CPU_multi_clusters.best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.second_best.core_count.value * CPU_multi_clusters.second_best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.third_best.core_count.value * CPU_multi_clusters.third_best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.fourth_best.core_count.value * CPU_multi_clusters.fourth_best.architecture_mapping.core_architecture_score)) / (CPU_multi_clusters.best.core_count.value + CPU_multi_clusters.second_best.core_count.value + CPU_multi_clusters.third_best.core_count.value + CPU_multi_clusters.fourth_best.core_count.value)) / 9.80"
+            // where CPU_multi_clusters is a shortcut for 6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters
+            // SCORING GUIDELINE: Central Processing Unit (CPU) Architecture Efficiency Score (CPU_AES_Score). Calculated as the core-weighted average of core Instructions Per Cycle (IPC) scores across the 4 clusters defined in Section 6.1, normalized so that the absolute best device (Snapdragon 8 Elite with 9.80 raw average) scores 10.00. Cores with count or scores set to "N/A" are treated as 0 in count and products.
           },
-          "thermal_efficiency_mapping": {
-            "identifier_path": "6_10_thermal_dissipation_stability.scores.final.value",
-            "thermal_efficiency_index": 7.63,
-            "weight": 0.10
-            // GUIDELINE: Directly inherits TDSI predicted score.
+          "f_cpu": {
+            "value": 1.2217,
+            "calculation_formula": "1 + 0.04 * (10 - cpu_aes_score.value)"
+            // SCORING GUIDELINE: CPU Architecture Factor. Scales power based on CPU microarchitectural core efficiency (IPC proxy).
           },
-          "predicted_score": 8.19
-          // SCORING GUIDELINE: HEI = Sum(component_index * weight).
+          "f_gpu": {
+            "value": 1.0100,
+            "gpu_efficiency": 9.0,
+            "gpu_efficiency_source_path": "6_processing_power_and_performance.6_3_graphics_and_ray_tracing_performance.GPU_ARCHITECTURE_LOOKUP_TABLE[6_processing_power_and_performance.6_3_0_gpu_architecture_reference.gpu_model.value]",
+            "calculation_formula": "1.0 + 0.01 * (10.0 - gpu_efficiency)"
+            // SCORING GUIDELINE: GPU Architecture Factor. Adjusts for GPU-specific static leakage and efficiency score from Section 6.3 lookup table.
+          },
+          "p_soc": {
+            "value": 0.6610,
+            "calculation_formula": "(0.40 + 0.0075 * soc_mapping.power_peak_soc_w) * f_node.value * f_cpu.value * f_gpu.value"
+            // SCORING GUIDELINE: System on Chip (SoC) average power demand in Watts (W). 0.40W is static base board leakage. 0.0075 is the average active duty cycle under standard daily mixed usage.
+          }
         },
-        "layer_c_software_optimization_score": {
-          "value": 9.00
-          // SCORING GUIDELINE: OS level power management architecture.
+
+        "connectivity_power_demand_w": {
+          "p_connectivity": {
+            "value": 0.0710,
+            "cellular_modem_active_power_w": 0.1800,
+            "cellular_modem_source_path": "7_connectivity_and_sensors.7_1_cellular_capabilities.network_technology.value",
+            "wifi_active_power_w": 0.0500,
+            "wifi_source_path": "7_connectivity_and_sensors.7_3_wifi_standard.standard.value",
+            "calculation_formula": "0.20 * cellular_modem_active_power_w + 0.70 * wifi_active_power_w"
+            // SCORING GUIDELINE: Average connectivity active power draw in Watts (W) under mixed daily workloads. Cellular modem has a 20% active duty cycle (Voice over Long-Term Evolution [VoLTE] testing) mapped from Section 7.1 (Tier 1 = 0.18W, Tiers 2-3 = 0.14W, Tiers 4-5 = 0.09W, Tiers 6-7 = 0.05W). Wireless Fidelity (Wi-Fi) radio has a 70% duty cycle (browsing/streaming) mapped from Section 7.3 (Tier 1 = 0.05W, Tiers 2-3 = 0.04W, Tiers 4-6 = 0.03W). Sequential duty cycles align with empirical tests without concurrent user data transmission.
+          }
         },
-        "predicted_score": 7.65,
-        // SCORING GUIDELINE (Section 8.1 Method C): Weighted average of layers A, B, and C (Weights: A=0.45, B=0.35, C=0.20).
-        "scores": {
-          "subscore_LayerA": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_a_energy_score.predicted_score" },
-          "subscore_LayerB": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_b_hardware_efficiency_score.predicted_score" },
-          "subscore_LayerC": { "subscore_path": "8_1_battery_endurance_score.method_c_prediction_model_Battery.layer_c_software_optimization_score.value" }
+
+        "modifiers": {
+          "f_software_overhead": {
+            "value": 1.0500,
+            "os_generation_score": 8.5,
+            "os_generation_source_path": "references/os_version_reference.md[5_software_and_longevity.operating_system_version.value]",
+            "calculation_formula": "1.0 + 0.10 * (10.0 - os_generation_score) / 10.0 + 0.10 * (10.0 - 5_software_and_longevity.5_2_system_cleanliness_control.scores.predicted) / 10.0"
+            // SCORING GUIDELINE: Software Inefficiency Modifier. Captures process freezing, wake-lock optimizations, and background bloatware draw. OS generation score is mapped from references/os_version_reference.md using the OS version. Cleanliness uses the predicted score from Section 5.2.
+          },
+          "f_thermal_overhead": {
+            "value": 1.0071,
+            "calculation_formula": "1.0 + 0.03 * (10.0 - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value) / 10.0"
+            // SCORING GUIDELINE: Thermal Efficiency Modifier. Models transistor leakage increase and battery discharge degradation at high temperatures. Sourced from Section 6.10 final score.
+          }
+        },
+
+        "p_demand": {
+          "value": 1.1806,
+          "calculation_formula": "(display_power_demand_w.p_display.value + (soc_power_demand_w.p_soc.value + connectivity_power_demand_w.p_connectivity.value) * modifiers.f_software_overhead.value) * modifiers.f_thermal_overhead.value"
+          // SCORING GUIDELINE: Total physical active power consumption under daily mixed workload in Watts (W). Software overhead scales SoC and connectivity active cycles without scaling display hardware base draw.
+        },
+
+        // --- [3] RUNTIME PREDICTION (T_predicted) ---
+        "t_predicted": {
+          "value": 16.3053,
+          "calculation_formula": "energy_capacity_wh.value / p_demand.value"
+          // SCORING GUIDELINE: Predicted active mixed-use runtime in hours.
         }
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
-      // METHOD B — Nearest Neighbor Interpolation (Secondary)
+      // METHOD B — Nearest Neighbor Interpolation (Secondary Path)
       // ═══════════════════════════════════════════════════════════════════════════
       "method_b_neighbor_interpolation_Battery": {
-        // SCORING GUIDELINE (Section 8.1 Method B): Method B is populated for ALL phones (even if Method A is available) for precision validation. Search space: all Reference Phones that have BOTH GSMArena and PhoneArena scores (Condition 1 phones), excluding the target device itself. The interpolation MUST use exactly 3 distinct neighbor devices.
-        // Step 1: Find the 3 distinct devices with the smallest weighted Euclidean distance, excluding the target device itself.
-        //         Distance = √( 0.45 * (Diff_LayerA)² + 0.35 * (Diff_LayerB)² + 0.20 * (Diff_LayerC)² )
-        //         - Where each "Diff" term represents the absolute score difference (|Target − Neighbor|) for the component scores retrieved via the `subscore_path` entries in `method_c_prediction_model_Battery.scores`.
-        // Step 2: Calculate the correction ratio and apply it to the average neighbor benchmark.
+        // SCORING GUIDELINE: Evaluated for all devices to validate prediction precision. The search space is restricted to all Reference Phones with verified GSMArena benchmarks (Method A), excluding the target device itself. Interpolation must use exactly 3 distinct neighbors.
+        // Step 1: Compute weighted Euclidean distance (Distance) to all candidate neighbors in the 4-component physical space:
+        //   Distance = Sqrt( (Diff_P_battery_equiv)^2 + (Diff_P_display_eff)^2 + (Diff_P_soc_eff)^2 + (Diff_P_connectivity_eff)^2 )
+        //   Where:
+        //   - Diff_P_battery_equiv = (P_demand_target / E_supply_target) * (E_supply_target - E_supply_neighbor)
+        //   - Diff_P_display_eff = P_display_eff_target - P_display_eff_neighbor [P_display * F_thermal_overhead]
+        //   - Diff_P_soc_eff = P_soc_eff_target - P_soc_eff_neighbor [P_soc * F_software_overhead * F_thermal_overhead]
+        //   - Diff_P_connectivity_eff = P_connectivity_eff_target - P_connectivity_eff_neighbor [P_connectivity * F_software_overhead * F_thermal_overhead]
+        // Step 2: Select the 3 neighbors with the smallest distance.
+        // Step 3: Compute average neighbor predicted score and average benchmark score.
+        // Step 4: Apply Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors. Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors.
         "neighbors": [
           {
             // Neighbor1
@@ -4500,7 +4574,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "predicted_score_1": 8.40,
             // GUIDELINE: The neighbor's own Method C predicted score.
             "benchmark_score_1": 9.10
-            // GUIDELINE: The average of the neighbor's Method A subscores (GSMArena + PhoneArena).
+            // GUIDELINE: The neighbor's Method A subscore.
           },
           {
             // Neighbor2
@@ -4518,6 +4592,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           }
         ],
         "avg_predicted_neighbors": 8.4000,
+        // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
         "avg_benchmark_neighbors": 9.2333,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
         "correction_ratio": 0.9107,
@@ -4527,12 +4602,14 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
 
       "scores": {
-        "predicted": 7.65,
-        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.
+        "predicted": 8.70,
+        "calculation_formula": "10.0 * (method_c_prediction_model_Battery.t_predicted.value - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min)",
+        // SCORING GUIDELINE: Predicted score is normalized linearly using bounds from scoring_constants.md (clamped to [0.00, 10.00]).
         "final": {
-          "value": 9.3250,
-          // SCORING GUIDELINE (Section 8.1): Use Method A if method_a_benchmark_Battery is available (the average of GSMArena + PhoneArena subscores becomes the final value). Otherwise use Method B (method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise fall back to Method C (method_c_prediction_model_Battery.predicted_score).
-          "method_used": "Benchmark (GSMArena + PhoneArena)",
+          "value": 5.20,
+          "calculation_formula": "method_a_benchmark_Battery.subscore != 'N/A' ? method_a_benchmark_Battery.subscore : (method_b_neighbor_interpolation_Battery.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Battery.interpolated_score : scores.predicted)",
+          // SCORING GUIDELINE: Use Method A if available (value = method_a_benchmark_Battery.subscore). Otherwise use Method B (value = method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise default to Method C (value = scores.predicted).
+          "method_used": "Benchmark (GSMArena)",
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (GSMArena + PhoneArena) → Method A (documented GSMArena/PhoneArena scores)
           //   • Neighbor Interpolation            → Method B (similar device benchmarks)
