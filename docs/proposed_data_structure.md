@@ -49,9 +49,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "6.7",
+    "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-06-26"
+    "last_updated": "2026-07-03"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -729,7 +729,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (DXOMARK)    → Method A (documented DXOMARK score)
           //   • Neighbor Interpolation → Method B (similar device benchmarks)
-          //   • Predictor              → Method C (weighted spec calculation)
+          //   • Predictor              → Method C (parametric spec calculation)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
@@ -2430,7 +2430,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (Geekbench 6) → Method A (documented Geekbench 6 score)
           //   • Neighbor Interpolation  → Method B (similar device benchmarks)
-          //   • Predictor               → Method C (spec calculation)
+          //   • Predictor               → Method C (spec-based performance model)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
@@ -2583,7 +2583,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • "Benchmark (Geekbench 6)" → Method A (documented Geekbench 6 score)
           //   • "Neighbor Interpolation"  → Method B (similar device benchmarks)
-          //   • "Predictor"               → Method C (spec calculation)
+          //   • "Predictor"               → Method C (spec-based performance model)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
@@ -2598,7 +2598,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
     // • Ref Freq (MHz): The canonical maximum frequency used to calculate frequency-corrected performance multipliers in Method C.
     // • Efficiency: The silicon-level power/thermal management index used exclusively for Section 8.1 benchmarking to derive normalized efficiency scores.
     // 
-    // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | Efficiency |
+    // | GPU Model                  | Standard Graphics | Ray Tracing | Ref Freq (MHz) | efficiency |
     // | :------------------------- | :---------------: | :---------: | :------------: | :--------: |
     // | Immortalis-G925 MC12       |       9.50        |    10.00    |      1612      |    10.0    |
     // | Adreno 830                 |       9.50        |    9.80     |      1100      |    10.0    |
@@ -2929,7 +2929,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
             //   • Benchmark (3DMark)     → Method A (documented 3DMark score)
             //   • Neighbor Interpolation → Method B (similar device benchmarks)
-            //   • Predictor              → Method C (weighted spec calculation)
+            //   • Predictor              → Method C (spec-based performance model)
             "booster": "No",
             // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
             "confidence": "N/A"
@@ -3267,7 +3267,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (Geekbench AI) → Method A (documented Geekbench AI score)
           //   • Neighbor Interpolation   → Method B (similar device benchmarks)
-          //   • Predictor                → Method C (weighted spec calculation)
+          //   • Predictor                → Method C (weighted component model)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
@@ -3944,7 +3944,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
           //   • Benchmark (3DMark)     → Method A (documented 3DMark Wild Life Extreme stability score)
           //   • Neighbor Interpolation → Method B (similar device benchmarks)
-          //   • Predictor              → Method C (thermodynamic RC calculation)
+          //   • Predictor              → Method C (thermodynamic heat dissipation and power limit model)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
@@ -3980,7 +3980,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 6: 3G"                                        → 2.00
         //     - Definition: Limited to 3G (3rd Generation) or older technologies, without 4G LTE support.
         //     - Specification Parsing: Specs list "3G", "UMTS", "HSDPA", "WCDMA", "CDMA2000", or "HSPA", without 4G/5G.
-        //   • "Tier 7: 2G Only"                                   → 0.00
+        //   • "Tier 7: 2G"                                        → 0.00
         //     - Definition: Limited to 2G (2nd Generation) technologies only.
         //     - Specification Parsing: Specs list only "2G", "GSM", "GPRS", or "EDGE", without 3G/4G/5G.
         //
@@ -4002,10 +4002,10 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //        • 5G Verified → Default to Tier 3: 5G Sub-6 (Limited/regional bands).
         //        • 4G Verified → Default to Tier 5: 4G LTE (Basic).
         //        • 3G Verified → Default to Tier 6: 3G.
-        //        • 2G Verified → Default to Tier 7: 2G Only.
+        //        • 2G Verified → Default to Tier 7: 2G.
         //
         //   3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
-        //      If the cellular specifications are completely missing, and the device's SoC is unknown or not listed in references/soc_reference.md, assign the device to Tier 7: 2G Only as a strict fail-safe to prevent over-scoring, and flag the entry for manual verification.
+        //      If the cellular specifications are completely missing, and the device's SoC is unknown or not listed in references/soc_reference.md, assign the device to Tier 7: 2G as a strict fail-safe to prevent over-scoring, and flag the entry for manual verification.
       },
       "scores": {
         "predicted": 10.00,
@@ -4074,7 +4074,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 5: Wi-Fi 4"    → 3.00
         //     - Definition: 802.11n standard.
         //     - Specification Parsing: Specs list "Wi-Fi 4", "802.11n", or "Wi-Fi n".
-        //   • "Tier 6: Wi-Fi ≤3"   → 0.00
+        //   • "Tier 6: Wi-Fi ≤ 3"   → 0.00
         //     - Definition: 802.11g or older legacy wireless technologies.
         //     - Specification Parsing: Specs list "802.11a/b/g", "802.11b/g", or any older wireless standard.
         //
@@ -4083,7 +4083,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //     - Release year 2024 or later → Default to Tier 3: Wi-Fi 6.
         //     - Release year 2019 to 2023  → Default to Tier 4: Wi-Fi 5.
         //     - Release year 2016 to 2018  → Default to Tier 5: Wi-Fi 4.
-        //     - Release year before 2016   → Default to Tier 6: Wi-Fi ≤3.
+        //     - Release year before 2016   → Default to Tier 6: Wi-Fi ≤ 3.
       },
       "scores": {
         "predicted": 10.00,
@@ -4391,7 +4391,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 13.80,
           "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2670p3.php",
           "exact_extract": "Active use score: 13:48h"
-          // SCORING GUIDELINE: Sourced from Global System for Mobile Communications Arena (GSMArena) review (Battery page). Use the "Active use score" (format HH:MM). Convert format HH:MM to decimal hours (e.g., 16:45 = 16.75) for the value. If not available, set value to "Not found" and source/exact_extract to "N/A".
+          // SCORING GUIDELINE: Sourced from Global System for Mobile Communications Arena (GSMArena) review (Battery page). Use the "Active use score" (format HH:MM). Convert format HH:MM to decimal hours (e.g., 13:48 = 13.80) for the value. If not available, set value to "Not found" and source/exact_extract to "N/A".
           // In November 2023, GSMArena updated its battery test from Version 1.0 (v1.0) to Version 2.0 (v2.0). The v2.0 Active Use Score (gsmarena_active_use_score_v2) measures continuous active runtime in hours (representing Screen-On Time under calls, web browsing, YouTube streaming, and gaming, completely excluding standby time). The legacy v1.0 Endurance Rating (gsmarena_endurance_rating_v1) measures total elapsed hours including 21 hours of daily standby. The v2.0 score is the primary metric and must be used whenever available.
         },
         "gsmarena_endurance_rating_v1": {
@@ -4407,8 +4407,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Converts the legacy Endurance Rating (ER) to an Active Use Score (AUS) equivalent if v2 is missing by dividing by the conversion constant of 8.4.
         },
         "subscore": 5.20,
-        "calculation_formula": "10.0 * (t_unified_hours.value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min)"
-        // SCORING GUIDELINE: Normalized score (subscore) is calculated using linear bounds from scoring_constants.md (clamped to [0.00, 10.00]). Set subscore to "N/A" if t_unified_hours.value is "Not found".
+        "calculation_formula": "10 * (t_unified_hours.value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10."
+        // SCORING GUIDELINE: Normalized score (subscore) is calculated using linear bounds from scoring_constants.md (clamped to [0, 10]). Set subscore to "N/A" if t_unified_hours.value is "Not found".
       },
       
       // ═══════════════════════════════════════════════════════════════════════════
@@ -4434,7 +4434,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //   3. High-Power Charging Heuristic: If the maximum wired charging speed is 120 Watts (W) or higher, use 7.70 Volts (V) (as ultra-fast charging architectures require dual-cell configurations to halve charging current and prevent excessive thermal losses).
           //   4. Default Fallback: Otherwise, use 3.85 Volts (V) (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
         },
-          "energy_capacity_wh": {
+        "energy_capacity_wh": {
           "value": 19.2500,
           "calculation_formula": "(battery_capacity_mah.value * battery_nominal_voltage_v.value) / 1000",
           // Stored energy in Watt-hours (Wh).
@@ -4448,24 +4448,25 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "exact_extract": "The Galaxy S24 Ultra's display refresh rate can vary in the 1Hz to 120Hz range"
             // SCORING GUIDELINE: Minimum display refresh rate in Hertz (Hz) for variable displays (Low-Temperature Polycrystalline Oxide (LTPO) panels). Set to "N/A" if the display does not support adaptive dynamic refresh rates.
           },
+          "effective_frequency_hz": {
+            "value": 42.6500,
+            "calculation_formula": "refresh_rate_min_hz.value != 'N/A' ? (0.65 * refresh_rate_min_hz.value + 0.35 * 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value) : 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value",
+            // SCORING GUIDELINE: Time-weighted dynamic display refresh rate. Under adaptive display, effective_frequency_hz models the 65% static (min refresh rate) and 35% peak (max refresh rate) motion duty cycle. Without adaptive display, the maximum refresh rate is used instead.
+          },
           "f_refresh": {
-            "effective_frequency_hz": {
-              "value": 42.6500,
-              "calculation_formula": "refresh_rate_min_hz.value != 'N/A' ? (0.65 * refresh_rate_min_hz.value + 0.35 * 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value) : 2_display.2_6_motion_smoothness.maximum_refresh_rate_hz.value",
-            },
             "value": 0.9566,
             "calculation_formula": "1 + 0.0025 * (effective_frequency_hz.value - 60)",
-            // SCORING GUIDELINE: Refresh Rate Factor. Adjusts panel draw based on dynamic frequency. Under adaptive display, effective_frequency_hz models the 65% static (min. refresh rate) and 35% peak (max. refresh rate) motion duty cycle. Without adaptive display, the maximum refresh rate is used instead (sourced from Section 2.6).
+            // SCORING GUIDELINE: Refresh Rate Factor. Adjusts panel draw based on dynamic frequency.
           },
           "f_resolution": {
             "value": 1.0623,
             "calculation_formula": "1 + 0.025 * (6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_megapixels_mp.value - 2)"
-            // SCORING GUIDELINE: Resolution Factor. Models pixel density driving current and Graphics Processing Unit (GPU) rendering overhead, centered around a standard 2.0 Megapixels (MP) baseline. References Megapixels from Section 6.10. Note: While f_resolution could be directly fetched from Section 6.10 (as it shares the same base formula), it is kept as a separate calculation here because Section 8.1 battery endurance modeling and Section 6.10 thermal dissipation modeling may require different correction factors or scaling behaviors in the future, allowing for independent model fine-tuning.
+            // SCORING GUIDELINE: Resolution Factor. Models pixel density driving current and GPU rendering overhead, centered around a standard 2.0 Megapixels (MP) baseline. References Megapixels from Section 6.10. Note: While f_resolution could be directly fetched from Section 6.10 (as it shares the same base formula), it is kept as a separate calculation here because Section 8.1 battery endurance modeling and Section 6.10 thermal dissipation modeling may require different correction factors or scaling behaviors in the future, allowing for independent model fine-tuning.
           },
           "p_display": {
             "value": 0.4037,
             "calculation_formula": "6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.display_surface_area_cm2.value * 6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.panel_efficiency.c_panel_w_cm2 * f_refresh.value * f_resolution.value"
-            // SCORING GUIDELINE: Display active power demand in Watts (W). Directly references display surface area in square centimeters (cm²) and panel efficiency constant c_panel_w_cm2 (Watts per square centimeter - W/cm²) from Section 6.10.
+            // SCORING GUIDELINE: Display active power demand in Watts (W). Directly references display surface area and panel efficiency constant from Section 6.10.
           }
         },
 
@@ -4478,74 +4479,143 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             "node_nm": 4.0
             // SCORING GUIDELINE: Retrieve the peak SoC power in Watts (W) and the process node size in nanometers (nm) from references/soc_reference.md by matching the chipset identifier.
           },
-          "f_node": {
-            "value": 1.0607,
-            "calculation_formula": "1 + 0.4855 * log(soc_mapping.node_nm / 3)"
-            // SCORING GUIDELINE: Process Node Factor. Models silicon-level dynamic power and leakage scaling, anchored on a 3.0 nm fabrication baseline.
+          "f_node_static": {
+            "value": 1.0667,
+            "calculation_formula": "0.80 + 0.20 * (soc_mapping.node_nm / 3.0)"
+            // SCORING GUIDELINE: Process Node Static Factor. Models silicon-level static leakage scaling, anchored on a 3.0 nm fabrication baseline.
           },
-          "cpu_aes_score": {
-            "value": 4.4579,
-            "calculation_formula": "10.0 * (((CPU_multi_clusters.best.core_count.value * CPU_multi_clusters.best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.second_best.core_count.value * CPU_multi_clusters.second_best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.third_best.core_count.value * CPU_multi_clusters.third_best.architecture_mapping.core_architecture_score) + (CPU_multi_clusters.fourth_best.core_count.value * CPU_multi_clusters.fourth_best.architecture_mapping.core_architecture_score)) / (CPU_multi_clusters.best.core_count.value + CPU_multi_clusters.second_best.core_count.value + CPU_multi_clusters.third_best.core_count.value + CPU_multi_clusters.fourth_best.core_count.value)) / 9.80"
-            // where CPU_multi_clusters is a shortcut for 6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.clusters
-            // SCORING GUIDELINE: Central Processing Unit (CPU) Architecture Efficiency Score (CPU_AES_Score). Calculated as the core-weighted average of core Instructions Per Cycle (IPC) scores across the 4 clusters defined in Section 6.1, normalized so that the absolute best device (Snapdragon 8 Elite with 9.80 raw average) scores 10.00. Cores with count or scores set to "N/A" are treated as 0 in count and products.
+          "f_node_active": {
+            "value": 1.1167,
+            "calculation_formula": "0.65 + 0.35 * (soc_mapping.node_nm / 3.0)"
+            // SCORING GUIDELINE: Process Node Active Factor. Models silicon-level dynamic power scaling, anchored on a 3.0 nm fabrication baseline.
           },
-          "f_cpu": {
-            "value": 1.2217,
-            "calculation_formula": "1 + 0.04 * (10 - cpu_aes_score.value)"
-            // SCORING GUIDELINE: CPU Architecture Factor. Scales power based on CPU microarchitectural core efficiency (IPC proxy).
+          "cpu_background_score": {
+            "identifier": "Cortex-A520",
+            "identifier_path": "6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters.third_best.architecture",
+            // GUIDELINE: Note that this path is not fixed and must be adjusted from device to device depending on the number of clusters, always pointing to the architecture of the weakest active CPU core cluster on the SoC (which is the last non-N/A cluster in the ordered 6_processing_power_and_performance.6_1_0_system_on_chip_reference.clusters).
+            "reference_table": "CPU_CORE_ARCHITECTURE_LOOKUP_TABLE",
+            "idle_efficiency_score": 10.00
+            // SCORING GUIDELINE: Retrieve the idle_efficiency_score from the CPU_CORE_ARCHITECTURE_LOOKUP_TABLE by matching the core architecture name from cpu_background_score.identifier.
+          },
+          "f_static_cpu": {
+            "value": 1.0000,
+            "calculation_formula": "1 + 0.04 * (10 - cpu_background_score.idle_efficiency_score)"
+            // SCORING GUIDELINE: CPU Static Architecture Factor. Scales static power based on CPU microarchitectural core efficiency.
+          },
+          "cpu_burst_score": {
+            "value": 7.3748,
+            "calculation_formula": "10 * (6_processing_power_and_performance.6_2_cpu_architecture_single_core.method_c_prediction_model_CPU_single.core_yield.value - CPU_STRS_Score_Min) / (CPU_STRS_Score_Max - CPU_STRS_Score_Min)"
+            // SCORING GUIDELINE: CPU Burst Score. Sourced from Section 6.2 and normalized linearly to preserve physical power scaling.
+          },
+          "cpu_sustained_score": {
+            "value": 5.8051,
+            "calculation_formula": "10 * (6_processing_power_and_performance.6_1_cpu_multi_core_performance.method_c_prediction_model_CPU_multi.raw_performance_throughput_score.value - CPU_RCTS_Min) / (CPU_RCTS_Max - CPU_RCTS_Min)"
+            // SCORING GUIDELINE: CPU Sustained Score. Sourced from Section 6.1 and normalized linearly to preserve physical power scaling.
+          },
+          "cpu_active_score": {
+            "value": 6.3545,
+            "calculation_formula": "0.35 * cpu_burst_score.value + 0.65 * cpu_sustained_score.value"
+            // SCORING GUIDELINE: CPU Active Score. Weighted average of burst (35%) and sustained (65%) scores representing active performance.
+          },
+          "f_active_cpu": {
+            "value": 1.1458,
+            "calculation_formula": "1 + 0.04 * (10 - cpu_active_score.value)"
+            // SCORING GUIDELINE: CPU Active Architecture Factor. Scales dynamic power based on CPU active efficiency.
+          },
+          "gpu_mapping": {
+            "identifier": "Adreno 750",
+            "identifier_path": "6_processing_power_and_performance.6_3_0_gpu_architecture_reference.gpu_model.value",
+            "reference_table": "GPU_ARCHITECTURE_LOOKUP_TABLE",
+            "efficiency": 9.0
+            // SCORING GUIDELINE: Sourced from the "efficiency" column in the GPU_ARCHITECTURE_LOOKUP_TABLE by matching the GPU model from Section 6.3.0.
           },
           "f_gpu": {
             "value": 1.0100,
-            "gpu_efficiency": 9.0,
-            "gpu_efficiency_source_path": "6_processing_power_and_performance.6_3_graphics_and_ray_tracing_performance.GPU_ARCHITECTURE_LOOKUP_TABLE[6_processing_power_and_performance.6_3_0_gpu_architecture_reference.gpu_model.value]",
-            "calculation_formula": "1.0 + 0.01 * (10.0 - gpu_efficiency)"
-            // SCORING GUIDELINE: GPU Architecture Factor. Adjusts for GPU-specific static leakage and efficiency score from Section 6.3 lookup table.
+            "calculation_formula": "1 + 0.01 * (10 - gpu_mapping.efficiency)"
+            // SCORING GUIDELINE: GPU Architecture Factor. Adjusts active dynamic power based on GPU microarchitectural efficiency.
           },
           "p_soc": {
-            "value": 0.6610,
-            "calculation_formula": "(0.40 + 0.0075 * soc_mapping.power_peak_soc_w) * f_node.value * f_cpu.value * f_gpu.value"
-            // SCORING GUIDELINE: System on Chip (SoC) average power demand in Watts (W). 0.40W is static base board leakage. 0.0075 is the average active duty cycle under standard daily mixed usage.
+            "value": 0.6981,
+            "calculation_formula": "0.40 * f_static_cpu.value * f_node_static.value + 0.0150 * soc_mapping.power_peak_soc_w * f_active_cpu.value * f_gpu.value * f_node_active.value"
+            // SCORING GUIDELINE: System on Chip (SoC) average power demand in Watts (W). 0.40W is static base board leakage. 0.0150 is the overall SoC utilization coefficient representing the time-weighted average active workload level under standard daily mixed usage.
           }
         },
 
         "connectivity_power_demand_w": {
+          "cellular_modem": {
+            "identifier": "Tier 1: 5G mmWave + Sub-6 (Global band coverage)",
+            "identifier_path": "7_connectivity_and_sensors.7_1_cellular_capabilities.network_technology.value",
+            "power_w": 0.1800
+            // SCORING GUIDELINE: Retrieves cellular active power based on Section 7.1 cellular category:
+            // 
+            // | Cellular Tier / Category                         | power_w |
+            // | :----------------------------------------------- | :-----: |
+            // | Tier 1: 5G mmWave + Sub-6 (Global band coverage) |   0.18  |
+            // | Tier 2: 5G Sub-6 (Full Global Bands)             |   0.14  |
+            // | Tier 3: 5G Sub-6 (Limited/regional bands)        |   0.14  |
+            // | Tier 4: 4G LTE-Advanced Pro                      |   0.09  |
+            // | Tier 5: 4G LTE (Basic)                           |   0.09  |
+            // | Tier 6: 3G                                       |   0.05  |
+            // | Tier 7: 2G                                       |   0.05  |
+          },
+          "wifi": {
+            "identifier": "Tier 1: Wi-Fi 7",
+            "identifier_path": "7_connectivity_and_sensors.7_3_wifi_standard.standard.value",
+            "power_w": 0.0500
+            // SCORING GUIDELINE: Retrieves Wireless Fidelity (Wi-Fi) active power based on Section 7.3 Wi-Fi standard:
+            // 
+            // | Wi-Fi Tier / Standard | power_w |
+            // | :-------------------- | :-----: |
+            // | Tier 1: Wi-Fi 7       |   0.05  |
+            // | Tier 2: Wi-Fi 6E      |   0.04  |
+            // | Tier 3: Wi-Fi 6       |   0.04  |
+            // | Tier 4: Wi-Fi 5       |   0.03  |
+            // | Tier 5: Wi-Fi 4       |   0.03  |
+            // | Tier 6: Wi-Fi ≤ 3     |   0.03  |
+          },
           "p_connectivity": {
             "value": 0.0710,
-            "cellular_modem_active_power_w": 0.1800,
-            "cellular_modem_source_path": "7_connectivity_and_sensors.7_1_cellular_capabilities.network_technology.value",
-            "wifi_active_power_w": 0.0500,
-            "wifi_source_path": "7_connectivity_and_sensors.7_3_wifi_standard.standard.value",
-            "calculation_formula": "0.20 * cellular_modem_active_power_w + 0.70 * wifi_active_power_w"
-            // SCORING GUIDELINE: Average connectivity active power draw in Watts (W) under mixed daily workloads. Cellular modem has a 20% active duty cycle (Voice over Long-Term Evolution [VoLTE] testing) mapped from Section 7.1 (Tier 1 = 0.18W, Tiers 2-3 = 0.14W, Tiers 4-5 = 0.09W, Tiers 6-7 = 0.05W). Wireless Fidelity (Wi-Fi) radio has a 70% duty cycle (browsing/streaming) mapped from Section 7.3 (Tier 1 = 0.05W, Tiers 2-3 = 0.04W, Tiers 4-6 = 0.03W). Sequential duty cycles align with empirical tests without concurrent user data transmission.
+            "calculation_formula": "0.20 * cellular_modem.power_w + 0.70 * wifi.power_w"
+            // SCORING GUIDELINE: Average connectivity active power draw in Watts (W) under mixed workloads. Cellular modem has a 20% active voice call duty cycle. Wi-Fi has a 70% duty cycle. During the remaining 10%, the modems run at idle standby, which is absorbed into the static baseboard power.
           }
         },
 
         "modifiers": {
           "f_software_overhead": {
-            "value": 1.0500,
-            "os_generation_score": 8.5,
-            "os_generation_source_path": "references/os_version_reference.md[5_software_and_longevity.operating_system_version.value]",
-            "calculation_formula": "1.0 + 0.10 * (10.0 - os_generation_score) / 10.0 + 0.10 * (10.0 - 5_software_and_longevity.5_2_system_cleanliness_control.scores.predicted) / 10.0"
-            // SCORING GUIDELINE: Software Inefficiency Modifier. Captures process freezing, wake-lock optimizations, and background bloatware draw. OS generation score is mapped from references/os_version_reference.md using the OS version. Cleanliness uses the predicted score from Section 5.2.
+            "os_mapping": {
+              "identifier": "Android 14",
+              "identifier_path": "5_software_and_longevity.operating_system_version.value",
+              "reference_table": "references/os_version_reference.md",
+              "generation_score": 8.5
+              // SCORING GUIDELINE: Sourced from references/os_version_reference.md by matching the operating system version.
+            },
+            "value": 1.0730,
+            "calculation_formula": "1 + 0.01 * (10 - os_mapping.generation_score) + 0.01 * (10 - 5_software_and_longevity.5_2_system_cleanliness_control.scores.predicted)"
+            // SCORING GUIDELINE: Software Inefficiency Modifier. Captures Operating System (OS) execution and background bloatware draw. OS generation score is mapped via os_mapping. Cleanliness uses the predicted score from Section 5.2.
           },
           "f_thermal_overhead": {
-            "value": 1.0071,
-            "calculation_formula": "1.0 + 0.03 * (10.0 - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.scores.final.value) / 10.0"
-            // SCORING GUIDELINE: Thermal Efficiency Modifier. Models transistor leakage increase and battery discharge degradation at high temperatures. Sourced from Section 6.10 final score.
+            "value": 1.0246,
+            "calculation_formula": "1 + 0.03 * ((Thermal_Stability_Max / 100) ^ 3 - 6_processing_power_and_performance.6_10_thermal_dissipation_stability.method_c_prediction_model_TDSI.power_ratio.value) / ((Thermal_Stability_Max / 100) ^ 3 - (Thermal_Stability_Min / 100) ^ 3)"
+            // SCORING GUIDELINE: Thermal Efficiency Modifier. Sourced from Section 6.10 power_ratio. Models silicon static leakage increase and elevated battery internal resistance at high operating temperatures.
           }
         },
 
         "p_demand": {
-          "value": 1.1806,
+          "value": 1.2592,
           "calculation_formula": "(display_power_demand_w.p_display.value + (soc_power_demand_w.p_soc.value + connectivity_power_demand_w.p_connectivity.value) * modifiers.f_software_overhead.value) * modifiers.f_thermal_overhead.value"
           // SCORING GUIDELINE: Total physical active power consumption under daily mixed workload in Watts (W). Software overhead scales SoC and connectivity active cycles without scaling display hardware base draw.
         },
 
         // --- [3] RUNTIME PREDICTION (T_predicted) ---
         "t_predicted": {
-          "value": 16.3053,
+          "value": 15.2875,
           "calculation_formula": "energy_capacity_wh.value / p_demand.value"
           // SCORING GUIDELINE: Predicted active mixed-use runtime in hours.
+        },
+        "predicted_score": {
+          "value": 7.91,
+          "calculation_formula": "10 * (t_predicted.value - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min)"
+          // SCORING GUIDELINE: Predicted score is normalized linearly using bounds from scoring_constants.md (clamped to [0, 10]).
         }
       },
 
@@ -4555,22 +4625,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "method_b_neighbor_interpolation_Battery": {
         // SCORING GUIDELINE: Evaluated for all devices to validate prediction precision. The search space is restricted to all Reference Phones with verified GSMArena benchmarks (Method A), excluding the target device itself. Interpolation must use exactly 3 distinct neighbors.
         // Step 1: Compute weighted Euclidean distance (Distance) to all candidate neighbors in the 4-component physical space:
-        //   Distance = Sqrt( (Diff_P_battery_equiv)^2 + (Diff_P_display_eff)^2 + (Diff_P_soc_eff)^2 + (Diff_P_connectivity_eff)^2 )
-        //   Where:
-        //   - Diff_P_battery_equiv = (P_demand_target / E_supply_target) * (E_supply_target - E_supply_neighbor)
-        //   - Diff_P_display_eff = P_display_eff_target - P_display_eff_neighbor [P_display * F_thermal_overhead]
-        //   - Diff_P_soc_eff = P_soc_eff_target - P_soc_eff_neighbor [P_soc * F_software_overhead * F_thermal_overhead]
-        //   - Diff_P_connectivity_eff = P_connectivity_eff_target - P_connectivity_eff_neighbor [P_connectivity * F_software_overhead * F_thermal_overhead]
+        //   Formula: Distance = Sqrt( (Diff_P_battery_equiv)^2 + (Diff_P_display_eff)^2 + (Diff_P_soc_eff)^2 + (Diff_P_connectivity_eff)^2 )
+        //   Where the metric component differences are derived from the following paths:
+        //   - Diff_P_battery_equiv (Equivalent Battery Power Difference) = (target.method_c_prediction_model_Battery.p_demand.value / target.method_c_prediction_model_Battery.energy_capacity_wh.value) * (target.method_c_prediction_model_Battery.energy_capacity_wh.value - neighbor.method_c_prediction_model_Battery.energy_capacity_wh.value)
+        //   - Diff_P_display_eff (Effective Display Power Difference) = (target.method_c_prediction_model_Battery.display_power_demand_w.p_display.value * target.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value) - (neighbor.method_c_prediction_model_Battery.display_power_demand_w.p_display.value * neighbor.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value)
+        //   - Diff_P_soc_eff (Effective SoC Power Difference) = (target.method_c_prediction_model_Battery.soc_power_demand_w.p_soc.value * target.method_c_prediction_model_Battery.modifiers.f_software_overhead.value * target.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value) - (neighbor.method_c_prediction_model_Battery.soc_power_demand_w.p_soc.value * neighbor.method_c_prediction_model_Battery.modifiers.f_software_overhead.value * neighbor.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value)
+        //   - Diff_P_connectivity_eff (Effective Connectivity Power Difference) = (target.method_c_prediction_model_Battery.connectivity_power_demand_w.p_connectivity.value * target.method_c_prediction_model_Battery.modifiers.f_software_overhead.value * target.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value) - (neighbor.method_c_prediction_model_Battery.connectivity_power_demand_w.p_connectivity.value * neighbor.method_c_prediction_model_Battery.modifiers.f_software_overhead.value * neighbor.method_c_prediction_model_Battery.modifiers.f_thermal_overhead.value)
+        //   - Target: The device currently being scored.
+        //   - Neighbor: Any reference phone in the database with a verified GSMArena benchmark, excluding the target device itself.
         // Step 2: Select the 3 neighbors with the smallest distance.
         // Step 3: Compute average neighbor predicted score and average benchmark score.
-        // Step 4: Apply Correction_Ratio = Predicted_Target / Avg_Predicted_Neighbors. Interpolated_Score = Correction_Ratio * Avg_Benchmark_Neighbors.
+        // Step 4: Calculate the correction ratio and apply it to the average neighbor benchmark.
         "neighbors": [
           {
             // Neighbor1
             "device_id_1": "xiaomi_14_ultra",
             // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
             "euclidean_distance_1": 0.0500,
-            // GUIDELINE: Weighted Euclidean distance from Step 1.
+            // GUIDELINE: Euclidean distance from Step 1.
             "predicted_score_1": 8.40,
             // GUIDELINE: The neighbor's own Method C predicted score.
             "benchmark_score_1": 9.10
@@ -4595,25 +4667,24 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
         "avg_benchmark_neighbors": 9.2333,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-        "correction_ratio": 0.9107,
-        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score / avg_predicted_neighbors.
-        "interpolated_score": 8.41
+        "correction_ratio": 0.9417,
+        // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score.value / avg_predicted_neighbors.
+        "interpolated_score": 8.69
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
-        "predicted": 8.70,
-        "calculation_formula": "10.0 * (method_c_prediction_model_Battery.t_predicted.value - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min)",
-        // SCORING GUIDELINE: Predicted score is normalized linearly using bounds from scoring_constants.md (clamped to [0.00, 10.00]).
+        "predicted": 7.91,
+        // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.value.
         "final": {
           "value": 5.20,
-          "calculation_formula": "method_a_benchmark_Battery.subscore != 'N/A' ? method_a_benchmark_Battery.subscore : (method_b_neighbor_interpolation_Battery.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Battery.interpolated_score : scores.predicted)",
-          // SCORING GUIDELINE: Use Method A if available (value = method_a_benchmark_Battery.subscore). Otherwise use Method B (value = method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise default to Method C (value = scores.predicted).
+          "calculation_formula": "method_a_benchmark_Battery.subscore != 'N/A' ? method_a_benchmark_Battery.subscore : (method_b_neighbor_interpolation_Battery.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Battery.interpolated_score : method_c_prediction_model_Battery.predicted_score.value)",
+          // SCORING GUIDELINE: Use Method A if available (value = method_a_benchmark_Battery.subscore). Otherwise use Method B (value = method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise default to Method C (value = method_c_prediction_model_Battery.predicted_score.value).
           "method_used": "Benchmark (GSMArena)",
           // SCORING GUIDELINE: Set based on the A→B→C hierarchy. Use the following terms exclusively:
-          //   • Benchmark (GSMArena + PhoneArena) → Method A (documented GSMArena/PhoneArena scores)
-          //   • Neighbor Interpolation            → Method B (similar device benchmarks)
-          //   • Predictor                         → Method C (weighted spec calculation)
+          //   • Benchmark (GSMArena)   → Method A (documented GSMArena active use score or converted endurance rating)
+          //   • Neighbor Interpolation → Method B (similar device benchmarks)
+          //   • Predictor              → Method C (physical active power demand and runtime model)
           "booster": "No",
           // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"

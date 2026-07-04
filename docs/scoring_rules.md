@@ -16,6 +16,32 @@ This document provides **exhaustive, unit-specific reference tables** for every 
 > **Example:** §4.5.2 Ultrawide Field of View uses `Camera_Main_Sensor_WITHOUT_Ultrawide_FOV_Deg_Max` (≈ 85°) as its 0-score floor, because 85° is the best FOV achievable by a phone without an ultrawide lens (i.e., the main camera only). Any ultrawide delivering more than 85° scores > 0.
 
 
+## 🟣 0. Model Hypotheses & Explanations
+
+### 0.1 Logarithmic Normalization and Subsystem Penalties
+
+In the processing performance pipelines of this framework—specifically **Section 6.1 (CPU Multi-Core Performance)**, **Section 6.2 (CPU Single-Core Performance)**, and **Section 6.3.A (GPU Standard Graphics)**—the system applies subsystem bottleneck penalties to the device's score. 
+
+Rather than calculating these penalties in the raw physical domain first and performing normalization at the end, the framework utilizes a **Normalization-First approach**. The raw performance capacity is first mapped logarithmically to a 0–10 perceptual scale, and the penalties are subsequently subtracted directly from this normalized score.
+
+#### The Mathematical Rationale of Logarithmic Subtraction
+In real-world computer architecture, a hardware bottleneck (such as a cache capacity deficit or a memory bus bottleneck) acts as a percentage-based multiplier on raw performance rather than a fixed absolute reduction. 
+
+For example, let a raw performance score be X, and let it be modified by a bottleneck multiplier A (where A is between 0.0 and 1.0, representing the fraction of performance retained after the bottleneck). This leads to a penalized raw performance of:
+`Raw_Penalized = A * X`
+
+When we apply logarithmic normalization (to compress raw performance to match human perception of speed, aligning with the Weber-Fechner Law), the multiplication turns mathematically into a simple subtraction:
+`log(A * X) = log(A) + log(X)`
+
+For example, for a bottleneck multiplier A of 0.8 (representing a 20% performance penalty), this would lead to:
+`log(X) + log(0.8) = log(X) - 0.0969`
+
+This proves that after perceptualisation (logarithmic normalization), the multiplier is transformed into a simple "subtractor". The penalties subtracted in Sections 6.1, 6.2 and 6.3.A are mathematically equivalent to these log-domain subtractors.
+
+#### Why this is simpler and more robust
+This approach is mathematically simpler because we only need to perform the perceptual normalization once at the beginning, rather than performing linear/performance normalizations and then a final perceptual normalization at the end. 
+
+
 ## 🟣 1. Design & Build Quality
 
 ### 🔹 1.1 Materials (Frame/Back)
@@ -3495,7 +3521,7 @@ The proposal for SASI is supported by the following industry shifts toward verti
 | **6.0**  | **Tier 4: 4G LTE-Advanced Pro**                       |
 | **4.0**  | **Tier 5: 4G LTE (Basic)**                            |
 | **2.0**  | **Tier 6: 3G**                                        |
-| **0.0**  | **Tier 7: 2G Only**                                   |
+| **0.0**  | **Tier 7: 2G**                                        |
 
 > [!NOTE]
 > **Terminology & Abbreviations:**
@@ -3948,7 +3974,11 @@ To correctly identify `V_nominal`, we apply the following prioritized hierarchy:
 Average power demand is modeled as the sum of hardware-governed display panel draw and software-scaled processing/connectivity active loads, scaled globally by the system's thermal efficiency factor:
 `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead`
 
-*Rationale:* Software efficiency and background bloatware (`F_software_overhead`) affect processor cycle utilization and cellular/Wi-Fi radio sync duty cycles, but they do not physically alter the raw power consumed by the display panel's hardware to emit light. Restricting the software overhead multiplier to `P_soc + P_connectivity` ensures that display panel base power is not artificially scaled by software bloat, maintaining a physically accurate power model. Conversely, `F_thermal_overhead` remains a global multiplier because elevated temperature increases dynamic and static leakage across the entire circuit board and degrades the battery cell's internal discharge efficiency.
+*Rationale:* Software efficiency and background bloatware (`F_software_overhead`) affect processor cycle utilization and cellular/Wi-Fi radio sync duty cycles, but they do not physically alter the raw power consumed by the display panel's hardware to emit light. Restricting the software overhead multiplier to `P_soc + P_connectivity` ensures that display panel base power is not artificially scaled by software bloat, maintaining a physically accurate power model.
+
+Conversely, the thermal overhead is composed of two separate physical phenomena that are accounted for independently:
+1. **Joule Heating and Battery Resistance Losses:** As total current drawn from the battery increases, the voltage drops across the cell's internal resistance, causing power loss inside the battery itself (Joule heating). Since all components draw current from the same battery, this physical loss scales with the entire power draw. It is therefore modeled as a global multiplier (`F_thermal_overhead`) applied to the overall system-level `P_demand`.
+2. **Semiconductor Static Leakage:** Elevated temperatures exponentially increase subthreshold static leakage currents within the active silicon dies (predominantly the SoC CPU and GPU blocks). This is a component-specific leakage that does not affect the display panel or connectivity modules. It is modeled locally inside `P_soc` via the `F_node_static` multiplier on the CPU background/idle baseline, rather than as a global factor.
 
 ###### 8.1.3.3.1 Display Power Demand (P_display)
 The display screen power demand is modeled as a function of physical surface area, panel technology, dynamic refresh rate, and resolution:
@@ -4065,6 +4095,30 @@ The System-on-Chip (SoC) power draw represents the processing platform's consump
       `CPU_Sustained_Score = 10.0 * (RCTS - CPU_RCTS_Min) / (CPU_RCTS_Max - CPU_RCTS_Min) clamped 0-10.`
       - Where `RCTS` is the Raw CPU Throughput Score from Section 6.1, representing the aggregate throughput efficiency of all active cores under multi-threaded saturation.
     - **Justification for Using Calculated Method C Scores Across All Devices:** To maintain database integrity and physical consistency, the battery model uses the calculated/predicted performance scores from Method C (the analytical Core Yield (CY) and Raw CPU Throughput Score (RCTS)) for all devices, rather than sourcing from the final database score columns (which may contain empirical Method A benchmark scores or interpolated Method B scores). If Method A benchmark scores were used for benchmarked devices, then unbenchmarked devices would have to use either Method B or Method C. However, Method B (Nearest Neighbor Interpolation) operates on logarithmically compressed perceptual scores rather than linear physical performance scores. Adapting the interpolation model of Method B to also calculate and output raw linear performance scores would significantly increase the complexity of the framework. Conversely, falling back directly to Method C for unbenchmarked devices (bypassing Method B) would introduce systematic biases and variance between devices scored via empirical benchmarks and those scored via analytical predictions. Sourcing the linear performance inputs (`CPU_Burst_Score` and `CPU_Sustained_Score`) strictly from the Method C calculation equations for all devices ensures a neutral, consistent, and unbiased physical power model that scales uniformly across the entire database.
+    - **Justification for Neglecting Cache and Memory Subsystem Penalties in Section 8.1:**
+      In this physical model, `CPU_Burst_Score` and `CPU_Sustained_Score` are calculated from the raw, unpenalized performance variables (`CY` and `RCTS`). Subsystem penalties from Section 6.1 (such as `Penalty_CFEI` and `Penalty_MTI`) and Section 6.2 (such as `Penalty_L2CS` and `Penalty_MTI`) are neglected. Note that the multi-core thermal throttling penalty (`Penalty_TDSI`) is also excluded here, but for a different reason: Section 8.1 already has its own dedicated `F_thermal_overhead` multiplier that globally models thermal inefficiency on power demand, so including `Penalty_TDSI` would double-count the same physical effect.
+      This is a mathematically and physically sound approximation because the impact of these performance penalties on average active power demand is negligible, which is verified by analyzing the worst-case scenario:
+      1. **Worst-Case Core Penalty Hypothesis (0.8 point):** For the reference Samsung Galaxy S24 Ultra (Snapdragon 8 Gen 3, LPDDR5X, 18 MB shared cache), the actual cache and memory penalties are: Section 6.2 single-core: `Penalty_L2CS` = 0.34 points + `Penalty_MTI` = 0.01 points = **0.35 points total**; Section 6.1 multi-core (excluding `Penalty_TDSI`): `Penalty_MTI` ≈ 0.00 points + `Penalty_CFEI` ≈ 0.00 points = **< 0.01 points total**. We deliberately assume a **worst-case penalty of 0.8 point** applied uniformly to both single-core burst and multi-core sustained scores. This represents an extremely conservative upper bound that covers all devices in the database, including low-end and legacy chipsets which suffer from severe memory bandwidth bottlenecks and minimal cache allocations.
+      2. **Active Score Impact:** A 0.8-point reduction in both scores translates directly to a 0.8-point drop in `CPU_Active_Score` (since it is a linear combination: `0.35 * 0.8 + 0.65 * 0.8 = 0.8`).
+      3. **CPU Active Multiplier (F_active_cpu) Impact:** The CPU Active Architecture Factor is calculated as:
+         `F_active_cpu = 1.0 + 0.04 * (10.0 - CPU_Active_Score)`
+         An offset of 0.8 point in `CPU_Active_Score` shifts `F_active_cpu` by an absolute delta of:
+         `ΔF_active_cpu = 0.04 * 0.8 = 0.032`.
+         Since `F_active_cpu` is always >= 1.0, this absolute shift of `0.032` translates to a conservative relative dynamic active workload power increase of at most **3.2%** (which occurs in the worst case when `F_active_cpu` is at its minimum of `1.0`).
+      4. **P_soc Dynamic Power Impact:** Critically, `F_active_cpu` only scales the **dynamic active workload** portion of `P_soc`, not the entire SoC power draw. The `P_soc` formula decomposes into two physically distinct terms:
+         - **Static baseboard leakage** = `0.40 * F_static_cpu * F_node_static` ≈ 0.43 W (for the reference Samsung Galaxy S24 Ultra) — this represents always-on silicon leakage and is **completely unaffected** by CPU performance penalties.
+         - **Dynamic active workload** = `0.0150 * Power_Peak_SoC * F_active_cpu * F_gpu * F_node_active` ≈ 0.27 W (for the reference Samsung Galaxy S24 Ultra) — only this term is scaled by `F_active_cpu` and is therefore the only portion affected by the neglected penalties.
+         Applying the conservative 3.2% increase shifts only this dynamic portion by: `3.2% * 0.27 W ≈ 0.009 W (9 milliwatts)`.
+      5. **Total Power Demand (P_demand) Impact:** Under typical mixed use, the total power draw `P_demand` is calculated as:
+         `P_demand = (P_display + (P_soc + P_connectivity) * F_software_overhead) * F_thermal_overhead`
+         `P_demand = (0.4037 W + (0.6981 W + 0.0710 W) * 1.0730) * 1.0246 ≈ 1.26 W`.
+         The 9 mW SoC power increase propagates through the software and thermal modifiers to shift `P_demand` by:
+         `0.009 W * 1.0730 * 1.0246 ≈ 0.010 W` (10 mW), representing a negligible relative increase of under **0.8%** on the total power draw.
+      6. **Endurance Time (T_predicted) Impact:** For a typical 5000 mAh battery (≈ 19.25 Wh of energy capacity), a < 0.8% shift in power demand translates to a runtime difference of less than **8 minutes** (shifting predicted runtime from 15.29 hours to 15.17 hours) and a battery score shift of less than **0.1 points** on the 10-point scale. This is well below the standard 2% to 5% experimental margins of real-world battery endurance tests, proving that the neglect hypothesis is completely sound for both Section 6.1 and 6.2 inputs.
+      7. **Implementation Complexity Trade-Off:** While incorporating cache/memory penalties would offer minor precision gains, doing so would require adding significant layers of mathematical complexity:
+         - The system would have to perform complex "reverse-logarithmic" equations inside Section 8.1 to mathematically "undo" the logarithmic compression of the final 6.1 and 6.2 scores to extract penalized raw capacity scores.
+         - The system would also need to isolate and strip out the multi-core thermal throttling penalty (`Penalty_TDSI`) from the multi-core score to prevent double-counting with Section 8.1's dedicated global `F_thermal_overhead` multiplier.
+         At this stage, the induced mathematical complexity is not worth the trade-off for the negligible performance impact of under 0.8% on predicted runtimes. However, implementing these penalty terms directly into the linear power formulas remains a potential area for future model improvement.
   - *Derivation of Dynamic Active CPU Weights (35% Burst / 65% Sustained):*
     The active use score composites four equal tests: calls over 4G/VoLTE (20% time share), web browsing (30%), video streaming (30%), and 3D gaming (20%).
     1. *Calls and Video (50% combined time):* CPU operates in a low-intensity scheduling state where dynamic active power is negligible compared to modem and display draw.
@@ -4115,7 +4169,7 @@ To align the theoretical model with the sequential, non-concurrent nature of the
   - **0.18 W:** `5G mmWave + Sub-6 (Global band coverage)` — 5th Generation (5G) networks supporting both high-frequency millimeter-Wave (mmWave) and Sub-6 Gigahertz (GHz) bands, requiring additional front-end hardware power.
   - **0.14 W:** `5G Sub-6 (Full Global Bands)` or `5G Sub-6 (Limited/regional bands)` — standard 5G networks operating on Sub-6 GHz frequencies.
   - **0.09 W:** `4G LTE-Advanced Pro` or `4G LTE (Basic)` — 4th Generation (4G) Long-Term Evolution (LTE) modems.
-  - **0.05 W:** `3G` or `2G Only` — legacy 3rd Generation (3G) or 2nd Generation (2G) modems.
+  - **0.05 W:** `3G` or `2G` — legacy 3rd Generation (3G) or 2nd Generation (2G) modems.
 - **Wi-Fi Active Power (P_wifi):**
   The device's Wi-Fi hardware solution is mapped to one of the standard categories in **Section 7.3 (Wi-Fi Standard)**. Similar to the cellular modem, the values are **representative average active powers** consumed during the dynamic test sequences rather than instantaneous peak power or energy-per-bit efficiency:
   - **0.05 W:** `Wi-Fi 7` — Wi-Fi 7 (802.11be) standard utilizing wide 320 Megahertz (MHz) channels and Multi-Link Operation (MLO).
