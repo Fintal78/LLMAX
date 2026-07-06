@@ -29,7 +29,7 @@
           "Dimensions": "Unfolded: 159.2 x 214.1 x 3.9-4.2 mmFolded: 159.2 x 75 x 12.9 mm",
           "Weight": "309 g (10.90 oz)",
           "Build": "Glass front (Gorilla Glass Victus Ceramic 2) (folded), plastic front (unfolded), ceramic-glass fiber-reinforced polymer back, aluminum frame, titanium hinge housing",
-          "SIM": "\u00b7 Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time)\u00b7 Nano-SIM + Nano-SIM + multiple eSIM (max 2 at a time)\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time)· Nano-SIM + Nano-SIM + multiple eSIM (max 2 at a time)· Nano-SIM + Nano-SIM",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Advanced Armor aluminum frame"
         },
         "Display": {
@@ -50,12 +50,12 @@
           "Other": "UFS"
         },
         "Main Camera": {
-          "Triple": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6\u00b5m, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\", 1.4\u00b5m, dual pixel PDAF",
+          "Triple": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6µm, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\", 1.4µm, dual pixel PDAF",
           "Features": "LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@60fps, 1080p@60/120/240fps (gyro-EIS), 10-bit HDR, HDR10+"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.2, 18mm (ultrawide), 1/3.0\", 1.12\u00b5m Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.12\u00b5m",
+          "Single": "10 MP, f/2.2, 18mm (ultrawide), 1/3.0\", 1.12µm Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.12µm",
           "Features": "HDR",
           "Video": "4K@30/60fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -127,7 +127,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.45,
+        "predicted_score": 3.52,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -138,7 +138,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.45,
+        "final_score": 3.52,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -184,12 +184,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -258,7 +258,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.38,
+        "predicted_score": 5.19,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -269,7 +269,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.38,
+        "final_score": 5.19,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -313,12 +313,12 @@
           "Internal": "64GB 4GB RAM"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, PDAF Auxiliary lens",
+          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, PDAF Auxiliary lens",
           "Features": "LED flash",
           "Video": "1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -344,7 +344,7 @@
           "Colors": "Green",
           "Models": "SM-E075F/DS, SM-E075F",
           "SAR": "0.24 W/kg (head)",
-          "Price": "\u00a3 199.99 / \u20b9 7,415"
+          "Price": "£ 199.99 / ₹ 7,415"
         }
       },
       "battery_scores": {
@@ -389,7 +389,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.09,
+        "predicted_score": 4.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -400,7 +400,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.09,
+        "final_score": 4.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -444,12 +444,12 @@
           "Internal": "64GB 4GB RAM"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, PDAF Auxiliary lens",
+          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, PDAF Auxiliary lens",
           "Features": "LED flash",
           "Video": "1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -475,7 +475,7 @@
           "Colors": "Black",
           "Models": "SM-M075F/DS, SM-M075F",
           "SAR": "0.24 W/kg (head)",
-          "Price": "\u00a3 199.99 / \u20b9 6,799"
+          "Price": "£ 199.99 / ₹ 6,799"
         }
       },
       "battery_scores": {
@@ -520,7 +520,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.09,
+        "predicted_score": 4.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -531,7 +531,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.09,
+        "final_score": 4.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -556,7 +556,7 @@
           "Dimensions": "164.4 x 77.9 x 7.5 mm (6.47 x 3.07 x 0.30 in)",
           "Weight": "190 g (6.70 oz)",
           "Build": "Glass front (Gorilla Glass Victus+), plastic back, plastic frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM· Nano-SIM + Nano-SIM",
           "Other": "IP54 dust protected and water resistant (water splashes)"
         },
         "Display": {
@@ -576,12 +576,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 4GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -608,7 +608,7 @@
           "Colors": "Black, Gray, Light blue",
           "Models": "SM-A175F, SM-A175F/DS, SM-A175M, SM-A175M/DS, SM-A175F/DSB",
           "SAR EU": "0.37 W/kg (head) 1.18 W/kg (body)",
-          "Price": "\u20ac 139.62 / $ 171.20 / \u00a3 124.99"
+          "Price": "€ 139.62 / $ 171.20 / £ 124.99"
         },
         "EU LABEL": {
           "Energy": "Class A",
@@ -659,7 +659,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.36,
+        "predicted_score": 5.04,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -670,14 +670,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.36,
+        "final_score": 5.04,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Apple",
-      "model_name": "Apple iPad Pro 13 5G (2025) tablet. Announced Oct 2025. Features 13.0\u2033  display, Apple M5 chipset, 10290 mAh battery, 2048 GB storage, 16 GB RAM, Scratch-resistant glass.",
+      "model_name": "Apple iPad Pro 13 5G (2025) tablet. Announced Oct 2025. Features 13.0″  display, Apple M5 chipset, 10290 mAh battery, 2048 GB storage, 16 GB RAM, Scratch-resistant glass.",
       "url": "https://www.gsmarena.com/apple_ipad_pro_13_5g_(2025)-14233.php",
       "specs": {
         "Network": {
@@ -723,7 +723,7 @@
           "Video": "4K@24/25/30/60fps, 1080p@25/30/60/120/240fps; gyro-EIS, ProRes (4K, 1080p)"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.0, 122\u02da (ultrawide)",
+          "Single": "12 MP, f/2.0, 122˚ (ultrawide)",
           "Features": "Face detection, HDR, panorama",
           "Video": "1080p@25/30/60fps, gyro-EIS, HDR"
         },
@@ -734,7 +734,7 @@
         "Comms": {
           "WLAN": "Wi-Fi 802.11 a/b/g/n/ac/6e/7, dual-band, hotspot",
           "Bluetooth": "6.0, A2DP, LE, EDR",
-          "Positioning": "GPS, GLONASS, GALILEO, QZSS (Wi\u2011Fi + Cellular model only)",
+          "Positioning": "GPS, GLONASS, GALILEO, QZSS (Wi‑Fi + Cellular model only)",
           "NFC": "No",
           "Radio": "No",
           "USB": "USB Type-C 4 (Thunderbolt 3), DisplayPort, magnetic connector"
@@ -800,7 +800,7 @@
           "scc_score": 0.0,
           "total_soi_score": 4.8
         },
-        "predicted_score": 7.6,
+        "predicted_score": 3.51,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -811,14 +811,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.6,
+        "final_score": 3.51,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Apple",
-      "model_name": "Apple iPad Pro 11 5G (2025) tablet. Announced Oct 2025. Features 11.0\u2033  display, Apple M5 chipset, 8160 mAh battery, 2048 GB storage, 16 GB RAM, Scratch-resistant glass.",
+      "model_name": "Apple iPad Pro 11 5G (2025) tablet. Announced Oct 2025. Features 11.0″  display, Apple M5 chipset, 8160 mAh battery, 2048 GB storage, 16 GB RAM, Scratch-resistant glass.",
       "url": "https://www.gsmarena.com/apple_ipad_pro_11_5g_(2025)-14234.php",
       "specs": {
         "Network": {
@@ -864,7 +864,7 @@
           "Video": "4K@24/25/30/60fps, 1080p@25/30/60/120/240fps; gyro-EIS, ProRes (4K, 1080p)"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.0, 122\u02da (ultrawide)",
+          "Single": "12 MP, f/2.0, 122˚ (ultrawide)",
           "Features": "Face detection, HDR, panorama",
           "Video": "1080p@25/30/60fps, gyro-EIS, HDR"
         },
@@ -875,7 +875,7 @@
         "Comms": {
           "WLAN": "Wi-Fi 802.11 a/b/g/n/ac/6e/7, dual-band, hotspot",
           "Bluetooth": "6.0, A2DP, LE, EDR",
-          "Positioning": "GPS, GLONASS, GALILEO, QZSS (Wi\u2011Fi + Cellular model only)",
+          "Positioning": "GPS, GLONASS, GALILEO, QZSS (Wi‑Fi + Cellular model only)",
           "NFC": "No",
           "Radio": "No",
           "USB": "USB Type-C 4 (Thunderbolt 3), DisplayPort, magnetic connector"
@@ -941,7 +941,7 @@
           "scc_score": 0.0,
           "total_soi_score": 4.8
         },
-        "predicted_score": 7.7,
+        "predicted_score": 3.85,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -952,14 +952,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.7,
+        "final_score": 3.85,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Apple",
-      "model_name": "Apple iPhone 17 Pro Max smartphone. Announced Sep 2025. Features 6.9\u2033  display, Apple A19 Pro chipset, 4823 mAh battery, 2048 GB storage, 12 GB RAM, Ceramic Shield 2.",
+      "model_name": "Apple iPhone 17 Pro Max smartphone. Announced Sep 2025. Features 6.9″  display, Apple A19 Pro chipset, 4823 mAh battery, 2048 GB storage, 12 GB RAM, Ceramic Shield 2.",
       "url": "https://www.gsmarena.com/apple_iphone_17_pro_max-13964.php",
       "specs": {
         "Network": {
@@ -979,7 +979,7 @@
           "Dimensions": "163.4 x 78 x 8.8 mm (6.43 x 3.07 x 0.35 in)",
           "Weight": "233 g (8.22 oz)",
           "Build": "Glass front (Ceramic Shield 2), aluminum alloy frame, aluminum alloy back/ glass back (Ceramic Shield)",
-          "SIM": "\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time; International)\u00b7 eSIM + eSIM (8 or more, max 2 at a time; USA)\u00b7 Nano-SIM + Nano-SIM (China)",
+          "SIM": "· Nano-SIM + eSIM + eSIM (max 2 at a time; International)· eSIM + eSIM (8 or more, max 2 at a time; USA)· Nano-SIM + Nano-SIM (China)",
           "Other": "IP68 dust tight and water resistant (immersible up to 6m for 30 min) Apple Pay (Visa, MasterCard, AMEX certified)"
         },
         "Display": {
@@ -1001,7 +1001,7 @@
           "Other": "NVMe"
         },
         "Main Camera": {
-          "Triple": "48 MP, f/1.8, 24mm (wide), 1/1.28\", 1.22\u00b5m, dual pixel PDAF, sensor-shift OIS 48 MP, f/2.8, 100mm (periscope telephoto), 1/2.55\", 0.7\u00b5m, PDAF, 3D sensor\u2011shift OIS, 4x optical zoom 48 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\", 0.7\u00b5m, PDAF TOF 3D LiDAR scanner (depth)",
+          "Triple": "48 MP, f/1.8, 24mm (wide), 1/1.28\", 1.22µm, dual pixel PDAF, sensor-shift OIS 48 MP, f/2.8, 100mm (periscope telephoto), 1/2.55\", 0.7µm, PDAF, 3D sensor‑shift OIS, 4x optical zoom 48 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\", 0.7µm, PDAF TOF 3D LiDAR scanner (depth)",
           "Features": "Dual-LED dual-tone flash, HDR (photo/panorama)",
           "Video": "4K@24/25/30/60/100/120fps, 1080p@25/30/60/120/240fps, 10-bit HDR, Dolby Vision HDR (up to 120fps), ProRes, ProRes RAW (up to 120fps), Apple Log 2, 3D (spatial) video/audio, stereo sound rec."
         },
@@ -1027,7 +1027,7 @@
           "Other": "Ultra Wideband (UWB) support (gen2 chip) Emergency SOS, Messages and Find My via satellite"
         },
         "Battery": {
-          "Type": "Market-dependent versions:\u00b7 Li-Ion 4823 mAh - Nano SIM model\u00b7 Li-Ion 5088 mAh - eSIM only model",
+          "Type": "Market-dependent versions:· Li-Ion 4823 mAh - Nano SIM model· Li-Ion 5088 mAh - eSIM only model",
           "Charging": "Wired, PD3.2, AVS, 50% in 20 min 25W wireless MagSafe/Qi2, 50% in 30 min (15W - China) 4.5W reverse wired"
         },
         "Misc": {
@@ -1035,7 +1035,7 @@
           "Models": "iPhone18,2, A3526, A3257, A3527, A3525",
           "SAR": "1.19 W/kg (head) 1.19 W/kg (body)",
           "SAR EU": "1.49 W/kg (head) 1.49 W/kg (body)",
-          "Price": "\u20ac 1,409.00 / $ 1,369.49 / \u00a3 1,169.00 / \u20b9 149,900"
+          "Price": "€ 1,409.00 / $ 1,369.49 / £ 1,169.00 / ₹ 149,900"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2600583 (v10) GeekBench: 10118 (v6) 3DMark: 6010 (Wild Life Extreme)",
@@ -1092,7 +1092,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.62,
+        "predicted_score": 5.7,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1103,14 +1103,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.62,
+        "final_score": 5.7,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Apple",
-      "model_name": "Apple iPhone 17 Pro smartphone. Announced Sep 2025. Features 6.3\u2033  display, Apple A19 Pro chipset, 3998 mAh battery, 1024 GB storage, 12 GB RAM, Ceramic Shield 2.",
+      "model_name": "Apple iPhone 17 Pro smartphone. Announced Sep 2025. Features 6.3″  display, Apple A19 Pro chipset, 3998 mAh battery, 1024 GB storage, 12 GB RAM, Ceramic Shield 2.",
       "url": "https://www.gsmarena.com/apple_iphone_17_pro-14049.php",
       "specs": {
         "Network": {
@@ -1130,7 +1130,7 @@
           "Dimensions": "150 x 71.9 x 8.8 mm (5.91 x 2.83 x 0.35 in)",
           "Weight": "206 g (7.27 oz)",
           "Build": "Glass front (Ceramic Shield 2), aluminum alloy frame, aluminum alloy back/ glass back (Ceramic Shield)",
-          "SIM": "\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time; International)\u00b7 eSIM + eSIM (8 or more, max 2 at a time; USA)\u00b7 Nano-SIM + Nano-SIM (China)",
+          "SIM": "· Nano-SIM + eSIM + eSIM (max 2 at a time; International)· eSIM + eSIM (8 or more, max 2 at a time; USA)· Nano-SIM + Nano-SIM (China)",
           "Other": "IP68 dust tight and water resistant (immersible up to 6m for 30 min) Apple Pay (Visa, MasterCard, AMEX certified)"
         },
         "Display": {
@@ -1152,7 +1152,7 @@
           "Other": "NVMe"
         },
         "Main Camera": {
-          "Triple": "48 MP, f/1.8, 24mm (wide), 1/1.28\", 1.22\u00b5m, dual pixel PDAF, sensor-shift OIS 48 MP, f/2.8, 100mm (periscope telephoto), 1/2.55\", 0.7\u00b5m, PDAF, 3D sensor\u2011shift OIS, 4x optical zoom 48 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\", 0.7\u00b5m, PDAF TOF 3D LiDAR scanner (depth)",
+          "Triple": "48 MP, f/1.8, 24mm (wide), 1/1.28\", 1.22µm, dual pixel PDAF, sensor-shift OIS 48 MP, f/2.8, 100mm (periscope telephoto), 1/2.55\", 0.7µm, PDAF, 3D sensor‑shift OIS, 4x optical zoom 48 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\", 0.7µm, PDAF TOF 3D LiDAR scanner (depth)",
           "Features": "Dual-LED dual-tone flash, HDR (photo/panorama)",
           "Video": "4K@24/25/30/60/100/120fps, 1080p@25/30/60/120/240fps, 10-bit HDR, Dolby Vision HDR (up to 120fps), ProRes, ProRes RAW (up to 120fps), Apple Log 2, 3D (spatial) video/audio, stereo"
         },
@@ -1178,7 +1178,7 @@
           "Other": "Ultra Wideband (UWB) support (gen2 chip) Emergency SOS, Messages and Find My via satellite"
         },
         "Battery": {
-          "Type": "Market-dependent versions:\u00b7 Li-Ion 3998 mAh - Nano SIM model\u00b7 Li-Ion 4252 mAh - eSIM only model",
+          "Type": "Market-dependent versions:· Li-Ion 3998 mAh - Nano SIM model· Li-Ion 4252 mAh - eSIM only model",
           "Charging": "Wired, PD3.2, AVS, 50% in 20 min 25W wireless MagSafe/Qi2, 50% in 30 min (15W - China) 4.5W reverse wired"
         },
         "Misc": {
@@ -1186,7 +1186,7 @@
           "Models": "iPhone18,1, A3256, A3523, A3522, A3524",
           "SAR": "1.19 W/kg (head) 1.19 W/kg (body)",
           "SAR EU": "1.49 W/kg (head) 1.49 W/kg (body)",
-          "Price": "\u20ac 1,232.29 / $ 1,149.97 / \u00a3 1,069.00 / \u20b9 134,900"
+          "Price": "€ 1,232.29 / $ 1,149.97 / £ 1,069.00 / ₹ 134,900"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2430575 (v10) GeekBench: 9923 (v6) 3DMark: 5868 (Wild Life Extreme)",
@@ -1243,7 +1243,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.8,
+        "predicted_score": 4.84,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1254,14 +1254,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.8,
+        "final_score": 4.84,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Apple",
-      "model_name": "Apple iPhone 17 Air smartphone. Announced Sep 2025. Features 6.5\u2033  display, Apple A19 Pro chipset, 3149 mAh battery, 1024 GB storage, 12 GB RAM, Ceramic Shield 2.",
+      "model_name": "Apple iPhone 17 Air smartphone. Announced Sep 2025. Features 6.5″  display, Apple A19 Pro chipset, 3149 mAh battery, 1024 GB storage, 12 GB RAM, Ceramic Shield 2.",
       "url": "https://www.gsmarena.com/apple_iphone_17_air-13502.php",
       "specs": {
         "Network": {
@@ -1303,7 +1303,7 @@
           "Other": "NVMe"
         },
         "Main Camera": {
-          "Single": "48 MP, f/1.6, 26mm (wide), 1/1.56\", 1.0\u00b5m, dual pixel PDAF, sensor-shift OIS",
+          "Single": "48 MP, f/1.6, 26mm (wide), 1/1.56\", 1.0µm, dual pixel PDAF, sensor-shift OIS",
           "Features": "Dual-LED dual-tone flash, HDR (photo/panorama)",
           "Video": "4K@24/25/30/60fps, 1080p@25/30/60/120/240fps, HDR, Dolby Vision HDR (up to 60fps), stereo sound rec."
         },
@@ -1337,7 +1337,7 @@
           "Models": "iPhone18,4, A3517, A3260, A3518, A3516",
           "SAR": "1.19 W/kg (head) 1.19 W/kg (body)",
           "SAR EU": "1.49 W/kg (head) 1.49 W/kg (body)",
-          "Price": "\u20ac 919.34 / $ 900.00 / \u00a3 892.99"
+          "Price": "€ 919.34 / $ 900.00 / £ 892.99"
         },
         "Our Tests": {
           "Display": "998 nits max brightness (measured)",
@@ -1393,7 +1393,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 4.9,
+        "predicted_score": 3.29,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1404,14 +1404,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 4.9,
+        "final_score": 3.29,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab A11+ Android tablet. Announced Sep 2025. Features 11.0\u2033  display, Dimensity 7300 chipset, 7040 mAh battery, 256 GB storage, 8 GB RAM.",
+      "model_name": "Samsung Galaxy Tab A11+ Android tablet. Announced Sep 2025. Features 11.0″  display, Dimensity 7300 chipset, 7040 mAh battery, 256 GB storage, 8 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_a11+-14192.php",
       "specs": {
         "Network": {
@@ -1532,7 +1532,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.71,
+        "predicted_score": 2.48,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1543,14 +1543,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.71,
+        "final_score": 2.48,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab A11 Android tablet. Announced Sep 2025. Features 8.7\u2033  display, Helio G99 chipset, 5100 mAh battery, 128 GB storage, 8 GB RAM.",
+      "model_name": "Samsung Galaxy Tab A11 Android tablet. Announced Sep 2025. Features 8.7″  display, Helio G99 chipset, 5100 mAh battery, 128 GB storage, 8 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_a11-14141.php",
       "specs": {
         "Network": {
@@ -1669,7 +1669,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.22,
+        "predicted_score": 2.54,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1680,7 +1680,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.22,
+        "final_score": 2.54,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1727,12 +1727,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -1759,7 +1759,7 @@
           "Colors": "Black, Violet",
           "Models": "SM-E176B/DS",
           "SAR": "0.64 W/kg (head)",
-          "Price": "\u20b9 12,835"
+          "Price": "₹ 12,835"
         }
       },
       "battery_scores": {
@@ -1804,7 +1804,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.38,
+        "predicted_score": 5.19,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1815,7 +1815,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.38,
+        "final_score": 5.19,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -1841,7 +1841,7 @@
           "Dimensions": "161.3 x 76.6 x 7.4 mm (6.35 x 3.02 x 0.29 in)",
           "Weight": "190 g (6.70 oz)",
           "Build": "Glass front (Gorilla Glass Victus+), glass back (Gorilla Glass Victus+), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + Nano-SIM\u00b7 Nano-SIM + eSIM\u00b7 eSIM + eSIM",
+          "SIM": "· Nano-SIM· Nano-SIM + Nano-SIM· Nano-SIM + eSIM· eSIM + eSIM",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min) Enhanced armor aluminum frame"
         },
         "Display": {
@@ -1863,12 +1863,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 8 MP, f/2.4, 75mm (telephoto), 1/4.4\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 123\u02da (ultrawide), 1/3.0\", 1.12\u00b5m",
+          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 8 MP, f/2.4, 75mm (telephoto), 1/4.4\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 123˚ (ultrawide), 1/3.0\", 1.12µm",
           "Features": "LED flash, HDR, panorama, Best Face",
           "Video": "8K@24/30fps, 4K@30/60/120fps, 1080p@30/60/120/240fps; gyro-EIS, HDR10+"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12\u00b5m",
+          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12µm",
           "Video": "4K@30/60fps, 1080p@30/60fps; gyro-EIS, HDR10+"
         },
         "Sound": {
@@ -1895,7 +1895,7 @@
           "Colors": "Icyblue, Jetblack, Navy, White",
           "Models": "SM-S731B, SM-S731B/DS",
           "SAR EU": "0.54 W/kg (head) 1.57 W/kg (body)",
-          "Price": "\u20ac 493.00 / $ 649.99 / \u00a3 549.99 / \u20b9 59,999"
+          "Price": "€ 493.00 / $ 649.99 / £ 549.99 / ₹ 59,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1521140 (v10) GeekBench: 6948 (v6) 3DMark: 4262 (Wild Life Extreme)",
@@ -1952,7 +1952,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.56,
+        "predicted_score": 5.49,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -1963,14 +1963,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.56,
+        "final_score": 5.49,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S11 Ultra 5G Android tablet. Announced Sep 2025. Features 14.6\u2033  display, Dimensity 9400+ chipset, 11600 mAh battery, 1024 GB storage, 16 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S11 Ultra 5G Android tablet. Announced Sep 2025. Features 14.6″  display, Dimensity 9400+ chipset, 11600 mAh battery, 1024 GB storage, 16 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s11_ultra_5g-14057.php",
       "specs": {
         "Network": {
@@ -2011,12 +2011,12 @@
           "Other": "UFS"
         },
         "Main Camera": {
-          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0\u00b5m, AF 8 MP, f/2.2, (ultrawide)",
+          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0µm, AF 8 MP, f/2.2, (ultrawide)",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30fps, 1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.4, 120\u02da (ultrawide)",
+          "Single": "12 MP, f/2.4, 120˚ (ultrawide)",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -2099,7 +2099,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 8.01,
+        "predicted_score": 3.55,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2110,14 +2110,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.01,
+        "final_score": 3.55,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S11 5G Android tablet. Announced Sep 2025. Features 11.0\u2033  display, Dimensity 9400+ chipset, 8400 mAh battery, 2048 GB storage, 12 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S11 5G Android tablet. Announced Sep 2025. Features 11.0″  display, Dimensity 9400+ chipset, 8400 mAh battery, 2048 GB storage, 12 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s11_5g-14058.php",
       "specs": {
         "Network": {
@@ -2159,12 +2159,12 @@
           "Other": "UFS"
         },
         "Main Camera": {
-          "Single": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0\u00b5m, AF",
+          "Single": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0µm, AF",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30fps, 1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.4, 120\u02da (ultrawide)",
+          "Single": "12 MP, f/2.4, 120˚ (ultrawide)",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -2243,7 +2243,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 8.09,
+        "predicted_score": 4.41,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2254,14 +2254,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 8.09,
+        "final_score": 4.41,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S10 Lite 5G Android tablet. Announced Aug 2025. Features 10.9\u2033  display, Exynos 1380 chipset, 8000 mAh battery, 256 GB storage, 8 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S10 Lite 5G Android tablet. Announced Aug 2025. Features 10.9″  display, Exynos 1380 chipset, 8000 mAh battery, 256 GB storage, 8 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s10_lite_5g-14059.php",
       "specs": {
         "Network": {
@@ -2382,7 +2382,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.61,
+        "predicted_score": 2.99,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2393,7 +2393,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.61,
+        "final_score": 2.99,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2439,12 +2439,12 @@
           "Other": "UFS 2.2"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, PDAF Auxiliary lens",
+          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, PDAF Auxiliary lens",
           "Features": "LED flash",
           "Video": "1080p@30/60fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -2471,7 +2471,7 @@
           "Models": "SM-A075B, SM-A075B/DS, SM-A075F, SM-A075F/DS, SM-A075M, SM-A075M/DS",
           "SAR": "0.33 W/kg (head) 1.18 W/kg (body)",
           "SAR EU": "0.19 W/kg (head) 1.33 W/kg (body)",
-          "Price": "$ 139.99 / \u00a3 73.86"
+          "Price": "$ 139.99 / £ 73.86"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 394421 (v10) GeekBench: 1941 (v6) 3DMark: 338 (Wild Life Extreme)",
@@ -2522,7 +2522,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.09,
+        "predicted_score": 4.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2533,7 +2533,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.09,
+        "final_score": 4.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2560,7 +2560,7 @@
           "Dimensions": "164.4 x 77.9 x 7.5 mm (6.47 x 3.07 x 0.30 in)",
           "Weight": "192 g (6.77 oz)",
           "Build": "Glass front (Gorilla Glass Victus), plastic frame, fiber-reinforced plastic back",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + eSIM\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM· Nano-SIM + eSIM· Nano-SIM + Nano-SIM",
           "Other": "IP54 dust protected and water resistant (water splashes)"
         },
         "Display": {
@@ -2581,12 +2581,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 4GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF, OIS 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -2612,7 +2612,7 @@
           "Colors": "Black, Gray, Blue",
           "Models": "SM-A176B, SM-A176B/DS",
           "SAR EU": "0.67 W/kg (head) 0.97 W/kg (body)",
-          "Price": "\u20ac 164.00 / $ 193.07 / \u00a3 182.00 / \u20b9 18,999"
+          "Price": "€ 164.00 / $ 193.07 / £ 182.00 / ₹ 18,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 435787 (v10) GeekBench: 2048 (v6) 3DMark: 365 (Wild Life Extreme)",
@@ -2669,7 +2669,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.38,
+        "predicted_score": 5.19,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2680,7 +2680,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.38,
+        "final_score": 5.19,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2727,12 +2727,12 @@
           "Internal": "128GB 6GB RAM, 128GB 8GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123\u02da, (ultrawide), 1/4.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123˚, (ultrawide), 1/4.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, 720p@480fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12µm",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -2761,7 +2761,7 @@
           "Models": "SM-E366B, SM-E366B/DS",
           "SAR": "0.46 W/kg (head)",
           "SAR EU": "0.38 W/kg (head) 1.01 W/kg (body)",
-          "Price": "\u20b9 16,999"
+          "Price": "₹ 16,999"
         }
       },
       "battery_scores": {
@@ -2806,7 +2806,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.31,
+        "predicted_score": 5.15,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2817,7 +2817,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.31,
+        "final_score": 5.15,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2844,7 +2844,7 @@
           "Dimensions": "Unfolded: 158.4 x 143.2 x 4.2 mmFolded: 158.4 x 72.8 x 8.9 mm",
           "Weight": "215 g (7.58 oz)",
           "Build": "Glass front (Gorilla Glass Victus Ceramic 2) (folded), plastic front (unfolded), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time)\u00b7 Nano-SIM + Nano-SIM + multiple eSIM (max 2 at a time)",
+          "SIM": "· Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time)· Nano-SIM + Nano-SIM + multiple eSIM (max 2 at a time)",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Advanced Armor aluminum frame"
         },
         "Display": {
@@ -2867,12 +2867,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6\u00b5m, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\", 1.4\u00b5m, dual pixel PDAF",
+          "Triple": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6µm, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\", 1.4µm, dual pixel PDAF",
           "Features": "LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@60fps, 1080p@60/120/240fps (gyro-EIS), 10-bit HDR, HDR10+"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.2, 18mm (ultrawide), 1/3.0\", 1.12\u00b5m Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.12\u00b5m",
+          "Single": "10 MP, f/2.2, 18mm (ultrawide), 1/3.0\", 1.12µm Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.12µm",
           "Features": "HDR",
           "Video": "4K@30/60fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -2902,7 +2902,7 @@
           "Models": "SM-F966B, SM-F966B/DS, SM-F966U, SM-F966U1",
           "SAR": "1.24 W/kg (head) 1.36 W/kg (body)",
           "SAR EU": "1.42 W/kg (head) 1.24 W/kg (body)",
-          "Price": "\u20ac 1,370.88 / $ 1,399.99 / \u00a3 1,449.00 / \u20b9 174,999"
+          "Price": "€ 1,370.88 / $ 1,399.99 / £ 1,449.00 / ₹ 174,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1995132 (v10) GeekBench: 9152 (v6) 3DMark: 5952 (Wild Life Extreme)",
@@ -2959,7 +2959,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.14,
+        "predicted_score": 3.27,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -2970,7 +2970,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.14,
+        "final_score": 3.27,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -2997,7 +2997,7 @@
           "Dimensions": "Unfolded: 166.7 x 75.2 x 6.5 mmFolded: 85.5 x 75.2 x 13.7 mm",
           "Weight": "188 g (6.63 oz)",
           "Build": "Plastic front (unfolded), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time)\u00b7 Nano-SIM + multiple eSIM (max 2 at a time)",
+          "SIM": "· Nano-SIM + eSIM + eSIM (max 2 at a time)· Nano-SIM + multiple eSIM (max 2 at a time)",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Armor aluminum frame"
         },
         "Display": {
@@ -3020,12 +3020,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123\u02da (ultrawide), 1/3.2\", 1.12\u00b5m",
+          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123˚ (ultrawide), 1/3.2\", 1.12µm",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30/60fps, 1080p@60/120/240fps, HDR10+"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22\u00b5m",
+          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22µm",
           "Features": "HDR",
           "Video": "4K@30/60fps"
         },
@@ -3055,7 +3055,7 @@
           "Models": "SM-F766B, SM-F766B/DS, SM-F766U, SM-F766U1",
           "SAR": "0.86 W/kg (head) 1.14 W/kg (body)",
           "SAR EU": "0.69 W/kg (head) 1.22 W/kg (body)",
-          "Price": "\u20ac 799.99 / $ 899.99 / \u00a3 820.00 / \u20b9 109,999"
+          "Price": "€ 799.99 / $ 899.99 / £ 820.00 / ₹ 109,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1513134 (v10) GeekBench: 7433 (v6) 3DMark: 5636 (Wild Life Extreme)",
@@ -3112,7 +3112,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.89,
+        "predicted_score": 4.86,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3123,7 +3123,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.89,
+        "final_score": 4.86,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3150,7 +3150,7 @@
           "Dimensions": "Unfolded: 165.1 x 71.9 x 6.9 mmFolded: 85.1 x 71.9 x 14.9 mm",
           "Weight": "187 g (6.60 oz)",
           "Build": "Plastic front (unfolded), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time)\u00b7 Nano-SIM + multiple eSIM (max 2 at a time)",
+          "SIM": "· Nano-SIM + eSIM + eSIM (max 2 at a time)· Nano-SIM + multiple eSIM (max 2 at a time)",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Armor aluminum frame"
         },
         "Display": {
@@ -3172,12 +3172,12 @@
           "Internal": "128GB 8GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123\u02da (ultrawide), 1/3.2\", 1.12\u00b5m",
+          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123˚ (ultrawide), 1/3.2\", 1.12µm",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30/60fps, 1080p@60/120/240fps, HDR10+"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22\u00b5m",
+          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22µm",
           "Features": "HDR",
           "Video": "4K@30/60fps"
         },
@@ -3205,7 +3205,7 @@
           "Models": "SM-F761B, SM-F761B/DS, SM-F761U1, SM-F761U",
           "SAR": "0.84 W/kg (head) 1.10 W/kg (body)",
           "SAR EU": "0.84 W/kg (head) 1.54 W/kg (body)",
-          "Price": "\u20ac 988.99 / $ 589.95 / \u00a3 764.99 / \u20b9 89,999"
+          "Price": "€ 988.99 / $ 589.95 / £ 764.99 / ₹ 89,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1355845 (v10) GeekBench: 6108 (v6) 3DMark: 4036 (Wild Life Extreme)",
@@ -3262,7 +3262,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.62,
+        "predicted_score": 4.3,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3273,14 +3273,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.62,
+        "final_score": 4.3,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Watch8 Classic Android watch. Announced Jul 2025. Features 1.34\u2033  display, Exynos W1000 chipset, 445 mAh battery, 64 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
+      "model_name": "Samsung Galaxy Watch8 Classic Android watch. Announced Jul 2025. Features 1.34″  display, Exynos W1000 chipset, 445 mAh battery, 64 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
       "url": "https://www.gsmarena.com/samsung_galaxy_watch8_classic-13998.php",
       "specs": {
         "Network": {
@@ -3345,7 +3345,7 @@
           "Models": "SM-L500, SM-L505U",
           "SAR": "1.04 W/kg (head) 0.41 W/kg (body)",
           "SAR EU": "0.03 W/kg (head) 0.67 W/kg (body)",
-          "Price": "\u20ac 278.90 / $ 299.99"
+          "Price": "€ 278.90 / $ 299.99"
         }
       },
       "battery_scores": {
@@ -3408,7 +3408,7 @@
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Watch8 Android watch. Announced Jul 2025. Features 1.47\u2033  display, Exynos W1000 chipset, 435 mAh battery, 32 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
+      "model_name": "Samsung Galaxy Watch8 Android watch. Announced Jul 2025. Features 1.47″  display, Exynos W1000 chipset, 435 mAh battery, 32 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
       "url": "https://www.gsmarena.com/samsung_galaxy_watch8-13997.php",
       "specs": {
         "Network": {
@@ -3472,7 +3472,7 @@
           "Colors": "Graphite, Silver",
           "Models": "SM-L320, SM-L325, SM-L330, SM-L335, SM-L325U, SM-L335U",
           "SAR EU": "0.15 W/kg (head) 0.78 W/kg (body)",
-          "Price": "\u20ac 235.39 / $ 229.98"
+          "Price": "€ 235.39 / $ 229.98"
         }
       },
       "battery_scores": {
@@ -3576,12 +3576,12 @@
           "Other": "UFS 2.2"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123\u02da, (ultrawide), 1/4.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123˚, (ultrawide), 1/4.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, 720p@480fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12µm",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -3610,7 +3610,7 @@
           "Models": "SM-M366B, SM-M366B/DS",
           "SAR": "0.46 W/kg (head)",
           "SAR EU": "0.38 W/kg (head) 1.01 W/kg (body)",
-          "Price": "\u20b9 14,999"
+          "Price": "₹ 14,999"
         }
       },
       "battery_scores": {
@@ -3655,7 +3655,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.31,
+        "predicted_score": 5.12,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3666,7 +3666,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.31,
+        "final_score": 5.12,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3693,7 +3693,7 @@
           "Dimensions": "158.2 x 75.6 x 5.8 mm (6.23 x 2.98 x 0.23 in)",
           "Weight": "163 g (5.75 oz)",
           "Build": "Glass front (Gorilla Glass Ceramic 2), titanium frame, glass back (Gorilla Glass Victus 2)",
-          "SIM": "\u00b7 Nano-SIM + eSIM\u00b7 Nano-SIM + Nano-SIM + eSIM (max 2 at a time)",
+          "SIM": "· Nano-SIM + eSIM· Nano-SIM + Nano-SIM + eSIM (max 2 at a time)",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min)"
         },
         "Display": {
@@ -3714,12 +3714,12 @@
           "Internal": "256GB 12GB RAM, 512GB 12GB RAM"
         },
         "Main Camera": {
-          "Dual": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6\u00b5m, multi-directional PDAF, OIS 12 MP, f/2.2, 13mm (ultrawide), 1/2.55\", 1.4\u00b5m, PDAF",
+          "Dual": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6µm, multi-directional PDAF, OIS 12 MP, f/2.2, 13mm (ultrawide), 1/2.55\", 1.4µm, PDAF",
           "Features": "Best Face, LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@30/60/120fps, 1080p@30/60/120/240fps, 10-bit HDR"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12\u00b5m, dual pixel PDAF",
+          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12µm, dual pixel PDAF",
           "Video": "4K@30/60fps, 1080p@30/60fps"
         },
         "Sound": {
@@ -3747,7 +3747,7 @@
           "Models": "SM-S937U, SM-S937U1, SM-S937B, SM-S937B/DS, SM-S9370",
           "SAR": "1.21 W/kg (head) 1.23 W/kg (body)",
           "SAR EU": "1.24 W/kg (head) 1.25 W/kg (body)",
-          "Price": "\u20ac 629.49 / $ 1,099.99 / \u00a3 699.99 / \u20b9 86,698"
+          "Price": "€ 629.49 / $ 1,099.99 / £ 699.99 / ₹ 86,698"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2147084 (v10) GeekBench: 9391 (v6) 3DMark: 6473 (Wild Life Extreme)",
@@ -3804,7 +3804,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.61,
+        "predicted_score": 3.89,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3815,7 +3815,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.61,
+        "final_score": 3.89,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -3894,7 +3894,7 @@
           "Colors": "Green, Violet",
           "Models": "SM-E566B, SM-E566B/DS",
           "SAR": "0.71 W/kg (head)",
-          "Price": "\u20b9 23,150"
+          "Price": "₹ 23,150"
         }
       },
       "battery_scores": {
@@ -3939,7 +3939,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.4,
+        "predicted_score": 5.28,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -3950,7 +3950,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.4,
+        "final_score": 5.28,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4028,7 +4028,7 @@
           "Colors": "Black, Light Green",
           "Models": "SM-M566B, SM-M566B/DS",
           "SAR": "0.71 W/kg (head)",
-          "Price": "\u20b9 21,999"
+          "Price": "₹ 21,999"
         }
       },
       "battery_scores": {
@@ -4073,7 +4073,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.4,
+        "predicted_score": 5.28,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4084,7 +4084,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.4,
+        "final_score": 5.28,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4109,7 +4109,7 @@
         "Body": {
           "Dimensions": "168.6 x 79.9 x 10.2 mm (6.64 x 3.15 x 0.40 in)",
           "Weight": "240 g (8.47 oz)",
-          "SIM": "\u00b7 Nano-SIM + eSIM\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM + eSIM· Nano-SIM + Nano-SIM",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min) Drop resistant up to 1.5m MIL-STD-810H compliant"
         },
         "Display": {
@@ -4130,7 +4130,7 @@
           "Internal": "128GB 6GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, PDAF 8 MP, f/2.2, (ultrawide)",
+          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, PDAF 8 MP, f/2.2, (ultrawide)",
           "Features": "Dual-LED flash, HDR, panorama",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -4162,7 +4162,7 @@
           "Colors": "Black",
           "Models": "SM-G766B, SM-G766BU1, SM-G766B/DS",
           "SAR EU": "0.81 W/kg (head) 1.03 W/kg (body)",
-          "Price": "\u20ac 423.75 / $ 576.99"
+          "Price": "€ 423.75 / $ 576.99"
         },
         "EU LABEL": {
           "Energy": "Class B",
@@ -4213,7 +4213,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.4,
+        "predicted_score": 3.69,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4224,14 +4224,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.4,
+        "final_score": 3.69,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab Active5 Pro Android tablet. Announced Apr 2025. Features 10.1\u2033  display, Snapdragon 7s Gen 3 chipset, 10100 mAh battery, 256 GB storage, 8 GB RAM, MIL-STD-810H compliant, Corning Gorilla Glass Victus+.",
+      "model_name": "Samsung Galaxy Tab Active5 Pro Android tablet. Announced Apr 2025. Features 10.1″  display, Snapdragon 7s Gen 3 chipset, 10100 mAh battery, 256 GB storage, 8 GB RAM, MIL-STD-810H compliant, Corning Gorilla Glass Victus+.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_active5_pro-13790.php",
       "specs": {
         "Network": {
@@ -4352,7 +4352,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.6,
+        "predicted_score": 5.03,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4363,14 +4363,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.6,
+        "final_score": 5.03,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S10 FE+ Android tablet. Announced Apr 2025. Features 13.1\u2033  display, Exynos 1580 chipset, 10090 mAh battery, 256 GB storage, 12 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S10 FE+ Android tablet. Announced Apr 2025. Features 13.1″  display, Exynos 1580 chipset, 10090 mAh battery, 256 GB storage, 12 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s10_fe+-13760.php",
       "specs": {
         "Network": {
@@ -4493,7 +4493,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.76,
+        "predicted_score": 2.56,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4504,14 +4504,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.76,
+        "final_score": 2.56,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S10 FE Android tablet. Announced Apr 2025. Features 10.9\u2033  display, Exynos 1580 chipset, 8000 mAh battery, 256 GB storage, 12 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S10 FE Android tablet. Announced Apr 2025. Features 10.9″  display, Exynos 1580 chipset, 8000 mAh battery, 256 GB storage, 12 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s10_fe-13761.php",
       "specs": {
         "Network": {
@@ -4634,7 +4634,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.86,
+        "predicted_score": 2.98,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4645,7 +4645,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.86,
+        "final_score": 2.98,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4691,12 +4691,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -4723,7 +4723,7 @@
           "Models": "SM-E166P, SM-E166P/DS",
           "SAR": "1.08 W/kg (head)",
           "SAR EU": "0.99 W/kg (head) 1.19 W/kg (body)",
-          "Price": "\u20b9 12,300"
+          "Price": "₹ 12,300"
         }
       },
       "battery_scores": {
@@ -4768,7 +4768,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.31,
+        "predicted_score": 5.0,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4779,7 +4779,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.31,
+        "final_score": 5.0,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4827,7 +4827,7 @@
           "Other": "UFS 3.1"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.56\", 1.0\u00b5m, PDAF, OIS 12 MP, f/2.2, 123\u02da (ultrawide), 1/3.06\", 1.12\u00b5m 5 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.56\", 1.0µm, PDAF, OIS 12 MP, f/2.2, 123˚ (ultrawide), 1/3.06\", 1.12µm 5 MP (macro)",
           "Features": "Best Face, LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -4860,7 +4860,7 @@
           "Models": "SM-A566V, SM-A566B, SM-A566B/DS, SM-A566E, SM-A566E/DS, SM-A5660, SM-A566U, SM-A566U1, SM-A566W, SM-A566S",
           "SAR": "1.32 W/kg (head)",
           "SAR EU": "0.61 W/kg (head) 1.05 W/kg (body)",
-          "Price": "\u20ac 289.00 / $ 499.99 / \u00a3 259.00 / \u20b9 38,999"
+          "Price": "€ 289.00 / $ 499.99 / £ 259.00 / ₹ 38,999"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 908689 (v10) GeekBench: 3899 (v6) 3DMark: 1332 (Wild Life Extreme)",
@@ -4917,7 +4917,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.42,
+        "predicted_score": 5.27,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -4928,7 +4928,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.42,
+        "final_score": 5.27,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -4976,7 +4976,7 @@
           "Other": "UFS 2.2"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123\u02da, (ultrawide), 1/4.0\", 1.12\u00b5m 5 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123˚, (ultrawide), 1/4.0\", 1.12µm 5 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -5009,7 +5009,7 @@
           "Models": "SM-A366E, SM-A366E/DS, SM-A366B, SM-A366B/DS, SM-A366U, SM-A366U1, SM-A366W",
           "SAR": "1.07 W/kg (head)",
           "SAR EU": "0.53 W/kg (head) 1.29 W/kg (body)",
-          "Price": "\u20ac 187.78 / $ 359.99 / \u00a3 224.00 / \u20b9 28,898"
+          "Price": "€ 187.78 / $ 359.99 / £ 224.00 / ₹ 28,898"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 613492 (v10) GeekBench: 2917 (v6) 3DMark: 912 (Wild Life Extreme)",
@@ -5066,7 +5066,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.38,
+        "predicted_score": 5.44,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5077,7 +5077,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.38,
+        "final_score": 5.44,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5124,12 +5124,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 6GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 27mm (wide), 1/2.76\", 0.64\u00b5m, PDAF, OIS 8 MP, f/2.2, 120\u02da (ultrawide), 1/4.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, 27mm (wide), 1/2.76\", 0.64µm, PDAF, OIS 8 MP, f/2.2, 120˚ (ultrawide), 1/4.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30fps, 720p@480fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -5157,7 +5157,7 @@
           "Models": "SM-A266E, SM-A266E/DS, SM-A266E/DSN, SM-A266B, SM-A266B/DS, SM-A266B/DSN, SM-A266U, SM-A266U1, SM-A266W",
           "SAR": "0.75 W/kg (head) 1.09 W/kg (body)",
           "SAR EU": "0.41 W/kg (head) 0.96 W/kg (body)",
-          "Price": "\u20ac 179.00 / $ 194.87 / \u00a3 165.49 / \u20b9 19,548"
+          "Price": "€ 179.00 / $ 194.87 / £ 165.49 / ₹ 19,548"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 579811 (v10) GeekBench: 2768 (v6) 3DMark: 794 (Wild Life Extreme)",
@@ -5214,7 +5214,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.31,
+        "predicted_score": 5.12,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5225,7 +5225,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.31,
+        "final_score": 5.12,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5271,12 +5271,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -5303,7 +5303,7 @@
           "Models": "SM-M166P, SM-M166P/DS",
           "SAR": "1.08 W/kg (head)",
           "SAR EU": "0.99 W/kg (head) 1.19 W/kg (body)",
-          "Price": "\u20b9 12,499"
+          "Price": "₹ 12,499"
         }
       },
       "battery_scores": {
@@ -5348,7 +5348,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.31,
+        "predicted_score": 5.0,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5359,7 +5359,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.31,
+        "final_score": 5.0,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5409,7 +5409,7 @@
           "Video": "1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -5436,7 +5436,7 @@
           "Models": "SM-M066B, SM-M066B/DS",
           "SAR": "1.05 W/kg (head)",
           "SAR EU": "1.30 W/kg (head) 1.30 W/kg (body)",
-          "Price": "\u20b9 8,499"
+          "Price": "₹ 8,499"
         }
       },
       "battery_scores": {
@@ -5481,7 +5481,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.05,
+        "predicted_score": 4.3,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5492,7 +5492,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.05,
+        "final_score": 4.3,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5538,12 +5538,12 @@
           "Internal": "64GB 4GB RAM, 128GB 4GB RAM, 128GB 6GB RAM"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, 26mm (wide), 1/2.75\", 0.64\u00b5m, PDAF Auxiliary lens",
+          "Dual": "50 MP, f/1.8, 26mm (wide), 1/2.75\", 0.64µm, PDAF Auxiliary lens",
           "Features": "LED flash",
           "Video": "1080p@30/60fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, 26mm (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, 26mm (wide), 1/4.0\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -5570,7 +5570,7 @@
           "Models": "SM-A066B, SM-A066B/DS",
           "SAR": "1.05 W/kg (head)",
           "SAR EU": "1.30 W/kg (head) 1.30 W/kg (body)",
-          "Price": "\u00a3 103.79 / \u20b9 9,899"
+          "Price": "£ 103.79 / ₹ 9,899"
         }
       },
       "battery_scores": {
@@ -5615,7 +5615,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.05,
+        "predicted_score": 4.34,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5626,7 +5626,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.05,
+        "final_score": 4.34,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5676,7 +5676,7 @@
           "Video": "1080p@30/60fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -5703,7 +5703,7 @@
           "Models": "SM-E066B, SM-E066B/DS",
           "SAR": "1.05 W/kg (head)",
           "SAR EU": "1.30 W/kg (head) 1.30 W/kg (body)",
-          "Price": "\u20b9 8,685"
+          "Price": "₹ 8,685"
         }
       },
       "battery_scores": {
@@ -5748,7 +5748,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.16,
+        "predicted_score": 4.34,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5759,7 +5759,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.16,
+        "final_score": 4.34,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5786,7 +5786,7 @@
           "Dimensions": "162.8 x 77.6 x 8.2 mm (6.41 x 3.06 x 0.32 in)",
           "Weight": "218 g (7.69 oz)",
           "Build": "Glass front (Corning Gorilla Armor 2), glass back (Gorilla Glass Victus 2), titanium frame (grade 5)",
-          "SIM": "\u00b7 Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time) - USA\u00b7 Nano-SIM + Nano-SIM - CN",
+          "SIM": "· Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT· Nano-SIM + eSIM + eSIM (max 2 at a time) - USA· Nano-SIM + Nano-SIM - CN",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min) Stylus"
         },
         "Display": {
@@ -5809,12 +5809,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Quad": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6\u00b5m, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.52\", 1.12\u00b5m, PDAF, OIS, 3x optical zoom 50 MP, f/3.4, 111mm (periscope telephoto), 1/2.52\", 0.7\u00b5m, PDAF, OIS, 5x optical zoom 50 MP, f/1.9, 120\u02da (ultrawide), 1/2.5\", 0.7\u00b5m, dual pixel PDAF, Super Steady video",
+          "Quad": "200 MP, f/1.7, 24mm (wide), 1/1.3\", 0.6µm, multi-directional PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.52\", 1.12µm, PDAF, OIS, 3x optical zoom 50 MP, f/3.4, 111mm (periscope telephoto), 1/2.52\", 0.7µm, PDAF, OIS, 5x optical zoom 50 MP, f/1.9, 120˚ (ultrawide), 1/2.5\", 0.7µm, dual pixel PDAF, Super Steady video",
           "Features": "Laser AF, Best Face, LED flash, auto-HDR, panorama",
           "Video": "8K@24/30fps, 4K@30/60/120fps, 1080p@30/60/120/240fps, 10-bit HDR, HDR10+, stereo sound rec., gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12\u00b5m, dual pixel PDAF",
+          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12µm, dual pixel PDAF",
           "Features": "HDR, HDR10+",
           "Video": "4K@30/60fps, 1080p@30fps"
         },
@@ -5844,7 +5844,7 @@
           "Models": "SM-S938B, SM-S938B/DS, SM-S938U, SM-S938U1, SM-S938W, SM-S938N, SM-S9380, SM-S938E, SM-S938E/DS",
           "SAR": "1.26 W/kg (head) 0.64 W/kg (body)",
           "SAR EU": "1.25 W/kg (head) 1.42 W/kg (body)",
-          "Price": "\u20ac 899.99 / $ 874.99 / \u00a3 759.00 / \u20b9 103,868"
+          "Price": "€ 899.99 / $ 874.99 / £ 759.00 / ₹ 103,868"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2207809 (v10) GeekBench: 9846 (v6) 3DMark: 6687 (Wild Life Extreme)",
@@ -5901,7 +5901,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.76,
+        "predicted_score": 5.34,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -5912,7 +5912,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.76,
+        "final_score": 5.34,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -5939,7 +5939,7 @@
           "Dimensions": "158.4 x 75.8 x 7.3 mm (6.24 x 2.98 x 0.29 in)",
           "Weight": "190 g (6.70 oz)",
           "Build": "Glass front (Gorilla Glass Victus 2), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time) - USA\u00b7 Nano-SIM + Nano-SIM - CN",
+          "SIM": "· Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT· Nano-SIM + eSIM + eSIM (max 2 at a time) - USA· Nano-SIM + Nano-SIM - CN",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min) Armor aluminum 2 frame"
         },
         "Display": {
@@ -5961,12 +5961,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0\u00b5m, dual pixel PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\" 1.4\u00b5m, Super Steady video",
+          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0µm, dual pixel PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\" 1.4µm, Super Steady video",
           "Features": "Best Face, LED flash, auto-HDR, panorama",
           "Video": "8K@24/30fps, 4K@30/60fps, 1080p@30/60/120/240fps, 10-bit HDR, HDR10+, stereo sound rec., gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12\u00b5m, dual pixel PDAF",
+          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12µm, dual pixel PDAF",
           "Features": "HDR, HDR10+",
           "Video": "4K@30/60fps, 1080p@30fps"
         },
@@ -5996,7 +5996,7 @@
           "Models": "SM-S936B, SM-S936B/DS, SM-S936U, SM-S936U1, SM-S936W, SM-S936N, SM-S9360, SM-S936E, SM-S936E/DS",
           "SAR": "1.16 W/kg (head) 0.81 W/kg (body)",
           "SAR EU": "1.26 W/kg (head) 1.26 W/kg (body)",
-          "Price": "\u20ac 763.84 / $ 999.99 / \u00a3 999.00"
+          "Price": "€ 763.84 / $ 999.99 / £ 999.00"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2133477 (v10) GeekBench: 9669 (v6) 3DMark: 6601 (Wild Life Extreme)",
@@ -6053,7 +6053,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.63,
+        "predicted_score": 5.33,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6064,7 +6064,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.63,
+        "final_score": 5.33,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6091,7 +6091,7 @@
           "Dimensions": "146.9 x 70.5 x 7.2 mm (5.78 x 2.78 x 0.28 in)",
           "Weight": "162 g (5.71 oz)",
           "Build": "Glass front (Gorilla Glass Victus 2), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT\u00b7 Nano-SIM + eSIM + eSIM (max 2 at a time) - USA\u00b7 Nano-SIM + Nano-SIM - CN",
+          "SIM": "· Nano-SIM + Nano-SIM + eSIM + eSIM (max 2 at a time) - INT· Nano-SIM + eSIM + eSIM (max 2 at a time) - USA· Nano-SIM + Nano-SIM - CN",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min) Armor aluminum 2 frame"
         },
         "Display": {
@@ -6113,12 +6113,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0\u00b5m, dual pixel PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120\u02da (ultrawide), 1/2.55\" 1.4\u00b5m, Super Steady video",
+          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0µm, dual pixel PDAF, OIS 10 MP, f/2.4, 67mm (telephoto), 1/3.94\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 120˚ (ultrawide), 1/2.55\" 1.4µm, Super Steady video",
           "Features": "Best Face, LED flash, auto-HDR, panorama",
           "Video": "8K@24/30fps, 4K@30/60fps, 1080p@30/60/120/240fps, 10-bit HDR, HDR10+, stereo sound rec., gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12\u00b5m, dual pixel PDAF",
+          "Single": "12 MP, f/2.2, 26mm (wide), 1/3.2\", 1.12µm, dual pixel PDAF",
           "Features": "HDR, HDR10+",
           "Video": "4K@30/60fps, 1080p@30fps"
         },
@@ -6148,7 +6148,7 @@
           "Models": "SM-S931B, SM-S931B/DS, SM-S931U, SM-S931U1, SM-S931W, SM-S931N, SM-S9310, SM-S931E, SM-S931E/DS",
           "SAR": "1.13 W/kg (head) 0.92 W/kg (body)",
           "SAR EU": "1.29 W/kg (head) 1.36 W/kg (body)",
-          "Price": "\u20ac 590.00 / $ 699.99 / \u00a3 459.99 / \u20b9 76,139"
+          "Price": "€ 590.00 / $ 699.99 / £ 459.99 / ₹ 76,139"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 2193701 (v10) GeekBench: 10050 (v6) 3DMark: 6755 (Wild Life Extreme)",
@@ -6205,7 +6205,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.82,
+        "predicted_score": 4.38,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6216,7 +6216,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.82,
+        "final_score": 4.38,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6264,12 +6264,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "200 MP, f/1.8, (wide), PDAF, OIS 10 MP, f/2.4, 66mm (telephoto), 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 123\u02da, 12mm (ultrawide), 1.12\u00b5m, AF",
+          "Triple": "200 MP, f/1.8, (wide), PDAF, OIS 10 MP, f/2.4, 66mm (telephoto), 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 123˚, 12mm (ultrawide), 1.12µm, AF",
           "Features": "LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@60fps, 1080p@60/120/240fps (gyro-EIS), 720p@960fps (gyro-EIS), HDR10+"
         },
         "Selfie camera": {
-          "Single": "4 MP, f/1.8, 26mm (wide), 2.0\u00b5m Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3\", 1.22\u00b5m",
+          "Single": "4 MP, f/1.8, 26mm (wide), 2.0µm Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3\", 1.22µm",
           "Features": "HDR",
           "Video": "4K@30/60fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -6343,7 +6343,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.12,
+        "predicted_score": 3.23,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6354,7 +6354,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.12,
+        "final_score": 3.23,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6379,7 +6379,7 @@
           "Dimensions": "164.4 x 77.9 x 7.9 mm (6.47 x 3.07 x 0.31 in)",
           "Weight": "200 g (7.05 oz)",
           "Build": "Glass front, plastic back, plastic frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM· Nano-SIM + Nano-SIM",
           "Other": "IP54 dust protected and water resistant (water splashes)"
         },
         "Display": {
@@ -6400,12 +6400,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 4GB RAM, 256GB 6GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -6432,7 +6432,7 @@
           "Colors": "Gray, water green, midnight blue",
           "Models": "SM-A165F, SM-A165F/DS, SM-A165M, SM-A165M/DS, SM-A165F/DSB",
           "SAR EU": "0.31 W/kg (head) 1.08 W/kg (body)",
-          "Price": "\u20ac 115.00 / $ 122.00 / \u00a3 100.00"
+          "Price": "€ 115.00 / $ 122.00 / £ 100.00"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 387422 (v10) GeekBench: 1920 (v6) 3DMark: 345 (Wild Life Extreme)",
@@ -6489,7 +6489,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.36,
+        "predicted_score": 5.01,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6500,7 +6500,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.36,
+        "final_score": 5.01,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6527,7 +6527,7 @@
           "Dimensions": "164.4 x 77.9 x 7.9 mm (6.47 x 3.07 x 0.31 in)",
           "Weight": "200 g (7.05 oz)",
           "Build": "Glass front, plastic back, plastic frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + eSIM\u00b7 Nano-SIM + Nano-SIM",
+          "SIM": "· Nano-SIM· Nano-SIM + eSIM· Nano-SIM + Nano-SIM",
           "Other": "IP54 dust protected and water resistant (water splashes)"
         },
         "Display": {
@@ -6548,12 +6548,12 @@
           "Internal": "128GB 4GB RAM, 128GB 6GB RAM, 128GB 8GB RAM, 256GB 6GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, AF 5 MP, f/2.2, (ultrawide), 1/5.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "1080p@30fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.0, (wide), 1/3.1\", 1.12µm",
           "Video": "1080p@30fps"
         },
         "Sound": {
@@ -6580,7 +6580,7 @@
           "Colors": "Blue Black, Light Gray, Gold, Light Green",
           "Models": "SM-A166B, SM-A166B/DS, SM-A166P, SM-A166P/DS, SM-A166E, SM-A166E/DS, SM-A166W, SM-A166U, SM-A166U1",
           "SAR EU": "0.38 W/kg (head) 0.94 W/kg (body)",
-          "Price": "\u20ac 135.17 / $ 169.89 / \u00a3 139.99 / \u20b9 16,830"
+          "Price": "€ 135.17 / $ 169.89 / £ 139.99 / ₹ 16,830"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 368854 (v9), 435895 (v10) GeekBench: 2090 (v5), 2042 (v6) 3DMark: 360 (Wild Life Extreme)",
@@ -6637,7 +6637,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.41,
+        "predicted_score": 5.15,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6648,7 +6648,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.41,
+        "final_score": 5.15,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -6674,7 +6674,7 @@
           "Dimensions": "162 x 77.3 x 8 mm (6.38 x 3.04 x 0.31 in)",
           "Weight": "213 g (7.51 oz)",
           "Build": "Glass front (Gorilla Glass Victus+), glass back (Gorilla Glass Victus+), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + Nano-SIM\u00b7 Nano-SIM + eSIM\u00b7 eSIM + eSIM",
+          "SIM": "· Nano-SIM· Nano-SIM + Nano-SIM· Nano-SIM + eSIM· eSIM + eSIM",
           "Other": "IP68 dust tight and water resistant (immersible up to 1.5m for 30 min)"
         },
         "Display": {
@@ -6695,12 +6695,12 @@
           "Internal": "128GB 8GB RAM, 256GB 8GB RAM, 512GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 8 MP, f/2.4, 75mm (telephoto), 1/4.4\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 123\u02da (ultrawide), 1/3.0\", 1.12\u00b5m",
+          "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 8 MP, f/2.4, 75mm (telephoto), 1/4.4\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 13mm, 123˚ (ultrawide), 1/3.0\", 1.12µm",
           "Features": "LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@30/60/120fps, 1080p@30/60/120/240fps"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.4, 26mm (wide), 1/3.0\", 1.22\u00b5m",
+          "Single": "10 MP, f/2.4, 26mm (wide), 1/3.0\", 1.22µm",
           "Video": "4K@30/60fps, 1080p@30/60fps; gyro-EIS"
         },
         "Sound": {
@@ -6728,7 +6728,7 @@
           "Models": "SM-S721B, SM-S721B/DS, SM-S721U1, SM-S721U, SM-S721W, SM-S7210, SM-S721N",
           "SAR": "0.94 W/kg (head) 0.71 W/kg (body)",
           "SAR EU": "0.86 W/kg (head) 1.29 W/kg (body)",
-          "Price": "\u20ac 419.99 / $ 249.84 / \u00a3 339.00 / \u20b9 33,778"
+          "Price": "€ 419.99 / $ 249.84 / £ 339.00 / ₹ 33,778"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1548896 (v10) GeekBench: 6299 (v6) 3DMark: 3889 (Wild Life Extreme)",
@@ -6785,7 +6785,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.23,
+        "predicted_score": 4.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6796,14 +6796,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.23,
+        "final_score": 4.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S10 Ultra Android tablet. Announced Sep 2024. Features 14.6\u2033  display, Dimensity 9300+ chipset, 11200 mAh battery, 1024 GB storage, 16 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S10 Ultra Android tablet. Announced Sep 2024. Features 14.6″  display, Dimensity 9300+ chipset, 11200 mAh battery, 1024 GB storage, 16 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s10_ultra-13362.php",
       "specs": {
         "Network": {
@@ -6844,12 +6844,12 @@
           "Other": "UFS"
         },
         "Main Camera": {
-          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0\u00b5m, AF 8 MP, f/2.2, (ultrawide)",
+          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0µm, AF 8 MP, f/2.2, (ultrawide)",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30fps, 1080p@30fps"
         },
         "Selfie camera": {
-          "Dual": "12 MP, f/2.2, 26mm (wide) 12 MP, f/2.4, 120\u02da (ultrawide)",
+          "Dual": "12 MP, f/2.2, 26mm (wide) 12 MP, f/2.4, 120˚ (ultrawide)",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -6928,7 +6928,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.87,
+        "predicted_score": 3.2,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -6939,14 +6939,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.87,
+        "final_score": 3.2,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Tab S10+ Android tablet. Announced Sep 2024. Features 12.4\u2033  display, Dimensity 9300+ chipset, 10090 mAh battery, 512 GB storage, 12 GB RAM.",
+      "model_name": "Samsung Galaxy Tab S10+ Android tablet. Announced Sep 2024. Features 12.4″  display, Dimensity 9300+ chipset, 10090 mAh battery, 512 GB storage, 12 GB RAM.",
       "url": "https://www.gsmarena.com/samsung_galaxy_tab_s10+-13363.php",
       "specs": {
         "Network": {
@@ -6988,12 +6988,12 @@
           "Other": "UFS"
         },
         "Main Camera": {
-          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0\u00b5m, AF 8 MP, f/2.2, (ultrawide)",
+          "Dual": "13 MP, f/2.0, 26mm (wide), 1/3.4\", 1.0µm, AF 8 MP, f/2.2, (ultrawide)",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30fps, 1080p@30fps"
         },
         "Selfie camera": {
-          "Single": "12 MP, f/2.4, 120\u02da (ultrawide)",
+          "Single": "12 MP, f/2.4, 120˚ (ultrawide)",
           "Features": "HDR",
           "Video": "4K@30fps, 1080p@30fps"
         },
@@ -7072,7 +7072,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.91,
+        "predicted_score": 4.04,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7083,7 +7083,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.91,
+        "final_score": 4.04,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7127,7 +7127,7 @@
           "Internal": "128GB 8GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.56\", 1.0\u00b5m, PDAF, OIS 8 MP, f/2.2, 123\u02da (ultrawide) 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.56\", 1.0µm, PDAF, OIS 8 MP, f/2.2, 123˚ (ultrawide) 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, gyro-EIS, OIS"
         },
@@ -7158,7 +7158,7 @@
           "Colors": "Thunder Black, Coral Green",
           "Models": "SM-M558B, SM-M558B/DS",
           "SAR": "0.93 W/kg (head)",
-          "Price": "\u20b9 17,799"
+          "Price": "₹ 17,799"
         }
       },
       "battery_scores": {
@@ -7203,7 +7203,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.37,
+        "predicted_score": 5.32,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7214,7 +7214,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.37,
+        "final_score": 5.32,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7290,7 +7290,7 @@
           "Colors": "Twilight Blue",
           "Models": "SM-E055F, SM-E055F/DS",
           "SAR": "0.46 W/kg (head)",
-          "Price": "\u20b9 7,689"
+          "Price": "₹ 7,689"
         }
       },
       "battery_scores": {
@@ -7335,7 +7335,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.95,
+        "predicted_score": 3.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7346,7 +7346,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.95,
+        "final_score": 3.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7467,7 +7467,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.95,
+        "predicted_score": 3.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7478,7 +7478,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.95,
+        "final_score": 3.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7503,7 +7503,7 @@
           "Dimensions": "167.3 x 77.3 x 8 mm (6.59 x 3.04 x 0.31 in)",
           "Weight": "189 g (6.67 oz)",
           "Build": "Glass front, plastic back, plastic frame",
-          "SIM": "\u00b7 Nano-SIM\u00b7 Nano-SIM + Nano-SIM"
+          "SIM": "· Nano-SIM· Nano-SIM + Nano-SIM"
         },
         "Display": {
           "Type": "PLS LCD",
@@ -7523,12 +7523,12 @@
           "Other": "eMMC 5.1"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64\u00b5m, PDAF Auxiliary lens",
+          "Dual": "50 MP, f/1.8, (wide), 1/2.76\", 0.64µm, PDAF Auxiliary lens",
           "Features": "LED flash",
           "Video": "1080p@30/60fps"
         },
         "Selfie camera": {
-          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12\u00b5m",
+          "Single": "8 MP, f/2.0, (wide), 1/4.0\", 1.12µm",
           "Video": "Yes"
         },
         "Sound": {
@@ -7554,7 +7554,7 @@
           "Colors": "Blue, Gold, White",
           "Models": "SM-A065F, SM-A065F/DS, SM-A065M, SM-A065M/DS",
           "SAR EU": "0.44 W/kg (head) 1.08 W/kg (body)",
-          "Price": "\u20ac 75.00 / $ 104.70 / \u00a3 68.20 / \u20b9 7,749"
+          "Price": "€ 75.00 / $ 104.70 / £ 68.20 / ₹ 7,749"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 182064 (v9), 247675 (v10) GeekBench: 1273 (v5), 1276 (v6) 3DMark: 188 (Wild Life Extreme)",
@@ -7605,7 +7605,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.94,
+        "predicted_score": 3.36,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7616,7 +7616,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.94,
+        "final_score": 3.36,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7736,7 +7736,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.1,
+        "predicted_score": 4.32,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7747,7 +7747,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.1,
+        "final_score": 4.32,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7774,7 +7774,7 @@
           "Dimensions": "Unfolded: 153.5 x 132.6 x 5.6 mmFolded: 153.5 x 68.1 x 12.1 mm",
           "Weight": "239 g (8.43 oz)",
           "Build": "Glass front (Gorilla Glass Victus 2) (folded), plastic front (unfolded), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + eSIM\u00b7 eSIM + eSIM\u00b7 Nano-SIM + Nano-SIM (SM-F9560)",
+          "SIM": "· Nano-SIM + eSIM· eSIM + eSIM· Nano-SIM + Nano-SIM (SM-F9560)",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Armor aluminum frame Stylus support"
         },
         "Display": {
@@ -7796,12 +7796,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 10 MP, f/2.4, 66mm (telephoto), 1/3.94\", 1.0\u00b5m, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 123\u02da, 12mm (ultrawide), 1/3.2\", 1.12\u00b5m",
+          "Triple": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 10 MP, f/2.4, 66mm (telephoto), 1/3.94\", 1.0µm, PDAF, OIS, 3x optical zoom 12 MP, f/2.2, 123˚, 12mm (ultrawide), 1/3.2\", 1.12µm",
           "Features": "LED flash, HDR, panorama",
           "Video": "8K@30fps, 4K@60fps, 1080p@60/120/240fps (gyro-EIS), HDR10+"
         },
         "Selfie camera": {
-          "Single": "4 MP, f/1.8, 26mm (wide), 1/3.0\", 2.0\u00b5m, under display Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.22\u00b5m",
+          "Single": "4 MP, f/1.8, 26mm (wide), 1/3.0\", 2.0µm, under display Cover camera: 10 MP, f/2.2, 24mm (wide), 1/3.0\", 1.22µm",
           "Features": "HDR",
           "Video": "4K@30/60fps, 1080p@30/60fps, gyro-EIS"
         },
@@ -7830,7 +7830,7 @@
           "Colors": "Navy, Silver Shadow, Pink, Black, White",
           "Models": "SM-F956B, SM-F956B/DS, SM-F956U, SM-F956U1, SM-F956N, SM-F956W, SM-F9560",
           "SAR EU": "1.24 W/kg (head) 1.39 W/kg (body)",
-          "Price": "\u20ac 668.02 / $ 799.95 / \u00a3 949.99 / \u20b9 93,498"
+          "Price": "€ 668.02 / $ 799.95 / £ 949.99 / ₹ 93,498"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1608744 (v10) GeekBench: 6757 (v6) 3DMark: 4644 (Wild Life Extreme)",
@@ -7881,7 +7881,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 6.13,
+        "predicted_score": 3.54,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -7892,7 +7892,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 6.13,
+        "final_score": 3.54,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
@@ -7919,7 +7919,7 @@
           "Dimensions": "Unfolded: 165.1 x 71.9 x 6.9 mmFolded: 85.1 x 71.9 x 14.9 mm",
           "Weight": "187 g (6.60 oz)",
           "Build": "Plastic front (unfolded), glass back (Gorilla Glass Victus 2), aluminum frame",
-          "SIM": "\u00b7 Nano-SIM + eSIM\u00b7 eSIM + eSIM\u00b7 Nano-SIM + Nano-SIM (SM-F7410)",
+          "SIM": "· Nano-SIM + eSIM· eSIM + eSIM· Nano-SIM + Nano-SIM (SM-F7410)",
           "Other": "IP48 dust and water resistant (dust > 1mm; immersible up to 1.5m for 30 min) Armor aluminum frame"
         },
         "Display": {
@@ -7941,12 +7941,12 @@
           "Other": "UFS 4.0"
         },
         "Main Camera": {
-          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0\u00b5m, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123\u02da (ultrawide), 1/3.2\", 1.12\u00b5m",
+          "Dual": "50 MP, f/1.8, 23mm (wide), 1/1.57\", 1.0µm, dual pixel PDAF, OIS 12 MP, f/2.2, 13mm, 123˚ (ultrawide), 1/3.2\", 1.12µm",
           "Features": "LED flash, HDR, panorama",
           "Video": "4K@30/60fps, 1080p@60/120/240fps, HDR10+"
         },
         "Selfie camera": {
-          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22\u00b5m",
+          "Single": "10 MP, f/2.2, 23mm (wide), 1/3.0\", 1.22µm",
           "Features": "HDR",
           "Video": "4K@30/60fps"
         },
@@ -7974,7 +7974,7 @@
           "Colors": "Yellow, Silver Shadow, Mint, Blue, Black, White, Peach",
           "Models": "SM-F741B, SM-F741B/DS, SM-F741U, SM-F741U1, SM-F741W, SM-F741N",
           "SAR EU": "1.09 W/kg (head) 1.51 W/kg (body)",
-          "Price": "\u20ac 472.90 / $ 419.96 / \u00a3 466.48 / \u20b9 67,889"
+          "Price": "€ 472.90 / $ 419.96 / £ 466.48 / ₹ 67,889"
         },
         "Our Tests": {
           "Performance": "AnTuTu: 1400594 (v10) GeekBench: 6265 (v6) 3DMark: 4487 (Wild Life Extreme)",
@@ -8025,7 +8025,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 5.78,
+        "predicted_score": 4.28,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8036,14 +8036,14 @@
             "normalized_score": 0
           }
         },
-        "final_score": 5.78,
+        "final_score": 4.28,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Watch Ultra Android watch. Announced Jul 2024. Features 1.5\u2033  display, Exynos W1000 chipset, 590 mAh battery, 64 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal glass.",
+      "model_name": "Samsung Galaxy Watch Ultra Android watch. Announced Jul 2024. Features 1.5″  display, Exynos W1000 chipset, 590 mAh battery, 64 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal glass.",
       "url": "https://www.gsmarena.com/samsung_galaxy_watch_ultra-13127.php",
       "specs": {
         "Network": {
@@ -8107,7 +8107,7 @@
           "Colors": "Titanium Sliver, Titanium Gray, Titanium White, Titanium Blue",
           "Models": "SM-L705F, SM-L705N, SM-L705U",
           "SAR EU": "0.11 W/kg (head) 0.36 W/kg (body)",
-          "Price": "\u20ac 296.23 / $ 649.99"
+          "Price": "€ 296.23 / $ 649.99"
         }
       },
       "battery_scores": {
@@ -8170,7 +8170,7 @@
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Watch7 Android watch. Announced Jul 2024. Features 1.5\u2033  display, Exynos W1000 chipset, 425 mAh battery, 32 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
+      "model_name": "Samsung Galaxy Watch7 Android watch. Announced Jul 2024. Features 1.5″  display, Exynos W1000 chipset, 425 mAh battery, 32 GB storage, 2 GB RAM, MIL-STD-810H compliant, Sapphire crystal.",
       "url": "https://www.gsmarena.com/samsung_galaxy_watch7-13128.php",
       "specs": {
         "Network": {
@@ -8234,7 +8234,7 @@
           "Colors": "Cream, Silver, Green",
           "Models": "SM-L310F, SM-L315F",
           "SAR EU": "0.73 W/kg (head) 1.85 W/kg (body)",
-          "Price": "\u20ac 159.90 / $ 199.99"
+          "Price": "€ 159.90 / $ 199.99"
         }
       },
       "battery_scores": {
@@ -8297,7 +8297,7 @@
     },
     {
       "brand": "Samsung",
-      "model_name": "Samsung Galaxy Watch FE Android watch. Announced Jun 2024. Features 1.2\u2033  display, Exynos W920 chipset, 247 mAh battery, 16 GB storage, 1.5 GB RAM, MIL-STD-810H compliant, Sapphire crystal glass.",
+      "model_name": "Samsung Galaxy Watch FE Android watch. Announced Jun 2024. Features 1.2″  display, Exynos W920 chipset, 247 mAh battery, 16 GB storage, 1.5 GB RAM, MIL-STD-810H compliant, Sapphire crystal glass.",
       "url": "https://www.gsmarena.com/samsung_galaxy_watch_fe-13112.php",
       "specs": {
         "Network": {
@@ -8361,7 +8361,7 @@
           "Colors": "Black, Pink Gold, Silver",
           "Models": "SM-R861, SM-R866",
           "SAR EU": "0.52 W/kg (head) 0.17 W/kg (body)",
-          "Price": "\u20ac 134.92"
+          "Price": "€ 134.92"
         }
       },
       "battery_scores": {
@@ -8463,12 +8463,12 @@
           "Internal": "128GB 6GB RAM, 128GB 8GB RAM, 256GB 8GB RAM"
         },
         "Main Camera": {
-          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123\u02da, (ultrawide), 1/4.0\", 1.12\u00b5m 2 MP (macro)",
+          "Triple": "50 MP, f/1.8, (wide), 1/1.96\", PDAF, OIS 8 MP, f/2.2, 123˚, (ultrawide), 1/4.0\", 1.12µm 2 MP (macro)",
           "Features": "LED flash, panorama, HDR",
           "Video": "4K@30fps, 1080p@30/60fps, 720p@480fps, gyro-EIS"
         },
         "Selfie camera": {
-          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12\u00b5m",
+          "Single": "13 MP, f/2.2, (wide), 1/3.06\", 1.12µm",
           "Video": "4K@30fps, 1080p@30fps"
         },
         "Sound": {
@@ -8496,7 +8496,7 @@
           "Models": "SM-M356B, SM-M356B/DS",
           "SAR": "0.53 W/kg (head)",
           "SAR EU": "0.31 W/kg (head) 1.30 W/kg (body)",
-          "Price": "\u20b9 15,999"
+          "Price": "₹ 15,999"
         }
       },
       "battery_scores": {
@@ -8541,7 +8541,7 @@
           "scc_score": 0.0,
           "total_soi_score": 6.0
         },
-        "predicted_score": 7.34,
+        "predicted_score": 6.54,
         "benchmarks": {
           "gsmarena_active_use": {
             "hours": 0,
@@ -8552,7 +8552,7 @@
             "normalized_score": 0
           }
         },
-        "final_score": 7.34,
+        "final_score": 6.54,
         "score_source": "Predicted Score (Insufficient benchmark data for interpolation)",
         "booster": 1.0
       }

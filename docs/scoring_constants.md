@@ -148,10 +148,10 @@
 **8. Battery & Charging**
 
 ### 8.1 Battery Endurance (Model)
-*   `Battery_GSMArena_Hours_Min` = 6.0 (Score 0) [Minimum (Min) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover low-end or legacy 2016 devices]
-*   `Battery_GSMArena_Hours_Max` = 21.0 (Score 10) [Maximum (Max) Global System for Mobile Communications Arena (GSMArena) unified active-equivalent hours to cover the highest-performing flagship of the period (Xiaomi 17 Pro Max at 20:50h)]
-*   `Battery_Predictor_Hours_Min` = 5.0 (Score 0) [Minimum (Min) predictor active endurance hours]
-*   `Battery_Predictor_Hours_Max` = 18.0 (Score 10) [Maximum (Max) predictor active endurance hours]
+*   `Battery_GSMArena_Hours_Min` = 6.00 (Apple iPhone SE 1st Generation)
+*   `Battery_GSMArena_Hours_Max` = 25.58 (Realme P4 Power 5G)
+*   `Battery_Predictor_Hours_Min` = 3.95 (Apple iPhone SE 1st Generation)
+*   `Battery_Predictor_Hours_Max` = 26.67 (Xiaomi 17 Pro Max)
 
 ### 8.2 Wired Charging
 *   `Battery_Wired_Charging_W_Min` = 5 (Score 0), `Battery_Wired_Charging_W_Max` = 120 (Score 10)

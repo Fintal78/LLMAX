@@ -4312,7 +4312,7 @@ To ensure complete clarity and physical consistency across the scoring framework
       `T_predicted = E_supply / P_demand = 19.25 Wh / 1.3805 W = 13.94 Hours`
   - **Predicted Score:**
     - *Standardized Battery Score:* Predictor active endurance hours normalized linearly between canonical limits:
-      `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (13.94 - 5.0) / (18.0 - 5.0) = 6.88`
+      `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (13.94 - 3.95) / (26.67 - 3.95) = 4.40`
 
 ###### 8.1.3.6.2 Budget Device
 - **Specifications:**
@@ -4359,7 +4359,7 @@ To ensure complete clarity and physical consistency across the scoring framework
       `T_predicted = E_supply / P_demand = 19.25 Wh / 1.5216 W = 12.65 Hours`
   - **Predicted Score:**
     - *Standardized Battery Score:* Predictor active endurance hours normalized linearly between canonical limits:
-      `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (12.65 - 5.0) / (18.0 - 5.0) = 5.88`
+      `Predicted_Score = 10.0 * (T_predicted - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min) = 10.0 * (12.65 - 3.95) / (26.67 - 3.95) = 3.83`
 
 
 ### 🔹 8.2 Wired Charging Speed

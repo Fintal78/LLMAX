@@ -4406,7 +4406,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "calculation_formula": "gsmarena_active_use_score_v2.value != 'Not found' ? gsmarena_active_use_score_v2.value : (gsmarena_endurance_rating_v1.value != 'Not found' ? gsmarena_endurance_rating_v1.value / 8.4 : 'Not found')",
           // SCORING GUIDELINE: Converts the legacy Endurance Rating (ER) to an Active Use Score (AUS) equivalent if v2 is missing by dividing by the conversion constant of 8.4.
         },
-        "subscore": 5.20,
+        "subscore": 3.98,
         "calculation_formula": "10 * (t_unified_hours.value - Battery_GSMArena_Hours_Min) / (Battery_GSMArena_Hours_Max - Battery_GSMArena_Hours_Min), clamped 0-10."
         // SCORING GUIDELINE: Normalized score (subscore) is calculated using linear bounds from scoring_constants.md (clamped to [0, 10]). Set subscore to "N/A" if t_unified_hours.value is "Not found".
       },
@@ -4613,7 +4613,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           // SCORING GUIDELINE: Predicted active mixed-use runtime in hours.
         },
         "predicted_score": {
-          "value": 7.91,
+          "value": 4.99,
           "calculation_formula": "10 * (t_predicted.value - Battery_Predictor_Hours_Min) / (Battery_Predictor_Hours_Max - Battery_Predictor_Hours_Min)"
           // SCORING GUIDELINE: Predicted score is normalized linearly using bounds from scoring_constants.md (clamped to [0, 10]).
         }
@@ -4643,41 +4643,41 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             // GUIDELINE: The identity.id of the neighbor device (e.g., "xiaomi_14_ultra").
             "euclidean_distance_1": 0.0500,
             // GUIDELINE: Euclidean distance from Step 1.
-            "predicted_score_1": 8.40,
+            "predicted_score_1": 5.27,
             // GUIDELINE: The neighbor's own Method C predicted score.
-            "benchmark_score_1": 9.10
+            "benchmark_score_1": 6.97
             // GUIDELINE: The neighbor's Method A subscore.
           },
           {
             // Neighbor2
             "device_id_2": "oneplus_12",
             "euclidean_distance_2": 0.0800,
-            "predicted_score_2": 8.45,
-            "benchmark_score_2": 9.40
+            "predicted_score_2": 5.30,
+            "benchmark_score_2": 7.20
           },
           {
             // Neighbor3
             "device_id_3": "asus_rog_phone_8_pro",
             "euclidean_distance_3": 0.1000,
-            "predicted_score_3": 8.35,
-            "benchmark_score_3": 9.20
+            "predicted_score_3": 5.24,
+            "benchmark_score_3": 7.05
           }
         ],
-        "avg_predicted_neighbors": 8.4000,
+        "avg_predicted_neighbors": 5.2700,
         // SCORING GUIDELINE: (predicted_score_1 + predicted_score_2 + predicted_score_3) / 3.
-        "avg_benchmark_neighbors": 9.2333,
+        "avg_benchmark_neighbors": 7.0733,
         // SCORING GUIDELINE: (benchmark_score_1 + benchmark_score_2 + benchmark_score_3) / 3.
-        "correction_ratio": 0.9417,
+        "correction_ratio": 0.9469,
         // SCORING GUIDELINE: ratio between the target's predicted score and the average predicted score of the neighbors. Formula: method_c_prediction_model_Battery.predicted_score.value / avg_predicted_neighbors.
-        "interpolated_score": 8.69
+        "interpolated_score": 6.70
         // SCORING GUIDELINE: correction_ratio * avg_benchmark_neighbors.
       },
 
       "scores": {
-        "predicted": 7.91,
+        "predicted": 4.99,
         // SCORING GUIDELINE: scores.predicted directly inherits method_c_prediction_model_Battery.predicted_score.value.
         "final": {
-          "value": 5.20,
+          "value": 3.98,
           "calculation_formula": "method_a_benchmark_Battery.subscore != 'N/A' ? method_a_benchmark_Battery.subscore : (method_b_neighbor_interpolation_Battery.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Battery.interpolated_score : method_c_prediction_model_Battery.predicted_score.value)",
           // SCORING GUIDELINE: Use Method A if available (value = method_a_benchmark_Battery.subscore). Otherwise use Method B (value = method_b_neighbor_interpolation_Battery.interpolated_score). Otherwise default to Method C (value = method_c_prediction_model_Battery.predicted_score.value).
           "method_used": "Benchmark (GSMArena)",
