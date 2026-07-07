@@ -19,31 +19,12 @@ Among these, the **Subscriber Identity Module (SIM)** Capabilities section exhib
 
 ## 2. In-Depth Gap Analysis & Reconciliation Proposals
 
-### Gap 1: Section 7.2 — Subscriber Identity Module (SIM) Capabilities
-There is a double-mismatch in how Subscriber Identity Module (SIM) configurations are mapped to scores. In both files, the score of 6.0 is present, but it represents two completely different configurations. In the canonical rules, 6.0 represents a modern digital-only configuration, while in the proposed schema, 6.00 is mapped to a physical-only configuration. 
+### Gap 1: Section 7.2 — Subscriber Identity Module (SIM) Capabilities [RESOLVED]
+This gap has been fully resolved:
+1. Decomposed the intertwined scoring logic into two independent tables in [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_rules.md): Table 1 (Slot & Digital Configuration Class, max 8.0) and Table 2 (Concurrency Transceiver Mode, max 2.0).
+2. Fully aligned [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md) to calculate the SIM capabilities score as the sum of `slot_configuration.subscore` and `concurrency_mode.subscore` (normalized [0.0, 10.0] range).
+3. Placed all detailed AI guidelines, spec keywords, regional SKU variant mappings, and fallback resolution rules exclusively inside `proposed_data_structure.md`.
 
-This causes two distinct issues:
-1.  **Missing Configuration (Omitted Tier):** The *Dual eSIM (Embedded Subscriber Identity Module) / iSIM (Integrated Subscriber Identity Module) Only (No Physical Slot)* configuration (worth 6.0 in the rules) is completely missing from the proposed schema.
-2.  **Overscored Tiers (Inflation):** The *Dual Physical Nano-SIM Slots* configuration is overvalued in the schema at 6.00 (should be 4.0), and the *Single Physical Nano-SIM Only* configuration is overvalued at 4.00 (should be 0.0).
-
-#### Detailed SIM Mapping Comparison:
-| Configuration / Tier Name                       | Rules Score | Schema Score | Mismatch / Alignment Status                                   |
-| :---------------------------------------------- | :---------: | :----------: | :------------------------------------------------------------ |
-| **Dual eSIM / iSIM + Physical Nano-SIM Slot**   |   **10.0**  |  **10.00**   | Aligned (Tier 1)                                              |
-| **Single eSIM / iSIM + Physical Nano-SIM Slot** |   **8.0**   |   **8.00**   | Aligned (Tier 2)                                              |
-| **Dual eSIM / iSIM Only (No Physical Slot)**    |   **6.0**   |  *Omitted*   | **Missing Tier:** This configuration is not in the schema.    |
-| **Dual Physical Nano-SIM Slots**                |   **4.0**   |   **6.00**   | **Overscored:** Mapped as Tier 3 at 6.00 (inflated by +2.00). |
-| **Single Physical Nano-SIM Only**               |   **0.0**   |   **4.00**   | **Overscored:** Mapped as Tier 4 at 4.00 (inflated by +4.00). |
-| **No SIM (Wi-Fi Only) / None**                  |   **0.0**   |   **0.00**   | Aligned (Tier 5)                                              |
-
-#### Reconciliation Proposal:
-1.  **Modify the Inline Comment Guideline** in [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md#L4028-L4038) to restore the canonical 6.00 eSIM-only tier and realign physical slots:
-    *   `"Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00`
-    *   `"Tier 2: eSIM + Physical Slot" → 8.00`
-    *   `"Tier 3: Dual eSIM / iSIM Only (No Physical Slot)" → 6.00`
-    *   `"Tier 4: Dual Physical Nano-SIM Only" → 4.00`
-    *   `"Tier 5: Single Physical Nano-SIM Only" → 0.00`
-    *   `"Tier 6: None" → 0.00`
 
 ---
 
@@ -210,7 +191,7 @@ The following table serves as the primary consolidation of all discrepancies (ex
 
 | Section  | Target Variable     | Discrepancy Type             | Rules Standard                                                                                                    | Proposed Schema Standard                                                                                          | Reconciliation Action                                                                                                           |
 | :------: | :------------------ | :--------------------------- | :---------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **7.2**  | `sim_configuration` | Double-Mismatch / Inflation  | • Dual eSIM + Phys = 10.0<br>• eSIM + Phys = 8.0<br>• eSIM Only = 6.0<br>• Dual Phys = 4.0<br>• Single Phys = 0.0 | • Dual eSIM + Phys = 10.00<br>• eSIM + Phys = 8.00<br>• Dual Phys = 6.00<br>• Single Phys = 4.00<br>• None = 0.00 | Restore eSIM Only (6.00) tier; reduce Dual Phys to 4.00; reduce Single Phys to 0.00.                                            |
+| **7.2**  | `slot_configuration`<br>`concurrency_mode` | Double-Mismatch / Inflation  | • Dual eSIM + Phys = 10.0<br>• eSIM + Phys = 8.0<br>• eSIM Only = 6.0<br>• Dual Phys = 4.0<br>• Single Phys = 0.0 | • Dual eSIM + Phys = 10.00<br>• eSIM + Phys = 8.00<br>• Dual Phys = 6.00<br>• Single Phys = 4.00<br>• None = 0.00 | **RESOLVED:** Replaced with 2-table model (Slot Configuration + Concurrency Premium) summing to max 10.00. |
 | **7.4**  | `version_speed`     | Value Mismatch / Grouping    | • BT 5.2 = 4.0<br>• BT 5.1 = 2.5<br>• BT 5.0 = 2.0<br>• < 4.0 = 0.0                                               | • 5.2 = 3.50<br>• 5.1/5.0 = 2.50<br>• < 4.2 = 0.00                                                                | Raise 5.2 to 4.00; split 5.1 (2.50) and 5.0 (2.00); set boundary to `< 4.0`.                                                    |
 | **7.5**  | `best_technology`   | Value Mismatch / Security    | • Combo = 10.0<br>• Standalone 3D/Sonic = 8.0<br>• Optical = 5.0<br>• Capacitive = 5.0<br>• 2D Face = 0.0         | • Standalone 3D/Sonic = 10.00<br>• Optical / 2D Face = 6.00<br>• Capacitive = 4.00                                | Restrict 10.00 to combos; create 8.00 standalone tiers; reduce Optical to 5.00; raise Capacitive to 5.00; drop 2D Face to 0.00. |
 | **7.9**  | `version_speed`     | Added Tier / Underscoring    | • Gen 2 (10G) = 10.0<br>• Gen 1 (5G) = 8.0<br>• 2.0 (480M) = 5.0<br>• Micro-USB = 2.5                             | • Gen 2x2 (20G) = 10.00<br>• Gen 2 (10G) = 9.00<br>• Gen 1 (5G) = 7.50<br>• 2.0 (480M) = 2.00                     | Remove 20Gbps tier; raise Gen 2 to 10.00, Gen 1 to 8.00, 2.0 to 5.00; map Micro-USB to 2.50.                                    |

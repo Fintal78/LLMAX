@@ -69,6 +69,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "SM-S928U"
     ],
     // GUIDELINE: List of official model numbers (SKUs) corresponding to this variant (e.g. regional or carrier codes). Source from the manufacturer's spec sheet or regulatory filings. Include all known variants that share the same hardware configuration scored in this record.
+    "target_region": {
+      "value": "Global",
+      "source": "TBD",
+      "exact_extract": "Proof pending"
+      // GUIDELINE: The target region/market of this specific hardware SKU under review. Allowed values: "Global", "US" (United States), "China" (includes Hong Kong and Macau), "EU" (European Union), "CA" (Canada), or "Other". Use this field in Section 7.2 to resolve regional hardware variations.
+    },
     "hardware_configuration": {
       // GUIDELINE: Specifies the exact hardware tier being scored. A single device model can ship in multiple RAM/storage configurations — always document the specific variant below.
       "storage_gb": {
@@ -4020,31 +4026,144 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "7_2_sim_capabilities": {
-      // SCORING GOAL: Evaluates subscriber identity module format support.
-      "sim_configuration": {
+      // SCORING GOAL: Evaluates subscriber identity module format support, network flexibility, and hardware transceiver concurrency.
+      "slot_configuration": {
         "value": "Tier 1: Dual eSIM / iSIM + Physical Slot",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Identify the SIM configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 10.00
-        //     Definition: Supports two or more active eSIM profiles/integrated SIM alongside a physical Nano-SIM slot.
-        //   • "Tier 2: eSIM + Physical Slot"              → 8.00
-        //     Definition: Supports one active eSIM profile alongside a physical Nano-SIM slot.
-        //   • "Tier 3: Dual Physical Nano-SIM Only"       → 6.00
-        //     Definition: Two physical Nano-SIM slots; no electronic/programmable SIM support.
-        //   • "Tier 4: Single Physical Nano-SIM Only"     → 4.00
-        //     Definition: Only one physical Nano-SIM slot; no dual-SIM or eSIM support.
-        //   • "Tier 5: None"                              → 0.00
-        //     Definition: No cellular SIM capability (e.g., tablet/media player without modem).
-        // VALUE_DETAILS GUIDELINE: Record the exact Original Equipment Manufacturer (OEM) marketing name for SIM support (e.g., ["Dual eSIM"], ["Dual SIM (Nano-SIM, dual stand-by)"]).
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the physical slot and digital SIM configuration for the specific regional variant/SKU (Stock Keeping Unit) under review.
+        // Match the device's verified specifications to the highest matching Tier below. Mappings require verifying both digital SIM capability and physical tray presence. Use the following exact Tier Names for "value" and related numbers for "subscore":
+        //
+        // • "Tier 1: Dual eSIM / iSIM + Physical Slot" → 8.00
+        //   Condition: Must support (at least) two simultaneously active digital profiles (Multiple Enabled Profiles - MEP) AND contain a physical Nano-SIM slot.
+        //   Verification Rules:
+        //     1. Dual active eSIM/iSIM is confirmed (keywords: "Dual eSIM", "Dual iSIM", "MEP support", "multiple enabled profiles on eSIM", "supports two active eSIMs", "eSIM + eSIM", "iSIM + iSIM", "eSIM + iSIM").
+        //     2. AND a physical slot is verified (keywords: "Nano-SIM", "physical SIM slot", "SIM card slot").
+        //
+        // • "Tier 2: Single eSIM / iSIM + Physical Slot" → 7.00
+        //   Condition: Must support one active digital profile alongside a physical Nano-SIM slot.
+        //   Verification Rules:
+        //     1. Single active eSIM/iSIM is confirmed (keywords: "eSIM", "embedded SIM", "iSIM", "integrated SIM").
+        //     2. AND a physical slot is verified (keywords: "Nano-SIM", "physical SIM slot", "SIM card slot").
+        //     3. AND the device does NOT support dual active eSIM/iSIM (if dual active eSIM/iSIM + physical SIM is supported, map to Tier 1).
+        //
+        // • "Tier 3: Dual Physical Nano-SIM Slots" → 5.50
+        //   Condition: Must support two physical Nano-SIM slots with NO electronic/programmable SIM (eSIM/iSIM) support.
+        //   Verification Rules:
+        //     1. Two physical slots are verified (keywords: "Dual SIM (Nano-SIM)", "2x Nano-SIM", "Dual physical Nano-SIM slots", "Dual SIM (2 Nano-SIMs)").
+        //     2. AND no eSIM or iSIM is supported.
+        //
+        // • "Tier 4: Dual eSIM / iSIM Only" → 5.00
+        //   Condition: Must support two active digital profiles but contain NO physical SIM card slot.
+        //   Verification Rules:
+        //     1. Dual active eSIM/iSIM is confirmed (keywords: "Dual eSIM", "two active eSIMs", "Dual iSIM", "MEP support", "eSIM + eSIM", "iSIM + iSIM", "eSIM + iSIM").
+        //     2. AND the lack of a physical slot is verified (keywords: "no physical SIM slot", "eSIM-only", "eSIM only - USA", "no SIM card slot").
+        //
+        // • "Tier 5: Single eSIM / iSIM Only" → 1.50
+        //   Condition: Must support one active digital profile and contain NO physical SIM card slot.
+        //   Verification Rules:
+        //     1. Single active eSIM/iSIM is confirmed (keywords: "eSIM", "embedded SIM", "iSIM", "integrated SIM").
+        //     2. AND the lack of a physical slot is verified (keywords: "eSIM only", "no physical SIM slot").
+        //     3. AND the device does NOT support dual active eSIM/iSIM (if dual active eSIM/iSIM is supported, map to Tier 3).
+        //
+        // • "Tier 6: Single Physical Nano-SIM Only" → 0.00
+        //   Condition: Must support exactly one physical Nano-SIM slot with NO dual-SIM or eSIM/iSIM support.
+        //   Verification Rules:
+        //     1. One physical slot is verified (keywords: "Single SIM (Nano-SIM)", "Nano-SIM", "1x Nano-SIM slot").
+        //     2. AND no eSIM, iSIM, or second physical slot is supported.
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
+        // Automated agents must resolve incomplete, ambiguous, or missing slot specifications using the following 4-step logic hierarchy.
+        // Steps are applied in order. Once a step produces a definitive Tier mapping, subsequent steps are skipped.
+        //
+        // 1. Step 1: Regional Variant Override (Stock Keeping Unit - SKU)
+        //    • SIM hardware differs by region for the same device model. Retrieve the regional target from identity.target_region.value to identify the specific regional Stock Keeping Unit (SKU) of the device under review before applying any other rule.
+        //    • Chinese / Hong Kong / Macau regional SKUs (identity.target_region.value is "China"): Regardless of the model's eSIM capability in other markets, devices sold in mainland China, Hong Kong, and Macau typically have eSIM disabled or omitted entirely, and instead ship with two physical Nano-SIM slots. If the device under review is a Chinese / Hong Kong / Macau SKU, map to "Tier 3: Dual Physical Nano-SIM Slots". Exception: if the SKU is verified as single-SIM only (e.g., iPhone XS, iPhone 12 mini in these regions), map to "Tier 6: Single Physical Nano-SIM Only".
+        //    • US iPhone 14 and all subsequent iPhone models (US regional SKUs, identity.target_region.value is "US"): These specific SKUs have removed the physical Nano-SIM tray entirely and operate exclusively via eSIM. Map to "Tier 4: Dual eSIM / iSIM Only".
+        //    • If the regional SKU target is not "China" and is not a US eSIM-only iPhone model, proceed to Step 2.
+        //
+        // 2. Step 2: eSIM / iSIM Detection
+        //    • If the device specifications mention eSIM or iSIM support (keywords: "eSIM", "iSIM", "embedded SIM", "integrated SIM", "Dual eSIM", "MEP"):
+        //        - First, resolve whether the device supports Multiple Enabled Profiles (MEP), which allows two digital SIM profiles to be active simultaneously:
+        //            • MEP is supported if any of these conditions are met:
+        //                - Specs explicitly state "Dual eSIM", "Dual iSIM", "MEP", "two active eSIMs", "two active iSIMs", "eSIM + eSIM", "iSIM + iSIM", "eSIM + iSIM", or similar dual-profile keywords.
+        //                - OR the device belongs to a series that natively supports MEP (see the MEP Reference Table below).
+        //            • MEP is NOT supported if the device does not match any of the above conditions (i.e., specs only mention generic "eSIM" without dual-profile keywords, and the device is not in the MEP Reference Table).
+        //        - Then, combine the MEP resolution with the physical slot status:
+        //            • MEP supported + physical Nano-SIM slot present → Map to "Tier 1: Dual eSIM / iSIM + Physical Slot".
+        //            • MEP supported + no physical slot → Map to "Tier 4: Dual eSIM / iSIM Only".
+        //            • MEP NOT supported + physical Nano-SIM slot present → Map to "Tier 2: Single eSIM / iSIM + Physical Slot".
+        //            • MEP NOT supported + no physical slot → Map to "Tier 5: Single eSIM / iSIM Only".
+        //    • If the device specifications do NOT mention eSIM or iSIM at all, proceed to Step 3.
+        //
+        //    MEP REFERENCE TABLE (devices with native Multiple Enabled Profiles support, by brand and series):
+        //    ┌─────────────────────┬────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────┐
+        //    │ Brand               │ MEP-Capable Series (and all subsequent models)                 │ Non-MEP eSIM Series (single active profile only)         │
+        //    ├─────────────────────┼────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+        //    │ Apple               │ iPhone 13, 14, 15, 16 series and subsequent                    │ iPhone XR, XS, XS Max, 11, 12 series, SE 2nd/3rd Gen     │
+        //    │ Google              │ Pixel 7, 7 Pro, 7a, 8, 9 series and subsequent                 │ Pixel 3a, 4, 4a, 5, 5a, 6, 6 Pro, 6a                     │
+        //    │ Samsung             │ Galaxy S23, S24, S25, S26 series; Z Fold5, Z Flip5             │ Galaxy S20, S21, S22 series; Z Fold2/3/4, Z Flip/3/4;    │
+        //    │                     │ and subsequent Galaxy S / Z Fold / Z Flip series               │ Galaxy A-series (A54, A55, etc.); Galaxy FE series       │
+        //    │ OnePlus             │ OnePlus 11 and subsequent series                               │ No earlier OnePlus models support eSIM                   │
+        //    │ Xiaomi              │ Xiaomi 13, 13T, 14, 14T, 15 series and subsequent              │ No earlier Xiaomi models support eSIM                    │
+        //    │ Sony                │ Xperia 1 V, 5 V and subsequent series                          │ Xperia 1 IV, 5 IV, 1 III (single eSIM profile only)      │
+        //    │ Motorola            │ Razr 40, Razr 50; Edge 40 Pro, Edge 50 Pro and subsequent      │ Earlier Motorola models with eSIM (single profile only)  │
+        //    │ All other brands    │ No verified MEP support. If specs explicitly confirm           │ If eSIM is mentioned without MEP keywords, treat as      │
+        //    │                     │ "Dual eSIM" or "MEP", treat as MEP-capable.                    │ single profile. If no eSIM mentioned, proceed to Step 3. │
+        //    └─────────────────────┴────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┘
+        //    Note: This table applies to Global / US / European Union - EU / Canada - CA variants only. Chinese / Hong Kong / Macau variants of any of these models do not support eSIM (handled by Step 1).
+        //
+        // 3. Step 3: Physical-Only SIM Detection
+        //    • If the device has no eSIM/iSIM but specifications confirm physical SIM slot(s):
+        //        - Two physical Nano-SIM slots (keywords: "Dual SIM (Nano-SIM)", "2x Nano-SIM"): Map to "Tier 3: Dual Physical Nano-SIM Slots".
+        //          Note: "Hybrid Dual SIM" trays (where the user must choose between a second SIM and a microSD card) are physically capable of dual-SIM usage. Map to "Tier 3: Dual Physical Nano-SIM Slots". The microSD trade-off is scored separately in Section 6.9 (Storage Expandability).
+        //        - One physical Nano-SIM slot only (keywords: "Single SIM (Nano-SIM)", "1x Nano-SIM"): Map to "Tier 6: Single Physical Nano-SIM Only".
+        //    • If no SIM information is available at all, proceed to Step 4.
+        //
+        // 4. Step 4: Absolute Fallback (Missing Specifications)
+        //    • If SIM slot specifications are completely missing and no SIM-related keywords appear anywhere in the device's specifications:
+        //        - Release year before 2018: Default to "Tier 6: Single Physical Nano-SIM Only".
+        //        - Release year 2018 or later: Default to "Tier 3: Dual Physical Nano-SIM Slots".
+        //          Rationale: Step 4 is only reached when SIM specifications are completely missing (Step 2 found no eSIM keywords, and Step 3 found no physical SIM keywords). While the physical SIM configuration is unstated, dual physical Nano-SIM is the most likely configuration for devices released in 2018 or later, hence map to "Tier 3: Dual Physical Nano-SIM Slots". However, because mapping to Tier 3 risks artificially over-scoring devices that might actually be single physical SIM (Tier 6), this is a tentative "most likely" fallback and the entry MUST be flagged for manual verification to maintain conservative data integrity.
+        //    • Flag the entry for manual verification.
+      },
+      "concurrency_mode": {
+        "value": "Tier 2: Dual SIM Dual Standby (DSDS)",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 1.00
+        // SCORING GUIDELINE: Identify the transceiver hardware capability that manages concurrent cellular connections.
+        // Match the verified specifications to the highest applicable Tier below:
+        //
+        // • "Tier 1: Dual SIM Dual Active (DSDA)" → 2.00
+        //   Description: Dedicated dual radio transceivers allowing simultaneous voice/data sessions on both lines.
+        //   Keywords in Specs: "Dual active", "DSDA", "Dual SIM Dual Active", "concurrent calls on both SIMs".
+        //
+        // • "Tier 2: Dual SIM Dual Standby (DSDS)" → 1.00
+        //   Description: Shared single transceiver. One line goes temporarily offline when the other is actively on a call.
+        //   Keywords in Specs: "dual stand-by", "DSDS", "Dual SIM Dual Standby", "Dual SIM (Nano-SIM, dual stand-by)".
+        //
+        // • "Tier 3: Single Standby / None" → 0.00
+        //   Description: No concurrent standby capability (Single-SIM devices).
+        //   Keywords in Specs: "Single SIM", "Single Standby", "1x Nano-SIM Only".
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
+        // Automated agents must resolve incomplete, ambiguous, or missing transceiver concurrency specifications using the following 2-step logic hierarchy:
+        //
+        // 1. Step 1: Default DSDS for Dual-SIM Devices
+        //    • If the device is determined to be dual-SIM (whether physical dual-SIM, eSIM + physical, or dual eSIM) but the transceiver concurrency mode (DSDA vs. DSDS) is not explicitly stated, default to "Tier 2: Dual SIM Dual Standby (DSDS)".
+        //    • Upgrading to "Tier 1: Dual SIM Dual Active (DSDA)" is strictly forbidden unless the device specification sheet or trusted third-party technical reviews explicitly confirm concurrent voice or concurrent voice+data sessions on both lines simultaneously.
+        //
+        // 2. Step 2: Single-SIM Override
+        //    • If the slot_configuration resolved to a single-SIM tier (Tier 5 or Tier 6), map concurrency_mode to "Tier 3: Single Standby / None" (regardless of any missing or ambiguous specifications), since concurrent standby is physically impossible with only one active SIM profile.
       },
       "scores": {
-        "predicted": 10.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits sim_configuration.subscore.
+        "predicted": 9.00,
+        // SCORING GUIDELINE: scores.predicted = slot_configuration.subscore + concurrency_mode.subscore
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
+          "value": 9.00,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"

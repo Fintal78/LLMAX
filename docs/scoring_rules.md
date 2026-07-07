@@ -3541,41 +3541,82 @@ The proposal for SASI is supported by the following industry shifts toward verti
 
 
 ### 🔹 7.2 SIM Capabilities
-*Description:* Evaluates the device's support for cellular subscriber identity modules (SIM), prioritizing flexibility and modern standards like eSIM and iSIM. Dual SIM lets you have two numbers (e.g., work/personal) or use a local SIM when traveling.
+*Description:* Evaluates the device's support for cellular subscriber identity modules (SIM), prioritizing network flexibility, digital convenience, and transceiver hardware concurrency. Dual SIM functionality allows users to maintain two active telephone numbers (e.g., work/personal lines) or utilize a local carrier network while traveling without disabling their primary card.
 
-#### Terminology
-*   **SIM (Subscriber Identity Module):** The traditional physical card (Nano-SIM) that authenticates the user on a network.
-*   **eSIM (Embedded SIM):** A rewritable chip soldered onto the motherboard. Allows digital profile downloads, instant carrier switching, and multiple stored profiles. Eliminated physical swapping.
-*   **iSIM (Integrated SIM):** A newer standard where the SIM capability is integrated directly into the phone's main processor (SoC). It offers the same benefits as eSIM but uses less power and space (`<1mm²`), freeing room for larger batteries or other components. Functionally equivalent to eSIM for the user but represents superior engineering.
-*   **Dual Active eSIM:** The ability to have two eSIM lines active simultaneously, without needing a physical card.
+#### Terminology & Abbreviations
+*   **SIM (Subscriber Identity Module):** The traditional physical card (currently Nano-SIM, the smallest physical form factor) that stores network authentication credentials to connect a device to a cellular network.
+*   **eSIM (Embedded Subscriber Identity Module):** A programmable SIM chip soldered directly onto the device's motherboard. It allows users to download and store multiple carrier profiles digitally, enabling remote carrier activation and switching without physical card swaps.
+*   **iSIM (Integrated Subscriber Identity Module):** The latest hardware standard where SIM functionality is integrated directly into the system secure processing unit (SPU) of the main processor (SoC), bypassing the need for a separate physical chip. It offers identical digital flexibility to eSIM but with enhanced space and power efficiency.
+*   **DSDS (Dual SIM Dual Standby):** A dual-SIM operational mode where both SIMs (physical and/or digital) are registered on the network in standby. Because they share a single radio transceiver, if one SIM becomes actively engaged in a call or data session, the other SIM goes temporarily offline and cannot receive traffic.
+*   **DSDA (Dual SIM Dual Active):** An advanced hardware configuration utilizing independent dual transceivers. Both SIMs remain fully active simultaneously, enabling voice calls and high-speed data transmission on both lines concurrently without interference.
+*   **MEP (Multiple Enabled Profiles):** A software-hardware capability (standardized in Android 13 and iOS) that allows a single eSIM chip to maintain two concurrent active connections to different networks, enabling dual-eSIM functionality without requiring multiple physical eSIM chips.
 
-*   **Measurement:** Analysis of SIM specifications from manufacturer data.
-*   **Unit:** Configuration Tier (0-10)
+*Measurement:* Analysis of physical slot and digital SIM specifications from manufacturer documentation and verified hardware reviews.
+*Unit:* Configuration composite score.
 
-#### Scoring Table
+#### Scoring Formula
+The final SIM Capabilities score is calculated as the sum of two distinct technical components:
 
-| Score    | Configuration                                     |
-| :------- | :-------------------------------------------------|
-| **10.0** | **Dual eSIM / iSIM + Physical Nano-SIM Slot**     |
-| **8.0**  | **Single eSIM / iSIM + Physical Nano-SIM Slot**   |
-| **6.0**  | **Dual eSIM / iSIM Only (No Physical Slot)**      |
-| **4.0**  | **Dual Physical Nano-SIM Slots**                  |
-| **0.0**  | **No SIM or Single SIM (Nano, eSIM, or iSIM)**    |
+`SIM Capabilities Score = Slot & Digital Configuration Score + Concurrency Transceiver Premium`
 
-#### Configuration Details
+The maximum achievable score is capped at 10.0, representing the physical and digital state-of-the-art.
 
-*   **10.0 - Dual eSIM / iSIM + Physical Nano-SIM Slot:** Maximum flexibility. Can run two digital profiles (eSIM/iSIM) simultaneously AND has a physical slot for legacy carriers or travel.
-*   **8.0 - Single eSIM / iSIM + Physical Nano-SIM Slot:** Standard flagship configuration. Can use one physical SIM and one digital profile simultaneously.
-*   **6.0 - Dual eSIM / iSIM Only (No Physical Slot):** Excellent digital flexibility, but requires carrier eSIM support. No fallback for physical SIM cards.
-*   **4.0 - Dual Physical Nano-SIM Slots:** Good for travel/dual lines, but requires physical card swapping. No digital convenience.
-*   **0.0 - Single SIM (Nano, eSIM, or iSIM):** Basic connectivity. No second line or travel flexibility.
-*   **0.0 - No SIM (Wi-Fi Only):** Not a cellular device. 
+#### Table 1: Slot & Digital Configuration Class (Base Score, Max 8.0)
+Evaluates physical slots, programmable formats, profile management, and slot redundancy.
+
+| Base Score | Configuration Name                     | Engineering Definition & Justification                                  |
+|:----------:|:---------------------------------------|:------------------------------------------------------------------------|
+|  **8.0**   | **Dual eSIM / iSIM + Physical Slot**   | Multiple active digital profiles (eSIM/iSIM) alongside a physical slot. |
+|  **7.0**   | **Single eSIM / iSIM + Physical Slot** | One active digital profile (eSIM/iSIM) alongside a physical slot.       |
+|  **5.50**  | **Dual Physical Nano-SIM Slots**       | Two physical Nano-SIM slots only; no electronic/integrated SIM support. |
+|  **5.00**  | **Dual eSIM / iSIM Only**              | Multiple active digital profiles (eSIM/iSIM) but no physical slot.      |
+|  **1.50**  | **Single eSIM / iSIM Only**            | One active digital profile (eSIM/iSIM) only; no physical slot.          |
+|  **0.00**  | **Single Physical Nano-SIM Only**      | One physical Nano-SIM slot only; no dual-SIM or digital profile support.|
+
+#### Table 2: Concurrency Transceiver Mode (Concurrency Premium, Max 2.0)
+Measures the device's transceiver capability to maintain active concurrent connections.
+
+| Concurrency Premium | Mode Name                        | Engineering Definition & Justification                                                           |
+|:-------------------:|:---------------------------------|:-------------------------------------------------------------------------------------------------|
+|       **2.0**       | **Dual SIM Dual Active (DSDA)**  | Dedicated dual radio transceivers. Allows simultaneous active voice/data sessions on both lines. |
+|       **1.0**       | **Dual SIM Dual Standby (DSDS)** | Shared single transceiver. One line goes offline when the other is actively on a call.           |
+|       **0.0**       | **Single Standby / None**        | No concurrent active standby capability (Single-SIM devices).                                    |
+
+#### Justification for the 2-Table Decomposed Model
+Table 2 is strictly required to complement Table 1 because SIM capabilities are defined by two independent hardware dimensions: the physical/electronic format interface (Table 1) and the transceiver radio frequency (RF) concurrency pathway (Table 2). Merging them or omitting Table 2 would fail to represent actual device designs:
+1. **Transceiver Independence:** The slot configuration does not dictate transceiver concurrency. For example, a "Dual Physical Nano-SIM Slots" configuration (Table 1, Tier 3) can operate in Dual SIM Dual Standby (DSDS) mode on a budget device (Table 2, Tier 2, yielding 5.50 + 1.0 = 6.50) or in Dual SIM Dual Active (DSDA) mode on an older flagship featuring duplicate transceivers (Table 2, Tier 1, yielding 5.50 + 2.0 = 7.50).
+2. **Flagship Concurrency Differentiation:** Modern flagships with "Dual eSIM / iSIM + Physical Slot" (Table 1, Tier 1) exhibit different architectures. An international iPhone 15 Pro uses a single transceiver (DSDS, yielding 8.0 + 1.0 = 9.0), while a OnePlus 12 features independent dual RF transceivers supporting full simultaneous data and voice concurrency (DSDA, yielding 8.0 + 2.0 = 10.0).
+3. **Simplicity and Extensibility:** Decomposing the model avoids a combinatorial table of multiple merged rows, keeping data entry modular and easily auditable.
+
+#### Configuration & Engineering Justification
+
+*   **Asymmetry of Dual SIM vs. Single SIM (Physical vs. eSIM):**
+    The scoring model applies an asymmetric valuation to physical vs. eSIM interfaces depending on whether the hardware supports single-line or multi-line (dual-SIM) configurations:
+    
+    1.  **Dual-SIM: Why Dual Physical (5.50) > Dual eSIM Only (5.00)**
+        -   *Universal Compatibility:* A phone with dual physical SIM slots is usable anywhere in the world because physical plastic Nano-SIM cards are universally supported by all cellular operators (including legacy, prepaid, tourist, and discount carriers).
+        -   *eSIM Restrictions:* A dual eSIM-only device is severely restricted in regions (such as parts of Africa, South America, and Asia) or with budget carriers that do not offer eSIM provisioning, rendering the second line (or the entire device) unusable. 
+        -   *Operational Ease:* Physical SIMs can be swapped manually in seconds without internet connectivity or carrier web portals. Therefore, having a physical slot is a critical fallback, making Dual Physical (5.50) superior to Dual eSIM Only (5.00).
+
+    2.  **Single-SIM: Why Single eSIM Only (1.50) > Single Physical Only (0.00)**
+        -   *Digital Reconfigurability:* While both configurations restrict the user to a single active line, the single eSIM interface allows the user to store multiple digital profiles on the chip and swap them dynamically via software (e.g. download a roaming plan via a Quick Response - QR - code or carrier app).
+        -   *Physical Rigidity:* A single physical SIM slot is completely rigid: to swap carriers, the user must physically acquire, handle, and insert a new plastic card. Thus, the software-configured eSIM offers slightly more convenience than a single physical slot, justifying the minor premium of 1.50 over 0.00.
+
+*   **Physical Slot Fallback vs. eSIM-Only:**
+    Although eSIM/iSIM represents superior digital convenience, it suffers from non-universal carrier adoption globally. In many developing regions or tourist destinations, cellular providers do not support eSIMs or restrict them to postpaid accounts. Devices lacking a physical tray restrict user choice in these regions, which is why eSIM-only configurations are penalized relative to hybrid slots.
+*   **eSIM vs. iSIM Scoring Equivalency:**
+    The integrated SIM (iSIM) represents a superior silicon-level engineering achievement over discrete eSIM chips. Its primary physical benefit (space savings of under 1 square millimeter) is captured indirectly in Section 1.4 (Ergonomics) through overall device thinness and volumetric packaging efficiency (permitting a larger battery). The power efficiency gain of iSIM (saving approximately 100 to 200 microwatts in standby) is not explicitly modeled as a distinct variable in Section 8.1 (Battery Endurance) because it is negligible (representing less than 0.02% of the standard active system power draw of at least 1 Watt, and less than 1% of deep-sleep standby power of 15 to 50 milliwatts). However, to avoid double-counting the indirect packaging advantages and because eSIM and iSIM offer identical cellular network capabilities, they are scored identically in Section 7.2.
+*   **DSDA vs. DSDS Concurrency:**
+    DSDA represents a significant hardware premium, requiring duplicate RF (Radio Frequency) front-end transceivers and antennas. This hardware duplication allows both SIMs to maintain active sessions simultaneously. DSDS is a software-switched single-transceiver compromise where one SIM is muted during active sessions on the other. DSDA is rewarded a 2.0 premium for this hardware superiority.
+*   **Physical Tray Architecture Trade-offs:**
+    To avoid double-counting, the trade-off of a hybrid SIM tray (where the user must choose between a second physical SIM card and a microSD storage card) is evaluated exclusively in Section 6.9 (Storage Expandability) and does not deduct from the cellular SIM capabilities score here.
 
 > [!NOTE]
-> **Why are eSIM and iSIM scored identically?**
-> **Avoid Double Scoring:** The benefits of iSIM (integrated directly into the SoC) are strictly related to **Space Savings** (<1mm² vs ~2mm²) and **Power Efficiency**. These physical engineering advantages are already captured and rewarded in **Section 1.4 (Ergonomics) (specifically the thickness sub-metric)** and **Section 8.1 (Battery Endurance)**.
+> **Regional Variant Scoring Constraint:**
+> SIM configurations are heavily regionalized. For example, a single marketing model name (such as Apple iPhone 15 or Samsung Galaxy S24) may be sold as eSIM-only in the United States, dual physical SIM in China, and Nano-SIM + eSIM in Europe. SIM capabilities must be evaluated per specific regional SKU/variant to ensure database accuracy.
 > 
-> **Approximation Note:** This is currently an approximation. While **Section 8.1** rewards overall battery life, the theoretical model does not yet strictly quantify the specific µW savings of iSIM vs eSIM, nor do general benchmarks (like GSMArena) typically isolate this specific variable. However, treating them as functionally equivalent in this section prevents double-counting the engineering benefits that don't directly alter the user's *connectivity* options. 
+> **Ambiguity & Insufficient Data Fallback Rules:**
+> To ensure absolute consistency and eliminate duplication of scoring logic, all step-by-step ambiguity resolution and generic generational fallback rules for SIM capability grading are defined exclusively in the schema guidelines of the database definition file [proposed_data_structure.md]. Automated agents must execute that multi-step logic hierarchy to resolve missing or incomplete specifications.
 
 ### 🔹 7.3 Wi-Fi Standard
 *Description:* Wi-Fi technology. Newer standards (Wi-Fi 7/6E) provide faster, more stable internet, especially in crowded homes.
