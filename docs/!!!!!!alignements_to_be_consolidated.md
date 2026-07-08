@@ -28,29 +28,19 @@ This gap has been fully resolved:
 
 ---
 
-### Gap 2: Section 7.4 — Bluetooth (BT) Version Subscore
-The Bluetooth (BT) version subscore contains value mismatches. Bluetooth 5.2—which introduced Low Energy Audio (LE Audio) foundation using the Low Complexity Communication Codec (LC3)—is undervalued in the schema. Additionally, Bluetooth 5.1 and 5.0 are grouped together in the schema, causing Bluetooth 5.0 to be overvalued.
-
-#### Bluetooth Version Mapping Comparison:
-| Bluetooth Version Class | Rules Score |     Schema Score    | Mismatch / Alignment Status                                                                                                     |
-| :---------------------- | :---------: | :-----------------: | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Bluetooth 5.4**       |   **5.0**   |       **5.00**      | Aligned (Tier 1)                                                                                                                |
-| **Bluetooth 5.3**       |   **4.5**   |       **4.50**      | Aligned (Tier 2)                                                                                                                |
-| **Bluetooth 5.2**       |   **4.0**   |       **3.50**      | **Underscored:** Mapped as Tier 3 at 3.50 (undervalued by -0.50).                                                               |
-| **Bluetooth 5.1**       |   **2.5**   |       **2.50**      | Aligned (Grouped as Tier 4 in schema)                                                                                           |
-| **Bluetooth 5.0**       |   **2.0**   |       **2.50**      | **Overscored:** Mapped as Tier 4 at 2.50 (inflated by +0.50).                                                                   |
-| **Bluetooth 4.2**       |   **1.0**   |       **1.00**      | Aligned (Tier 5)                                                                                                                |
-| **< Bluetooth 4.0**     |   **0.0**   | **0.00** (as < 4.2) | **Boundary Gap:** Schema covers `< 4.2` as Tier 6, which assigns 0.00 to Bluetooth 4.0/4.1 (which should score 1.00 per rules). |
-
-#### Reconciliation Proposal:
-1.  **Update the Inline Guidelines** in [proposed_data_structure.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/proposed_data_structure.md#L4108-L4129) to match the rules exactly:
-    *   `"Tier 1: 5.4" → 5.00`
-    *   `"Tier 2: 5.3" → 4.50`
-    *   `"Tier 3: 5.2" → 4.00`
-    *   `"Tier 4: 5.1" → 2.50`
-    *   `"Tier 5: 5.0" → 2.00`
-    *   `"Tier 6: 4.2 / 4.1 / 4.0" → 1.00`
-    *   `"Tier 7: < 4.0" → 0.00`
+### Gap 2: Section 7.4 — Bluetooth (BT) Version Subscore [RESOLVED]
+This gap has been fully resolved:
+1. Reconciled and aligned the Bluetooth (BT) version subscores in both `scoring_rules.md` and `proposed_data_structure.md`.
+2. Updated `scoring_rules.md` to explicitly include Bluetooth 4.1 and 4.0 in the 1.00 subscore tier.
+3. Updated `proposed_data_structure.md` guidelines and subscores to:
+   - "Tier 1: 5.4" → 5.00
+   - "Tier 2: 5.3" → 4.50
+   - "Tier 3: 5.2" → 4.00
+   - "Tier 4: 5.1" → 2.50
+   - "Tier 5: 5.0" → 2.00
+   - "Tier 6: 4.2 / 4.1 / 4.0" → 1.00
+   - "Tier 7: < 4.0" → 0.00
+4. Formulated exhaustive, step-by-step logic trees for resolving ambiguous or missing Bluetooth transceiver versions and supported audio codecs. These rules reside exclusively in `proposed_data_structure.md` in accordance with design guidelines.
 
 ---
 

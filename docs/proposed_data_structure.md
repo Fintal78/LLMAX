@@ -51,7 +51,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-07-03"
+    "last_updated": "2026-07-08"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -4217,27 +4217,46 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "7_4_bluetooth_and_audio_codecs": {
-      // SCORING GOAL: Evaluates Bluetooth version and high-fidelity audio codec support.
+      // SCORING GOAL: Evaluates Bluetooth (BT) version and high-fidelity wireless audio codec support.
       "bluetooth_version": {
         "value": "Tier 2: 5.3",
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 4.50
-        // SCORING GUIDELINE: Identify the Bluetooth version. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: 5.4"      → 5.00
-        //     Definition: Latest standard with Periodic Advertising with Responses (PAwR) and Encrypted Advertising Data.
-        //   • "Tier 2: 5.3"      → 4.50
-        //     Definition: Improved encryption, connection reliability, and efficiency.
-        //   • "Tier 3: 5.2"      → 3.50
-        //     Definition: Introduces LE Audio and Enhanced Attribute Protocol (EATT).
-        //   • "Tier 4: 5.1 / 5.0" → 2.50
-        //     Definition: Basic Bluetooth 5 standards.
-        //   • "Tier 5: 4.2"      → 1.00
-        //     Definition: Legacy Bluetooth 4 standards.
-        //   • "Tier 6: < 4.2"    → 0.00
-        //     Definition: Obsolete Bluetooth standards.
+        // SCORING GUIDELINE: Identify the physical Bluetooth (BT) version supported by the transceiver. Use the following exact Tier Names for "value" with related scores for "subscore" (apply the highest applicable tier):
+        //   • "Tier 1: 5.4"               → 5.00
+        //     Definition: Supports Bluetooth (BT) 5.4 standards.
+        //   • "Tier 2: 5.3"               → 4.50
+        //     Definition: Supports Bluetooth (BT) 5.3 standards.
+        //   • "Tier 3: 5.2"               → 4.00
+        //     Definition: Supports Bluetooth (BT) 5.2 standards.
+        //   • "Tier 4: 5.1"               → 2.50
+        //     Definition: Supports Bluetooth (BT) 5.1 standards.
+        //   • "Tier 5: 5.0"               → 2.00
+        //     Definition: Supports Bluetooth (BT) 5.0 standards.
+        //   • "Tier 6: 4.2 / 4.1 / 4.0"   → 1.00
+        //     Definition: Supports Bluetooth (BT) 4.2, 4.1, or 4.0 legacy standards.
+        //   • "Tier 7: < 4.0"             → 0.00
+        //     Definition: Supports Bluetooth (BT) standards older than 4.0.
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
+        // Automated agents must resolve incomplete, ambiguous, or missing Bluetooth (BT) version specifications using the following 3-step logic hierarchy, applied sequentially:
+        //
+        // 1. Step 1: Secondary Resolution (System-on-Chip [SoC] Platform Mapping)
+        //    Retrieve the chipset name from identity.hardware_configuration.chipset.value. Look up the native Bluetooth (BT) version using the bluetooth_version column defined for this chipset in the canonical reference file references/soc_reference.md, then map this version to the corresponding tier.
+        //
+        // 2. Step 2: Tertiary Resolution (Temporal Era Fallback)
+        //    If both specifications and chipset name are unstated or unmapped, apply defaults based on the device's release year retrieved from the year component of identity.release_date.value:
+        //      - Release year >= 2024: Default to "Tier 2: 5.3".
+        //      - Release year 2021 to 2023: Default to "Tier 3: 5.2".
+        //      - Release year 2018 to 2020: Default to "Tier 5: 5.0".
+        //      - Release year 2016 to 2017: Default to "Tier 6: 4.2 / 4.1 / 4.0".
+        //      - Release year before 2016: Default to "Tier 7: < 4.0".
+        //
+        // 3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
+        //    If the release year is also unknown, default to "Tier 7: < 4.0" and flag for manual verification.
       },
-      "highest_codec_supported": {
+      "codec_supported": {
         "value": "Tier 2: High-Res",
         "value_details": {
           "Tier 1: Lossless": [],
@@ -4250,19 +4269,56 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
             { "name": "SBC", "source": "TBD", "exact_extract": "Proof pending" }
           ]
         },
-        "subscore": 4.00
-        // SCORING GUIDELINE: Identify the highest supported Bluetooth audio codec tier. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
+        "subscore": 3.50
+        // SCORING GUIDELINE: Identify the highest supported Bluetooth (BT) audio codec tier. Use the following exact Tier Names for "value" with related scores for "subscore" (apply the highest applicable tier):
         //   • "Tier 1: Lossless"   → 5.00
-        //     Definition: CD-quality audio without data loss over Bluetooth. Qualifying terms: aptX Lossless.
-        //   • "Tier 2: High-Res"   → 4.00
-        //     Definition: Near-lossless or high-bitrate codecs (up to 990kbps). Qualifying terms: LDAC, aptX Adaptive, aptX HD, LHDC.
-        //   • "Tier 3: Standard"   → 1.50
-        //     Definition: Basic distribution codecs with significant compression. Qualifying terms: AAC, SBC.
-        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        //     Definition: CD-quality audio without data loss. Qualifying terms: Qualcomm aptX Lossless, Savitech LHDC V5 (LHDC V5 Lossless), Huawei L2HC 3.0.
+        //   • "Tier 2: High-Res"   → 3.50
+        //     Definition: High-resolution lossy transmission up to 990 Kilobits per second (kbps). Qualifying terms: Sony LDAC, Savitech LHDC (v1/v2/v3/v4), Qualcomm aptX Adaptive, Qualcomm aptX HD, Samsung Seamless Codec (SSC), Samsung Scalable Codec, Samsung UHQ-BT, Huawei L2HC (1.0/2.0).
+        //   • "Tier 3: Standard"   → 0.00
+        //     Definition: Standard lossy compression. Qualifying terms: Advanced Audio Coding (AAC), Subband Codec (SBC), Low Complexity Communication Codec (LC3) for LE Audio, Qualcomm aptX Classic, Qualcomm aptX Low Latency (aptX LL).
+        //
+        // VALUE_DETAILS GUIDELINE (Advanced Traceability): List all specific supported Bluetooth (BT) codecs found in specs. To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}. IMPORTANT: Be exhaustive and include all terms that apply, for all tiers.
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
+        // If no codecs are explicitly declared in the specifications or reviews (which is the default case for most databases), automated agents must execute the following 4-step logic hierarchy, applied sequentially. Each step is only reached if all prior steps failed to resolve:
+        //
+        // 1. Step 1: Apple Ecosystem Override
+        //    Retrieve the brand string from identity.brand. If the brand is Apple (any iPhone model, any year): Apple's iOS restricts Bluetooth audio transmission to AAC and SBC codecs. So far no iPhone has ever natively supported LDAC, aptX, or any High-Res/Lossless codec over its internal Bluetooth stack. Force map to "Tier 3: Standard".
+        //
+        // 2. Step 2: Android OS Version Check (AOSP LDAC Baseline)
+        //    If the device is NOT Apple, retrieve the Android OS version from 5_software_and_longevity.operating_system_version.value. Since Android 8.0 (Oreo, released 2017), the Android Open Source Project (AOSP) natively integrates Sony LDAC as a system-level Bluetooth audio codec. This means ALL non-Apple devices running Android 8.0 or later — regardless of brand, model, or price tier — natively support LDAC transmission. This includes all Samsung Galaxy phones (S-series, A-series, M-series, J-series running Android 8.0+), all Xiaomi/Redmi, all OnePlus, all Oppo/Realme, all Vivo, all Google Pixel, all Motorola, all Sony Xperia, all Nothing, all Fairphone, and all other Android 8.0+ devices.
+        //    Default to "Tier 2: High-Res".
+        //    Exception: Devices running Android Go Edition may have LDAC disabled in their stripped-down Bluetooth stack. If the device is verified as running Android Go Edition, map to "Tier 3: Standard" instead.
+        //    If the device is running Android 7.x or earlier (or the OS version is unknown), proceed to Step 3.
+        //
+        // 3. Step 3: Temporal Era Fallback
+        //    If the Android OS version is unknown or below 8.0, fall back to the release year retrieved from the year component of identity.release_date.value:
+        //      - Release year >= 2018: Default to "Tier 2: High-Res" (rationale: Android 8.0+ adoption was near-universal for new devices from 2018 onward, making LDAC support the statistical baseline).
+        //      - Release year before 2018: Default to "Tier 3: Standard" (rationale: pre-Android 8.0 devices did not include LDAC in the AOSP base).
+        //
+        // 4. Step 4: Absolute Fallback
+        //    If the release year is also unknown, default to "Tier 3: Standard" and flag for manual verification.
+      },
+      "perceived_quality_bonus": {
+        "value": "Samsung Seamless Codec (SSC) Optimization",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.50
+        // SCORING GUIDELINE: Identify any applicable perceived quality or ecosystem audio optimization bonuses. Use the following exact names for "value" and related scores for "subscore":
+        //   • "Apple iOS AAC Optimization"                 → 1.50
+        //   • "Samsung Seamless Codec (SSC) Optimization"  → 0.50
+        //   • "None"                                       → 0.00
+        //
+        // RESOLUTION & MAPPING RULES (MANDATORY):
+        // Automated agents must map the perceived quality bonus based on the device's brand and operating system:
+        //   1. Apple iOS AAC Optimization (+1.50): Map if the brand is Apple (any iPhone model, any year).
+        //   2. Samsung Seamless Codec (SSC) Optimization (+0.50): Map if the brand is Samsung (any Galaxy model running Android 8.0 or later).
+        //   3. None (+0.00): Map for all other brands, models, or configurations.
       },
       "scores": {
         "predicted": 8.50,
-        // SCORING GUIDELINE: scores.predicted = bluetooth_version.subscore + highest_codec_supported.subscore (Max 10.0).
+        // SCORING GUIDELINE: scores.predicted = Clamp(bluetooth_version.subscore + codec_supported.subscore + perceived_quality_bonus.subscore, 0.00, 10.00).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.50,

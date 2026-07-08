@@ -3680,47 +3680,82 @@ Table 2 is strictly required to complement Table 1 because SIM capabilities are 
 
 
 ### 🔹 7.4 Bluetooth & Audio Codecs
-*Description:* Bluetooth quality. Newer versions offer stability and efficiency, while superior codecs ensure high-fidelity audio.
-*   **Measurement:** Supported Bluetooth Version + Highest Supported Codec.
-*   **Unit:** Composite Score (0-10)
 
-**Scoring Method: Additive Components**
-*Formula:* `Score = Version_Score + Codec_Score` (Max 10.0)
+* **Description:** Evaluates the hardware capabilities of the device's Bluetooth wireless communication interface and high-fidelity wireless audio compression codecs. Newer Bluetooth standards provide faster data transmissions, larger ranges, better energy efficiency, and improved connection stability. Advanced audio codecs allow the device to transmit audio at higher bitrates (amount of data processed per second) over the air, delivering superior sound quality to compatible headphones or speakers.
+* **Measurement:** Supported Bluetooth version and highest supported high-fidelity audio codec verified from official manufacturer documentation and technical product reviews.
+* **Unit:** Composite score.
 
-**Part 1: Bluetooth Version Score (Weighted)**
-*Reflects technical leaps in power, speed, or architecture.*
+#### Terminology & Abbreviations
+*   **Bluetooth (BT):** A short-range wireless technology standard used for exchanging data between fixed and mobile devices over short distances.
+*   **LE (Low Energy) / BLE (Bluetooth Low Energy):** A power-conserving variant of Bluetooth designed for low-bandwidth applications (such as sensors, fitness trackers, and smartwatches) to run for long periods on small batteries.
+*   **LC3 (Low Complexity Communication Codec):** The modern, high-efficiency default audio codec introduced with Bluetooth Low Energy (LE) Audio. It provides significantly better sound quality than legacy standards at much lower bitrates, reducing latency and battery consumption.
+*   **SBC (Subband Codec):** The mandatory, universal baseline audio codec supported by all Bluetooth audio devices. It is a lossy standard that uses substantial compression, yielding basic audio quality.
+*   **AAC (Advanced Audio Coding):** A highly efficient, standard lossy audio codec widely used by Apple iOS devices and popular music streaming services. It offers better sound quality than SBC at equivalent bitrates.
+*   **LDAC:** Sony's proprietary High-Resolution Bluetooth audio codec (certified by the Japan Audio Society for "Hi-Res Audio Wireless"). It transmits audio at high bitrates up to 990 Kilobits per second (kbps), maintaining more audio detail than standard codecs.
+*   **LHDC (Low Latency High-Definition Audio Codec):** A high-resolution Bluetooth audio codec developed by Savitech. It supports bitrates up to 900 kbps and offers low-latency transmission for gaming and media consumption.
+*   **SSC (Samsung Seamless Codec):** Samsung's proprietary high-resolution audio codec. It dynamically scales its transmission bitrate to prevent audio dropouts in busy wireless environments and supports high-fidelity 24-bit audio when paired with compatible Samsung Galaxy Buds.
+*   **UHQ-BT (Ultra High Quality Bluetooth):** Samsung's legacy proprietary high-resolution audio codec, which served as a precursor to their Scalable and Seamless codecs.
+*   **L2HC (Huawei's proprietary codec):** Huawei's high-resolution and lossless audio codec. It adjusts bitrates dynamically up to 1.9 Megabits per second (Mbps) in its latest versions to maintain high quality and connection stability.
 
-| Version      | Score   | Justification for Weighting                                                                     |
-| :----------- | :------ | :-----------------------------------------------------------------------------------------------|
-| **BT 5.4**   | **5.0** | Latest standard, PAwR (Periodic Advertising with Responses), EAD (Encrypted Advertising Data).  |
-| **BT 5.3**   | **4.5** | Connection Subrating (efficiency update).                                                       |
-| **BT 5.2**   | **4.0** | **MAJOR LEAP:** LE Audio (Low Energy Audio) foundation (LC3 codec / Auracast broadcast audio).  |
-| **BT 5.1**   | **2.5** | Direction Finding (niche usage).                                                                |
-| **BT 5.0**   | **2.0** | **MAJOR LEAP:** 2x Speed, 4x Range vs 4.2.                                                      |
-| **BT 4.2**   | **1.0** | Legacy Low Energy.                                                                              |
-| **< BT 4.0** | **0.0** | Obsolete.                                                                                       |
+#### Scoring Formula
+The Bluetooth & Audio Codecs score is calculated as the sum of the physical Bluetooth version subscore, the codec capability subscore, and any applicable perceived quality / ecosystem optimization bonuses:
 
-**Part 2: Codec Capability Score (Tiered)**
-*Scored explicitly by the highest tier codec protocol supported. This eliminates mathematical bias against phones lacking numerical bitrate disclosures, as protocols inherently define their bitrate ceilings.*
+`Bluetooth & Audio Codecs Score = Clamp(Bluetooth Version Subscore + Codec Capability Subscore + Perceived Quality Bonus, 0.00, 10.00)`
 
-**Tiered Scoring Table:**
-*Identify the highest supported codec and award the corresponding Tier score (Max 5.0).*
+The final score is clamped between a minimum of **0.00** (worst/obsolete configuration) and a maximum of **10.00** (best/state-of-the-art configuration).
 
-| Tier         | Score   | Qualifying Codecs                                     |
-| :----------- | :------ | :---------------------------------------------------- |
-| **Lossless** | **5.0** | aptX Lossless, LHDC Lossless                          |
-| **High-Res** | **4.0** | LDAC, LHDC, aptX HD/Adaptive, SSC, UHQ-BT             |
-| **Standard** | **1.5** | AAC, SBC, LC3, aptX Classic, aptX LL (Low Latency)    |
+#### Part 1: Bluetooth Version Score (Weighted, Max 5.00)
+Evaluates the physical Bluetooth transceiver version built into the phone. The subscore is assigned based on the highest standard supported by the hardware:
 
-**Common Configuration Reference (overall BT + Codec Score):**
+| Bluetooth Version             | Subscore | Engineering Definition & Justification                                                      |
+| :---------------------------- | :------: | :------------------------------------------------------------------------------------------ |
+| **Bluetooth 5.4**             | **5.00** | Supports Periodic Advertising (PAwR) and Encrypted Advertising (EAD).                       |
+| **Bluetooth 5.3**             | **4.50** | Introduces Connection Subrating for instant power/performance scaling.                      |
+| **Bluetooth 5.2**             | **4.00** | **MAJOR LEAP:** Introduces Low Energy (LE) Audio, Low Complexity Codec (LC3), and Auracast. |
+| **Bluetooth 5.1**             | **2.50** | Introduces Direction Finding for precise centimeter-level positioning.                      |
+| **Bluetooth 5.0**             | **2.00** | **MAJOR LEAP:** Major capacity update: 2x speed, 4x range, 8x broadcast capacity.           |
+| **Bluetooth 4.2 / 4.1 / 4.0** | **1.00** | Legacy low-power Bluetooth Low Energy (BLE) connectivity baseline.                          |
+| **Bluetooth < 4.0**           | **0.00** | Obsolete Classic Bluetooth standards without low-energy profiles.                           |
 
-| Score    | Combo Example      | Typical Devices                    |
-| :------- | :----------------- | :--------------------------------- |
-| **10.0** | **5.4 + Lossless** | Future Flagships, Zenfone 11 Ultra |
-| **9.0**  | **5.4 + High-Res** | Galaxy S24/S25 (5.0 + 4.0)         |
-| **8.0**  | **5.2 + High-Res** | Older Flagships (4.0 + 4.0)        |
-| **6.5**  | **5.4 + Standard** | iPhone 15/16 (5.0 + 1.5)           |
-| **3.5**  | **5.0 + Standard** | Older Entry (2.0 + 1.5)            |
+##### Engineering Significance of Bluetooth Standards
+*   **Bluetooth 5.4 Key Technologies:**
+    *   *Periodic Advertising with Responses (PAwR):* Enables energy-efficient bidirectional communication between a central device (such as a smartphone or hub) and thousands of ultra-low-power nodes (such as smart tags, sensors, or electronic shelf labels) in a synchronized manner, without needing dedicated connection pairings.
+    *   *Encrypted Advertising Data (EAD):* Standardizes how broadcast payloads are securely encrypted. Only authorized receivers can decrypt the broadcast data, preventing unauthorized eavesdropping and tracking of device locations or sensor readouts.
+*   **Bluetooth 5.3 Key Technologies:**
+    *   *Connection Subrating:* Allows the connection to instantly transition between a low-power, slow-cycling standby state and a high-performance active transmission state. This reduces communication delay (latency) and extends battery life during variable-activity tasks like audio calls or fitness tracking.
+*   **Bluetooth 5.2 Key Technologies:**
+    *   *Low Energy (LE) Audio & Low Complexity Communication Codec (LC3):* Implements high-quality audio streaming over power-saving low-energy channels. The LC3 compression standard delivers equal or better sound quality than the legacy SBC baseline at half the transmission bitrate, significantly lowering energy draw and latency.
+    *   *Auracast Broadcast Audio:* Enables a transmitter to broadcast one or more audio streams to an unlimited number of nearby compatible receivers (such as headphones, earbuds, or hearing aids) simultaneously.
+*   **Bluetooth 5.1 Key Technologies:**
+    *   *Direction Finding:* Supports Angle of Arrival (AoA) and Angle of Departure (AoD) measurements using multi-antenna arrays. This allows the receiver to calculate the exact direction of a signal source, enabling precise indoor navigation and tracking accurate to a few centimeters.
+*   **Bluetooth 5.0 Key Technologies:**
+    *   *2x Speed & 4x Range:* Increases the maximum transmission bitrate to 2 Megabits per second (Mbps) (double the speed of older standards) or extends the range up to four times, allowing for more stable whole-home connectivity and faster data transfers for wearables.
+
+#### Part 2: Codec Capability Score (Tiered, Max 5.00)
+Evaluates the highest quality wireless audio compression protocol supported by the device's operating system and hardware licensing. Scored by the highest tier codec protocol supported:
+
+| Codec Tier   | Subscore  | Qualifying Codecs                                                   | Engineering Definition & Justification                               |
+| :----------- | :-------: | :------------------------------------------------------------------ | :------------------------------------------------------------------- |
+| **Lossless** |  **5.00** | aptX Lossless, LHDC V5 Lossless, L2HC 3.0                           | Mathematically bit-for-bit lossless CD audio up to 1.2 Mbps.         |
+| **High-Res** |  **3.50** | LDAC, LHDC v1-v4, aptX Adaptive, aptX HD, SSC, UHQ-BT, L2HC 1.0/2.0 | High-bitrate lossy audio up to 24-bit/96 kHz (500 to 990 kbps).      |
+| **Standard** |  **0.00** | AAC, SBC, LC3, aptX Classic, aptX LL                                | Standard baseline lossy audio at standard bitrates (128 to 352 kbps).|
+
+#### Part 3: Perceived Quality & Ecosystem Optimization Bonus (Additive, Max +1.50)
+Real-world listening quality, connection stability, and latency management are enhanced on certain devices through custom software/hardware integration and proprietary audio pipelines:
+*   **Apple iOS AAC Optimization (+1.50):** Applied to Apple devices. Due to Apple's highly optimized hardware-accelerated AAC (Advanced Audio Coding) encoder/decoder integration and proprietary custom audio processing pipeline, these devices deliver perceived audio quality, latency management, and connection stability that are significantly superior to standard SBC (Subband Codec) or AAC implementations, bridging the gap toward the High-Res (High-Resolution) tier under standard bitrates (128-256 kbps).
+*   **Samsung Seamless Codec (SSC) Optimization (+0.50):** Applied to Samsung devices. SSC dynamically scales its transmission bitrate to prevent audio dropouts in busy wireless environments and supports high-fidelity 24-bit audio when paired with compatible Samsung Galaxy Buds.
+*   **None (+0.00):** Standard generic Bluetooth audio implementation without custom system-level optimization or dynamic scaling.
+
+#### Common Configuration Reference (overall BT + Codec Score)
+The following reference scenarios demonstrate how the subscores and perceived quality bonuses compile into the final score:
+
+| Score    | Combo Example                              | Typical Devices                  |
+| :------- | :----------------------------------------- | :------------------------------- |
+| **10.0** | **5.4 + Lossless** (5.0 + 5.0 + 0.0)       | OnePlus 12, Asus ROG Phone 8     |
+| **8.5**  | **5.3 + High-Res + SSC** (4.5 + 3.5 + 0.5) | Samsung Galaxy S24/S25 Series    |
+| **7.5**  | **5.2 + High-Res** (4.0 + 3.5 + 0.0)       | Google Pixel 8, Xiaomi 13 Pro    |
+| **6.0**  | **5.3 + Standard + AAC** (4.5 + 0.0 + 1.5) | Apple iPhone 15/16 Series        |
+| **2.0**  | **5.0 + Standard** (2.0 + 0.0 + 0.0)       | Entry-level/Older Budget Android |
 
 
 ### 🔹 7.5 Biometrics
