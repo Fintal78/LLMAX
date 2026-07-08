@@ -159,6 +159,7 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 > **Cross-Reference: Thermal Scoring Synergy**
 > The back panel material selected here is also used as the primary input for **Section 6.10 (Part A1.2: Back Panel Thermal Interface)**. However, the scoring logic is fundamentally different: Section 1.1.B rewards **aesthetic longevity and impact resilience**, whereas Section 6.10 rewards **steady-state heat flux and thermal effusivity**. Consequently, any update or addition to the back material list MUST be synchronized across both sections to maintain architectural integrity.
 
+
 ### 🔹 1.2 Durability (Ingress Protection)
 *Description:* Ingress Protection rating against dust and water. Dust and water resistance are tested separately under IEC 60529. A phone can be fully dust-sealed but weak against immersion, or vice versa. Treating them independently reflects the actual certification process and physical risks.
 *   **Measurement:** Manufacturer IP certification (IEC 60529).
@@ -199,6 +200,7 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 
 > [!NOTE]
 > **Note on Level 9:** IEC 60529 does not define IPX9, but many manufacturers certify both IEC IP68 + ISO 20653 IPX9/9K. This model accepts 9 as a valid "extended water resistance" level when officially documented.
+
 
 ### 🔹 1.3 Display Glass Protection (DGP)
 *Description:* Evaluates the protective glass generation used on the display, based on manufacturer-declared glass type and supplier performance class. Newer versions are much harder to crack or scratch when dropped.
@@ -277,6 +279,7 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 >
 > *Note: The Galaxy S24 Ultra scoring 0 on this specific metric is correct. Its large screen is already fully rewarded by Section 2.9 (Screen Size) and Section 2.8 (Screen-to-Body Ratio). This metric scores solely the ergonomic handling cost.*
 
+
 ### 🔹 1.5 Weight
 *Description:* Total device weight. Lighter phones are more comfortable to hold for long periods (e.g., reading, watching videos) without wrist strain.
 *   **Measurement:** Digital scale weight including battery.
@@ -339,6 +342,7 @@ The Surface Merit Index is calculated as a balanced logarithmic average of two k
 **TFT or PLS LCD**: Budget Thin-Film Transistor (TFT) or Plane-to-Line Switching (PLS) Liquid-Crystal Display (LCD). These typically feature narrower viewing angles and lower color accuracy than high-end IPS panels.\
 **TN LCD or Legacy**: Twisted Nematic (TN) LCD and other obsolete technologies. These suffer from severe color distortion and inversion beyond narrow viewing angles.
 
+
 ### 🔹 2.2 Brightness (Peak & HBM)
 *Description:* Maximum brightness. Higher nits mean the screen is easily readable outside and HDR movies look stunning.
 *   **Measurement:** High Brightness Mode (HBM) and Peak brightness.
@@ -362,6 +366,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 
 > [!NOTE]
 > **Why Logarithmic?** Brightness perception follows the Weber-Fechner law. A jump from 500 to 1000 nits is perceived as a massive doubling in brightness by the human eye. However, because our eyes are already overwhelmed by the light, a 500-nit jump from 3000 to 3500 nits is barely noticed.
+
 
 ### 🔹 2.3 Color Gamut Coverage (CGC)
 *Description:* Measures how much of standard color spaces the display can reproduce. This defines what the screen can physically display in terms of color richness and saturation.
@@ -387,6 +392,7 @@ HBM is increasingly published for all modern mid-range to flagship phones. We he
 > *   **Accuracy (Delta-E) = Quality:** Measures how *correctly* those colors are displayed compared to the source standard. Like the painter using those colors to perfectly match a reference image.
 >
 > **Why no Delta-E Score?** Factory calibration data (Delta-E) is rarely public in specs. Therefore, excellent color accuracy (e.g., Delta-E < 2.0) is rewarded strictly via **Section 11 (Boosters)** when validated by expert reviews.
+
 
 ### 🔹 2.4 HDR Format Support (HFS)
 *Description:* Measures which HDR video formats the display officially supports (decoding capability).
@@ -422,6 +428,7 @@ The HDR score is calculated by adding points for each supported format. A device
 > **Why Does HDR Format Matter if the OLED Screen is Already Good?**
 > A premium OLED screen *without* a dynamic format (Dolby Vision / HDR10+) will display content using static tone-mapping or a generic SDR fallback, which frequently clips bright highlights or crushes dark shadows if the scene exceeds the panel's capabilities. Dynamic metadata renders each shot perfectly tailored to the panel with its scene-specific brightness curve — the visual difference is clearly visible on high-contrast scenes like fireworks or sunsets.
 
+
 ### 🔹 2.5 Resolution Density
 *Description:* Pixel density (sharpness). Higher PPI means text and images look crisp, with no visible pixels.
 *   **Measurement:** Pixels Per Inch (PPI)
@@ -434,6 +441,7 @@ The HDR score is calculated by adding points for each supported format. A device
 > [!NOTE]
 > **Why Logarithmic?** Human visual acuity has diminishing returns. The difference in sharpness between 200 and 300 PPI is immediately obvious, while the difference between 500 and 600 PPI is barely perceptible to the naked eye.
 
+
 ### 🔹 2.6 Motion Smoothness
 *Description:* How many times the screen updates per second. 120Hz+ makes scrolling and animations look incredibly smooth compared to standard 60Hz.
 *   **Measurement:** High-speed camera analysis or system reporting.
@@ -444,6 +452,7 @@ The HDR score is calculated by adding points for each supported format. A device
 *   **Min Score (0.0):** ≤ Display_Refresh_Rate_Hz_Min
 > [!NOTE]
 > **Why Logarithmic?** Motion smoothness perception follows Weber's Law. The +60Hz upgrade from 60Hz to 120Hz is a massive leap in fluidity. An identical +60Hz increase from 120Hz to 180Hz is much harder to perceive for the average user.
+
 
 ### 🔹 2.7 Touch Responsiveness
 *Description:* How fast the screen reacts to your touch. Higher rates mean instant response in games and a "glued to your finger" feel.
@@ -456,6 +465,7 @@ The HDR score is calculated by adding points for each supported format. A device
 > [!NOTE]
 > **Why Logarithmic?** Input latency perception is non-linear. Increasing sampling rate from 60Hz to 240Hz (+180Hz) provides a noticeably "stickier" feel. However, an identical +180Hz increase from 240Hz to 420Hz provides improvements in reaction time that are smaller than the average human reaction variance.
 
+
 ### 🔹 2.8 Screen-to-Body Ratio (Bezels)
 *Description:* How much of the front is screen vs. border. Higher percentage means thinner bezels and a more immersive, modern look.
 *   **Measurement:** Pre-calculated ratio published by tech databases (e.g., GSMArena). If missing, calculated via: `(Active Display Area / Total Frontal Area) * 100`.
@@ -467,6 +477,7 @@ The HDR score is calculated by adding points for each supported format. A device
 > [!NOTE]
 > **Why Linear?** Each percentage point of Screen-to-Body Ratio directly represents a proportional increase in visible display area, reducing the plastic border around the screen. A gain from 85% to 86% is the same engineering achievement as a gain from 91% to 92% — no single threshold changes the nature of the benefit. The practical range for modern phones (roughly 80–93%) has no diminishing returns, making linear the correct model.
 
+
 ### 🔹 2.9 Screen Size
 *Description:* The physical size of the display measured diagonally. Larger screens offer more immersive media and gaming experiences.
 *   **Measurement:** Diagonal length of the active display area.
@@ -477,6 +488,7 @@ The HDR score is calculated by adding points for each supported format. A device
 *   **Min Score (0.0):** ≤ Display_Size_Inch_Min
 > [!NOTE]
 > **Why Quadratic?** The usable screen real estate scales as the *Area* of the display, which is proportional to the square of the diagonal (Area increases quadratically with diagonal size). While a linear penalty treats a 0.5" increase at the bottom of the scale exactly the same as at the top, a true geometric (Quadratic) curve appropriately rewards the massive manufacturing difficulty and user-experience gain of producing massive 6.8"+ "Ultra" screens.
+
 
 ### 🔹 2.10 Eye Comfort (Dimming Technology & Pulse-Width Modulation)
 *Description:* How the screen dims at low brightness levels to prevent eye strain, headaches, and fatigue. Different screen technologies require different dimming solutions, which directly impact the user's biological comfort. This section evaluates both DC (Direct Current) Dimming and PWM (Pulse-Width Modulation).
@@ -503,6 +515,7 @@ The HDR score is calculated by adding points for each supported format. A device
 **Final Formula:**
 *   If 2.10.1 Presence = No: `Score = 10.0` *(Perfect, flicker-free standard)*
 *   If 2.10.1 Presence = Yes: `Score = Score_2.10.2`
+
 
 ### 🔹 2.11 Display Benchmark & Final Scoring (Methods A/B/C)
 *Description:* Calculates the Final Display Score using the **Unified Methods A/B/C Model**.
@@ -564,6 +577,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 > - **Sub-Section Predicted Score** (e.g., `SubScore_2.3`): Individual score for a single display attribute (Brightness, PPI, etc.) calculated from technical specs in Sections 2.1–2.10. Applicable sub-scores (excluding 2.8 and 2.9) are used in **Method B Step 1** for calculating the weighted Euclidean Distance to find neighbors.
 > - **Overall Predicted Score** (`Predicted_Score` from Method C): The aggregate display score, calculated as the weighted sum of the perceptual sub-section Predicted Scores. Used in **Method B Step 2** for calculating the correction ratio.
 
+
 ## 🟣 3. Audio
 
 ### 🔹 3.1 Speaker System Capability (SSC)
@@ -594,6 +608,7 @@ Used as a standalone fallback if no neighbors exist, or as the **Predictor** for
 *   **Mono:** Provides no spatial separation; sound comes from a single point.
 
 Note: This section evaluates only physical speaker hardware. Virtual surround, spatial audio, Dolby Atmos, and head tracking are software-level features and are evaluated separately in playback processing sections.
+
 
 ### 🔹 3.2 Playback Audio Processing & Immersion (PAPI)
 *Description:* Evaluates the phone's ability to decode modern multichannel audio formats and to render spatialized sound during playback. This section focuses exclusively on playback-side processing, independent of speakers, microphones, or wired audio output.
@@ -655,6 +670,7 @@ PAPI is a weighted composite of two subsections:
 > **Why is Head Tracking a 10.0?**
 > Standard spatial audio (7.0) places sounds in a 3D sphere around your head, but if you physically turn your head to the left, the entire "room" of sound rotates with you. **Dynamic Head Tracking (10.0)** uses gyroscope data to anchor the audio in physical space. If you turn your head to the left, the dialogue stays anchored to the phone screen in front of you, drastically increasing the illusion of being in a physical cinema.
 
+
 ### 🔹 3.3 Wired Audio Capability
 *Description:* Evaluates native wired audio output options available without relying on external powered accessories.
 *   **Measurement:** Presence of 3.5mm analog audio jack, presence of analog audio output via USB-C, digital-only USB-C audio fallback.
@@ -676,6 +692,7 @@ Even though both the 10.0 and 6.0 tiers provide analog audio originating from th
 | **6.0**  | **USB-C with documented analog audio output**    | Select Motorola/Sony models  |
 | **3.0**  | **USB-C digital audio only (dongle required)**   | Most Flagships (S24, iPhone) |
 | **0.0**  | **No wired audio support**                       | Rare/obsolete devices        |
+
 
 ### 🔹 3.4 Microphone & Audio Recording (MAR)
 *Description:* Evaluates the audio capture capability of the device using only publicly verifiable data, without subjective quality judgments. This is a composite score based on hardware count, recording channels, and advanced features.
@@ -746,6 +763,7 @@ MAR is a weighted composite of three subsections:
 > 
 > **Why calculate using the Diagonal?** Sensor light-gathering capacity is determined by its **Area** ($Area \propto Diagonal^2$). Because of the power rule of logarithms, $log(x^2) = 2 \times log(x)$. When we put the squared diagonal into our normalization formula: $\frac{log(Size^2) - log(Min^2)}{log(Max^2) - log(Min^2)}$, it expands to $\frac{2 \times log(Size) - 2 \times log(Min)}{2 \times log(Max) - 2 \times log(Min)}$. The factor of $2$ perfectly factors out of both the numerator and denominator and completely cancels out. Therefore, scoring the 1-dimensional diagonal logarithmically is mathematically identical to scoring the 2-dimensional area logarithmically, flawlessly simplifying the calculation.
 
+
 ### 🔹 4.2 Main Camera Aperture
 *Description:* The size of the lens opening. Wider apertures (lower f-number) let in more light for brighter night shots and create natural bokeh.
 *   **Measurement:** Focal length / Entrance pupil diameter.
@@ -767,6 +785,7 @@ MAR is a weighted composite of three subsections:
 > The factor of $-2$ completely factors out of both the top and bottom. The negative signs elegantly flip the subtraction direction, leaving us with: 
 > $\frac{log(f_{max}) - log(f_{stop})}{log(f_{max}) - log(f_{min})}$
 
+
 ### 🔹 4.3 Main Camera Resolution
 *Description:* The maximum pixel count of the primary sensor. Higher resolution allows for more detailed cropping and sharper images in good light.
 *   **Measurement:** Total effective pixel count.
@@ -777,6 +796,7 @@ MAR is a weighted composite of three subsections:
 *   **Min Score (0.0):** ≤ Camera_Main_Resolution_MP_Min
 > [!NOTE]
 > **Why Logarithmic?** Sensor detail exhibits diminishing returns. Moving from 12MP to 50MP (+38MP) provides a significant jump in real-world resolving power. However, an identical +38MP increase from 162MP to 200MP offers almost zero perceptible improvement due to lens diffraction constraints.
+
 
 ### 🔹 4.4 Image Stabilization
 *Description:* Hardware and software systems used to compensate for hand movement during image capture and video recording. Essential for sharp low-light photos and smooth video recording.
@@ -838,6 +858,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 > When a spec sheet lists only "OIS" (Optical Image Stabilization) without further qualification — no mention of "sensor-shift", "gimbal", or similar — **default to Lens-Based Optical Image Stabilization (8.00)**. The vast majority of phones listing generic "OIS" use a lens-shift mechanism. Only upgrade to Sensor-Shift (9.0) or Multi-Axis Mechanical (10.0) if the manufacturer **explicitly uses** one of the recognized keywords for those tiers.
 
+
 ### 🔹 4.5 Ultrawide Camera Capability (UCC)
 *Description:* How capable the ultrawide camera is for landscapes, architecture, and group shots. This measures hardware potential, not image aesthetics.
 *   **Measurement:** Presence, Field of View (FOV), and Sensor Size.
@@ -880,6 +901,7 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why 60/40 (FOV/Sensor)?** The primary purpose of an ultrawide lens is to capture a wider scene, making Field of View (FOV) the dominant factor (60%). Additionally, the Presence Floor Rule (see top of document) can only be applied to the FOV component (where a shared metric exists across the binary gate), not to the sensor size component (where there is no equivalent lower-class value). Giving FOV a higher weight ensures that the floor correction propagates more strongly through the composite score, further rewarding phones that have an ultrawide — even one with a small sensor — over phones with no ultrawide at all. The remaining 40% for sensor size still accounts for low-light performance: a larger sensor absorbs more light and produces cleaner, less grainy photos in the dark.
 
+
 ### 🔹 4.6 Zoom Capability
 *Description:* Optical zoom power. Allows you to take sharp, detailed photos of distant objects (like at a concert) without losing quality. Only true optical zoom is considered. Digital/crop zoom are excluded. 
 *   **Measurement:** Focal length ratio relative to the main camera.
@@ -890,6 +912,7 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Min Score (0.0):** ≤ Camera_Zoom_Optical_x_Min
 > [!NOTE]
 > **Why Logarithmic?** The difference in reach between 1x and 3x is transformative for composition. The difference between 10x and 12x is much less significant in terms of framing capability.
+
 
 ### 🔹 4.7 Macro Capability & Close-Focus Performance (MCFP)
 *Description:* The ability to focus on very close subjects. Evaluates the different hardware combinations phones use to achieve macro photography.
@@ -1006,6 +1029,7 @@ To determine the correct tier, check the device's official specifications, marke
 > [!NOTE]
 > **Why is 8K not a separate tier above 4K?** 8K video (7680×4320) on smartphones (e.g., Samsung Galaxy S-series) is currently a gimmick tier: extreme heat, massive file sizes, and no streaming platform requires it. The perceptual benefit over 4K on a phone screen is zero. Both map to Score 10 as the "best available" practical tier.
 
+
 ### 🔹 4.9 Rear Video Frame Rate
 *Description:* Maximum standard frame rate achieved specifically at the device's highest supported resolution (as scored in Section 4.8), capped at 4K (2160p).
 *   **Measurement:** Maximum Frames per second (FPS) at Max Resolution capped at 4K.
@@ -1019,6 +1043,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 > [!NOTE]
 > **Why cap the search at 4K and link it to Section 4.8?** To prevent 'double-dipping', a device must prove its frame rate performance under the load of its maximum claimed resolution from Section 4.8. If a device supports 4K at only 30fps, it cannot submit its 1080p@60fps mode for a higher score here. However, to protect 8K-capable flagships from processing limits inherent to 8K sensors, the evaluation resolution is strictly capped at 4K. An 8K phone is evaluated on its 4K frame rate. This is reinforced by the fact that 8K and 4K resolutions currently receive the exact same maximum score (10.0) in Section 4.8; therefore, it is mathematically consistent that they are both evaluated for frame rate parity at the 4K baseline.  **Important:** Explicitly exclude any frame rates designated for "Slow Motion" or "High-Speed Burst" (e.g., 240fps+), as these are evaluated separately in Section 4.12.
+
 
 ### 🔹 4.10 Video Color & Dynamic Range
 *Description:* Ability to capture wide dynamic range and rich color information in video.
@@ -1050,6 +1075,7 @@ To determine the correct tier, check the device's official specifications, marke
 > *   *Premium Standard (8.0):* Supports Base HDR + Dolby Vision. (e.g., iPhone 16 Pro, Vivo X100 Pro)
 > *   *Dynamic Alternative (7.0):* Supports Base HDR + HDR10+. (e.g., Galaxy S24 Ultra, Pixel 9 Pro)
 > *   *Baseline HDR (5.0):* Supports only static Base HDR (HDR10/HLG). Typical for mid-range sensors.
+
 
 ### 🔹 4.11 Video Encoding & Professional Recording
 *Description:* Support for professional codecs and recording profiles enabling advanced post-production. This is a composite score evaluating codec quality, color profile support, and bit depth independently.
@@ -1105,6 +1131,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 **Final Formula:** `Score = (0.40 * PCS) + (0.35 * LCPS) + (0.25 * CBD)`
 
+
 ### 🔹 4.12 High Frame Rate (Slow Motion)
 *Description:* The ability to capture video at very high frame rates in a dedicated camera mode, allowing for extreme deceleration of fast motion.
 *   **Measurement:** Maximum slow-motion Frames per Second (FPS) and its corresponding resolution, as explicitly listed in the device's secondary video specifications under marketing terms like "Slow Motion", "Slo-mo", "High Speed Video", or "Super Slow-mo" (Do NOT use standard video frame rates from Section 4.9).
@@ -1117,6 +1144,7 @@ To determine the correct tier, check the device's official specifications, marke
 *   **Min Score (0.0):** ≤ Camera_SlowMo_MPs_Min
 > [!NOTE]
 > **Why Logarithmic?** The customer's perception of slow-motion improvements follows diminishing returns. The leap from 120fps to 360fps (+240fps) is a massive, visually transformative upgrade, allowing the user to heavily decelerate everyday fast action in post-production while maintaining perfect playback fluidity. However, an identical +240fps increase from 720fps to 960fps is highly niche; the extra deceleration it provides is practically imperceptible to the human eye unless filming extreme physics like a water balloon popping. A logarithmic curve correctly matches human perception, heavily rewarding the initial leap into high-quality slow motion and offering diminishing returns for extreme speeds.
+
 
 ### C. Front Camera System (Selfie)
 *Groups all front-facing hardware and capabilities (both photo and video) into one cohesive chapter.*
@@ -1134,6 +1162,7 @@ To determine the correct tier, check the device's official specifications, marke
 >
 > **Homogenization with Rear Camera (Section 4.3):**
 > This section mirrors the logarithmic scoring logic of the Main Camera Resolution section (§4.3), using its own front-specific constants (`Camera_Front_Resolution_MP_Max` and `Camera_Front_Resolution_MP_Min`).
+
 
 ### 🔹 4.14 Front Camera Focus System
 *Description:* Ability of the front-facing camera to maintain sharp focus across different subject distances.
@@ -1168,6 +1197,7 @@ To determine the correct tier, check the device's official specifications, marke
 >     *   **Sensor ≤ 1/3":** Smaller sizes like **1/3.6"** or **1/4"** (which widen the focus zone).
 >     *   **Sensor > 1/3":** Larger sizes like **1/2.8"** or **1/2.0"** (which narrow the focus zone).
 > *   **Missing Data Fallback:** If the sensor format is missing from public specifications but the aperture is known, classify the phone based entirely on its f-number.
+
 
 ### 🔹 4.15 Front Camera Video Performance
 *Description:* Maximum video capture capability of the front-facing camera, quantifying resolution, frame rate, dynamic range, and professional recording profiles.
@@ -1265,6 +1295,7 @@ To determine the correct tier, check the device's official specifications, marke
 ### D. Computational Photography & AI
 *Software features that apply globally to all cameras.*
 
+
 ### 🔹 4.16 Multi-Frame Computational Photography (MFCP)
 *Description:* Measures whether the camera system performs automatic multi-frame capture and stacking for still photos to improve noise, dynamic range, and sharpness.
 *   **Measurement:** Processing pipeline capability and presence of semantic segmentation.
@@ -1286,6 +1317,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 > [!NOTE]
 > **Why it Matters:** Computational photography allows smaller sensors to perform like larger ones via software-driven stacking. Tier 1 represents the industry ceiling where segmentation is used to treat different parts of the image independently.
+
 
 ### 🔹 4.17 Pipeline Semantic Artificial Intelligence (AI) Processing
 *Description:* Automatic, capture-time software logic that understands and segments scenes/subjects **before** the final image file is saved. Enables better portraits, sky processing, skin tones, and subject isolation.
@@ -1401,6 +1433,7 @@ The conversion from marketing terms to numerical years is based on a decade of d
 
 3.  **Enterprise Extension Baseline:**
     - **Standard practice:** Manufacturers like Samsung explicitly market Enterprise Edition extensions as a time-based bonus (e.g., "+1 year of security patches") over the standard consumer model.
+
 
 ### 🔹 5.2 System Cleanliness & Control (SCC)
 *Description:* Evaluates the out-of-box software experience in terms of preinstalled bloatware, user control, and presence of system ads.
@@ -1539,6 +1572,7 @@ Worst-in-class for older Xiaomi devices pre-HyperOS. Dozens of preinstalled apps
 
 **Tecno HiOS / Infinix XOS / Itel OS** — PAL 0.0 · UC 0.0 · SA 0.0
 Heavy preloads: Palm Store, AHA Games, Hola/Phoenix Browser, Visha Player, YoParty, Beats Party, plus multiple auto-installing app folders. Core bloatware is deeply integrated and runs in the background; removal without root or ADB typically fails (PhoneWorld.com.pk). Lock screen ads, notification panel ads, and file manager ads are persistent and often mistaken for malware by users (TechPoint Africa, Reddit).
+
 
 ### 🔹 5.3 AI Feature Suite
 *Description:* Evaluates the *software features* and practical AI tools available to the user. This measures "what you can do" (features), distinct from **Section 6.4** which measures "how fast it runs" (hardware power).
@@ -2167,6 +2201,7 @@ This table provides the authoritative GPU architecture scores used throughout th
 > - **Mali-G715 MC9** = 9 shader cores (high-end config)
 > - **Mali-G715 MC7** = 7 shader cores (mid-range config)
 > More cores = higher performance. Always match the exact MC count from device specifications (found on GSMArena under "Chipset" details).
+
 
 ### 🔹 6.3 Graphics & Ray Tracing Performance
 *Description:* Measures the graphical processing power for gaming, professional rendering, and complex compute tasks. This section evaluates the **Instantaneous Burst Capability**—the maximum power the GPU (Graphics Processing Unit) can output for a short period.
@@ -2813,6 +2848,7 @@ This section uses a **Logarithmic Scoring Formula** to derive the score from phy
 > [!NOTE]
 > **On NVMe and iPhone Mapping:**
 > Because Apple does not disclose NVMe/PCIe bus details or throughput figures, iPhones are mapped to empirically established reference configurations based on historical sequential read performance benchmarks (by SoC generation), rather than manufacturer-approved specifications.
+
 
 ### 🔹 6.8 Storage Capacity
 *Description:* This section evaluates the total physical internal non-volatile memory of the device. More storage allows for the local installation of larger applications, high-resolution media (4K/8K video), and expansive on-device AI models without requiring constant cloud offloading or data deletion.
@@ -3618,6 +3654,7 @@ Table 2 is strictly required to complement Table 1 because SIM capabilities are 
 > **Ambiguity & Insufficient Data Fallback Rules:**
 > To ensure absolute consistency and eliminate duplication of scoring logic, all step-by-step ambiguity resolution and generic generational fallback rules for SIM capability grading are defined exclusively in the schema guidelines of the database definition file [proposed_data_structure.md]. Automated agents must execute that multi-step logic hierarchy to resolve missing or incomplete specifications.
 
+
 ### 🔹 7.3 Wi-Fi Standard
 *Description:* Wi-Fi technology. Newer standards (Wi-Fi 7/6E) provide faster, more stable internet, especially in crowded homes.
 *   **Measurement:** Supported Wi-Fi protocols.
@@ -3640,6 +3677,7 @@ Table 2 is strictly required to complement Table 1 because SIM capabilities are 
 > *   **Wi-Fi 4 → 5 (+2) and Wi-Fi 5 → 6 (+2):** Both brought significant new architectures. Wi-Fi 6 in particular introduced OFDMA (Orthogonal Frequency Division Multiple Access). Instead of the router communicating with only one smartphone at a time while forcing all other devices in the room to wait their turn to send or receive data, OFDMA splits a single frequency channel into multiple smaller sub-channels (called Resource Units / RUs). This allows the router to transmit data packets to, and receive data packets from, multiple different smartphones simultaneously — like switching from a single checkout lane to a supermarket with many lanes open at once — massively improving connection responsiveness in crowded homes or offices.
 > *   **Wi-Fi 6 → 6E (+1):** This is **not a new protocol**. Wi-Fi 6E runs the exact same technology as Wi-Fi 6 (both are 802.11ax), simply extended to an additional frequency band (6GHz) for less congestion. Meaningful, but incremental — hence only a 1-point gap.
 > *   **Wi-Fi 6E → 7 (+2):** Wi-Fi 7 is a **brand new protocol** (802.11be) with three fundamental advances: **Multi-Link Operation** (MLO, the phone uses 2.4GHz, 5GHz, and 6GHz simultaneously — like having three roads instead of one), **doubled channel width** (320MHz vs 160MHz for faster data bursts), and a new signal encoding that packs ~20% more data per transmission. Real-world speeds roughly double vs. Wi-Fi 6E. This earns its full 2-point gap.
+
 
 ### 🔹 7.4 Bluetooth & Audio Codecs
 *Description:* Bluetooth quality. Newer versions offer stability and efficiency, while superior codecs ensure high-fidelity audio.
@@ -3684,6 +3722,7 @@ Table 2 is strictly required to complement Table 1 because SIM capabilities are 
 | **6.5**  | **5.4 + Standard** | iPhone 15/16 (5.0 + 1.5)           |
 | **3.5**  | **5.0 + Standard** | Older Entry (2.0 + 1.5)            |
 
+
 ### 🔹 7.5 Biometrics
 *Description:* Unlocking methods. Secure face/fingerprint unlock is faster and safer than typing a PIN every time.
 *   **Measurement:** Hardware check (Sensor type).
@@ -3720,6 +3759,7 @@ To ensure objective scoring, we define the hierarchy based on **Security**, **Sp
 > [!NOTE]
 > **Why is "2D Face Only" scored as 0.0?**
 > A device relying solely on 2D Face Unlock (without a fingerprint sensor) lacks a secure biometric hardware layer. 2D Face is software-based, often spoofable by photos, and usually rejected by banking/payment apps for authentication. Therefore, it is functionally equivalent to having "No Secure Biometrics" for high-security use cases.
+
 
 ### 🔹 7.6 Sensors
 *Description:* The breadth of hardware sensors in the phone that enable accurate navigation, motion tracking, environmental awareness, and AR/VR features.
@@ -3773,6 +3813,7 @@ To ensure objective scoring, we define the hierarchy based on **Security**, **Sp
 > [!NOTE]
 > **Public Data Availability:** Core sensors are listed on all major spec sites (GSMArena, PhoneArena). Advanced sensors like Color Spectrum or Flicker are prominently advertised features in flagship devices (e.g., Xiaomi Ultra, iPhone Pro) or listed in detailed review specs. If not explicitly listed, the sensor is presumed absent.
 
+
 ### 🔹 7.7 NFC & Ultra-Wideband (UWB)
 *Description:* Evaluates short-range wireless connectivity technologies for contactless payments, data transfer, and precision spatial awareness. Near-Field Communication (NFC) enables tap-to-pay and device pairing, while UWB provides centimeter-level location accuracy for advanced use cases.
 *   **Measurement:** Hardware presence verification from manufacturer specifications.
@@ -3794,6 +3835,7 @@ UWB (Ultra-Wideband) uses Time-of-Flight radio pulses to achieve ~10cm positioni
 
 > [!NOTE]
 > **Differentiation Analysis:** As of 2024, approximately 94% of smartphones globally include NFC, making it a baseline feature rather than a differentiator. UWB remains exclusive to flagship devices (primarily Apple Pro models, Samsung Ultra/Fold series, and Google Pixel Pro), representing the primary scoring distinction in this category.
+
 
 ### 🔹 7.8 Connectivity & Cross-Device Continuity (CDC) Index
 *Description:* Measures the practical, daily-use continuity capabilities that enable a smartphone to function as part of a larger computing ecosystem. Scoring prioritizes high-frequency "seamless" interactions over niche technical features.
@@ -4414,6 +4456,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 > [!NOTE]
 > **Why Inverse Proportional?** The actual charging time (T) rests precisely on an inverse hyperbola with wattage (W): T is proportional to C / W. Upgrading from 15W to 30W cuts charge time in half (saving ~45 minutes). Upgrading from 100W to 120W saves less than 2 minutes. Scoring the wattage via an exact Inverse formula perfectly plots the true user benefit: raw **Time Saved** waiting at the wall outlet.
 
+
 ### 🔹 8.3 Wireless Charging Speed
 *Description:* Charging speed without cables. Convenient for topping up battery by simply placing the phone on a pad.
 *   **Measurement:** Peak power input via wireless coil.
@@ -4424,6 +4467,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 *   **Min Score (0.0):** ≤ Battery_Wireless_Charging_W_Min
 > [!NOTE]
 > **Why Inverse Proportional?** Just like wired charging, the time it takes to charge wirelessly follows an inverse hyperbolic curve where the charging time (T) is proportional to 1 / W. Scoring the wattage inversely perfectly models the raw minutes of charging time saved, recognizing that jumping from 5W to 15W is a transformative time-saver, while jumping from 50W to 60W is nearly negligible.
+
 
 ### 🔹 8.4 Wired Reverse Charging
 *Description:* Ability to use the phone as a power bank to charge other devices via a USB-C cable.
@@ -4436,6 +4480,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 > [!NOTE]
 > **Why Linear?** Similar to wireless reverse, the output range is small (4.5W to ~10W). Linear scaling provides a fair and intuitive distribution of scores based on raw power output.
 
+
 ### 🔹 8.5 Wireless Reverse Charging
 *Description:* Ability to charge other devices (like earbuds or watches) wirelessly by placing them on the back of the phone.
 *   **Measurement:** Peak power output via wireless coil.
@@ -4446,6 +4491,7 @@ To ensure complete clarity and physical consistency across the scoring framework
     *   **Min Score (0.0):** 0W (None)
 > [!NOTE]
 > **Why Linear?** The range of reverse wireless charging is narrow (typically 4.5W to 10W). A linear scale accurately reflects that 10W is roughly twice as fast/useful as 4.5W for small accessory batteries.
+
 
 ### 🔹 8.6 Charger Adequacy (In-Box Performance Match)
 *Description:* What comes in the package. A high-speed charger included saves you money and ensures you get the fastest charging speeds right away.
@@ -4471,6 +4517,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 *   **Min Score (0.0):** ≥ Price_USD_Max
 > [!NOTE]
 > **Why Logarithmic?** Price sensitivity is relative. A $50 increase on a $150 phone is a massive 33% hike, whereas a $50 increase on a $1000 phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.
+
 
 ### 🔹 9.2 Manufacturer Warranty Commitment
 *Description:* The manufacturer's baseline global warranty period. This measures the manufacturer's confidence in their hardware quality, independent of regional legal requirements (e.g., EU consumer protection laws).
@@ -4511,6 +4558,7 @@ The final score is the average of the iFixit Score (0-10) and the converted EU R
 
 *   **Max Score (10.0):** iFixit 10 / EU Index 5.0
 *   **Min Score (0.0):** iFixit 0 / EU Index 0.0
+
 
 ## 🟣 10. Miscellaneous
 
