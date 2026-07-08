@@ -761,7 +761,7 @@ MAR is a weighted composite of three subsections:
 > [!NOTE]
 > **Why Logarithmic?** The physical photographic benefits of increased sensor area—specifically dynamic range expansion and photon noise reduction—follow a diminishing return curve. Moving from a tiny entry-level sensor (e.g., 1/2.55") to a large flagship sensor (e.g., 1/1.3") delivers a massive, instantly visible leap in image quality. However, an equivalent increase moving toward an even larger format (e.g., 1.0-inch) yields much smaller relative improvements in daily photography, as the primary bottlenecks shift to lens physics (diffraction, edge softness) and the limits of computational processing. A logarithmic scale perfectly models this non-linear perceptual gain.
 > 
-> **Why calculate using the Diagonal?** Sensor light-gathering capacity is determined by its **Area** ($Area \propto Diagonal^2$). Because of the power rule of logarithms, $log(x^2) = 2 \times log(x)$. When we put the squared diagonal into our normalization formula: $\frac{log(Size^2) - log(Min^2)}{log(Max^2) - log(Min^2)}$, it expands to $\frac{2 \times log(Size) - 2 \times log(Min)}{2 \times log(Max) - 2 \times log(Min)}$. The factor of $2$ perfectly factors out of both the numerator and denominator and completely cancels out. Therefore, scoring the 1-dimensional diagonal logarithmically is mathematically identical to scoring the 2-dimensional area logarithmically, flawlessly simplifying the calculation.
+> **Why calculate using the Diagonal?** Sensor light-gathering capacity is determined by its **Area** (`Area ∝ Diagonal²`). Because of the power rule of logarithms, `log(x²) = 2 * log(x)`. When we put the squared diagonal into our normalization formula: `(log(Size²) - log(Min²)) / (log(Max²) - log(Min²))`, it expands to `(2 * log(Size) - 2 * log(Min)) / (2 * log(Max) - 2 * log(Min))`. The factor of `2` perfectly factors out of both the numerator and denominator and completely cancels out. Therefore, scoring the 1-dimensional diagonal logarithmically is mathematically identical to scoring the 2-dimensional area logarithmically, flawlessly simplifying the calculation.
 
 
 ### 🔹 4.2 Main Camera Aperture
@@ -773,17 +773,17 @@ MAR is a weighted composite of three subsections:
 *   **Max Score (10.0):** ≤ Camera_Main_Aperture_f_Min
 *   **Min Score (0.0):** ≥ Camera_Main_Aperture_f_Max
 > [!NOTE]
-> **Why Logarithmic?** The quantity of light is proportional to the area of the camera's pupil, which is $\propto 1/f^2$. 
+> **Why Logarithmic?** The quantity of light is proportional to the area of the camera's pupil, which is proportional to `1/f²`. 
 > 
-> If we wanted to score the raw *volume* of light, we would indeed calculate $1/f^2$ and score it linearly. However, just as we established in **Section 4.1 (Main Sensor Size)**, the real-world photographic benefits of gathering more light (expanding dynamic range, reducing noise) follow a diminishing return curve. To score the *photographic benefit* rather than the raw volume, we must apply a logarithmic curve: $log(1/f^2)$.
+> If we wanted to score the raw *volume* of light, we would indeed calculate `1/f²` and score it linearly. However, just as we established in **Section 4.1 (Main Sensor Size)**, the real-world photographic benefits of gathering more light (expanding dynamic range, reducing noise) follow a diminishing return curve. To score the *photographic benefit* rather than the raw volume, we must apply a logarithmic curve: `log(1/f²)`.
 > 
-> Here is the mathematical magic. Because of the algebraic rules of logarithms, $log(1/f^2)$ simplifies perfectly to $-2 \times log(f)$. 
+> Here is the mathematical magic. Because of the algebraic rules of logarithms, `log(1/f²)` simplifies perfectly to `-2 * log(f)`. 
 > 
 > When we place this into our standard normalization formula to calculate the score: 
-> $\frac{-2 \times log(f_{stop}) - (-2 \times log(f_{max}))}{-2 \times log(f_{min}) - (-2 \times log(f_{max}))}$
+> `(-2 * log(f_stop) - (-2 * log(f_max))) / (-2 * log(f_min) - (-2 * log(f_max)))`
 > 
-> The factor of $-2$ completely factors out of both the top and bottom. The negative signs elegantly flip the subtraction direction, leaving us with: 
-> $\frac{log(f_{max}) - log(f_{stop})}{log(f_{max}) - log(f_{min})}$
+> The factor of `-2` completely factors out of both the top and bottom. The negative signs elegantly flip the subtraction direction, leaving us with: 
+> `(log(f_max) - log(f_stop)) / (log(f_max) - log(f_min))`
 
 
 ### 🔹 4.3 Main Camera Resolution
@@ -947,7 +947,7 @@ To determine the correct tier, check the device's official specifications, marke
     *   **Max Score (10.0):** ≤ Camera_Macro_Dist_cm_Min
     *   **Min Score (0.0):** ≥ Camera_Macro_Dist_cm_Max
 > [!NOTE]
-> **Why Logarithmic?** Magnification scales inversely with distance ($M \approx f/d$). Moving from 4cm to 2cm doubles the magnification capability (a massive gain in macro photography). Moving from 10cm to 8cm only increases magnification by ~25%. A logarithmic score flawlessly maps to this non-linear optical reality, heavily rewarding true microscopic lenses beneath 4cm.
+> **Why Logarithmic?** Magnification scales inversely with distance (`M ≈ f/d`). Moving from 4cm to 2cm doubles the magnification capability (a massive gain in macro photography). Moving from 10cm to 8cm only increases magnification by ~25%. A logarithmic score flawlessly maps to this non-linear optical reality, heavily rewarding true microscopic lenses beneath 4cm.
 
 **Predicted Score Formula:** 
 *Formula for 4.7.1 Ultrawide Path:*
@@ -1127,7 +1127,7 @@ To determine the correct tier, check the device's official specifications, marke
 *Formula:* `Score = 2.5 * (Bits - 8)` (Clamped 0-10)
 
 > [!NOTE]
-> **Why 5.0 for 10-bit?** The raw number of color shades increases exponentially with bit depth ($2^n$), but human perception of these differences follows a **logarithmic scale** (Weber-Fechner law). Because $\log_2(2^{\text{bits}}) = \text{bits}$, the resulting perceived improvement is perfectly linear relative to the bit depth itself. Therefore, the leap from 8 to 10 bits represents the same proportional visual gain as the leap from 10 to 12 bits, cleanly splitting the 10.0 score space in half.
+> **Why 5.0 for 10-bit?** The raw number of color shades increases exponentially with bit depth (`2^n`), but human perception of these differences follows a **logarithmic scale** (Weber-Fechner law). Because `log_2(2^bits) = bits`, the resulting perceived improvement is perfectly linear relative to the bit depth itself. Therefore, the leap from 8 to 10 bits represents the same proportional visual gain as the leap from 10 to 12 bits, cleanly splitting the 10.0 score space in half.
 
 **Final Formula:** `Score = (0.40 * PCS) + (0.35 * LCPS) + (0.25 * CBD)`
 
@@ -1190,7 +1190,7 @@ To determine the correct tier, check the device's official specifications, marke
 
 > [!IMPORTANT]
 > **Scoring Guidelines & Mathematical Interpretation:**
-> *   **Aperture (f-number):** In optics, the aperture is written as a fraction where the **f-number** is the denominator ($f/2.2$, $f/2.4$). **Because it's a fraction, a larger f-number actually means a smaller physical opening.**
+> *   **Aperture (f-number):** In optics, the aperture is written as a fraction where the **f-number** is the denominator (`f/2.2`, `f/2.4`). **Because it's a fraction, a larger f-number actually means a smaller physical opening.**
 >     *   **f-number ≥ 2.0:** Smaller openings like **f/2.2** or **f/2.4** (which widen the focus zone).
 >     *   **f-number < 2.0:** Larger openings like **f/1.8** or **f/1.9** (which narrow the focus zone).
 > *   **Sensor Size:** Optical formats are also fractions of an inch (e.g., 1/3"). A larger denominator means a smaller sensor.
