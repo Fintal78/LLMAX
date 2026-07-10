@@ -4351,7 +4351,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 1: Ultrasonic Under-Display Fingerprint"              → 8.00
         //     - Definition: Three-Dimensional (3D) acoustic fingerprint scanner reading ridges and pores under the screen via sound waves.
         //     - Keywords: "Ultrasonic fingerprint", "Qualcomm 3D Sonic", "3D Sonic Max", "sonic sensor".
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Samsung Galaxy S Series (main flagships): Galaxy S10, S10+, S10 5G, S20, S20+, S20 Ultra, S21, S21+, S21 Ultra, S22, S22+, S22 Ultra, S23, S23+, S23 Ultra, S24, S24+, S24 Ultra, S25, S25+, S25 Ultra, and S25 Slim.
         //         * Samsung Galaxy Note Series (flagships): Galaxy Note 10, Note 10+, Note 10+ 5G, Note 20, and Note 20 Ultra.
         //         * Google Pixel Series (main flagships): Google Pixel 9, Pixel 9 Pro, Pixel 9 Pro XL, and Pixel 10 series.
@@ -4366,7 +4366,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 2: 3D Face Unlock (Structured Light/ToF)"             → 8.00
         //     - Definition: Three-Dimensional (3D) depth-mapped facial scanning projecting an infrared (IR) dot grid or measuring Time-of-Flight (ToF).
         //     - Keywords: "3D Face ID", "Structured Light", "ToF 3D camera", "infrared camera" (when verified acting as biometric unlock).
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Apple TrueDepth camera system in iPhone X, XR, XS, XS Max, 11, 11 Pro, 11 Pro Max, 12, 12 mini, 12 Pro, 12 Pro Max, 13, 13 mini, 13 Pro, 13 Pro Max, 14, 14 Plus, 14 Pro, 14 Pro Max, 15, 15 Plus, 15 Pro, 15 Pro Max, 16, 16 Plus, 16 Pro, and 16 Pro Max.
         //         * Huawei Mate Series: Mate 20 Pro, Mate 30, Mate 30 Pro, Mate 40, Mate 40 Pro, Mate 50, Mate 50 Pro, Mate 60, Mate 60 Pro, and Mate XT.
         //         * Honor Magic Series: Magic 3 Pro, Magic 4 Pro, Magic 5 Pro, Magic 6 Pro, and Magic 7 Pro/Ultimate.
@@ -4374,7 +4374,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 3: Capacitive Physical Fingerprint (Side/Rear/Front)" → 7.00
         //     - Definition: Standard physical capacitive fingerprint sensor integrated in buttons or outer chassis (includes under-glass capacitive sensors).
         //     - Keywords: "Side-mounted fingerprint", "rear-mounted fingerprint", "front-mounted fingerprint", "capacitive fingerprint".
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Apple Touch ID devices: iPhone 5s, 6, 6 Plus, 6s, 6s Plus, 7, 7 Plus, 8, 8 Plus, and all iPhone Special Edition (SE) models.
         //         * Samsung: Galaxy S10e (utilizing side-mounted capacitive fingerprint sensor).
         //         * Google: Pixel 9 Pro Fold (utilizing side-mounted capacitive fingerprint sensor), and all legacy Pixel 1 to 5a series (utilizing rear-mounted capacitive fingerprint sensors).
@@ -4382,7 +4382,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 4: Optical Under-Display Fingerprint"                 → 6.00
         //     - Definition: Under-glass camera capturing a Two-Dimensional (2D) optical image of the fingerprint using display light illumination.
         //     - Keywords: "Optical under-display fingerprint", "under-display optical", "under-screen fingerprint".
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Samsung: Galaxy S10 Lite, Note 10 Lite, and all Fan Edition (FE) variants (including Galaxy S20 FE, S21 FE, and S23 FE).
         //         * Google: Google Pixel 6, 6 Pro, 6a, 7, 7 Pro, 7a, 8, 8 Pro, and 8a.
         //         * Vivo: X80, X80 Lite, X90, X90 Pro, X100, X100 Pro, X100s, X100s Pro, and X200 standard model.
@@ -4392,17 +4392,17 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         //   • "Tier 5: Secure 2D Face Unlock (Class 3 Certified)"         → 5.50
         //     - Definition: Front-facing camera face unlock officially certified for Android Class 3 (Strong) security, allowing payment and banking authentication.
         //     - Keywords: "Class 3 face unlock", "payment-grade face unlock" (verified with secure chip hardware processing, e.g., Titan M2).
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Google: Pixel 8, Pixel 8 Pro, Pixel 8a, Pixel 9, Pixel 9 Pro, Pixel 9 Pro XL, and Pixel 10 series.
         //   • "Tier 6: Iris Scanner (Dedicated IR Hardware)"              → 4.50
         //     - Definition: Dedicated infrared (IR) sensor mapping iris details.
         //     - Keywords: "Iris scanner", "iris recognition".
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Samsung: Galaxy S8, S8+, Note 8, S9, S9+, and Note 9.
         //   • "Tier 7: Legacy Swipe Fingerprint Sensor"                   → 1.50
         //     - Definition: Obsolete capacitive sensor strip requiring dragging the finger across it.
         //     - Keywords: "Swipe fingerprint sensor".
-        //     - Exhaustive Hardware Reference List (Devices uniquely matching this tier):
+        //     - Hardware Reference List (Devices uniquely matching this tier):
         //         * Samsung: Galaxy S5 and Galaxy Note 4.
         //   • "Tier 8: No Secure Biometrics (PIN/Pattern Only)"           → 0.00
         //     - Definition: Relying on Personal Identification Number (PIN), pattern, password, or basic insecure software-only Two-Dimensional (2D) front-camera face unlock.
@@ -4414,30 +4414,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // ALL supported biometric methods present on the device must be entered under their respective tiers (e.g. if the device has both Optical Fingerprint and standard 2D Face, both must be documented in their respective array), not just the highest-scoring method.
         //
         // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
-        // Automated agents must resolve incomplete, ambiguous, or missing biometric specifications using the following 3-step sequential tree:
-        //
-        // 1. Step 1: Active Biometric Hardware Mapping
-        //    - IF specifications list an under-display fingerprint sensor:
-        //        * Map to Tier 3 if matching the Tier 3 Reference List.
-        //        * Map to Tier 1 if matching the Tier 1 Reference List or explicitly stated as "ultrasonic", "acoustic", or "3D Sonic".
-        //        * Otherwise fallback to Tier 4.
-        //    - IF specifications list face unlock / facial recognition:
-        //        * Map to Tier 2 if matching the Tier 2 Reference List or specifying structured light / Time-of-Flight (ToF) depth cameras.
-        //        * Map to Tier 5 if matching the Tier 5 Reference List.
-        //        * Otherwise fallback to Tier 8.
-        //    - IF specifications list a fingerprint sensor generically (location and technology unspecified):
-        //        * Map to Tier 3 if matching the Tier 3 Reference List, if the screen panel uses Liquid Crystal Display (LCD, e.g., In-Plane Switching [IPS] or Thin-Film Transistor [TFT]) technology, if released in 2018 or earlier, or if physical key is verified.
-        //        * Otherwise fallback to Tier 4.
-        //
-        // 2. Step 2: Temporal Era Fallbacks (for completely missing biometric specifications)
-        //    If specifications are completely missing, resolve based on device release year:
-        //      - Release year before 2013: Fallback to Tier 8.
-        //      - Release year 2013 to 2015: Map generic fingerprint to Tier 3 (or Tier 7 for Galaxy S5 / Note 4); otherwise fallback to Tier 8.
-        //      - Release year 2016 to 2018: Map generic fingerprint to Tier 3; otherwise fallback to Tier 8.
-        //      - Release year 2019 to 2026: Map under-display to Tier 1 (if in Tier 1 Reference List) or Tier 4; map physical key to Tier 3; otherwise fallback to Tier 8.
-        //
-        // 3. Step 3: Absolute Last Resort Fallback
-        //    If both biometric specifications and release date are completely missing, fallback to Tier 8 and flag for manual verification.
+        // Resolve missing or ambiguous specifications using standard conservative fallbacks:
+        //   - Under-display or generic fingerprint (unspecified location/technology): Fallback to Tier 4 (Optical Under-Display Fingerprint).
+        //   - Physical key fingerprint (side/rear/front button): Map to Tier 3 (Capacitive Physical Fingerprint).
+        //   - Face unlock / facial recognition: Fallback to Tier 8 (No Secure Biometrics).
+        //   - Complete absence of biometric specifications: Fallback to Tier 8 (No Secure Biometrics).
       },
       "redundancy_premium": {
         "value": 0.00,
@@ -4449,18 +4430,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // MAPPING & CONCURRENCY RULES (MANDATORY):
         //   1. Redundancy requires combining a fingerprint sensor with a face or iris scanner. Two fingerprint sensors (e.g., side capacitive + under-display optical) or dual face unlock methods do NOT qualify.
         //   2. Set to 2.00 ONLY if BOTH a secure fingerprint sensor (Ultrasonic, Capacitive Physical, or Optical Under-Display Fingerprint; subscore >= 6.00) AND a secure face/iris scanner (3D Face Unlock, Secure 2D Face Unlock, or Iris Scanner; subscore >= 4.50) are present and supported.
-        //   3. Common Qualifying Combinations (value = 2.00):
-        //      - Google Pixel 8 / 9 Series: Optical/Ultrasonic Fingerprint + Secure 2D Face.
-        //      - Huawei Mate series (e.g. Mate 50/60 Pro): 3D Face ID + Optical UD Fingerprint.
-        //      - Samsung Galaxy Note 8 / Note 9 / Galaxy S8 / Galaxy S9: Capacitive Fingerprint + Iris Scanner.
-        //   4. Common Non-Qualifying (Single) Modalities (value = 0.00):
-        //      - Apple iPhones (X and newer, except Special Edition [SE] models): Features only 3D Face ID. No fingerprint sensor is present.
-        //      - Samsung Galaxy S10 to S25 Series and Galaxy Note 10 / Note 20 Series (excluding Fan Edition [FE] and lightweight [Lite] models): Features Ultrasonic Under-Display (UD) Fingerprint (FP) sensors but their face unlock is basic two-dimensional (2D) and thus insecure.
       },
       "scores": {
         "predicted": 8.00,
         // SCORING GUIDELINE: scores.predicted = Clamp(primary_biometric.subscore + redundancy_premium.value, 0.00, 10.00).
         "final": {
+          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 8.00,
           "method_used": "Predictor",
           "booster": "No",
