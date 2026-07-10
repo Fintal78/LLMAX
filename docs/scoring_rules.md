@@ -3759,41 +3759,89 @@ The following reference scenarios demonstrate how the subscores and perceived qu
 
 
 ### 🔹 7.5 Biometrics
-*Description:* Unlocking methods. Secure face/fingerprint unlock is faster and safer than typing a PIN every time.
-*   **Measurement:** Hardware check (Sensor type).
-*   **Unit:** Technology Type
-*   **Significance:** Security and convenience of unlocking.
 
-#### 7.5.1 Technical Definitions & Hierarchy
-To ensure objective scoring, we define the hierarchy based on **Security**, **Speed**, and **Usability** (e.g., wet finger performance, darkness).
+*Description:* Unlocking methods. Secure face or fingerprint unlock is faster and safer than typing a PIN (Personal Identification Number) every time.
+*   **Measurement:** Verification of physical biometric hardware presence and operating system (OS) security class integration.
+*   **Unit:** Composite Score (0.00 to 10.00)
+*   **Significance:** Determines device access convenience and payment-grade transaction authorization security.
 
-**1. Face Unlock Technologies:**
-*   **3D Face Unlock (Hardware):** Uses dedicated hardware sensors—either **Structured Light** (projecting thousands of invisible infrared dots to map facial depth) or **Time-of-Flight (ToF)** (measuring the time it takes for light to bounce off the face)—to create a secure 3D map. This cannot be fooled by photos or masks and works in total darkness.
-*   **2D Face Unlock (Software):** Uses the standard front camera to identify facial features. It is insecure (often fooled by photos), requires good lighting, and is generally not valid for banking apps.
+#### 7.5.0 Technical Definitions & Security Hierarchy
+To ensure objective, consistent, and transparent grading for all devices, biometric technologies are classified by their security strength, authentication latency (speed), and environmental reliability (such as performance under direct sunlight or with wet hands).
 
-**2. Fingerprint(FP) Sensor Technologies:**
-*   **Ultrasonic Fingerprint (Under-Display):** Uses high-frequency sound waves to map the 3D ridges and pores of a fingerprint.
-    *   *Why it's Tier 1:* Extremely secure (spoof-resistant), works when screen is off, and works with wet/dirty fingers.
-*   **Optical Under-Display Fingerprint:** Uses a camera under the screen to take a 2D photo of the illuminated finger.
-    *   *Why it's Tier 2:* Standard modern implementation. Offers clean design integration but struggles with wet fingers and intense sunlight.
-*   **Capacitive Fingerprint (Physical):** Uses a dedicated silicon capacitor array (Side/Rear) to map ridge/valley capacitance.
-    *   *Why it's Tier 2:* Highly reliable and fast. While it lacks the "invisible" integration of under-display sensors, it is a functional peer to Optical sensors in terms of security and often exceeds them in raw speed.
+##### 1. Fingerprint (FP) Recognition Technologies
+*   **Ultrasonic Under-Display (UD) Fingerprint (FP) Sensors:** Modalities that emit high-frequency acoustic waves to map a three-dimensional (3D) replica of the physical ridges and pores of the finger.
+    *   *Security & Usability:* Certified as Android Class 3 (Strong) security. It operates through display panels, works reliably even with wet or dirty fingers, does not require bright display flashes, and is highly resistant to two-dimensional (2D) spoof attacks.
+*   **Capacitive Physical Fingerprint (FP) Sensors:** Traditional sensors integrated into the device chassis (such as a side-mounted power button, rear-mounted circular pad, or a front-mounted Home button) that utilize miniature capacitor arrays to measure electrical charge variances. (Also includes rare under-glass capacitive sensors, which are categorized here for simplicity.)
+    *   *Security & Usability:* Certified as Android Class 3 (Strong) or Apple Touch ID equivalent. They offer exceptionally low authentication latency (typically under 150 milliseconds) and high consistency, but occupy external frame area and fail to read if the sensor surface or skin is wet.
+*   **Optical Under-Display (UD) Fingerprint (FP) Sensors:** Modalities that project light from the display screen to capture a high-contrast 2D photographic image of the fingerprint ridges via an under-glass camera sensor.
+    *   *Security & Usability:* Certified as Android Class 3 (Strong) on modern devices. They are sensitive to skin moisture variations, can be blinded by intense outdoor sunlight, and emit a bright flash that can cause eye discomfort in dark environments.
+*   **Legacy Swipe Fingerprint (FP) Sensors:** Obsolete scanners requiring the user to physically drag their finger across a narrow capacitive sensor strip (e.g., Samsung Galaxy S5, Galaxy Note 4).
+    *   *Security & Usability:* Classified as Android Class 2 (Weak) or Class 1 (Convenience). They suffer from a high rate of read failures, slow throughput, and low spoof resistance.
 
-#### Scoring Criteria
-*Score is based on the **Best Available** biometric method on the device.*
+##### 2. Face and Iris Recognition Technologies
+*   **Three-Dimensional (3D) Face Unlock (Hardware-Based):** Dedicated hardware arrays that project thousands of invisible infrared (IR) light dots (Structured Light) or emit timed IR pulses (Time-of-Flight / ToF) to map a 3D facial coordinate mesh.
+    *   *Security & Usability:* Certified as Class 3 (Strong) equivalent (e.g., Apple Face ID). It has a False Acceptance Rate (FAR) of 1 in 1,000,000, operates in total darkness, and cannot be spoofed by flat photos or video screens.
+*   **Secure Two-Dimensional (2D) Face Unlock (Software + Secure Silicon):** Systems utilizing a standard front camera coupled with machine learning (ML) depth-estimation algorithms, where facial templates are processed within a dedicated physical security chip (e.g., Google Pixel 8/9 using the Tensor G3/G4 and Titan M2 security processors).
+    *   *Security & Usability:* Certified as Android Class 3 (Strong). This category requires official Class 3 (Strong) certification or equivalent verified manufacturer documentation demonstrating it is authorized for payments. Otherwise, ordinary camera-based face unlock is scored under standard 2D software face unlock (0.00). It degrades in low-light environments and does not function in complete darkness.
+*   **Iris Scanner (Dedicated IR Hardware):** Modalities mapping the unique patterns of the human iris using a dedicated IR Light-Emitting Diode (LED) and an IR-wavelength camera sensor (e.g., Samsung Galaxy S8/S9/Note 8/Note 9).
+    *   *Security & Usability:* Certified as Class 3 (Strong) equivalent. It is secure and works in the dark, but suffers from a narrow positioning angle, slow registration speed, and outdoor sunlight interference.
+*   **Standard Two-Dimensional (2D) Face Unlock (Software-Only):** Basic camera-based facial matching without dedicated secure hardware processors or dynamic depth-checking liveness algorithms.
+    *   *Security & Usability:* Classified as Android Class 2 (Weak) or Class 1 (Convenience). It is insecure, easily bypassed with static photos or digital displays, and restricted from payment or banking authentication.
 
-| Score    | Technology                               | Justification                                                       |
-| :------- | :--------------------------------------- | :------------------------------------------------------------------ |
-| **10.0** | **3D Face Unlock + Ultrasonic FP**       | The "Ultimate" combo. Secure 3D face map AND wet-finger-capable FP. |
-| **8.0**  | **3D Face Unlock**                       | Secure, effortless unlocking (e.g., Face ID), but no finger option. |
-| **8.0**  | **Ultrasonic FP**                        | Best-in-class fingerprint security and usability.                   |
-| **5.0**  | **Optical Under-Display FP**             | Modern standard interaction; clean design but wet-finger limitation.|
-| **5.0**  | **Capacitive FP**                        | Fast, reliable, and secure. Functional peer to Optical.             |
-| **0.0**  | **No Secure Biometrics**                 | PIN/Pattern only. Includes **2D Face Only** devices.                |
+#### Composite Scoring Formula
+The final Biometrics Score is calculated as a composite sum of two distinct technical dimensions:
+
+`Biometrics Score = Primary Biometric Subscore + Redundancy Premium`
+
+The overall score is clamped strictly between **0.00** (no secure biometrics) and **10.00** (state-of-the-art secure biometrics).
+
+#### 7.5.1 Primary Biometric Subscore (Max 8.00 points)
+Assesses the highest-tier biometric modality available on the device that meets the Class 3 (Strong) standard or Apple equivalent:
+
+| Primary Technology                            |  Subscore  | Key Technical Attributes & Security Level                                            |
+| :-------------------------------------------- | :--------: | :----------------------------------------------------------------------------------- |
+| **Ultrasonic Under-Display FP**               |  **8.00**  | 3D acoustic scan; wet-finger tolerant; no display flash; payment-grade.              |
+| **3D Face Unlock (Structured Light/ToF)**     |  **8.00**  | 3D mesh projection; hands-free; works in darkness; payment-grade.                    |
+| **Capacitive Physical FP (Side/Rear/Front)**  |  **7.00**  | Physical button sensor; sub-150ms latency; fails with wet hands; payment-grade.      |
+| **Optical Under-Display FP**                  |  **6.00**  | Under-glass 2D capture; bright display flash required; payment-grade.                |
+| **Secure 2D Face Unlock (Class 3 Certified)** |  **5.50**  | Standard camera + ML depth mapping; payment-grade; fails in darkness.                |
+| **Iris Scanner (Dedicated IR Hardware)**      |  **4.50**  | Iris detail mapping; works in darkness; narrow angle alignment; payment-grade.       |
+| **Legacy Swipe Fingerprint Sensor**           |  **1.50**  | Swipe capacitive bar; high False Rejection Rate (FRR); lockscreen-only.              |
+| **No Secure Biometrics (PIN/Pattern Only)**   |  **0.00**  | No secure hardware; includes standard 2D software face unlock (Class 2/1).           |
+
+#### 7.5.2 Redundancy & Concurrency Premium (Max 2.00 points)
+Rewards the presence of a secondary secure unlock method. Dual-modality combinations ensure convenience in situations where one method is blocked (e.g., wearing gloves vs. wearing a mask or sunglasses). If the device lacks a second secure biometric sensor (meaning the secondary method is either absent or is an insecure software-only 2D face unlock), it receives no redundancy premium (+0.00 points).
+
+*   **Dual Strong Biometrics (Dual-Sensor Redundancy) (+2.00 points):** The device features both a secure fingerprint sensor (defined as Ultrasonic, Capacitive Physical, or Optical Under-Display FP; subscore >= 6.00) AND a secure face/iris scanner (defined as 3D Face Unlock, Secure 2D Face Unlock, or Iris Scanner; subscore >= 4.50).
+    *   *Examples:* Google Pixel 9 Pro (Ultrasonic UD FP + Secure 2D Face), Huawei Mate 60 Pro (3D Face ID + Under-Display Optical FP), Samsung Galaxy Note 9 (Capacitive Rear FP + Dedicated Iris Scanner).
+
+#### Common Configuration Reference (Sample Models)
+The following matrix demonstrates how subscores and redundancy premiums compile into final biometrics scores for key device profiles:
+
+| Device Model                 | Primary (Max 8.0) |  Redundancy (Max 2.0)  |    Final Score    | Hardware & Security Profile                    |
+| :--------------------------- | :---------------: | :--------------------: | :---------------: | :--------------------------------------------- |
+| **Google Pixel 9 Pro**       |       8.00        |   2.00 (Dual Strong)   | **10.00 / 10.0**  | Ultrasonic FP + Secure 2D Face                 |
+| **Huawei Mate 60 Pro**       |       8.00        |   2.00 (Dual Strong)   | **10.00 / 10.0**  | 3D Face ID + Optical UD FP                     |
+| **Samsung Galaxy Note 9**    |       7.00        |   2.00 (Dual Strong)   |  **9.00 / 10.0**  | Capacitive FP + Dedicated Iris Scanner         |
+| **Samsung Galaxy S24 Ultra** |       8.00        |     0.00 (Single)      |  **8.00 / 10.0**  | Gen 2 Ultrasonic FP + Class 2 Face             |
+| **Vivo X100 Ultra**          |       8.00        |     0.00 (Single)      |  **8.00 / 10.0**  | 3D Sonic Max FP + Class 2 Face                 |
+| **Apple iPhone 16 Pro Max**  |       8.00        |     0.00 (Single)      |  **8.00 / 10.0**  | 3D Face ID only                                |
+| **Google Pixel 8 Pro**       |       6.00        |   2.00 (Dual Strong)   |  **8.00 / 10.0**  | Optical UD FP + Secure 2D Face                 |
+| **Xiaomi Redmi Note 13 Pro** |       7.00        |     0.00 (Single)      |  **7.00 / 10.0**  | Side Capacitive FP + Class 2 Face              |
+| **Apple iPhone 8**           |       7.00        |     0.00 (Single)      |  **7.00 / 10.0**  | Front Capacitive Touch ID                      |
+| **OnePlus 12**               |       6.00        |     0.00 (Single)      |  **6.00 / 10.0**  | Optical UD FP + Class 2 Face                   |
+| **Samsung Galaxy A55**       |       6.00        |     0.00 (Single)      |  **6.00 / 10.0**  | Optical UD FP + Class 2 Face                   |
+| **Samsung Galaxy S5**        |       1.50        |     0.00 (Single)      |  **1.50 / 10.0**  | Swipe physical fingerprint reader only         |
+| **Standard budget phone**    |       0.00        |      0.00 (None)       |  **0.00 / 10.0**  | Standard 2D Face only (no fingerprint sensor)  |
 
 > [!NOTE]
-> **Why is "2D Face Only" scored as 0.0?**
-> A device relying solely on 2D Face Unlock (without a fingerprint sensor) lacks a secure biometric hardware layer. 2D Face is software-based, often spoofable by photos, and usually rejected by banking/payment apps for authentication. Therefore, it is functionally equivalent to having "No Secure Biometrics" for high-security use cases.
+> **Regional Variant Scoring Constraint & Verification:**
+> Biometric hardware configurations do not typically differ by region for standard models, unlike SIM capabilities. However, regional software differences may affect the availability of payment-grade Class 3 certification for software-based facial recognition (such as Google's Secure 2D Face).
+> 
+> **How to Verify and Action Regional Software Blocks:**
+> The AI agent must verify regional software blocks by checking the manufacturer's official specifications or user documentation for the specific target region SKU:
+> 1. If the manufacturer's regional product documentation indicates that face unlock cannot be used for Google Wallet / payment authentication in that specific market, the Face Unlock capability MUST be downgraded to standard 2D Face (0.00 points subscore).
+> 2. For models targeted at regions where payment API integration is absent by default (e.g., Google Mobile Services (GMS) APIs are absent in mainland China), software-based secure Face Unlock (e.g., Pixel's secure 2D Face) MUST be downgraded to standard 2D Face (0.00 points subscore).
 
 
 ### 🔹 7.6 Sensors
