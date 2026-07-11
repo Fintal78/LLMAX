@@ -4412,13 +4412,26 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are arrays of objects.
         // To ensure proof for each value, each item in the array MUST be an object: {"name": "Marketing Name", "source": "URL", "exact_extract": "Verbatim proof"}.
         // ALL supported biometric methods present on the device must be entered under their respective tiers (e.g. if the device has both Optical Fingerprint and standard 2D Face, both must be documented in their respective array), not just the highest-scoring method.
+        // If a software-based secure Face Unlock is downgraded due to regional software/ecosystem overrides, its entry MUST be documented under "Tier 8: No Secure Biometrics (PIN/Pattern Only)" instead of "Tier 5: Secure 2D Face Unlock (Class 3 Certified)". To ensure strict traceability, the "exact_extract" field for this entry MUST include both the verified source statement and the specific justification for the downgrade (e.g., "Downgraded from Tier 5 to Tier 8: Regional GMS [Google Mobile Services] or payment API absence in mainland China").
         //
         // AMBIGUITY RESOLUTION & FALLBACK RULES (MANDATORY):
-        // Resolve missing or ambiguous specifications using standard conservative fallbacks:
-        //   - Under-display or generic fingerprint (unspecified location/technology): Fallback to Tier 4 (Optical Under-Display Fingerprint).
-        //   - Physical key fingerprint (side/rear/front button): Map to Tier 3 (Capacitive Physical Fingerprint).
-        //   - Face unlock / facial recognition: Fallback to Tier 8 (No Secure Biometrics).
-        //   - Complete absence of biometric specifications: Fallback to Tier 8 (No Secure Biometrics).
+        // Automated agents must resolve incomplete, ambiguous, or regional biometric specifications using the following 3-step logic hierarchy:
+        //
+        // 1. Step 1: Regional Software & Ecosystem Override
+        //    Software-based facial recognition (specifically Tier 5: Secure 2D Face Unlock (Class 3 Certified)) depends on OS vendor APIs (such as Google Mobile Services / GMS) to perform payment-grade authentication.
+        //    • Check the target region of the device SKU (Stock Keeping Unit) from identity.target_region.value:
+        //      - For models targeted at regions where payment API integration is absent by default (e.g., mainland China SKUs where GMS is absent, identity.target_region.value is "China"), software-based secure Face Unlock MUST be downgraded. Map the face unlock method to "Tier 8: No Secure Biometrics (PIN/Pattern Only)" instead of Tier 5.
+        //      - If the manufacturer's regional product documentation indicates that software-based face unlock cannot be used for Google Wallet / payment authentication in that specific market, downgrade it to "Tier 8: No Secure Biometrics (PIN/Pattern Only)".
+        //    • Hardware-based depth sensors (Tier 2: 3D Face Unlock) and secure fingerprint readers (Tiers 1, 3, and 4) are NOT subject to this regional software downgrade, as their security is hardware-enforced and integrated with local payment apps (e.g., WeChat Pay and Alipay in China).
+        //
+        // 2. Step 2: Component Fallback Rules
+        //    If specifications are ambiguous:
+        //      - Under-display or generic fingerprint (unspecified location/technology): Fallback to Tier 4 (Optical Under-Display Fingerprint).
+        //      - Physical key fingerprint (side/rear/front button): Map to Tier 3 (Capacitive Physical Fingerprint).
+        //      - Face unlock / facial recognition (unspecified class): Fallback to Tier 8 (No Secure Biometrics).
+        //
+        // 3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
+        //    - Complete absence of biometric specifications: Fallback to Tier 8 (No Secure Biometrics).
       },
       "redundancy_premium": {
         "value": 0.00,
@@ -4430,6 +4443,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // MAPPING & CONCURRENCY RULES (MANDATORY):
         //   1. Redundancy requires combining a fingerprint sensor with a face or iris scanner. Two fingerprint sensors (e.g., side capacitive + under-display optical) or dual face unlock methods do NOT qualify.
         //   2. Set to 2.00 ONLY if BOTH a secure fingerprint sensor (Ultrasonic, Capacitive Physical, or Optical Under-Display Fingerprint; subscore >= 6.00) AND a secure face/iris scanner (3D Face Unlock, Secure 2D Face Unlock, or Iris Scanner; subscore >= 4.50) are present and supported.
+        //   3. Cascading Regional Downgrade: If the software-based secure Face Unlock (Tier 5) is downgraded to standard 2D Face (Tier 8) under the Regional Software & Ecosystem Override, it no longer meets the secondary security threshold (subscore >= 4.50). In this case, the redundancy premium MUST be set to 0.00, unless the device has another qualified secure face scanner (e.g. 3D Face ID).
       },
       "scores": {
         "predicted": 8.00,
