@@ -340,7 +340,7 @@ Every field must fall into one of these strict categories.
 It is a dictionary where each key is an official tier name from the scoring guidelines, and each value is an **array of objects** containing marketing terms and their associated proof belonging to that tier.
 
 ### Rules for value_details (Traceability & Efficiency)
-1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score.
+1. **Primary Key Requirement**: The object **MUST** contain a key that exactly matches the string in the `value` field. This provides the direct technical proof for the claimed score. *(Rule for "None / Absence of Feature" tiers: If `value` represents a baseline "None / Absence of Feature" tier, set `name` to `"None"`, `source` to `"N/A"`, and `exact_extract` to `"N/A"` inside its `value_details` array object to preserve all mandatory traceability fields).*
 2. **Official Tier Names**: Keys MUST exactly match the official tier strings (including the `Tier N:` prefix for discrete systems) defined in the `SCORING GUIDELINE` comments within the same file (e.g., [proposed_data_structure.md]). AI must never invent names or use external files as the primary key source.
 3. **Multi-Tier Support**: If the device supports features belonging to lower tiers, those tiers **MUST** also be included as keys.
 4. **Array and Traceability Format (Mandatory)**: To ensure every marketing term or feature is verifiable, the `value_details` array MUST strictly use the **Advanced Traceability** format (Array of Objects). Each item in the array MUST be an object:

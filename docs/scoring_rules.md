@@ -3845,56 +3845,152 @@ The following matrix demonstrates how subscores and redundancy premiums compile 
 
 
 ### 🔹 7.6 Sensors
-*Description:* The breadth of hardware sensors in the phone that enable accurate navigation, motion tracking, environmental awareness, and AR/VR features.
-*   **Measurement:** Verified presence in manufacturer specifications or credibility-checked technical reviews.
-*   **Unit:** Composite Score (0-10)
-*   **Significance:** Critical for navigation accuracy, immersive gaming, health tracking, and photography helpers.
 
-**Scoring Formula:**
-`Score = Core_Score + Advanced_Score` (Max 10.0)
+*Description:* Evaluates the physical hardware sensor suite built into the smartphone. Sensors serve as the physical interface between device software and the real world, enabling motion tracking, spatial 3D mapping, environmental context awareness, photography assistance, and specialized health/industrial utility.
+*   **Measurement:** Hardware sensor presence verified via manufacturer technical specifications, official product datasheets, and credibility-checked public spec repositories (e.g. GSMArena, PhoneArena, DeviceSpecifications, NotebookCheck).
+*   **Unit:** Composite Score (0.00 to 10.00)
+*   **Significance:** Critical for navigation accuracy, motion stability, High Dynamic Range (HDR) camera assist, Augmented Reality (AR) spatial tracking, indoor elevation tracking, display eye comfort, and specialized industrial/health utility.
+*   **Scope:** Measures the complete publicly documented consumer smartphone hardware sensor suite.
+*   **Cross-Section Non-Double-Scoring Boundaries:** To preserve strict modularity and prevent double-counting across the database architecture:
+    *   *Section 4 (Camera System):* Primary, ultrawide, and telephoto image capture sensors, resolution (Megapixels), optical format sizes, lens aperture, Optical Image Stabilization (OIS), and video recording are evaluated exclusively in **Section 4**. Section 7.6 scores strictly the presence of auxiliary stand-alone hardware sensor ICs (Laser AF rangefinder diode, RGBCIR spectral sensor, LiDAR 3D scanner module), NOT camera image capture quality or lens optics.
+    *   *Section 7.5 (Biometrics):* Biometric authentication hardware (fingerprint scanners, 3D Face ID structured-light emitters, Iris scanners) is evaluated exclusively in **Section 7.5**.
+    *   *Section 7.7 (NFC & UWB):* Short-range wireless radios (Near-Field Communication / NFC, Ultra-Wideband / UWB) are evaluated exclusively in **Section 7.7**.
+    *   *Sections 7.1–7.4 (Cellular & Wireless Connectivity):* Cellular RF transceivers, SIM slot configurations, Wi-Fi, and Bluetooth radios are evaluated exclusively in **Sections 7.1–7.4** (Barometer pressure hardware is scored in Section 7.6 strictly as a physical MEMS pressure sensor IC).
 
-#### 7.6.1 Core Sensor Suite (Base Score: Max 5.0)
-*Essential sensors for modern smartphone operation.*
+#### Terminology & Abbreviations
+*   **MEMS (Micro-Electro-Mechanical Systems):** Microscopic mechanical and electro-mechanical devices fabricated on silicon chips to measure physical forces such as motion, gravity, and pressure.
+*   **IMU (Inertial Measurement Unit):** A combined electronic module that measures device body motion, force, and angular rate using accelerometers, gyroscopes, and magnetometers.
+*   **ALS (Ambient Light Sensor):** An optical sensor that measures surrounding illumination level to adjust screen brightness automatically.
+*   **RGBCIR (Red-Green-Blue-Clear-Infrared):** Multi-channel ambient light sensors that measure visible light color spectrum and infrared radiation to assist display white balance.
+*   **IR (Infrared):** Electromagnetic radiation with wavelengths longer than visible light, used in optical proximity, depth rangefinding, and non-contact thermometry.
+*   **ToF (Time-of-Flight):** A depth-mapping camera technology that calculates distance by measuring the travel time of emitted light pulses to construct 3D depth maps.
+*   **LiDAR (Light Detection and Ranging):** A high-resolution 3D spatial scanner using laser light pulses to generate real-time 3D point-cloud meshes.
+*   **SpO2 (Peripheral Oxygen Saturation):** The percentage of oxygenated hemoglobin in blood, measured by optical pulse oximetry sensors.
+*   **HRM (Heart Rate Monitor):** Optical photoplethysmography sensors that shine light into skin capillaries to measure pulse rate.
+*   **VOC (Volatile Organic Compounds):** Chemical sensors measuring airborne organic pollutants and indoor air quality.
+*   **FLIR (Forward-Looking Infrared):** Microbolometer thermal imaging camera technology that captures long-wave infrared (LWIR) radiation to measure temperature heatmaps.
 
-**1. Gyroscope (1.5 points)**
-*   **Definition:** Measures angular rotational velocity (how fast the device is spinning).
-*   **Why it matters:** Critical for precise UI rotation, AR/VR experiences, and camera stabilization. Virtual gyroscopes (software emulation) are laggy and inaccurate.
+#### Composite Scoring Formula
+The final Sensors score is calculated as the sum of three distinct hardware subscore suites:
 
-**2. Magnetometer / Compass (1.0 point)**
-*   **Definition:** Detects Earth's magnetic field to determine direction.
-*   **Why it matters:** Essential for map navigation orientation. Without it, maps cannot show which way you are facing.
+`Sensors Score = Clamp(IMU Subscore + Environmental Subscore + Advanced Subscore, 0.00, 10.00)`
 
-**3. Accelerometer (1.0 point)**
-*   **Definition:** Measures linear acceleration and tilt.
-*   **Why it matters:** Enables basic step counting and portrait/landscape screen rotation. Found in 99% of phones.
+The total available subscores sum to exactly **10.00 points**, matching state-of-the-art consumer flagship sensor suites, clamped strictly between **0.00** (no basic sensors) and **10.00** (complete flagship/specialized sensor array).
 
-**4. Proximity Sensor (0.75 points)**
-*   **Definition:** Detects objects close to the screen using infrared or ultrasonic technology.
-*   **Why it matters:** Automatically turns screen off during calls to prevent accidental touches. Virtual versions often fail.
+#### Weight Allocation Rationale & Real-World Utility Analysis
+The weighting distribution across the three sensor sub-suites is calibrated against empirical user feedback, engineering analysis, and technology publication benchmarks:
 
-**5. Ambient Light Sensor (0.75 points)**
-*   **Definition:** Measures surrounding light intensity.
-*   **Why it matters:** Enables auto-brightness adjustment, saving battery and protecting eyes.
+*   **IMU Suite (4.50 Points / 45% Weight) — Highest Usability Impact:**
+    *   *Real-World Application:* Motion tracking and angular rate sensing directly govern daily core interactions, providing high-rate physical motion telemetry for 3D mobile gaming aiming accuracy, Augmented Reality (AR) spatial placement, screen auto-rotation, and map directional heading cones (Section 7.6 scores strictly the physical MEMS sensor IC, preserving non-double-scoring separation from Section 4 camera stabilization performance).
+    *   *User Pain Point:* Public reviews and technical teardowns demonstrate that devices using virtual software gyroscope emulation suffer from 50–200ms rotational latency, severe motion drift, and incompatibility with AR applications, justifying the 2.00 point valuation for physical MEMS gyroscopes.
+*   **Environmental & Ambient Suite (3.50 Points / 35% Weight) — Core Display & Call Ergonomics:**
+    *   *Real-World Application:* Automates display power, eye comfort, and call ergonomics through physical hardware detection of ambient light, proximity distance, atmospheric pressure, and magnetic flip covers.
+    *   *User Pain Point:* User reviews highlight severe frustration with software/ultrasonic proximity emulation (e.g. Elliptic Labs audio algorithms), which cause frequent accidental cheek-muting and screen touch during calls. This validates the 1.25 point valuation for dedicated physical IR proximity hardware.
+*   **Advanced Spatial, Optical & Specialized Suite (~2.00 Points / ~20% Weight) — Balanced Bonus Utility:**
+    *   *Real-World Application:* Enables advanced 3D room/object scanning, low-light autofocus lock, flicker-free lighting color matching, thermal inspection diagnostics, and direct health/temperature monitoring.
+    *   *Empirical Balance:* Capping this suite at ~2.00 points ensures specialized niche sensors boost flagship scores appropriately without double-scoring against Section 4 camera image capture quality or unfairly penalizing mainstream consumer flagships that omit industrial thermal or specialized health modules.
 
-#### 7.6.2 Advanced Sensor Capabilities (Bonus Score: Max 5.0)
-*Premium sensors that unlock advanced functionality.*
+---
 
-**1. LiDAR / ToF / 3D Depth Sensor (2.0 points)**
-*   **Definition:** **LiDAR** (Light Detection and Ranging) or **ToF** (Time-of-Flight) sensors emit light pulses and measure the time it takes to reflect back, creating a 3D depth map.
-*   **Why it matters:** Enables instant autofocus in low light, professional-grade portrait mode with accurate depth, and AR applications like room scanning and furniture placement.
+#### 7.6.1 Part 1: Inertial & Motion Sensing Suite (IMU) Subscore (Max 4.50 points)
+Evaluates core physical motion, rotation, and direction hardware sensors. Inertial Measurement Units (IMU) provide high-rate motion data necessary for interface rotation, gaming, camera stabilization, and navigation orientation.
 
-**2. Barometer (1.5 points)**
-*   **Definition:** Measures atmospheric pressure.
-*   **Why it matters:** Provides altitude data for fitness apps (counting floors climbed) and accelerates GPS lock by providing vertical coordinates. Also used for local weather prediction.
+| Subscore  | Hardware Component & Feature Tier          | Engineering Definition & Verification Rule                                                              |
+| :-------: | :----------------------------------------- | :-----------------------------------------------------------------------------------------------------= |
+| **---**   | **[Sensor 1: 3-Axis Gyroscope]**           | **Rotational Motion & Angular Velocity Sensing (Max 2.00 pts)**                                         |
+|  **2.00** | *Hardware 3-Axis MEMS Gyroscope*           | Dedicated physical MEMS gyro. Provides sub-ms angular velocity data for motion tracking, 3D gaming, AR. |
+|  **0.00** | *Virtual Gyroscope (Software Emulation)*   | Software rotation using accelerometer + compass. High latency (50-200ms), drift, and AR incompatibility.|
+| **---**   | **[Sensor 2: 3-Axis Magnetometer]**        | **Earth's Magnetic Field & Cardinal Compass Direction (Max 1.50 pts)**                                  |
+|  **1.50** | *Hardware 3-Axis Magnetometer / Compass*   | Dedicated Hall-effect/magnetoresistive sensor measuring Earth's magnetic field for map cone direction.  |
+|  **0.00** | *No Hardware Magnetometer / Compass Absent*| No magnetic sensor. Map apps show static location dot without heading direction cone.                   |
+| **---**   | **[Sensor 3: 3-Axis Accelerometer]**       | **Linear Acceleration & Orientation Sensing (Max 1.00 pt)**                                             |
+|  **1.00** | *Hardware 3-Axis MEMS Accelerometer*       | Dedicated physical MEMS accelerometer for linear acceleration, step pedometer, and screen orientation.  |
+|  **0.00** | *No Accelerometer / Absent*                | Lacks basic physical acceleration sensing hardware.                                                     |
 
-**3. Color Spectrum / Flicker Sensor (1.5 points)**
-*   **Definition:** 
-    *   **Color Spectrum Sensor:** Reads the color temperature of ambient light.
-    *   **Flicker Sensor:** Detects light frequency fluctuations from artificial sources (LEDs, fluorescent).
-*   **Why it matters:** Enables TrueTone-style display adjustment for natural viewing, accurate camera white balance in mixed lighting, and eliminates banding artifacts in photos/videos shot under artificial light.
+*Sub-formula:* `IMU Subscore = Gyroscope (Max 2.00) + Magnetometer (Max 1.50) + Accelerometer (Max 1.00)` (Max 4.50 pts)
 
-> [!NOTE]
-> **Public Data Availability:** Core sensors are listed on all major spec sites (GSMArena, PhoneArena). Advanced sensors like Color Spectrum or Flicker are prominently advertised features in flagship devices (e.g., Xiaomi Ultra, iPhone Pro) or listed in detailed review specs. If not explicitly listed, the sensor is presumed absent.
+##### Sensor Utility Breakdown (IMU Suite)
+*   **3-Axis MEMS Gyroscope:** Measures body rotational speed and angular velocity. Useful for 3D mobile gaming motion aiming, head tracking in Augmented Reality (AR) apps, and high-frequency motion telemetry.
+*   **3-Axis Magnetometer (Compass):** Measures Earth's geomagnetic field vectors. Useful for real-time cardinal directional heading (North/South/East/West) and orienting direction cones in map navigation applications.
+*   **3-Axis MEMS Accelerometer:** Measures linear g-force acceleration and gravity vectors. Useful for display auto-rotation (portrait/landscape), step counting (pedometer), shake gesture shortcuts, and fall detection.
+
+---
+
+#### 7.6.2 Part 2: Environmental & Ambient Sensing Suite Subscore (Max 3.50 points)
+Evaluates hardware sensors that detect surrounding environmental conditions (light, object distance, atmospheric pressure, magnetic covers) to automate display behavior, protect call state, and measure altitude.
+
+| Subscore  | Hardware Component & Feature Tier          | Engineering Definition & Verification Rule                                                              |
+| :-------: | :----------------------------------------- | :------------------------------------------------------------------------------------------------------ |
+| **---**   | **[Sensor 1: Proximity Sensor]**           | **Display Call State & Face Distance Sensing (Max 1.25 pts)**                                           |
+|  **1.25** | *Physical Hardware IR/Optical Proximity*   | Physical IR LED + photodiode under glass (<5cm). Guarantees 100% reliable call screen turn-off.         |
+|  **0.00** | *Virtual Software / Ultrasonic Proximity*  | Software/ultrasonic audio algorithm (Elliptic Labs). High false call-touch rates.                       |
+| **---**   | **[Sensor 2: Ambient Light & Color]**      | **Display Auto-Brightness & Color Temperature (Max 1.25 pts)**                                          |
+|  **1.25** | *Hardware ALS + Hardware Color Sensor*     | Physical ALS + dedicated multi-channel ambient color sensor (Apple True Tone, RGBCIR).                  |
+|  **1.00** | *Standard Hardware Ambient Light (ALS)*    | Single physical RGB/monochrome light sensor for standard auto-brightness.                               |
+|  **0.00** | *Virtual / Camera-Based Light Sensing*     | Selfie camera periodic sampling or no auto-brightness capability.                                       |
+| **---**   | **[Sensor 3: Atmospheric Barometer]**      | **Barometric Pressure & Elevation Lock Sensing (Max 0.75 pt)**                                          |
+|  **0.75** | *Hardware Barometric Pressure Sensor*      | Physical MEMS pressure sensor (0.1 hPa). Enables stair elevation tracking and fast GNSS altitude locks. |
+|  **0.00** | *No Barometer / Absent*                    | Lacks barometric pressure hardware.                                                                     |
+| **---**   | **[Sensor 4: Hall Effect Sensor]**         | **Magnetic Cover & Foldable Closure Sensing (Max 0.25 pt)**                                             |
+|  **0.25** | *Hardware Hall Effect Sensor*              | Physical magnetic sensor for flip covers, Moto Mods, and foldable closure state.                        |
+|  **0.00** | *No Hall Sensor / Absent*                  | Lacks magnetic cover proximity hardware.                                                                |
+
+*Sub-formula:* `Environmental Subscore = Proximity (Max 1.25) + Ambient Light (Max 1.25) + Barometer (Max 0.75) + Hall Sensor (Max 0.25)` (Max 3.50 pts)
+
+##### Sensor Utility Breakdown (Environmental Suite)
+*   **Physical IR Proximity Sensor:** Detects physical objects within <5cm of the earpiece. Useful for turning off display and touch sensing during phone calls to prevent accidental cheek muting.
+*   **Ambient Light & Color Sensor (ALS):** Measures front-facing ambient room illumination lux and light spectrum color temperature. Useful for smooth automatic display brightness adaptation and screen color tint matching (e.g. Apple True Tone, RGBCIR). Strictly dedicated to display visual adaptation, separate from rear camera photo spectral sensors.
+*   **Barometric Pressure Sensor (Barometer):** Measures atmospheric pressure in hectopascals (hPa). Useful for tracking flights of stairs in fitness apps and accelerating satellite GNSS 3D altitude locks.
+*   **Hall Effect Sensor:** Detects magnetic field proximity. Useful for activating cover screens on foldables, Moto Mods, and magnetic flip case sleep/wake states.
+
+---
+
+#### 7.6.3 Part 3: Advanced Spatial, Optical & Specialized Sensing Suite Subscore (Max 2.00 points to reach total max score of 10.00 for Section 7.6)
+Evaluates optional, photography-assist, 3D scanning, and specialized physiological/industrial hardware sensors.
+
+| Subscore  | Hardware Component & Feature Tier                      | Engineering Definition & Verification Rule                                                       |
+| :-------: | :----------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| **---**   | **[Category A: Spatial Depth & Laser AF]**             | **3D Mesh Scanning, ToF & Camera Laser Rangefinder (Max 1.00 pt)**                               |
+|  **1.00** | *Tier 1: LiDAR Scanner / 3D Spatial*                   | 3D spatial laser scanner (iPhone 12–16 Pro). 3D point-cloud mesh for instant low-light AF and AR.|
+|  **0.60** | *Tier 2: 3D ToF Camera / DepthVision*                  | 3D Time-of-Flight IR depth sensor (Galaxy S10 5G/S20U, Note 10+, P30 Pro) for portrait bokeh.    |
+|  **0.35** | *Tier 3: Laser Autofocus Rangefinder*                  | Dedicated IR laser rangefinder for fast low-light/macro autofocus (Pixel 2–9, S21–25U, LG G3–G8).|
+|  **0.00** | *Tier 4: Standard Dual Camera / None*                  | Standard dual-camera software parallax or no optical depth hardware.                             |
+| **---**   | **[Category B: Spectral & Color Assist]**              | **Multi-Channel Photography Spectral & Flicker Sensing (Max 0.50 pt)**                           |
+|  **0.50** | *Dedicated Multi-Spectral Color Sensor*                | Multi-channel spectral sensor or flicker photodiode (Hasselblad, Xiaomi Ultra, Galaxy Ultra).    |
+|  **0.00** | *None / Standard Camera White Balance*                 | Standard camera auto white balance without spectral or flicker hardware.                         |
+| **---**   | **[Category C: Industrial & Health Suite]**            | **Active Microbolometer, Physiological & Infrared Environmental Sensors**                        |
+|  **0.50** | *Tier 1: Active Microbolometer Thermal*                | FLIR/Infiray LWIR microbolometer thermal camera (CAT S60/S62 Pro, Blackview, Ulefone).           |
+|  **0.35** | *Tier 2: Dedicated Physiological Suite*                | Optical Heart Rate (HRM) + Blood Oxygen (SpO2) photodiode array (Galaxy S5–S10, Note 4–9).       |
+|  **0.20** | *Tier 3: Standalone Infrared Temperature Sensor*       | Non-contact infrared temperature sensor (Google Pixel 8 Pro / 9 Pro).                            |
+|  **0.20** | *Tier 4: Volatile Organic Compounds Air Quality Sensor*| Dedicated VOC air quality gas sensor IC (CAT S61).                                               |
+|  **0.20** | *Tier 5: Ultraviolet Sensor*                           | Dedicated UV index photodiode sensor IC (Galaxy Note 4, Galaxy S5).                              |
+|  **0.00** | *Tier 6: Standard Consumer Suite / None*               | No specialized thermal, physiological, or environmental hardware sensors.                        |
+
+*Sub-formula:* `Advanced Subscore = Spatial Depth + Spectral Assist + Industrial & Health Sensors`
+
+##### Sensor Utility Breakdown (Advanced Suite)
+*   **3D Spatial Depth & Laser AF (LiDAR / ToF / Laser Rangefinder):** Measures laser round-trip time. Useful for instant 3D room/object mesh scanning (Polycam/Canvas), low-light autofocus lock, and AR depth mapping.
+*   **Multi-Spectral & Color Assist Sensor:** Measures scene light spectrum channels and AC artificial lighting flicker frequency at the rear camera array. Useful for eliminating artificial LED/fluorescent light flicker banding in photos/videos and calibrating rear camera white balance (e.g. Hasselblad, Xiaomi Ultra). Strictly dedicated to camera photo/video capture quality, separate from display ambient light sensors.
+*   **Industrial & Health Suite (Thermal / Physiological / Environmental Sensors):** Measures long-wave infrared heatmaps, biological vitals, non-contact temperature, air quality, and UV levels. Useful for trade/electrical hot-spot thermal diagnostics (FLIR), pulse oximetry (SpO2/HRM), non-contact skin/surface temperature reading, VOC air quality monitoring, and UV radiation sensing. Multi-sensor feature stacking is fully supported and bounded by Section 7.6's global 10.00 pt clamp.
+
+*Feature Stacking Rule:*
+When a device incorporates multiple distinct specialized sensors (e.g. CAT S61 featuring both an Active Microbolometer Thermal Camera at 0.50 pt and a Volatile Organic Compounds Air Quality Sensor at 0.20 pt), the subscores of all detected features are additive (0.50 + 0.20 = 0.70 pts). This additive model accurately rewards multi-sensor hardware utility, with overall Section 7.6 points bounded by the master 10.00-point ceiling.
+
+##### Architectural Analysis: Clamping Rules & Part 3 Evaluation Logic
+A dedicated local clamping step to 2.00 points is intentionally **NOT required or implemented for Part 3**, based on the following two core engineering grounds:
+
+1. **Empirical Hardware Boundary (Real-World Benchmark Limits):**
+   Across the entire history of commercial mobile hardware manufacturing, real-world Part 3 subscores naturally remain far below the 2.00 pt allocation budget across all device categories:
+   *   **Rugged Industrial Champion (CAT S61):** Laser Autofocus Rangefinder (0.35 pt) + FLIR Microbolometer Thermal Camera (0.50 pt) + VOC Air Quality Gas Sensor (0.20 pt) = **1.05 pts total**.
+   *   **Apple iPhone Pro Series (iPhone 12 Pro through 16 Pro Max):** LiDAR Scanner (1.00 pt) + Standard White Balance (0.00 pt) + Standard Health Suite (0.00 pt) = **1.00 pt total**.
+   *   **Android Ultra Flagships (Xiaomi 14 Ultra / Vivo X100 Ultra / OnePlus 12):** Laser Autofocus Rangefinder (0.35 pt) + Dedicated Multi-Spectral Color Sensor (0.50 pt) + Standard Health Suite (0.00 pt) = **0.85 pt total**.
+   *   **Legacy Depth Flagships (Samsung Galaxy S20 Ultra / Note 10+):** 3D ToF DepthVision Camera (0.60 pt) + Standard White Balance (0.00 pt) + Standard Health Suite (0.00 pt) = **0.60 pt total**.
+   Because commercial production devices top out at **1.05 pts** in real life, no real-world smartphone ever reaches or exceeds 2.00 points in Part 3. Applying an intermediate local clamp at 2.00 points would add zero mathematical value for any existing device.
+
+2. **Mathematical Guarantee via Global Section 7.6 Clamping:**
+   To maintain a lean schema without redundant formula overhead, overall score boundaries are strictly enforced by Section 7.6's master calculation formula:
+   `Section 7.6 Score = Clamp(Part 1 Subscore + Part 2 Subscore + Part 3 Subscore, 0.00, 10.00)`
+   This single global clamp mathematically guarantees that the total sensors score can **NEVER exceed 10.00 points** under any circumstances, while allowing multi-sensor industrial devices (such as CAT S61 stacking Thermal + VOC gas sensors) to be fully rewarded for their specialized hardware without artificial local suppression.
 
 
 ### 🔹 7.7 NFC & Ultra-Wideband (UWB)

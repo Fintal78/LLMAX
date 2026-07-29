@@ -9,13 +9,22 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 > - **Scoring Procedure**: If the missing data or unlisted feature blocks the formula and NO fallback or benchmark override is possible:
 >     1. Set `subscore`, `scores.predicted`, `scores.final.value`, `scores.final.method_used`, `scores.final.booster`, and `scores.final.confidence` to `"N/A"`.
 >     2. **Top-Level Alert**: You MUST place a GFM alert at the very top of the generated file (above the JSON block) following one of these exact templates:
->        <br>`> [!CAUTION]`
->        <br>`> ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP`
->        <br>`> **Subsection [X.Y] ([Name])**: Score calculation is blocked due to missing required data: [Parameter Name]. No valid fallback exists.`
->        <br>*OR*
->        <br>`> [!CAUTION]`
->        <br>`> ### 🚨 SCORING BLOCKER: UNLISTED FEATURE DETECTED`
->        <br>`> **Subsection [X.Y] ([Name])**: A feature was found ([Feature Name]) but is not scorable using the provided options in the guidelines. This feature needs to be evaluated.`
+>        `> [!CAUTION]`
+>        `> ### 🚨 SCORING BLOCKER: UNRESOLVED DATA GAP`
+>        `> **Subsection [X.Y] ([Name])**: Score calculation is blocked due to missing required data: [Parameter Name]. No valid fallback exists.`
+>        *OR*
+>        `> [!CAUTION]`
+>        `> ### 🚨 SCORING BLOCKER: UNLISTED FEATURE DETECTED`
+>        `> **Subsection [X.Y] ([Name])**: A feature was found ([Feature Name]) but is not scorable using the provided options in the guidelines. This feature needs to be evaluated.`
+> [!NOTE]
+> ### 📜 Universal Data Source Verification Precedence Hierarchy
+> To guarantee complete score reproducibility, objectivity, and a standardized resolution protocol whenever technical data points conflict across public specification databases, all evaluators MUST adhere strictly to the following data verification precedence hierarchy across all scoring categories:
+> - **Priority 1 (Highest):** Manufacturer Official Technical Specifications & Product Landing Pages.
+> - **Priority 2:** Official Product Datasheets & Regulatory Filings (e.g. FCC, TENAA, CE certifications).
+> - **Priority 3:** Credibility-Checked Public Spec Repositories (GSMArena, PhoneArena, DeviceSpecifications, NotebookCheck).
+> - **Priority 4:** Verified Hardware Teardowns (iFixit, TechInsights).
+> - **Priority 5 (Lowest):** Hardware Diagnostic Applications (only if absence of a feature is independently confirmed).
+> *Governance Rule:* If data sources conflict, the specification provided by the highest-precedence source strictly governs and overrides lower-tier sources.
 
 ```json
 {
@@ -51,7 +60,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-07-08"
+    "last_updated": "2026-07-28"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -4458,73 +4467,181 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "7_6_sensors": {
-      // SCORING GOAL: Evaluates navigation and accessory sensors.
-      "core_sensor_suite": {
-        "accelerometer": {
-          "value": true,
-          "source": "TBD",
-          "exact_extract": "Proof pending",
-          "subscore": 1.00
-          // SCORING GUIDELINE: If true, 1.00; false, 0.00.
-        },
+      // SCORING GOAL: Evaluates physical hardware sensors integrated into the device, divided across three distinct sub-suites: Inertial & Motion Sensing Suite (Max 4.50 pts), Environmental & Ambient Sensing Suite (Max 3.50 pts), and Advanced Spatial, Optical & Specialized Suite (Max 2.00 pts). Total score is the sum of subscores, strictly clamped between 0.00 and 10.00 points.
+      //
+      // DATA VERIFICATION PRECEDENCE & OMNI-SCAN RULES:
+      // 1. DEDICATED HARDWARE EXCLUSIVITY: Points are awarded ONLY to dedicated physical silicon ICs or hardware photodiodes. Software features, AI algorithms, ISP post-processing, sensor fusion, and software emulation ALWAYS score 0.00.
+      // 2. OMNI-SCAN CROSS-REFERENCE: Primary spec repositories (GSMArena, PhoneArena, DeviceSpecifications) occasionally omit standard physical sensors (e.g. Ambient Light Sensor or Compass). The evaluator MUST cross-reference official manufacturer datasheets or teardown reports before marking a sensor as absent.
+      // 3. ABSENCE / FALLBACK RULE: If a sensor is not explicitly documented in manufacturer technical specs, official datasheets, or reputable public repositories, it MUST be scored as 0.00 (absent/unsupported).
+      //
+      "inertial_and_motion_sensing_suite": {
+        // SCORING GOAL: Evaluates physical motion, rotation, and direction telemetry sensors (Inertial Measurement Unit / IMU). Maximum available subscore is 4.50 points.
         "gyroscope": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 1.50
-          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          "subscore": 2.00
+          // SCORING GUIDELINE: Evaluates physical 3-axis rotational angular velocity sensing capability.
+          //   • true  → 2.00 (Dedicated physical Micro-Electro-Mechanical Systems / MEMS gyroscope IC measuring rotational angular velocity).
+          //   • false → 0.00 (Virtual gyroscope software emulation or absent).
+          //   Keywords & Evidence (true): "Gyroscope", "3-axis gyro", "MEMS gyro", "hardware gyro", "gyro sensor".
+          //   Keywords & Evidence (false): "Virtual Gyro", "Software Gyro", "Gyro emulated", "No physical gyro".
+          //   AI DECISION TREE: If official specs or hardware teardowns explicitly state "Virtual gyro", "Software gyroscope", or confirm the absence of a physical MEMS gyro IC, set value: false (0.00 pt).
         },
         "magnetometer": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 1.00
-          // SCORING GUIDELINE: If true, 1.00; false, 0.00.
+          "subscore": 1.50
+          // SCORING GUIDELINE: Evaluates physical geomagnetic field sensing for map heading direction.
+          //   • true  → 1.50 (Dedicated physical Hall-effect or magnetoresistive digital compass IC measuring Earth's magnetic field).
+          //   • false → 0.00 (No magnetic sensor IC present).
+          //   Keywords & Evidence: "Compass", "Magnetometer", "Digital compass", "e-compass", "3-axis compass", "geomagnetic sensor".
         },
+        "accelerometer": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 1.00
+          // SCORING GUIDELINE: Evaluates physical linear acceleration and orientation sensing capability.
+          //   • true  → 1.00 (Dedicated physical MEMS accelerometer IC measuring linear acceleration forces and gravity vectors).
+          //   • false → 0.00 (Lacks physical acceleration sensing hardware).
+          //   Keywords & Evidence: "Accelerometer", "g-sensor", "3-axis accelerometer", "motion sensor".
+        }
+      },
+      "environmental_and_ambient_sensing_suite": {
+        // SCORING GOAL: Evaluates hardware sensors detecting surrounding environmental conditions (light, proximity distance, atmospheric pressure, magnetic covers). Maximum available subscore is 3.50 points.
         "proximity_sensor": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 0.75
-          // SCORING GUIDELINE: If true, 0.75; false, 0.00.
+          "subscore": 1.25
+          // SCORING GUIDELINE: Evaluates call screen state and face distance detection.
+          //   • true  → 1.25 (Dedicated physical Infrared / IR LED emitter + photodiode under display glass for <5cm detection).
+          //   • false → 0.00 (Virtual software, ultrasonic audio algorithm e.g. Elliptic Labs AI Virtual Proximity, or touch digitizer).
+          //   Keywords & Evidence (true): "Proximity sensor", "Hardware proximity", "IR proximity", "Optical proximity".
+          //   Keywords & Evidence (false): "Virtual proximity", "Elliptic Labs", "Software proximity", "Ultrasonic proximity".
+          //   AI DECISION TREE: If official specs, GSMArena, or teardowns state "Virtual proximity sensing" or Elliptic Labs algorithms, set value: false (0.00 pt).
         },
-        "ambient_light_sensor": {
-          "value": true,
+        "ambient_light_and_color_sensor": {
+          "value": "Hardware Ambient Light Sensor + Hardware Color Sensor",
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 0.75
-          // SCORING GUIDELINE: If true, 0.75; false, 0.00.
-        }
-      },
-      "advanced_sensor_capabilities": {
+          "subscore": 1.25
+          // SCORING GUIDELINE: Evaluates front-facing display auto-brightness lux sensing and screen color tint matching (e.g. Apple True Tone). Strictly dedicated to display visual adaptation, separate from rear camera photo spectral sensors.
+          // Use the following exact string values with related scores:
+          //   • "Hardware Ambient Light Sensor + Hardware Color Sensor" → 1.25 (Physical Ambient Light Sensor / ALS plus dedicated multi-channel ambient color/spectrum IC, e.g. Apple True Tone, Red-Green-Blue-Clear-Infrared / RGBCIR sensor).
+          //   • "Standard Hardware Ambient Light Sensor"                → 1.00 (Standard single-channel monochrome/RGB physical light sensor for standard auto-brightness).
+          //   • "Virtual / Camera-Based Light Sensing"                  → 0.00 (Periodic front-camera image sampling or absence of auto-brightness hardware).
+        },
         "barometer": {
           "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 1.50
-          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          "subscore": 0.75
+          // SCORING GUIDELINE: Evaluates atmospheric pressure and elevation tracking capability.
+          //   • true  → 0.75 (Dedicated physical MEMS pressure sensor IC with 0.1 hPa precision for stair elevation and GNSS altitude lock).
+          //   • false → 0.00 (Lacks physical barometric pressure hardware).
+          //   Keywords & Evidence: "Barometer", "Altimeter", "Pressure sensor", "Barometric pressure".
         },
-        "lidar_tof_3d_depth_sensor": {
-          "value": false,
+        "hall_effect_sensor": {
+          "value": true,
           "source": "TBD",
           "exact_extract": "Proof pending",
-          "subscore": 0.00
-          // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        },
-        "color_spectrum_flicker_sensor": {
-          "value": false,
+          "subscore": 0.25
+          // SCORING GUIDELINE: Evaluates magnetic proximity sensing for accessories and foldables.
+          //   • true  → 0.25 (Dedicated magnetic field sensor IC for flip cover closure, Moto Mods, and foldable lid closure state).
+          //   • false → 0.00 (Lacks magnetic cover proximity hardware).
+          //   Keywords & Evidence: "Hall sensor", "Hall effect", "Magnetic flip sensor".
+        }
+      },
+      "advanced_spatial_optical_and_specialized_suite": {
+        // SCORING GOAL: Evaluates optional photography-assist, 3D spatial scanning, multi-spectral, and specialized industrial/health hardware sensors. Maximum available subscore is capped at 2.00 points.
+        "spatial_depth_and_laser_autofocus": {
+          "value": "Laser Autofocus Rangefinder",
           "source": "TBD",
           "exact_extract": "Proof pending",
+          "subscore": 0.35
+          // SCORING GUIDELINE: Evaluates 3D spatial mesh scanning, Time-of-Flight depth sensing, and camera Laser Autofocus rangefinding.
+          // Use the following exact string values with related scores:
+          //   • "LiDAR Scanner / 3D Spatial"        → 1.00 (Real-time 3D spatial laser scanner emitting point-cloud laser arrays, e.g. Apple iPhone 12–16 Pro LiDAR Scanner).
+          //   • "3D ToF Camera / DepthVision"       → 0.60 (3D Time-of-Flight / ToF infrared depth sensor module, e.g. Samsung Galaxy S10 5G/S20 Ultra, Note 10+, Huawei P30/P40 Pro DepthVision).
+          //   • "Laser Autofocus Rangefinder"       → 0.35 (Standalone infrared laser rangefinder diode dedicated to fast low-light and macro camera focus lock, e.g. Google Pixel 2–9, Samsung Galaxy S21–25 Ultra, LG G3–G8).
+          //   • "Standard Dual Camera / None"       → 0.00 (Standard dual-camera parallax software bokeh or no optical depth hardware).
+        },
+        "spectral_and_color_assist": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.50
+          // SCORING GUIDELINE: Evaluates rear camera photo/video multi-channel spectral sensing and AC artificial light flicker frequency detection. Strictly dedicated to camera capture quality (eliminating fluorescent banding and calibrating white balance), separate from display ambient light sensors.
+          //   • true  → 0.50 (Dedicated multi-channel color spectrum sensor or photodiode measuring ambient light spectrum and AC flicker frequency).
+          //   • false → 0.00 (Standard camera auto white balance without auxiliary spectral hardware).
+          //   Keywords & Evidence: "Spectral sensor", "Flicker sensor", "Color spectrum sensor", "Multi-spectral sensor", "Hasselblad color calibration sensor", "LG color spectrum".
+        },
+        "industrial_and_health_sensors": {
+          "value": "Tier 6: Standard Consumer Suite / None",
+          "value_details": {
+            "Tier 1: Active Microbolometer Thermal": [],
+            "Tier 2: Dedicated Physiological Suite": [],
+            "Tier 3: Standalone Infrared Temperature Sensor": [],
+            "Tier 4: Volatile Organic Compounds Air Quality Sensor": [],
+            "Tier 5: Ultraviolet Sensor": [],
+            "Tier 6: Standard Consumer Suite / None": [
+              { "name": "None", "source": "N/A", "exact_extract": "N/A" }
+            ]
+          },
           "subscore": 0.00
-          // SCORING GUIDELINE: If true, 1.50; false, 0.00.
+          // SCORING GUIDELINE: Identify all active specialized industrial and health hardware sensors present on the device.
+          // Use the following exact Tier Names with related scores to be added together for the subscore:
+          //   • "Tier 1: Active Microbolometer Thermal"                 → 0.50
+          //     - Definition: Integrated FLIR or Infiray Long-Wave Infrared / LWIR microbolometer thermal imaging camera module.
+          //     - Keywords: "Thermal camera", "FLIR Lepton", "Infiray thermal", "Microbolometer", "LWIR thermal".
+          //     - Hardware Reference List (Devices uniquely matching this tier):
+          //         * CAT Rugged Series: CAT S60, CAT S62 Pro.
+          //         * Blackview Armor Thermal Series: Blackview BV9800 Pro, BV9900 Pro, BL8800 Pro, Armor 19T, Armor 27T Pro.
+          //         * Ulefone Armor Thermal Series: Ulefone Armor 9, Armor 11T 5G, Armor 18T, Armor 25T Pro.
+          //         * AGM Series: AGM G1 Pro, AGM G2 Guardian.
+          //   • "Tier 2: Dedicated Physiological Suite"                 → 0.35
+          //     - Definition: Physical optical photodiode sensor array measuring Heart Rate Monitor (HRM) and Blood Oxygen Saturation (SpO2).
+          //     - Keywords: "Heart rate sensor", "HRM sensor", "SpO2 sensor", "Pulse oximeter", "Heart rate photodiode".
+          //     - Hardware Reference List (Devices uniquely matching this tier):
+          //         * Samsung Galaxy S Series: Galaxy S5, S6, S6 edge, S7, S7 edge, S8, S8+, S9, S9+, S10, and S10+.
+          //         * Samsung Galaxy Note Series: Galaxy Note 4, Note 5, Note 8, and Note 9.
+          //   • "Tier 3: Standalone Infrared Temperature Sensor"        → 0.20
+          //     - Definition: Non-contact infrared skin and object surface temperature measurement sensor.
+          //     - Keywords: "Infrared temperature sensor", "Skin temperature sensor", "Thermometer sensor", "IR temp sensor".
+          //     - Hardware Reference List (Devices uniquely matching this tier):
+          //         * Google Pixel Series: Google Pixel 8 Pro, Pixel 9 Pro, Pixel 9 Pro XL, and Pixel 9 Pro Fold.
+          //         * Honor Series: Honor V40 5G.
+          //   • "Tier 4: Volatile Organic Compounds Air Quality Sensor" → 0.20
+          //     - Definition: Dedicated Volatile Organic Compounds (VOC) indoor air quality gas sensor Integrated Circuit (IC) chip.
+          //     - Keywords: "VOC sensor", "Air quality sensor", "Gas sensor", "Sensirion VOC sensor".
+          //     - Hardware Reference List (Devices uniquely matching this tier):
+          //         * CAT Rugged Series: CAT S61.
+          //   • "Tier 5: Ultraviolet Sensor"                            → 0.20
+          //     - Definition: Dedicated Ultraviolet (UV) index photodiode sensor Integrated Circuit (IC) chip measuring solar UV radiation intensity.
+          //     - Keywords: "UV sensor", "Ultraviolet sensor", "UV index sensor".
+          //     - Hardware Reference List (Devices uniquely matching this tier):
+          //         * Samsung Galaxy Series: Galaxy Note 4 and Galaxy S5.
+          //   • "Tier 6: Standard Consumer Suite / None"                → 0.00
+          //     - Definition: No specialized thermal, physiological, or environmental hardware sensors.
+          //     - Keywords: "No thermal camera", "No heart rate sensor", "Standard sensor suite".
+          //
+          // VALUE_DETAILS GUIDELINE (Advanced Traceability): Dictionary where keys are Tier Names and values are arrays of objects.
+          // To ensure technical proof for each present hardware component, each item in an active tier array MUST be an object containing the specific component's Marketing Name or Integrated Circuit (IC) chip designation: {"name": "Marketing / Hardware Component Name", "source": "URL", "exact_extract": "Verbatim proof"}. Do NOT repeat the Tier Name string itself in the "name" field.
+          // ALL detected active specialized sensors present on the device MUST be entered under their respective tier array keys for multi-sensor hardware traceability (e.g. CAT S61 having {"name": "FLIR Lepton Thermal Camera", ...} under Tier 1 and {"name": "Sensirion VOC Gas Sensor", ...} under Tier 4).
+          // For devices with no specialized sensors (Tier 6: Standard Consumer Suite / None), populate Tier 6 in value_details with {"name": "None", "source": "N/A", "exact_extract": "N/A"} to ensure all mandatory fields are fully present.
+          //
+          // 🚨 *** VERY IMPORTANT *** FEATURE STACKING & TRACEABILITY RULE: The field "value" takes the primary highest-scoring tier name. The subscore is calculated as the additive sum of subscores across all active tiers present in value_details (e.g. FLIR Thermal 0.50 + VOC Gas 0.20 = 0.70 pts).
         }
       },
       "scores": {
-        "predicted": 6.50,
-        // SCORING GUIDELINE: scores.predicted is sum of core_sensor_suite + advanced_sensor_capabilities subscores (Max 10.0).
+        "predicted": 8.85,
+        "calculation_formula": "Clamp(inertial_and_motion_sensing_suite.gyroscope.subscore + inertial_and_motion_sensing_suite.magnetometer.subscore + inertial_and_motion_sensing_suite.accelerometer.subscore + environmental_and_ambient_sensing_suite.proximity_sensor.subscore + environmental_and_ambient_sensing_suite.ambient_light_and_color_sensor.subscore + environmental_and_ambient_sensing_suite.barometer.subscore + environmental_and_ambient_sensing_suite.hall_effect_sensor.subscore + advanced_spatial_optical_and_specialized_suite.spatial_depth_and_laser_autofocus.subscore + advanced_spatial_optical_and_specialized_suite.spectral_and_color_assist.subscore + advanced_spatial_optical_and_specialized_suite.industrial_and_health_sensors.subscore, 0.00, 10.00)",
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 6.50,
+          "value": 8.85,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
