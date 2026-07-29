@@ -3994,26 +3994,80 @@ A dedicated local clamping step to 2.00 points is intentionally **NOT required o
 
 
 ### 🔹 7.7 NFC & Ultra-Wideband (UWB)
-*Description:* Evaluates short-range wireless connectivity technologies for contactless payments, data transfer, and precision spatial awareness. Near-Field Communication (NFC) enables tap-to-pay and device pairing, while UWB provides centimeter-level location accuracy for advanced use cases.
-*   **Measurement:** Hardware presence verification from manufacturer specifications.
-*   **Unit:** Feature Tier (0-10)
-*   **Significance:** Determines contactless payment capability, peer-to-peer sharing speed, and precision location tracking.
 
-**Why UWB matters:**
-UWB (Ultra-Wideband) uses Time-of-Flight radio pulses to achieve ~10cm positioning accuracy, approximately 100× more precise than Bluetooth LE (Low Energy). This enables:
-*   **Precision Finding:** Directional guidance to UWB item trackers (e.g., Apple AirTag, Samsung SmartTag+) with exact distance and bearing
-*   **Digital Car Keys:** Secure keyless entry with spatial awareness to prevent relay attacks
-*   **Enhanced File Sharing:** Directional AirDrop/Nearby Share (point-to-share)
-*   **Indoor Navigation:** Centimeter-accurate positioning where GPS is unavailable
+*Description:* Evaluates short-range wireless communication and precision spatial positioning hardware. Near-Field Communication (NFC) enables touchless mobile wallet payments, public transit ticketing, smart tag scanning, and device pairing. Ultra-Wideband (UWB) pulse radio provides centimeter-accurate spatial positioning, directional item finding, and secure hands-free automotive access.
+*   **Measurement:** Verification of physical NFC controller presence, UWB transceiver presence, and off-state power reserve card emulation from official manufacturer documentation and public specification sheets.
+*   **Unit:** Composite Score (0.00 to 10.00)
+*   **Significance:** Governs contactless payment authorization, transit pass-through speed, keyless vehicle access security against relay attacks, and directional tracking of lost items.
+*   **Cross-Section Non-Double-Scoring Boundaries:**
+    *   *Section 7.4 (Bluetooth & Audio Codecs):* Bluetooth Low Energy (BLE) transceivers and audio codecs are evaluated exclusively in **Section 7.4**. UWB is evaluated here strictly as a high-frequency pulse radio spatial positioning interface.
+    *   *Section 7.5 (Biometrics):* Biometric transaction authorization (Fingerprint / 3D Face ID payment authorization) is evaluated exclusively in **Section 7.5**. Section 7.7 evaluates strictly the short-range radio chip and secure credential hardware presence.
+    *   *Section 7.8 (Cross-Device Continuity Index):* High-level ecosystem file sharing software workflows (Quick Share, AirDrop) are evaluated in **Section 7.8**. Section 7.7 evaluates only the underlying hardware radio presence (NFC / UWB).
+    *   *Digital Wallet Software & Bank Support:* Operating system payment apps (Apple Wallet, Google Wallet, Samsung Wallet) and bank card issuer availability are software/financial services that are NOT scored here. Section 7.7 scores strictly physical hardware radio capability.
 
-| Score    | Configuration | Technical Capability                                      | Example Models           |
-| :------- | :------------ | :-------------------------------------------------------- | :----------------------- |
-| **10.0** | **NFC + UWB** | Contactless payments + centimeter-level spatial tracking  | iPhone 15 Pro, S24 Ultra |
-| **5.0**  | **NFC Only**  | Contactless payments + basic proximity detection          | Pixel 8, Galaxy A55      |
-| **0.0**  | **No NFC**    | No contactless payment capability                         | Budget (region-specific) |
+#### Terminology & Abbreviations
+*   **NFC (Near-Field Communication):** A short-range wireless technology operating at 13.56 Megahertz (MHz) over distances under 4 centimeters, enabling contactless payments and tag scanning.
+*   **UWB (Ultra-Wideband):** A high-frequency pulse radio technology operating between 3.1 and 10.6 Gigahertz (GHz) that measures signal Time-of-Flight (ToF) for centimeter-level spatial positioning.
+*   **ToF (Time-of-Flight):** A distance measurement method calculating the exact travel time of radio pulses moving at the speed of light between devices.
+*   **BLE (Bluetooth Low Energy):** A low-power Bluetooth standard used to initiate peer discovery and handshake before UWB high-precision ranging begins.
+*   **RSSI (Received Signal Strength Indicator):** An estimated measure of signal power level used by Bluetooth devices to approximate relative distance without directional heading.
+*   **SKU (Stock Keeping Unit):** A specific regional hardware configuration of a smartphone model.
 
-> [!NOTE]
-> **Differentiation Analysis:** As of 2024, approximately 94% of smartphones globally include NFC, making it a baseline feature rather than a differentiator. UWB remains exclusive to flagship devices (primarily Apple Pro models, Samsung Ultra/Fold series, and Google Pixel Pro), representing the primary scoring distinction in this category.
+#### Scoring Formula
+The final NFC & Ultra-Wideband score is calculated as the sum of the NFC capability subscore, the UWB spatial ranging subscore, and any applicable hardware feature premiums:
+
+`NFC & UWB Score = Clamp(NFC Capability Subscore + UWB Spatial Ranging Subscore + Depleted-Battery Power Reserve Premium, 0.00, 10.00)`
+
+The total score is bounded strictly between a minimum of **0.00** (no NFC and no UWB hardware) and a maximum of **10.00** (full NFC + UWB + off-state power reserve card emulation).
+
+#### 7.7.1 Part 1: NFC Hardware Capability Subscore (Max 6.00 points)
+Evaluates physical Near-Field Communication (NFC) hardware controller presence for touchless payments, transit cards, tag scanning, and device pairing.
+
+##### Why NFC Matters
+Near-Field Communication operates at 13.56 Megahertz (MHz) over distances under 4 centimeters, serving as a primary daily connectivity interface that enables:
+*   **Touchless Mobile Wallet Payments:** Tapping the phone at retail point-of-sale terminals via Apple Pay, Google Wallet, Samsung Wallet, or local banking apps.
+*   **Public Transit Pass-Through:** Instant contact-free turnstile access on subway and bus networks using digital transit passes.
+*   **Smart Tag Scanning & Device Pairing:** Reading physical RFID/NFC tags and initiating instant Bluetooth/Wi-Fi accessory pairing with a single tap.
+
+| Subscore | NFC Hardware Configuration | Engineering Verification & Public Spec Rule                                 |
+| :------: | :------------------------- | :-------------------------------------------------------------------------- |
+| **6.00** | **NFC Hardware Present**   | Official specs list NFC support ("Yes"). Enables mobile payments & transit. |
+| **0.00** | **No NFC Hardware**        | Official specs state NFC absent ("No" / omitted). Tap-to-pay unavailable.   |
+
+---
+
+#### 7.7.2 Part 2: UWB Spatial Ranging Subscore (Max 3.50 points)
+Evaluates Ultra-Wideband (UWB) pulse radio presence for high-precision spatial distance ranging, directional tag finding, and hands-free keyless access.
+
+##### Why UWB Matters
+Ultra-Wideband uses Time-of-Flight (ToF) radio pulses to achieve ~10cm positioning accuracy, approximately 100× more precise than Bluetooth Low Energy (BLE). This enables:
+*   **Precision Item Finding:** Directional compass guidance to lost item trackers (e.g., Apple AirTag, Samsung SmartTag+) with exact distance and 3D bearing vectors.
+*   **Digital Car & Smart Lock Keys:** Secure hands-free keyless entry with spatial distance awareness to prevent signal relay theft attacks.
+*   **Enhanced Point-to-Share File Transfer:** Directional device-pointing orientation for wireless peer-to-peer file sharing.
+*   **Indoor Navigation:** Centimeter-accurate positioning in indoor venues where satellite GPS signals are unavailable.
+
+| Subscore | UWB Hardware Configuration            | Engineering Verification & Public Spec Rule                                              |
+| :------: | :------------------------------------ | :--------------------------------------------------------------------------------------- |
+| **3.50** | **Dedicated UWB Transceiver Present** | Official specs confirm UWB presence. Enables ~10cm directional finding & keyless access. |
+| **0.00** | **No UWB Hardware**                   | Official specs omit UWB. Ranging limited to BLE RSSI (~1–3m approximation).              |
+
+---
+
+#### 7.7.3 Part 3: Depleted-Battery Power Reserve Premium (Additive, Max +0.50 point)
+Rewards hardware power routing that maintains micro-power to card emulation functions when the device battery is exhausted.
+
+##### Why Depleted-Battery Power Reserve Matters
+Solves a critical emergency pain point by allowing users to tap transit turnstile gates or unlock digital vehicle and home keys for up to 5 hours after the smartphone battery reaches 0% and shuts down the main operating system. Explicitly documented by manufacturers (e.g. Apple "Express Cards with Power Reserve", Samsung/Google offline digital key support).
+
+| Premium   | Hardware Feature Premium                   | Engineering Verification & Public Spec Rule                                          |
+| :-------: | :----------------------------------------- | :----------------------------------------------------------------------------------- |
+| **+0.50** | **Off-State Power Reserve Card Emulation** | Official docs confirm transit/key taps remain functional for 5 hrs after 0% battery. |
+
+---
+
+> [!IMPORTANT]
+> **Core Regional Hardware Rule:**
+> NFC presence MUST be evaluated per specific regional Stock Keeping Unit (SKU). Many mid-range and budget smartphones (e.g. Xiaomi Redmi Note series, Samsung Galaxy A series, Motorola Moto G series, Poco series) include NFC on European, North American, and East Asian SKUs, but omit NFC on Indian, Latin American, or Southeast Asian SKUs of the exact same model name. Database entries must reflect the physical spec of the target regional SKU being evaluated. If regional SKU documentation is incomplete, automated agents must execute the fallback hierarchy defined in [proposed_data_structure.md].
 
 
 ### 🔹 7.8 Connectivity & Cross-Device Continuity (CDC) Index
