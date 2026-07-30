@@ -4649,23 +4649,82 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "7_7_nfc_and_uwb": {
-      // SCORING GOAL: Evaluates short-range wireless connectivity technologies.
-      "configuration": {
-        "value": "Tier 1: NFC + UWB",
+      // SCORING GOAL: Evaluates short-range wireless communication (Near-Field Communication / NFC) and precision spatial positioning hardware (Ultra-Wideband / UWB). The overall score is calculated as the sum of physical NFC presence (Max 6.00 pts), dedicated UWB transceiver presence (Max 3.50 pts), and off-state power reserve card emulation (+0.50 pt), strictly clamped between 0.00 and 10.00 points.
+      "nfc_hardware_capability": {
+        "value": true,
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Identify the short-range wireless configuration. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: NFC + UWB" → 10.00
-        //     Definition: Near Field Communication (NFC) for payments AND Ultra-Wideband (UWB) for precise directional tracking and digital keys.
-        //   • "Tier 2: NFC Only"   → 5.00
-        //     Definition: Near Field Communication support only; no directional UWB tracking.
-        //   • "Tier 3: None"       → 0.00
-        //     Definition: No short-range wireless connectivity.
+        "subscore": 6.00
+        // SCORING GUIDELINE: Identify physical Near-Field Communication (NFC) hardware controller presence from official specification sheets or public specification repositories (GSMArena, PhoneArena).
+        //   • true  → 6.00 (Physical 13.56 MHz Near-Field Communication controller and antenna present. Enables touchless mobile wallet payments, public transit pass-through, smart tag scanning, and device pairing).
+        //   • false → 0.00 (Device completely omits physical Near-Field Communication radio hardware).
+        //   Specification Keywords (true): "NFC: Yes", "NFC: Supported", "NFC: Yes (market/region dependent)", "NFC", "Near Field Communication", "NFC-enabled".
+        //   Specification Keywords (false): "NFC: No", "NFC: Unsupported", "NFC: Absent", or omitted from connectivity specs.
+        //
+        // AMBIGUITY RESOLUTION & REGIONAL SKU LOGIC TREE (MANDATORY):
+        // Automated agents MUST resolve incomplete or regional NFC specifications using the following 3-step logic hierarchy:
+        //
+        // 1. Step 1: Regional Stock Keeping Unit (SKU) Resolution
+        //    NFC presence varies by region for certain mid-range and budget smartphone lines (e.g. Xiaomi Redmi Note, Samsung Galaxy A, Motorola Moto G, Poco, Realme series).
+        //    • Retrieve the target region and exact regional model alias (SKU code) from identity.target_region.value and identity.model_aliases.
+        //    • If official specification sheets list regional SKU variation (e.g., "Yes (market/region dependent)"):
+        //        - Automated agents MUST verify the official regional product page, regional datasheet, or regulatory filing (CE, FCC, TELEC) for that specific regional SKU model code (e.g., verifying whether the specific EU/US/East Asia model suffix features NFC vs. IN/LATAM/SEA model suffix).
+        //        - Set value: true (6.00 pts) ONLY if official documentation for that exact regional SKU model code explicitly confirms physical NFC hardware presence.
+        //        - Set value: false (0.00 pts) if official regional documentation confirms NFC absence or omits NFC for that specific regional SKU model code.
+        //        - If the exact regional SKU specification cannot be conclusively verified for the target region across 3+ sources, default to false (0.00 pts) as a conservative fail-safe to prevent unverified score inflation.
+        //
+        // 2. Step 2: Secondary Spec Verification (Omni-Scan Rule)
+        //    If a primary database (e.g., GSMArena) omits the NFC field, cross-reference at least two (2) secondary sources (official product spec page, regulatory filings, PhoneArena, DeviceSpecifications).
+        //    • If any verified source confirms physical NFC hardware present → Set value: true (6.00 pts).
+        //    • If all sources confirm NFC absence → Set value: false (0.00 pts).
+        //
+        // 3. Step 3: Quaternary Fail-Safe (Absolute Fallback)
+        //    If NFC presence cannot be verified after exhaustive search across 3+ sources:
+        //      • Default to false (0.00 pts) as a conservative fail-safe to prevent unverified score inflation.
+      },
+      "uwb_spatial_ranging": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 3.50
+        // SCORING GUIDELINE: Identify physical Ultra-Wideband (UWB) pulse radio hardware transceiver presence from official specs or the Hardware Reference List.
+        //   • true  → 3.50 (Physical high-frequency pulse radio transceiver present operating at 3.1–10.6 GHz, delivering ~10cm Time-of-Flight spatial distance positioning and 3D directional bearing).
+        //   • false → 0.00 (Device lacks UWB pulse radio silicon, specs state "UWB: No"/omit UWB, or device model is unlisted on the Reference List).
+        //   Specification Keywords (true): "UWB: Yes", "Ultra Wideband (UWB) support", "Ultra-Wideband", "Apple U1 chip", "Apple U2 chip", "NXP Trimension UWB", "Qorvo UWB".
+        //   Hardware Reference List (Comprehensive List of Verified UWB Devices across ALL Brands):
+        //       * Apple: iPhone 11, 11 Pro, 11 Pro Max, 12, 12 mini, 12 Pro, 12 Pro Max, 13, 13 mini, 13 Pro, 13 Pro Max, 14, 14 Plus, 14 Pro, 14 Pro Max, 15, 15 Plus, 15 Pro, 15 Pro Max, 16, 16 Plus, 16 Pro, 16 Pro Max, and subsequent main iPhone series (excluding SE series).
+        //       * Samsung: Galaxy Note 20 Ultra; Galaxy S21+, S21 Ultra, S22+, S22 Ultra, S23+, S23 Ultra, S24+, S24 Ultra, S25+, S25 Ultra; Galaxy Z Fold 2, Z Fold 3, Z Fold 4, Z Fold 5, Z Fold 6, and subsequent Z Fold series.
+        //       * Google: Pixel 6 Pro, Pixel 7 Pro, Pixel 8 Pro, Pixel 9 Pro, Pixel 9 Pro XL, Pixel 9 Pro Fold, and subsequent Pro/Fold Pixel series.
+        //       * Xiaomi: Xiaomi MIX 4, Xiaomi 13 Ultra, Xiaomi 14 Ultra, Xiaomi 15 Ultra, Xiaomi Fold 3, Fold 4.
+        //       * Vivo: Vivo X Fold 2, X Fold 3 Pro, X100 Pro, X100 Ultra, X200 Pro.
+        //       * Oppo / OnePlus: Oppo Find X5 Pro, Find X6 Pro, Find X7 Ultra, Find N3; OnePlus 12, OnePlus 13.
+        //       * Motorola: Moto Edge 50 Ultra, Moto Razr 50 Ultra / Razr+ (2024).
+        //       * Honor: Honor Magic 6 Ultimate, Magic 6 RSR, Magic V2 RSR, Magic V3.
+        //       * Meizu: Meizu 20 Pro, Meizu 20 Infinity, Meizu 21 Pro.
+      },
+      "depleted_battery_power_reserve": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.50
+        // SCORING GUIDELINE: Identify hardware micro-power routing that allows NFC card emulation, digital vehicle/home key unlocking, or offline device finding for up to 5 hours after primary OS shutdown due to 0% battery.
+        //   • true  → 0.50 (Official documentation confirms off-state micro-power reserve, or device is listed on the Power Reserve Hardware Reference List).
+        //   • false → 0.00 (Off-state power reserve is unconfirmed, unstated, or device model is unlisted on the Reference List).
+        //   Specification Keywords (true): "Express Cards with Power Reserve", "Reserve power for transit cards", "Offline Digital Key power reserve", "Powered Off Finding", "Off-state card emulation".
+        //   Hardware Reference List (Comprehensive List of Verified Power Reserve Devices across ALL Brands):
+        //       * Apple: All iPhones from iPhone XS/XR (2018) onward (iPhone XS, XS Max, XR, 11, 11 Pro, 11 Pro Max, 12, 12 mini, 12 Pro, 12 Pro Max, 13, 13 mini, 13 Pro, 13 Pro Max, 14, 14 Plus, 14 Pro, 14 Pro Max, 15, 15 Plus, 15 Pro, 15 Pro Max, 16, 16 Plus, 16 Pro, 16 Pro Max, SE 2nd Gen, SE 3rd Gen, and subsequent main iPhone series). Legacy iPhones (iPhone X, 8, 7, 6s) lack power reserve (0.00 pt).
+        //       * Samsung: Galaxy Note 20 Ultra; Galaxy S20 Ultra, S21+, S21 Ultra, S22+, S22 Ultra, S23+, S23 Ultra, S24+, S24 Ultra, S25+, S25 Ultra; Galaxy Z Fold 2, Z Fold 3, Z Fold 4, Z Fold 5, Z Fold 6, and subsequent Z Fold series.
+        //       * Google: Pixel 8, Pixel 8 Pro, Pixel 8a, Pixel 9, Pixel 9 Pro, Pixel 9 Pro XL, Pixel 9 Pro Fold, and subsequent Pro/Fold Pixel series.
+        //       * Xiaomi: Xiaomi MIX 4, Xiaomi 12 Pro, 13, 13 Pro, 13 Ultra, 14, 14 Pro, 14 Ultra, 15, 15 Pro, 15 Ultra, MIX Fold 2, Fold 3, Fold 4.
+        //       * Vivo: Vivo X Fold 2, X Fold 3 Pro, X90 Pro+, X100 Pro, X100 Ultra, X200 Pro.
+        //       * Oppo / OnePlus: Oppo Find X5 Pro, Find X6 Pro, Find X7 Ultra, Find N2, Find N3; OnePlus 11, OnePlus 12, OnePlus 13, OnePlus Open.
+        //       * Honor: Honor Magic 4 Pro, Magic 5 Pro, Magic 6 Pro, Magic 6 Ultimate, Magic V2, Magic V3.
+        //       * Huawei: Huawei Mate 30 Pro, Mate 40 Pro, Mate 50 Pro, Mate 60 Pro, Mate X3, Mate X5, P40 Pro, P50 Pro, Pura 70 Pro, Pura 70 Ultra.
+        //       * Motorola: Moto Edge 50 Ultra, Moto Razr 50 Ultra / Razr+ (2024).
       },
       "scores": {
         "predicted": 10.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits configuration.subscore.
+        "calculation_formula": "Clamp(nfc_hardware_capability.subscore + uwb_spatial_ranging.subscore + depleted_battery_power_reserve.subscore, 0.00, 10.00)",
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
