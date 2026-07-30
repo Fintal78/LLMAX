@@ -4069,19 +4069,123 @@ Solves a critical emergency pain point by allowing users to tap transit turnstil
 > NFC presence MUST be evaluated per specific regional Stock Keeping Unit (SKU). Many mid-range and budget smartphones (e.g. Xiaomi Redmi Note series, Samsung Galaxy A series, Motorola Moto G series, Poco series) include NFC on European, North American, and East Asian SKUs, but omit NFC on Indian, Latin American, or Southeast Asian SKUs of the exact same model name. Database entries must reflect the physical spec of the target regional SKU being evaluated. If regional SKU documentation is incomplete, automated agents must execute the fallback hierarchy defined in [proposed_data_structure.md].
 
 
-### 🔹 7.8 USB Port Speed
-*Description:* Wired transfer speed. Fast USB means you can copy 4K videos to a PC in seconds, or connect to a monitor.
-*   **Measurement:** Data transfer rate (Gbps).
-*   **Unit:** Version / Speed
-*   **Significance:** File transfer speed and video output capability.
+### 🔹 7.8 USB Port Speed & External Display Capabilities
 
-| Score    | Version / Speed            | Example Models           |
-| :------- | :--------------------------| :----------------------- |
-| **10.0** | **USB 3.2 Gen 2 (10Gbps)** | S24 Ultra, iPhone 15 Pro |
-| **8.0**  | **USB 3.1 / 3.0 (5Gbps)**  | Pixel 8                  |
-| **5.0**  | **USB 2.0 (480Mbps)**      | iPhone 14, Galaxy A55    |
-| **2.5**  | **Micro-USB**              | Legacy                   |
-| **0.0**  | **Proprietary/none**       | Obsolete                 |
+*Description:* Evaluates the smartphone's physical Universal Serial Bus (USB) interface, maximum wired data transfer protocol bandwidth, native external display output capability (DisplayPort Alternate Mode / DP Alt Mode), and native desktop operating system environment.
+*   **Hardware vs. Cable Scope:** This section evaluates the maximum hardware capability officially supported by the smartphone device itself, NOT the data transfer bandwidth or video output capability of the bundled inbox charging cable.
+*   **Measurement:** Verification of physical port connector type, USB protocol generation / transfer speed, DisplayPort Alternate Mode hardware support, and desktop software environment presence from official manufacturer technical specifications, developer documentation, hardware teardowns, and credibility-checked public spec repositories (e.g. GSMArena, PhoneArena, DeviceSpecifications, NotebookCheck).
+*   **Unit:** Composite Score (0.00 to 10.00)
+*   **Significance:** Governs local high-speed file transfer rates (backing up 4K/8K videos, RAW photo dumps, local system backups), direct high-bitrate video capture logging to external Solid-State Drives (SSDs), native external display output to monitors/TVs/projectors, and desktop windowed multitasking (Samsung DeX, Motorola Ready For).
+*   **Cross-Section Non-Double-Scoring Boundaries:** To preserve strict modularity and prevent double-counting across the database architecture:
+    *   *Section 8.2 (Wired Charging Speed & USB Power Delivery / USB-PD):* Charging wattage (e.g. 15W, 25W, 45W, 65W, 120W), charging protocol standards (USB Power Delivery / USB-PD 3.0/3.1, Programmable Power Supply / PPS, Qualcomm Quick Charge / QC, proprietary Dart/VOOC/HyperCharge), battery thermal limits, and charging times are evaluated strictly and exclusively in **Section 8.2**. Section 7.8 evaluates strictly **Wired Data Protocol Speed, Bus Bandwidth, Video Output (DisplayPort Alt Mode), and Desktop Mode Software**.
+    *   *Section 6.9 (Storage Speed - UFS / eMMC / NVMe):* The internal read/write performance of the smartphone's internal storage chip (e.g. Universal Flash Storage / UFS 4.0 vs Embedded MultiMediaCard / eMMC 5.1) is evaluated exclusively in **Section 6.9**. Section 7.8 evaluates strictly the **throughput capacity of the external USB port controller and interface bus protocol**.
+    *   *Section 2 (Display):* The internal smartphone display specifications (resolution, nits, panel technology, refresh rate) are evaluated exclusively in **Section 2**. Section 7.8 evaluates strictly the **external display output pipeline (DisplayPort Alternate Mode & Desktop Environment software integration)**.
+
+#### Terminology & Abbreviations
+
+##### 1. USB Protocols & Physical Interface Standards
+*   **USB (Universal Serial Bus):** An industry standard for cables, connectors, and protocols used for physical connection, communication, and power supply between computers and mobile devices.
+*   **USB-C / Type-C (Universal Serial Bus Type-C):** A 24-pin reversible physical plug connector standard supporting high-speed data, power delivery, and alternate video modes.
+*   **Micro-USB (Micro Universal Serial Bus):** A legacy physical connector (5-pin Micro-B or 10-pin Micro-B) used on older and budget mobile devices.
+*   **USB4:** The modern open USB protocol standard incorporating Thunderbolt specifications, supporting dynamic bandwidth sharing up to 40 Gbps.
+*   **TB (Thunderbolt):** High-bandwidth hardware interface technology developed by Intel and Apple (Thunderbolt 3/4 operating at 40 Gbps) supporting PCIe tunneling and dual 4K display output.
+
+##### 2. Display Output & Desktop Software Modes
+*   **DP Alt Mode (DisplayPort Alternate Mode):** A functional extension of USB Type-C that enables dedicated physical pins inside the cable and connector to carry native DisplayPort audio and video signals directly to external displays.
+*   **MHL (Mobile High-Definition Link):** A legacy High Definition video and audio interface over Micro-USB or early Type-C connectors requiring powered external active converter dongles.
+*   **DeX (Desktop eXperience):** Samsung's proprietary software interface that converts a smartphone's operating system into a desktop windowed workstation environment when connected to an external screen.
+
+##### 3. System Hardware & Storage Bus Standards
+*   **SSD (Solid-State Drive):** High-speed external flash storage media using Non-Volatile Memory Express (NVMe) or Serial Advanced Technology Attachment (SATA) interfaces.
+*   **PCIe (Peripheral Component Interconnect Express):** A high-speed interface standard for connecting computer peripherals directly to the processor bus.
+
+#### Composite Scoring Formula
+The final USB Port Speed & External Display Capabilities score is calculated as the sum of three independent technical subscores:
+
+`USB Port Speed & Display Score = Clamp(Part 1 Subscore + Part 2 Subscore + Part 3 Subscore, 0.00, 10.00)`
+
+Where:
+- **Part 1: USB Protocol & Interface Speed Subscore (Max 8.00 points / 80% Weight)**
+- **Part 2: Wired Display Output Subscore (Max 1.50 points / 15% Weight)**
+- **Part 3: Desktop Mode Software Environment Subscore (Max 0.50 points / 5% Weight)**
+
+The total available subscores sum to exactly **10.00 points**, bounded strictly between **0.00** (obsolete / charge-only port) and **10.00** (state-of-the-art 40 Gbps USB4/TB4 + DP Alt Mode + Native Windowed Desktop OS).
+
+#### Weight Allocation Rationale & Real-World Utility Analysis
+The weighting distribution among data transfer protocol bandwidth (Max 8.00 points), wired display output hardware (Max 1.50 points), and desktop software environments (Max 0.50 points) is calibrated against empirical user feedback, professional workflow demands, tech review emphasis, and forum discussions:
+
+*   **USB Protocol & Bus Bandwidth (Max 8.00 Points / 80% Weight) — Primary Daily Utility:**
+    *   *Real-World Application:* Directly dictates file transfer speeds for 4K/8K video backups, RAW photo libraries, and device backups to external storage or Personal Computers (PCs). For creative professionals, 10 Gbps (USB 3.2 Gen 2) throughput enables direct real-time 4K 60fps ProRes / RAW video logging to external NVMe SSDs without frame drops.
+    *   *Reviewer & User Consensus:* Tech publications (GSMArena, NotebookCheck, Android Authority, The Verge) and user forums overwhelmingly highlight USB port speed as a major daily pain point. Flagship devices locked internally to legacy USB 2.0 speeds (480 Mbps), such as the base Apple iPhone 15/16 or Samsung Galaxy A series, receive heavy criticism because transferring a 50 Gigabyte (GB) 4K video project over USB 2.0 takes over 22 minutes (throttled to ~38 MB/s), compared to under 50 seconds on a 10 Gbps USB 3.2 Gen 2 port (~1000 MB/s). This validates the 8.00 point allocation for data bus bandwidth.
+*   **Wired Display Output Hardware (Max 1.50 Points / 15% Weight) — Core Display Pipeline:**
+    *   *Real-World Application:* Hardware DisplayPort Alternate Mode allows users to connect their smartphone directly to external monitors, TVs, or projectors via a single USB-C cable for native wired video output, presentation projection, and lag-free media viewing.
+    *   *User Value:* Tech reviews and user feedback place primary emphasis on the fundamental presence of hardware video output capability (connecting a phone directly to a monitor or TV via USB-C). Whether the OS launches a specialized desktop interface is a secondary software feature. Awarding 1.50 points to native DP Alt Mode hardware reflects this core video output utility, evaluated independently of UI software implementation.
+*   **Desktop Mode Software Environment (Max 0.50 Points / 5% Weight) — Specialized Workstation Bonus:**
+    *   *Real-World Application:* Windowed desktop environments (Samsung DeX, Motorola Ready For, Huawei Desktop Mode, LG Screen+) transform the smartphone UI into a desktop PC layout with multi-window multitasking, desktop browser rendering, and taskbar navigation when connected to external displays.
+    *   *User Value:* While highly praised by power users, desktop UI modes represent a niche feature that rarely drives primary smartphone purchasing decisions. Allocating 0.50 points rewards this software engineering achievement without distorting the core hardware ranking of devices that feature native DP Alt Mode output (e.g. Apple iPhone Pro or Google Pixel).
+
+---
+
+#### 7.8.1 Part 1: USB Protocol & Interface Speed Subscore (Max 8.00 points)
+Evaluates physical port connector standards and hardware bus protocol data throughput ceilings across all smartphone generations.
+
+*   **Tier 1 — 8.00 pts (USB4 / USB 3.2 Gen 2x2 / Thunderbolt-compatible | 20–40 Gbps):** **State-of-the-Art USB Tier.** Supports the highest currently available USB bandwidth for smartphones (20–40 Gbps), enabling maximum speed external storage and display connectivity.
+*   **Tier 2 — 7.00 pts (USB 3.2 Gen 2 / USB 3.1 Gen 2 | 10 Gbps SuperSpeed+):** **Reference Flagship Standard.** Examples include selected flagship models (e.g. Apple iPhone 15 Pro / 16 Pro Max, Samsung Galaxy S24 Ultra, Asus ROG Phone 8 Pro, Sony Xperia 1 VI, Vivo X100 Ultra, Xiaomi 14 Ultra). Enables direct 4K 60fps ProRes / RAW SSD recording.
+*   **Tier 3 — 5.50 pts (USB 3.2 Gen 1 / USB 3.1 Gen 1 / USB 3.0 | 5 Gbps SuperSpeed):** **Standard Flagships & Mid-Range.** Examples include selected flagships and upper mid-range models (e.g. Google Pixel 8 Pro / 9 Pro, Samsung Galaxy S24 base, OnePlus 12, Motorola Edge 50 Pro) supporting USB 3.2 Gen 1 (5 Gbps). Fast media transfer without severe bus throttling.
+*   **Tier 4 — 4.50 pts (USB 3.0 10-pin Micro-B | 5 Gbps SuperSpeed):** **Legacy USB 3.0 Micro-B Devices.** Examples include legacy dual-plug models (e.g. Samsung Galaxy Note 3, Samsung Galaxy S5). High-speed USB 3.0 bus via 10-pin Micro-B connector (reduced score due to fragile 10-pin plug design and lack of cable ecosystem).
+*   **Tier 5 — 2.50 pts (USB 2.0 High Speed over USB Type-C | 480 Mbps):** **Mainstream Mid-Range & Base iPhones.** Examples include mainstream models (e.g. Apple iPhone 15 base / 16 base, Samsung Galaxy A55, Xiaomi Redmi Note 13 Pro, Poco X6 Pro). Reversible Type-C convenience for charging/syncing.
+*   **Tier 6 — 2.25 pts (USB 2.0 High Speed over Apple Lightning | 480 Mbps):** **Legacy Apple iPhones (2012–2022).** Examples include 8-pin Lightning models (e.g. Apple iPhone 14 Pro Max, iPhone 13, iPhone 12). Reversible 8-pin connector locked to USB 2.0 speed (minor penalty vs Type-C reflects connector ecosystem isolation rather than protocol bandwidth).
+*   **Tier 7 — 1.50 pts (USB 2.0 High Speed over 5-pin Micro-USB | 480 Mbps):** **Legacy Budget Androids (2016–2022).** Examples include legacy budget models (e.g. Samsung Galaxy J7, Xiaomi Redmi 9A, Motorola Moto G6 Play). Non-reversible plug, reduced connector durability, obsolete cable ecosystem (protocol speed is standard 480 Mbps).
+*   **Tier 8 — 0.00 pts (Micro-USB 1.1 / Charge-only pinout / Legacy 30-pin | < 12 Mbps / None):** **Obsolete Feature Phones & Legacy Devices.** Devices lacking standard USB data controller implementation or locked to charge-only lines.
+
+*Sub-formula:* `Part 1 Subscore = Assigned Protocol Tier Subscore` (Max 8.00 pts)
+
+---
+
+#### 7.8.2 Part 2: Wired Display Output Subscore (Max 1.50 points)
+Evaluates physical video output pipeline hardware over the USB port. Part 2 evaluates hardware presence of native video output capability only, independent of UI implementation or supported display resolution.
+
+*   **Tier 1 — 1.50 pts (Native DisplayPort Alternate Mode / Direct USB-C Video Output):** Native DisplayPort Alternate Mode (DP Alt Mode) over USB Type-C for direct native video output to external monitors, TVs, and projectors.
+*   **Tier 2 — 0.75 pts (Legacy Wired Display Output / MHL / SlimPort):** Legacy wired display technologies (Mobile High-Definition Link / SlimPort) over Micro-USB or early Type-C requiring dedicated active converter adapters and offering lower compatibility than DisplayPort Alt Mode (1080p limit).
+*   **Tier 3 — 0.00 pts (No Wired Video Output / Audio / Data / Charge Only):** Lacks DisplayPort multiplexing hardware. Video output unsupported over native USB cable. Requires wireless casting (Miracast/Chromecast) or DisplayLink active adapters.
+
+*Sub-formula:* `Part 2 Subscore = Assigned Display Tier Subscore` (Max 1.50 pts)
+
+---
+
+#### 7.8.3 Part 3: Desktop Mode Software Environment Subscore (Max 0.50 point)
+Evaluates native operating system software support for windowed desktop workstation environments when connected to external displays.
+
+*   **Tier 1 — 0.50 pt (Native Windowed Desktop OS Environment):** Native operating system desktop interface (Samsung DeX, Motorola Ready For, Huawei Desktop Mode, LG Screen+) featuring windowed multitasking, taskbar, desktop browser rendering, and desktop mouse/keyboard interface.
+*   **Tier 2 — 0.00 pt (No Native Desktop OS Mode):** Lacks native windowed desktop operating system mode (standard screen mirroring, casting interfaces, PC companion utilities like PC Connect, or media playback UI only).
+
+*Sub-formula:* `Part 3 Subscore = Assigned Desktop Tier Subscore` (Max 0.50 pt)
+
+---
+
+> [!NOTE]
+> **Specification Disambiguation & Firmware Qualification Guidelines:**
+> When evaluating smartphone USB technical specifications across manufacturer datasheets, software update notes, and public spec databases:
+> 
+> 1. **USB-IF Naming Equivalency Rule:** USB-IF protocol revisions are frequently renamed across datasheets. The following specifications are considered operationally equivalent in this scoring framework:
+>    * `USB 3.0` = `USB 3.1 Gen 1` = `USB 3.2 Gen 1` → **5 Gbps SuperSpeed**
+>    * `USB 3.1 Gen 2` = `USB 3.2 Gen 2` → **10 Gbps SuperSpeed+**
+> 
+> 2. **Firmware Baseline Policy:** Devices MUST be evaluated according to the latest official manufacturer firmware / operating system update supported by the model (e.g. Google Pixel 8 launched without DP Alt enabled, but gained hardware DP Alt support in the official Android 15 update, qualifying it for Part 2 Tier 1).
+> 
+> 3. **Acceptable DisplayPort Evidence Keywords:** Hardware DisplayPort Alternate Mode presence (Part 2 Tier 1) MUST be assigned if ANY official technical specification, user manual, developer documentation, or verified public testing explicitly confirms any of the following hardware video output terms:
+>    * `DisplayPort Alt Mode` / `DP Alt Mode` / `DisplayPort over Type-C` / `DisplayPort`
+>    * `USB-C Video Output` / `HDMI over USB-C` / `External Display Support` / `Display Out` / `Native wired video output over USB-C`
+>    *(Note: Official confirmation of wired desktop environments like wired Samsung DeX or wired Motorola Ready For / Smart Connect also confirms the underlying physical DP Alt Mode hardware pipeline).*
+>    If none of these terms are documented or confirmed via hardware testing, default to **Part 2 Tier 3: No Wired Video Output (0.00 pts)**.
+> 
+> 4. **Desktop Mode Windowed OS Qualification Rule:** Native windowed desktop OS environment (Part 3 Tier 1) requires a native operating system interface featuring windowed multitasking, desktop browser rendering, taskbar navigation, and desktop peripheral support (specifically `Samsung DeX`, `Motorola Ready For / Smart Connect`, `Huawei Desktop Mode / EMUI Desktop`, `Honor Desktop Mode / Magic Desktop`, `LG Screen+`, `Xiaomi Workstation Mode`, or `Android Native Developer Desktop Mode`). Standard screen mirroring, casting interfaces, PC companion file-transfer utilities (e.g. PC Connect, Easy Projection), and remote desktop applications do NOT qualify for Part 3 points.
+> 
+> 5. **Default Type-C Speed Rule:** If official specifications list "USB Type-C" or "USB 2.0 Type-C" without explicitly advertising "USB 3.0", "USB 3.1", "USB 3.2", "5Gbps", or "10Gbps", the device MUST be categorized under **Part 1 Tier 5: USB 2.0 High Speed over USB Type-C**.
+
+> 6. **Generic USB 3.x Disambiguation:** If specifications state "USB 3.0", "USB 3.1", "USB 3.2", or "USB 3.2 Gen 1" without specifying 10 Gbps: default to **Part 1 Tier 3: USB 3.2 Gen 1 / 5Gbps** on USB Type-C devices, or **Part 1 Tier 4: USB 3.0 10-pin Micro-B** on legacy 10-pin Micro-B devices. Assign **Part 1 Tier 2: USB 3.2 Gen 2 / 10Gbps** strictly when 10 Gbps or Gen 2 is explicitly documented in official product specifications or verified by hardware testing reviews.
+
+> 7. **Omitted Connector Fallback Rule:** If the USB protocol version is specified in official datasheet text but the physical connector type is omitted, determine the connector type from official device hardware specifications. If unavailable, classify using the physically documented connector on the retail device.
 
 
 ## 🟣 8. Battery & Charging

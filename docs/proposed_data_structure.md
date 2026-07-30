@@ -19,11 +19,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
 > [!NOTE]
 > ### 📜 Universal Data Source Verification Precedence Hierarchy
 > To guarantee complete score reproducibility, objectivity, and a standardized resolution protocol whenever technical data points conflict across public specification databases, all evaluators MUST adhere strictly to the following data verification precedence hierarchy across all scoring categories:
-> - **Priority 1 (Highest):** Manufacturer Official Technical Specifications & Product Landing Pages.
-> - **Priority 2:** Official Product Datasheets & Regulatory Filings (e.g. FCC, TENAA, CE certifications).
-> - **Priority 3:** Credibility-Checked Public Spec Repositories (GSMArena, PhoneArena, DeviceSpecifications, NotebookCheck).
-> - **Priority 4:** Verified Hardware Teardowns (iFixit, TechInsights).
-> - **Priority 5 (Lowest):** Hardware Diagnostic Applications (only if absence of a feature is independently confirmed).
+> - **Priority 1 (Highest):** Official Manufacturer Technical Specification Sheets & Product Landing Pages.
+> - **Priority 2:** Official Manufacturer User Manuals, Developer Documentation & Regulatory Filings (e.g. FCC, TENAA, CE certifications).
+> - **Priority 3:** Official Operating System / Firmware Release Notes (for software-enabled feature updates).
+> - **Priority 4:** Verified Hardware Teardowns & Professional Laboratory Testing Reviews (e.g. iFixit, TechInsights, GSMArena, NotebookCheck, AnandTech, Android Authority when tested).
+> - **Priority 5:** Structured Specification Databases (e.g. DeviceSpecifications, PhoneArena).
+> - **Priority 6 (Lowest):** Verified Community Testing (only if consistent across multiple independent sources).
 > *Governance Rule:* If data sources conflict, the specification provided by the highest-precedence source strictly governs and overrides lower-tier sources.
 
 ```json
