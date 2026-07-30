@@ -4734,61 +4734,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "7_8_connectivity_and_cdc_index": {
-      // SCORING GOAL: Evaluates seamless ecosystem connectivity features.
-      "fast_file_transfer": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        // Definition: High-speed peer-to-peer file sharing protocol over Wi-Fi/Bluetooth (e.g., Quick Share, AirDrop).
-      },
-      "cross_device_clipboard": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        // Definition: Unified clipboard allowing copy-paste across different devices logged into the same account.
-      },
-      "task_handoff": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        // Definition: Seamlessly resuming an active task (e.g., email draft, webpage) on a different device.
-      },
-      "communication_integration": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        // Definition: Ability to pick up phone calls or reply to SMS from other connected devices (tablet/laptop).
-      },
-      "camera_virtualization": {
-        "value": true,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 2.00
-        // SCORING GUIDELINE: If true, 2.00; false, 0.00.
-        // Definition: Using the smartphone's camera as a high-quality webcam for a connected tablet or laptop.
-      },
-      "scores": {
-        "predicted": 10.00,
-        // SCORING GUIDELINE: scores.predicted is sum of all subscores above (Max 10.0).
-        "final": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 10.00,
-          "method_used": "Predictor",
-          "booster": "No",
-          "confidence": "N/A"
-        }
-      }
-    },
-    "7_9_usb_port_speed": {
+    "7_8_usb_port_speed": {
       // SCORING GOAL: Evaluates wired transfer speed.
       "version_speed": {
         "value": "Tier 2: USB 3.2 Gen 2 (10Gbps)",

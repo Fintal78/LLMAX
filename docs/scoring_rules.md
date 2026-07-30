@@ -4002,7 +4002,6 @@ A dedicated local clamping step to 2.00 points is intentionally **NOT required o
 *   **Cross-Section Non-Double-Scoring Boundaries:**
     *   *Section 7.4 (Bluetooth & Audio Codecs):* Bluetooth Low Energy (BLE) transceivers and audio codecs are evaluated exclusively in **Section 7.4**. UWB is evaluated here strictly as a high-frequency pulse radio spatial positioning interface.
     *   *Section 7.5 (Biometrics):* Biometric transaction authorization (Fingerprint / 3D Face ID payment authorization) is evaluated exclusively in **Section 7.5**. Section 7.7 evaluates strictly the short-range radio chip and secure credential hardware presence.
-    *   *Section 7.8 (Cross-Device Continuity Index):* High-level ecosystem file sharing software workflows (Quick Share, AirDrop) are evaluated in **Section 7.8**. Section 7.7 evaluates only the underlying hardware radio presence (NFC / UWB).
     *   *Digital Wallet Software & Bank Support:* Operating system payment apps (Apple Wallet, Google Wallet, Samsung Wallet) and bank card issuer availability are software/financial services that are NOT scored here. Section 7.7 scores strictly physical hardware radio capability.
 
 #### Terminology & Abbreviations
@@ -4070,61 +4069,7 @@ Solves a critical emergency pain point by allowing users to tap transit turnstil
 > NFC presence MUST be evaluated per specific regional Stock Keeping Unit (SKU). Many mid-range and budget smartphones (e.g. Xiaomi Redmi Note series, Samsung Galaxy A series, Motorola Moto G series, Poco series) include NFC on European, North American, and East Asian SKUs, but omit NFC on Indian, Latin American, or Southeast Asian SKUs of the exact same model name. Database entries must reflect the physical spec of the target regional SKU being evaluated. If regional SKU documentation is incomplete, automated agents must execute the fallback hierarchy defined in [proposed_data_structure.md].
 
 
-### 🔹 7.8 Connectivity & Cross-Device Continuity (CDC) Index
-*Description:* Measures the practical, daily-use continuity capabilities that enable a smartphone to function as part of a larger computing ecosystem. Scoring prioritizes high-frequency "seamless" interactions over niche technical features.
-*   **Measurement:** Presence of verified, system-level continuity frameworks.
-*   **Unit:** Composite Score (0–10)
-*   **Significance:** Reduces friction when switching between devices (Phone <-> PC/Tablet) and leverages phone hardware for other systems.
-
-**Scoring Strategy:**
-Sum of 5 Key Ecosystem Pillars (2.0 points each). Max Score: 10.0.
-
-#### 1. Native Fast File Transfer (2.0 pts)
-*   **Why it matters:** Users repeatedly cite "air-dropping" photos/files as the #1 missing feature when leaving an ecosystem. It solves the frustration of emailing photos to oneself.
-*   **Neutral Definition:** A pre-installed system protocol that allows direct, high-speed, peer-to-peer file transfer to nearby devices without requiring internet, cables, or third-party app installation.
-*   **Verification (Exact Menu / Feature Name):**
-    *   **Apple:** AirDrop
-    *   **Android (Universal):** Quick Share
-    *   **Huawei:** Huawei Share
-
-#### 2. Cross-Device System Clipboard (2.0 pts)
-*   **Why it matters:** A massive productivity multiplier. Allows users to copy a 2FA code, URL, or image on their phone and instantly paste it into a document on their PC/Tablet.
-*   **Neutral Definition:** An OS-level service that synchronizes the system clipboard content (text/images) across signed-in devices in near real-time.
-*   **Verification (Exact Menu / Feature Name):**
-    *   **Apple:** Universal Clipboard (Standard feature, no toggle)
-    *   **Samsung:** "Continue apps on other devices" (Settings > Connected devices)
-    *   **Motorola:** "Smart Clipboard" (in Smart Connect)
-    *   **Honor:** "Shared Clipboard" (in Honor Connect)
-
-#### 3. Task Handoff & Session State (2.0 pts)
-*   **Why it matters:** Enables "flow" state. A user can start reading an article or drafting an email on their commute and instantly resume it on their desktop without searching for the tab.
-*   **Neutral Definition:** A system framework that broadcasts the current application state (URL, Draft Draft) to nearby devices, offering a "one-click resume" suggestion on the target device.
-*   **Verification (Exact Menu / Feature Name):**
-    *   **Apple:** Handoff (Settings > General > AirPlay & Handoff)
-    *   **Samsung:** "Continue apps on other devices" (Settings > Connected devices)
-    *   **Google:** "Recent tabs" (via Chromebook Phone Hub)
-    *   **Motorola:** "Cross control" (in Smart Connect)
-
-#### 4. Communication Integration (Calls/SMS) (2.0 pts)
-*   **Why it matters:** Allows users to stay focused on their work screen. They can answer phone calls and reply to SMS/OTP messages directly from their Laptop/Tablet without picking up the phone.
-*   **Neutral Definition:** Native capability to route cellular phone calls and SMS/RCS messages to a secondary device (Tablet/PC) via local network or cloud relay.
-*   **Verification (Exact Menu / Feature Name):**
-    *   **Apple:** "Calls on Other Devices" (Settings > Phone) & "Text Message Forwarding" (Settings > Messages)
-    *   **Samsung:** "Call & text on other devices" (Settings > Connected devices)
-    *   **Google:** "Call casting" (Settings > Google > Devices & sharing > Cross-device services)
-    *   **Motorola:** "Cross-device calling" (in Smart Connect)
-
-#### 5. Camera & Accessory Virtualization (2.0 pts)
-*   **Why it matters:** Leverages the superior hardware of the phone (Main Camera, Biometrics) to enhance other devices, replacing the need for dedicated peripherals like webcams.
-*   **Neutral Definition:** System capability to expose the phone's hardware peripherals (Camera, Microphone, Fingerprint) as virtual input devices for a connected PC or Tablet.
-*   **Verification (Exact Menu / Feature Name):**
-    *   **Apple:** Continuity Camera (Auto-detected on Mac)
-    *   **Android (Universal):** USB Webcam Mode (Android 14+)
-    *   **Samsung:** "Camera Sharing" (Settings > Connected devices)
-    *   **Motorola:** "Webcam" (in Smart Connect)
-
-
-### 🔹 7.9 USB Port Speed
+### 🔹 7.8 USB Port Speed
 *Description:* Wired transfer speed. Fast USB means you can copy 4K videos to a PC in seconds, or connect to a monitor.
 *   **Measurement:** Data transfer rate (Gbps).
 *   **Unit:** Version / Speed
