@@ -4161,32 +4161,6 @@ Evaluates native operating system software support for windowed desktop workstat
 
 *Sub-formula:* `Part 3 Subscore = Assigned Desktop Tier Subscore` (Max 0.50 pt)
 
----
-
-> [!NOTE]
-> **Specification Disambiguation & Firmware Qualification Guidelines:**
-> When evaluating smartphone USB technical specifications across manufacturer datasheets, software update notes, and public spec databases:
-> 
-> 1. **USB-IF Naming Equivalency Rule:** USB-IF protocol revisions are frequently renamed across datasheets. The following specifications are considered operationally equivalent in this scoring framework:
->    * `USB 3.0` = `USB 3.1 Gen 1` = `USB 3.2 Gen 1` → **5 Gbps SuperSpeed**
->    * `USB 3.1 Gen 2` = `USB 3.2 Gen 2` → **10 Gbps SuperSpeed+**
-> 
-> 2. **Firmware Baseline Policy:** Devices MUST be evaluated according to the latest official manufacturer firmware / operating system update supported by the model (e.g. Google Pixel 8 launched without DP Alt enabled, but gained hardware DP Alt support in the official Android 15 update, qualifying it for Part 2 Tier 1).
-> 
-> 3. **Acceptable DisplayPort Evidence Keywords:** Hardware DisplayPort Alternate Mode presence (Part 2 Tier 1) MUST be assigned if ANY official technical specification, user manual, developer documentation, or verified public testing explicitly confirms any of the following hardware video output terms:
->    * `DisplayPort Alt Mode` / `DP Alt Mode` / `DisplayPort over Type-C` / `DisplayPort`
->    * `USB-C Video Output` / `HDMI over USB-C` / `External Display Support` / `Display Out` / `Native wired video output over USB-C`
->    *(Note: Official confirmation of wired desktop environments like wired Samsung DeX or wired Motorola Ready For / Smart Connect also confirms the underlying physical DP Alt Mode hardware pipeline).*
->    If none of these terms are documented or confirmed via hardware testing, default to **Part 2 Tier 3: No Wired Video Output (0.00 pts)**.
-> 
-> 4. **Desktop Mode Windowed OS Qualification Rule:** Native windowed desktop OS environment (Part 3 Tier 1) requires a native operating system interface featuring windowed multitasking, desktop browser rendering, taskbar navigation, and desktop peripheral support (specifically `Samsung DeX`, `Motorola Ready For / Smart Connect`, `Huawei Desktop Mode / EMUI Desktop`, `Honor Desktop Mode / Magic Desktop`, `LG Screen+`, `Xiaomi Workstation Mode`, or `Android Native Developer Desktop Mode`). Standard screen mirroring, casting interfaces, PC companion file-transfer utilities (e.g. PC Connect, Easy Projection), and remote desktop applications do NOT qualify for Part 3 points.
-> 
-> 5. **Default Type-C Speed Rule:** If official specifications list "USB Type-C" or "USB 2.0 Type-C" without explicitly advertising "USB 3.0", "USB 3.1", "USB 3.2", "5Gbps", or "10Gbps", the device MUST be categorized under **Part 1 Tier 5: USB 2.0 High Speed over USB Type-C**.
-
-> 6. **Generic USB 3.x Disambiguation:** If specifications state "USB 3.0", "USB 3.1", "USB 3.2", or "USB 3.2 Gen 1" without specifying 10 Gbps: default to **Part 1 Tier 3: USB 3.2 Gen 1 / 5Gbps** on USB Type-C devices, or **Part 1 Tier 4: USB 3.0 10-pin Micro-B** on legacy 10-pin Micro-B devices. Assign **Part 1 Tier 2: USB 3.2 Gen 2 / 10Gbps** strictly when 10 Gbps or Gen 2 is explicitly documented in official product specifications or verified by hardware testing reviews.
-
-> 7. **Omitted Connector Fallback Rule:** If the USB protocol version is specified in official datasheet text but the physical connector type is omitted, determine the connector type from official device hardware specifications. If unavailable, classify using the physically documented connector on the retail device.
-
 
 ## 🟣 8. Battery & Charging
 

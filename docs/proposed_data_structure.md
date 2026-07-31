@@ -61,7 +61,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-07-28"
+    "last_updated": "2026-07-31"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -4735,28 +4735,186 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "7_8_usb_port_speed": {
-      // SCORING GOAL: Evaluates wired transfer speed.
-      "version_speed": {
-        "value": "Tier 2: USB 3.2 Gen 2 (10Gbps)",
+    "7_8_usb_port_speed_and_external_display_capabilities": {
+      // SCORING GOAL: Evaluates physical Universal Serial Bus (USB) port data transfer protocol speeds, native DisplayPort Alternate Mode (DP Alt Mode) wired video output capabilities, and native windowed desktop operating system (OS) software environments.
+      // SCOPE: Evaluates the maximum hardware capability supported by the smartphone device itself, NOT the bundled inbox cable.
+      //
+      "usb_protocol_and_interface_speed": {
+        "value": "Tier 2: USB 3.2 Gen 2 / USB 3.1 Gen 2 | 10 Gbps SuperSpeed+",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 9.00
-        // SCORING GUIDELINE: Identify the USB version and speed. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: USB 3.2 Gen 2x2 (20Gbps)" → 10.00
-        //     Definition: SuperSpeed USB 20Gbps.
-        //   • "Tier 2: USB 3.2 Gen 2 (10Gbps)"   → 9.00
-        //     Definition: SuperSpeed USB 10Gbps.
-        //   • "Tier 3: USB 3.2 Gen 1 (5Gbps)"    → 7.50
-        //     Definition: SuperSpeed USB 5Gbps (formerly USB 3.0/3.1 Gen 1).
-        //   • "Tier 4: USB 2.0 (480Mbps)"        → 2.00
-        //     Definition: High Speed USB 2.0.
-        //   • "Tier 5: Proprietary / Legacy"     → 0.00
-        //     Definition: Non-standard or obsolete physical/logical interface.
+        "subscore": 7.00
+        // SCORING GUIDELINE: Identify the physical USB protocol version and maximum data transfer bus bandwidth supported by the port controller. Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: USB4 / USB 3.2 Gen 2x2 / Thunderbolt-compatible | 20–40 Gbps"          → 8.00
+        //     - Definition: Physical port supporting 20 to 40 Gigabits per second (Gbps) data throughput via Universal Serial Bus 4 (USB4), Universal Serial Bus 3.2 Gen 2x2 (USB 3.2 Gen 2x2), or Thunderbolt 3/4 (TB3/TB4) over Universal Serial Bus Type-C (USB Type-C).
+        //     - Keywords: "USB4", "Thunderbolt 3", "Thunderbolt 4", "USB 3.2 Gen 2x2", "40Gbps", "20Gbps".
+        //   • "Tier 2: USB 3.2 Gen 2 / USB 3.1 Gen 2 | 10 Gbps SuperSpeed+"                   → 7.00
+        //     - Definition: Physical port supporting 10 Gbps SuperSpeed+ data throughput via USB 3.2 Gen 2 or USB 3.1 Gen 2 standards over USB Type-C.
+        //     - Specification Keywords: "USB 3.2 Gen 2", "USB 3.1 Gen 2", "10Gbps", "SuperSpeed+", "USB 3.2 Gen2", "USB 3.1 Gen2".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: iPhone 15 Pro, iPhone 15 Pro Max, iPhone 16 Pro, iPhone 16 Pro Max, and subsequent Pro/Pro Max iPhone series.
+        //         * Samsung: Galaxy S24 Ultra, Galaxy S25 Ultra, Galaxy Z Fold 5, Galaxy Z Fold 6, and subsequent Ultra/Z Fold flagship series.
+        //         * Asus: ROG Phone 8 Pro, ROG Phone 7 Ultimate.
+        //         * Sony: Xperia 1 VI, Xperia 1 V.
+        //         * Vivo: Vivo X100 Ultra, Vivo X200 Pro.
+        //         * Xiaomi: Xiaomi 14 Ultra, Xiaomi 15 Ultra.
+        //   • "Tier 3: USB 3.2 Gen 1 / USB 3.1 Gen 1 / USB 3.0 | 5 Gbps SuperSpeed"           → 5.50
+        //     - Definition: Physical port supporting 5 Gbps SuperSpeed data throughput via USB 3.2 Gen 1, USB 3.1 Gen 1, or USB 3.0 standards over USB Type-C.
+        //     - Specification Keywords: "USB 3.2 Gen 1", "USB 3.1 Gen 1", "USB 3.0", "5Gbps", "SuperSpeed", "USB 3.2 Gen1", "USB 3.1 Gen1", "USB 3.0 Type-C".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Google: Pixel 8, Pixel 8 Pro, Pixel 9, Pixel 9 Pro, Pixel 9 Pro XL, Pixel 9 Pro Fold, and subsequent Pro/Fold Pixel series.
+        //         * Samsung: Galaxy S24 base, Galaxy S24+, Galaxy S23, Galaxy S23+, Galaxy S22 series, Galaxy S21 series, Galaxy S20 series, Galaxy S10 series, Galaxy S9 series, Galaxy S8 series, Galaxy Note 20, Galaxy Note 10, Galaxy Note 9, Galaxy Note 8.
+        //         * OnePlus: OnePlus 12, OnePlus 11, OnePlus 10 Pro, OnePlus 9 Pro, OnePlus 8 Pro.
+        //         * Motorola: Edge 50 Pro, Edge 50 Ultra, ThinkPhone.
+        //   • "Tier 4: USB 3.0 10-pin Micro-B | 5 Gbps SuperSpeed"                            → 4.50
+        //     - Definition: Legacy 10-pin Micro Universal Serial Bus 3.0 (10-pin Micro-USB 3.0) physical connector supporting 5 Gbps SuperSpeed data throughput.
+        //     - Specification Keywords: "Micro-USB 3.0", "USB 3.0 Micro-B", "10-pin Micro-USB", "microUSB v3.0".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Samsung: Galaxy Note 3, Galaxy S5.
+        //   • "Tier 5: USB 2.0 High Speed over USB Type-C | 480 Mbps"                         → 2.50
+        //     - Definition: Reversible USB Type-C physical connector limited internally to Universal Serial Bus 2.0 (USB 2.0) High Speed protocol throughput (480 Megabits per second / Mbps).
+        //     - Specification Keywords: "USB 2.0 Type-C", "USB Type-C 2.0", "USB Type-C", "USB-C", "Type-C 2.0", "480Mbps".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: iPhone 15 base, iPhone 15 Plus, iPhone 16 base, iPhone 16 Plus, and subsequent base/Plus Type-C iPhones.
+        //         * Samsung: Galaxy A55, Galaxy A35, Galaxy A54, Galaxy A34, Galaxy A15, Galaxy M series, Galaxy F series.
+        //         * Xiaomi / Poco / Redmi: Redmi Note 13 Pro, Poco X6 Pro, Poco F6, Xiaomi 13 Lite.
+        //         * OnePlus: OnePlus Nord 3, Nord 4, OnePlus 12R.
+        //         * Nothing: Nothing Phone (1), Nothing Phone (2), Nothing Phone (2a).
+        //   • "Tier 6: USB 2.0 High Speed over Apple Lightning | 480 Mbps"                    → 2.25
+        //     - Definition: Legacy proprietary Apple 8-pin Lightning physical connector limited to USB 2.0 High Speed protocol throughput (480 Mbps).
+        //     - Specification Keywords: "Lightning", "8-pin Lightning", "Lightning connector", "USB 2.0 Lightning".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: All iPhones from iPhone 5 (2012) through iPhone 14 Pro Max (2022) (e.g., iPhone 14, 14 Plus, 14 Pro, 14 Pro Max, iPhone 13 series, iPhone 12 series, iPhone 11 series, iPhone XS/XR, iPhone X, iPhone 8, iPhone 7, iPhone 6s, iPhone 6, iPhone SE 1st/2nd/3rd Gen).
+        //   • "Tier 7: USB 2.0 High Speed over 5-pin Micro-USB | 480 Mbps"                    → 1.50
+        //     - Definition: Legacy non-reversible 5-pin Micro Universal Serial Bus (5-pin Micro-USB) physical connector supporting USB 2.0 High Speed protocol throughput (480 Mbps).
+        //     - Specification Keywords: "microUSB 2.0", "Micro-USB", "5-pin Micro-USB", "microUSB".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Samsung: Galaxy J7, Galaxy J5, Galaxy A10 (2019).
+        //         * Xiaomi: Redmi 9A, Redmi 9C, Redmi 7A.
+        //         * Motorola: Moto G6 Play, Moto E5.
+        //   • "Tier 8: Micro-USB 1.1 / Charge-only pinout / Legacy 30-pin | < 12 Mbps / None" → 0.00
+        //     - Definition: Obsolete physical connectors (Apple 30-pin, Micro-USB 1.1) supporting under 12 Mbps Full Speed data throughput, or connectors lacking data pin wiring (charge-only).
+        //     - Specification Keywords: "USB 1.1", "Apple 30-pin", "Charge-only", "No data transfer".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: iPhone 4s, iPhone 4, iPhone 3GS, iPhone 3G, original iPhone (30-pin dock connector).
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE FOR PROTOCOL & CONNECTOR (MANDATORY):
+        // Automated agents MUST execute the following 4-step logic hierarchy sequentially to categorize usb_protocol_and_interface_speed:
+        //
+        // 1. Step 1: Generic "USB 3.x" Specification Disambiguation
+        //    • If specs state "USB 3.0", "USB 3.1", "USB 3.2", or "USB 3.2 Gen 1" without explicitly advertising "10 Gbps", "Gen 2", or "10Gbps": Default to Tier 3 (5 Gbps) for USB Type-C, or Tier 4 for 10-pin Micro-B.
+        //    • Assign Tier 2 (10 Gbps) STRICTLY when "10 Gbps", "10Gbps", "USB 3.2 Gen 2", or "USB 3.1 Gen 2" is explicitly documented in official product specifications or verified by hardware review teardowns.
+        //
+        // 2. Step 2: Unstated Protocol / Generic "USB Type-C" Default Rule
+        //    • If official specifications list "USB Type-C", "USB-C", or "USB 2.0 Type-C" without explicitly advertising "USB 3.0", "USB 3.1", "USB 3.2", "5Gbps", "10Gbps", or "USB4": Default to Tier 5 (USB 2.0 over USB Type-C).
+        //
+        // 3. Step 3: Connector Type Identification & Fallback Hierarchy
+        //    If protocol version is specified in datasheet text but physical connector type is omitted:
+        //      • Determine connector type from official device hardware specifications.
+        //      • Apple iPhone released in 2023 or later (via identity.release_date.value) → USB Type-C.
+        //      • Apple iPhone released between 2012 and 2022 (via identity.release_date.value) → Apple 8-pin Lightning (Tier 6).
+        //      • Apple iPhone released before 2012 (via identity.release_date.value) → Apple 30-pin (Tier 8).
+        //      • Android / non-Apple devices released in 2021 or later (via identity.release_date.value) → USB Type-C.
+        //      • Android / non-Apple devices released between 2011 and 2020 (via identity.release_date.value) → Cross-reference official hardware specs for 5-pin Micro-USB (Tier 7) vs USB Type-C.
+        //      • Android / non-Apple devices released before 2011 (via identity.release_date.value) → Cross-reference official hardware specs for Micro-USB 1.1 / Charge-only (Tier 8) vs 5-pin Micro-USB 2.0 (Tier 7).
+        //
+        // 4. Step 4: Absolute Fail-Safe Fallback
+        //    If USB specifications are completely unstated and connector type cannot be physically verified across 3+ sources:
+        //      • Apple iPhone released in 2023 or later (via identity.release_date.value) → Default to Tier 5 (USB 2.0 over USB Type-C).
+        //      • Apple iPhone released between 2012 and 2022 (via identity.release_date.value) → Default to Tier 6 (USB 2.0 over Apple Lightning).
+        //      • Apple iPhone released before 2012 (via identity.release_date.value) → Default to Tier 8 (Apple 30-pin).
+        //      • Android / non-Apple devices released in 2021 or later (via identity.release_date.value) → Default to Tier 5 (USB 2.0 over USB Type-C).
+        //      • Android / non-Apple devices released between 2011 and 2020 (via identity.release_date.value) → Default to Tier 7 (USB 2.0 over 5-pin Micro-USB).
+        //      • Android / non-Apple devices released before 2011 or charge-only pinout (via identity.release_date.value) → Default to Tier 8 (Micro-USB 1.1 / Charge-only pinout).
+      },
+      "wired_display_output": {
+        "value": "Tier 1: Native DisplayPort Alternate Mode / Direct USB-C Video Output",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 1.50
+        // SCORING GUIDELINE: Identify the physical video output pipeline over the USB port. Part 2 evaluates hardware presence of native video output capability only, independent of UI software implementation. Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: Native DisplayPort Alternate Mode / Direct USB-C Video Output" → 1.50
+        //     - Definition: Dedicated physical multiplexing hardware enabling native DisplayPort Alternate Mode (DP Alt Mode) video signal output directly over USB Type-C to external displays.
+        //     - Specification Keywords & Evidence: "DisplayPort Alt Mode", "DP Alt Mode", "DisplayPort over Type-C", "DisplayPort", "USB-C Video Output", "HDMI over USB-C", "External Display Support", "Display Out", "Native wired video output over USB-C", or official confirmation of wired workstation environments (wired Samsung DeX, wired Motorola Ready For / Smart Connect, wired Huawei EMUI Desktop, wired Honor Magic Desktop, wired LG Screen+, wired Xiaomi Workstation Mode).
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: iPhone 15, iPhone 15 Plus, iPhone 15 Pro, iPhone 15 Pro Max, iPhone 16, iPhone 16 Plus, iPhone 16 Pro, iPhone 16 Pro Max, and all subsequent Type-C iPhones.
+        //         * Samsung: Galaxy S8, S8+, S9, S9+, S10, S10+, S10e, S20, S20+, S20 Ultra, S21, S21+, S21 Ultra, S22, S22+, S22 Ultra, S23, S23+, S23 Ultra, S24, S24+, S24 Ultra, S25, S25+, S25 Ultra; Galaxy Note 8, Note 9, Note 10, Note 10+, Note 20, Note 20 Ultra; Galaxy Z Fold 2, Z Fold 3, Z Fold 4, Z Fold 5, Z Fold 6 (excluding Z Flip series, which omit DP Alt Mode).
+        //         * Google: Pixel 8, Pixel 8 Pro, Pixel 8a, Pixel 9, Pixel 9 Pro, Pixel 9 Pro XL, Pixel 9 Pro Fold (enabled via official Android 15 firmware update).
+        //         * Motorola: Edge+, Edge 20 Pro, Edge 30 Pro, Edge 40 Pro, Edge 50 Pro, Edge 50 Ultra, ThinkPhone.
+        //         * OnePlus: OnePlus 7, 7 Pro, 7T, 7T Pro, 8, 8 Pro, 9, 9 Pro, 10 Pro, 11, 12, OnePlus Open.
+        //         * Asus: ROG Phone 2, 3, 5, 6, 7, 8; Zenfone 9, 10, 11 Ultra.
+        //         * Sony: Xperia 1 series (I through VI), Xperia 5 series (I through V).
+        //         * Huawei: Mate 10, 20, 30, 40, 50, 60 series; P20, P30, P40, P50, Pura 70 series.
+        //         * LG: LG G5, G6, G7, G8, V20, V30, V40, V50, V60, Velvet, Wing.
+        //   • "Tier 2: Legacy Wired Display Output / MHL / SlimPort"                     → 0.75
+        //     - Definition: Legacy wired video output technologies (Mobile High-Definition Link / MHL or SlimPort) operating over Micro-USB or early Type-C connectors requiring powered external active converter adapters.
+        //     - Specification Keywords & Evidence: "MHL", "Mobile High-Definition Link", "SlimPort", "MHL 2.0", "MHL 3.0", "MHL support".
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Samsung: Galaxy S3, S4, S5, Note 2, Note 3, Note 4.
+        //         * HTC: One M7, One M8, One M9.
+        //         * Sony: Xperia Z1, Z2, Z3, Z5.
+        //         * LG: Nexus 4, Nexus 5, LG G2, LG G3 (SlimPort).
+        //   • "Tier 3: No Wired Video Output / Audio / Data / Charge Only"                → 0.00
+        //     - Definition: Lacks physical DisplayPort multiplexing hardware. Video output over native USB cable is unsupported (requires wireless casting via Miracast / Chromecast or active DisplayLink USB graphics adapters).
+        //     - Specification Keywords & Evidence: "No video output", "DisplayPort: No", "DP Alt Mode: No", or omitted video output specs.
+        //     - Hardware Reference List (Devices matching this tier):
+        //         * Apple: All Lightning-connector iPhones (iPhone 14 Pro Max and older; Lightning-to-HDMI adapter uses AirPlay video decoding IC inside adapter, not native DP Alt Mode).
+        //         * Google: Pixel 1, Pixel 2, Pixel 3, Pixel 4, Pixel 5, Pixel 6, Pixel 7 series (disabled at hardware/kernel level prior to Pixel 8 / Android 15).
+        //         * Samsung: All Galaxy Z Flip series (Z Flip 1 through Z Flip 6 omit DP Alt Mode hardware), all Galaxy A series, Galaxy M series, Galaxy F series.
+        //         * Xiaomi / Poco / Redmi: Almost all Xiaomi standard/Pro models (e.g. Xiaomi 13, 14, Redmi Note series, Poco series omit DP Alt Mode; only selected Ultra models include it).
+        //
+        // AMBIGUITY RESOLUTION & FIRMWARE QUALIFICATION LOGIC TREE FOR DISPLAY OUTPUT (MANDATORY):
+        // Automated agents MUST resolve wired video output specifications using the following 3-step logic hierarchy:
+        //
+        // 1. Step 1: Firmware Baseline Policy
+        //    Evaluate devices according to the latest official manufacturer firmware or OS update supported by the model.
+        //    • Example (Google Pixel 8 Series): Google Pixel 8 launched with DP Alt Mode disabled in software, but Google officially enabled native DisplayPort Alternate Mode in the official Android 15 OS update. Therefore, Google Pixel 8, 8 Pro, 8a, 9, 9 Pro, 9 Pro XL, and 9 Pro Fold qualify for "Tier 1: Native DisplayPort Alternate Mode / Direct USB-C Video Output".
+        //
+        // 2. Step 2: Indirect Workstation Confirmation Rule
+        //    If technical specifications do not explicitly list "DP Alt Mode", but officially confirm a qualifying native wired desktop environment (wired Samsung DeX, wired Motorola Ready For / Smart Connect, wired Huawei EMUI Desktop, wired Honor Magic Desktop, wired LG Screen+, wired Xiaomi Workstation Mode), the device MUST be assigned to "Tier 1: Native DisplayPort Alternate Mode / Direct USB-C Video Output", because these desktop software environments physically require the underlying DisplayPort Alternate Mode hardware pipeline to function.
+        //
+        // 3. Step 3: Unstated Video Output Fallback Rule
+        //    If specifications make no mention of DisplayPort, DP Alt Mode, video output, MHL, or wired desktop modes:
+        //      • Cross-reference the device model against the Hardware Reference Lists above.
+        //      • If unlisted and specifications do not explicitly confirm video output capability: Default to "Tier 3: No Wired Video Output / Audio / Data / Charge Only".
+      },
+      "desktop_mode_software_environment": {
+        "value": "Tier 1: Native Windowed Desktop OS Environment",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.50
+        // SCORING GUIDELINE: Identify native operating system software support for windowed desktop workstation environments when connected to external displays. Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: Native Windowed Desktop OS Environment"  → 0.50
+        //     - Definition: Native operating system desktop interface featuring windowed multitasking, desktop browser rendering, taskbar navigation, and desktop mouse/keyboard interface when connected to an external display.
+        //     - Qualifying Software Interfaces:
+        //         * Samsung DeX (wired Samsung Desktop eXperience)
+        //         * Motorola Ready For / Motorola Smart Connect (wired windowed desktop mode)
+        //         * Huawei Desktop Mode / EMUI Desktop
+        //         * Honor Desktop Mode / Magic Desktop
+        //         * LG Screen+ (LG windowed desktop OS)
+        //         * Xiaomi Workstation Mode (on supported tablet/foldable/flagship OS)
+        //         * Android Native Developer Desktop Mode (when officially enabled in production OS)
+        //     - Specification Keywords & Evidence: "Samsung DeX", "DeX", "Ready For", "Smart Connect", "Desktop Mode", "EMUI Desktop", "Magic Desktop", "LG Screen+", "Workstation Mode".
+        //   • "Tier 2: No Native Desktop OS Mode"               → 0.00
+        //     - Definition: Lacks native windowed desktop operating system mode. Output is restricted to basic screen mirroring, media player casting, or PC companion utilities.
+        //     - Non-Qualifying Technologies for Tier 1 (Maps to Tier 2 with 0.00 pts): Standard screen mirroring, AirPlay, Chromecast, Miracast, PC companion file-transfer apps (e.g. Link to Windows, Phone Link, PC Connect, Easy Projection window on PC), remote desktop apps (TeamViewer, AnyDesk).
+        //     - Specification Keywords & Evidence: "Screen Mirroring", "No Desktop Mode", "Mirroring only".
+        //
+        // AMBIGUITY RESOLUTION & QUALIFICATION LOGIC TREE FOR DESKTOP MODE (MANDATORY):
+        // Automated agents MUST resolve desktop OS environment specifications using the following 2-step logic hierarchy:
+        //
+        // 1. Step 1: Strict Windowed OS Qualification Rule
+        //    To qualify for "Tier 1: Native Windowed Desktop OS Environment" (0.50 pt), the smartphone MUST run a native windowed desktop interface directly driven by the phone's operating system when connected to an external monitor via wire.
+        //    • Standard screen mirroring (which simply duplicates the portrait phone UI onto a TV or monitor) does NOT qualify.
+        //    • PC companion apps that display a phone window inside a Windows/Mac PC screen (e.g. Microsoft Link to Windows, Link to PC, Lenovo PC Connect) do NOT qualify for Part 3, as they rely on the host PC's operating system rather than generating a native external desktop environment from the phone.
+        //
+        // 2. Step 2: Unstated Desktop Mode Default Rule
+        //    If specifications or review notes do not explicitly confirm any of the above-mentioned qualifying native desktop software environments:
+        //      • Default to "Tier 2: No Native Desktop OS Mode" (0.00 pts).
       },
       "scores": {
         "predicted": 9.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits version_speed.subscore.
+        "calculation_formula": "Clamp(usb_protocol_and_interface_speed.subscore + wired_display_output.subscore + desktop_mode_software_environment.subscore, 0.00, 10.00)",
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 9.00,
