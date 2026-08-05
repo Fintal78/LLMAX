@@ -153,8 +153,13 @@
 *   `Battery_Predictor_Hours_Min` = 3.95 (Apple iPhone SE 1st Generation)
 *   `Battery_Predictor_Hours_Max` = 26.67 (Xiaomi 17 Pro Max)
 
-### 8.2 Wired Charging
-*   `Battery_Wired_Charging_W_Min` = 5 (Score 0), `Battery_Wired_Charging_W_Max` = 120 (Score 10)
+### 8.2 Wired Charging System
+*   `Battery_Wired_Charge_Time_Benchmark_Min_Mins` = 9.0 (Score 10.0 | GSMArena empirical benchmark minimum duration ceiling: 9.0 mins for 210W Redmi Note 12 Explorer)
+*   `Battery_Wired_Charge_Time_Benchmark_Max_Mins` = 241.0 (Score 0.0 | GSMArena empirical benchmark maximum duration floor: 4 hr 1 min for 5W Apple iPhone 7 Plus = 241.0 mins)
+*   `Battery_Wired_Charge_Time_Predicted_Min_Mins` = 9.46 (Score 10.0 | Analytical physics predictor minimum duration ceiling floor for 240W Realme GT3 = 9.467 mins under k=0.12, p=0.30, eta=0.45, T_hs=0.5; using 9.46 guarantees scores remain natively within [0.0, 10.0] without clamping)
+*   `Battery_Wired_Charge_Time_Predicted_Max_Mins` = 241.0 (Score 0.0 | Clamped 0.0 score floor aligned with Method A: Any full-charge duration exceeding 241.0 mins / 4 hours yields 0.0 points. Aligning this 0.0 score floor prevents extreme legacy 5W budget outliers like Nokia 2.4 from expanding the logarithmic denominator and creating artificial score bias against Method A)
+*   `Battery_Wired_Charge_Time_Interpolation_Min_Mins` = 9.23 (Score 10.0 | Exact mathematical average between Method A 9.00 mins and Method C 9.46 mins = 9.230 mins)
+*   `Battery_Wired_Charge_Time_Interpolation_Max_Mins` = 241.0 (Score 0.0 | Exact mathematical average between Method A 241.0 mins and Method C 241.0 mins = 241.0 mins)
 
 ### 8.3 Wireless Charging
 *   `Battery_Wireless_Charging_W_Min` = 7.5 (Score 0), `Battery_Wireless_Charging_W_Max` = 50 (Score 10)
