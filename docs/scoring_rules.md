@@ -4870,41 +4870,48 @@ Calculates the peak continuous charge rate relative to battery capacity (in reci
 *   `P_peak`: Peak rated wired charging wattage in Watts (W).
 *   *Example:* A 240 W charger on a 17.71 Wh battery produces a peak C-rate of `240 / 17.71 = 13.55 h^-1`.
 
-**Step 3: Battery Cell Architecture Multiplier (`F_arch`)**
+**Step 3: Battery Cell Architecture Multiplier (`eta_arch`)**
 Accounts for cell splitting in high-power charging arrays:
-*   `F_arch = 1.25`: **Dual-Cell Series Array** (2x individual cells in series/parallel with dual charge pumps).
-*   `F_arch = 1.00`: **Single-Cell Array** (1x unified battery cell).
+*   `eta_arch = 1.00`: **Dual-Cell Series Array** (Reference baseline state; 2x individual cells in series/parallel with dual charge pumps operating at maximum efficiency).
+*   `eta_arch = eta_arch_single`: **Single-Cell Array** (Baseline = `0.94`; 1x unified battery cell incurring higher relative internal resistive `I^2 * R` heat losses).
 
-*Empirical Calibration Rationale:* While dual-cell implementations vary across manufacturers (achieving between 15% and 30% speed gains depending on charge pump topology), **`F_arch = 1.25` is documented as an empirical calibration constant derived from GSMArena benchmark alignment** across historical dual-cell hardware implementations. Connecting two battery cells in a series array (2S) doubles the nominal system voltage from 3.85 V to 7.70 V. Because electrical power equals voltage multiplied by current (`P = V * I`), doubling the operating voltage allows the charging system to deliver the same target wattage at half the current per cell (`I_cell = P / (2 * V_cell)`). Under Joule's Law of electrical resistance heating (`P_loss = I^2 * R`), halving the current reduces internal thermal dissipation per cell by 75% (`(I/2)^2 * R = 0.25 * I^2 * R`), allowing the Power Management Integrated Circuit (PMIC) and Battery Management System (BMS) to sustain peak Constant Current (CC) fast-charging significantly longer before thermal throttling occurs.
+*Physical & Energy Conservation Rationale:* Dual-cell series arrays (2S) double the nominal system voltage from 3.85 V to 7.70 V. Because electrical power equals voltage multiplied by current (`P = V * I`), doubling the operating voltage allows the charging system to deliver the same target wattage at half the current per cell (`I_cell = P / (2 * V_cell)`). Under Joule's Law of electrical resistance heating (`P_loss = I^2 * R`), halving the current reduces internal thermal dissipation per cell by 75% (`(I/2)^2 * R = 0.25 * I^2 * R`), allowing the Power Management Integrated Circuit (PMIC) and Battery Management System (BMS) to sustain peak Constant Current (CC) fast-charging significantly longer before thermal throttling occurs. Single-cell batteries represent an efficiency loss (`eta_arch = 0.94 <= 1.0`) relative to the ideal dual-cell configuration.
 
-**Step 4: Protocol Conversion Efficiency Multiplier (`F_protocol`)**
+**Step 4: Protocol Conversion Efficiency Multiplier (`eta_protocol`)**
 Accounts for electrical conversion efficiency and thermal placement inside or outside the chassis:
-*   `F_protocol = 1.10`: **Proprietary Direct Charge / Switched Capacitor** (SuperVOOC, HyperCharge, FlashCharge direct drive at 10V/11V/20V with dual/triple charge pumps operating at ~97–98% efficiency inside chassis).
-*   `F_protocol = 1.05`: **USB Power Delivery PPS** (Programmable Power Supply high-efficiency standardized voltage negotiation operating at ~92–95% efficiency).
-*   `F_protocol = 0.95`: **Fixed USB Power Delivery / Quick Charge** (QC 2.0/3.0/4+, 9V/12V switching buck regulators generating moderate internal heat).
-*   `F_protocol = 0.85`: **Legacy 5V Standard** (5V/2A, 5V/1A basic buck or linear conversion with low relative efficiency).
+*   `eta_protocol = eta_proto_cp`: **Proprietary Direct Charge / Switched Capacitor** (Baseline = `0.98`; SuperVOOC, HyperCharge, FlashCharge direct drive operating at ~97–98% efficiency inside chassis).
+*   `eta_protocol = eta_proto_pps`: **USB Power Delivery PPS** (Baseline = `0.95`; Programmable Power Supply high-efficiency standardized 20mV voltage negotiation operating at ~92–95% efficiency).
+*   `eta_protocol = eta_proto_fpd`: **Fixed USB Power Delivery / Quick Charge** (Baseline = `0.91`; QC 2.0/3.0/4+, 9V/12V switching buck regulators generating moderate internal heat).
+*   `eta_protocol = eta_proto_5v`: **Legacy 5V Standard** (Baseline = `0.83`; 5V/2A, 5V/1A basic buck or linear conversion with low relative efficiency).
+*   `eta_protocol = eta_proto_app`: **Apple Legacy / PD** (Baseline = `0.88`; Apple PMIC thermal management profile).
 
-*Physics & Efficiency Hierarchy Justification:*
-Higher multipliers reflect superior energy conversion and lower internal heat generation inside the smartphone:
-1. **Direct Charge Pump (`1.10` vs `1.05`):** Switched capacitor pumps achieve 97%–98% efficiency without inductive losses, shifting heat dissipation out of the phone and into the wall brick to sustain peak speeds longer.
-2. **USB-PD PPS (`1.05` vs `0.95`):** Dynamic 20mV granular voltage tuning matches battery voltage directly, avoiding the heavy thermal losses of fixed 9V/12V buck conversion (`0.95`).
-3. **Fixed USB-PD / Quick Charge (`0.95` vs `0.85`):** Standard switching buck regulators outperform legacy 5V linear conversion (`0.85`), but internal heat forces earlier power tapering compared to PPS or direct charge pumps.
+*Physics & Energy Conservation Hierarchy:*
+All protocol multipliers are strictly `<= 1.0`, representing physical electrical conversion efficiencies relative to ideal direct power delivery:
+1. **Direct Charge Pump (`eta_proto_cp = 0.98`):** Switched capacitor pumps achieve 97%–98% efficiency without inductive losses, shifting heat dissipation out of the phone and into the wall brick to sustain peak speeds longer.
+2. **USB-PD PPS (`eta_proto_pps = 0.95`):** Dynamic 20mV granular voltage tuning matches battery voltage directly, avoiding the heavy thermal losses of fixed 9V/12V buck conversion (`0.91`).
+3. **Fixed USB-PD / Quick Charge (`eta_proto_fpd = 0.91`):** Standard switching buck regulators outperform legacy 5V linear conversion (`0.83`), but internal heat forces earlier power tapering compared to PPS or direct charge pumps.
 
 > [!NOTE]
-> **Calibration Transparency Note:**
-> `F_protocol` multipliers represent **empirical calibration constants derived from GSMArena benchmark alignment** across historical charging tiers, rather than manufacturer-published PMIC efficiency specs (which are rarely disclosed).
+> **Energy Conservation Note:**
+> Formulating `eta_protocol <= 1.0` and `eta_arch <= 1.0` ensures strict adherence to conservation of energy (`P_effective <= P_peak` everywhere). Protocol multipliers represent true physical power electronics conversion efficiencies.
 
-**Step 5: C-Rate Thermal Tapering Factor (`F_Crate`)**
+**Step 5: C-Rate Thermal Tapering Factor (`eta_thermal`)**
 Models the thermal saturation penalty imposed by extreme surge currents on the battery anode:
-`F_Crate = 1.0 / (1.0 + 0.12 * max(0, C_rate - 1.5)^0.30)`
+*   **Rational Decay Option:** `eta_thermal = 1.0 / (1.0 + k * max(0, C_rate - C_threshold)^p)`
+*   **Stretched Exponential Option:** `eta_thermal = exp(-k * max(0, C_rate - C_threshold)^p)`
 
-*Physics & Optimization Rationale:* Lithium-ion batteries cannot maintain high initial C-rates throughout the entire charging cycle. As battery state of charge increases, internal resistance rises and the Battery Management System (BMS) progressively tapers charging current to limit temperature, prevent lithium plating, and preserve long-term battery health. The coefficient (`0.12`) and exponent (`0.30`) were calibrated via non-linear regression against an empirical study of 40+ smartphones (detailed in the [Empirical Verification Table] below) spanning the full charging speed spectrum (from 5W legacy slow charging up to 240W ultra-fast direct charge). This formulation minimizes prediction variance across all charging tiers, tightly aligning analytical predictions with real-world benchmark measurements. For low charge rates (`C_rate <= 1.5`), thermal tapering is negligible and `F_Crate = 1.0000`.
+*   `C_threshold`: Thermal onset C-rate boundary (Baseline = `1.50 h^-1`).
+*   `k`: Thermal penalty coefficient (Baseline = `0.20`).
+*   `p`: Thermal exponent (Baseline = `0.45`).
+
+*Physics & Optimization Rationale:* Lithium-ion batteries cannot maintain high initial C-rates throughout the entire charging cycle. As battery state of charge increases, internal resistance rises and the Battery Management System (BMS) progressively tapers charging current to limit temperature, prevent lithium plating, and preserve long-term battery health. Stretched exponential decay `exp(-k * (C - C_0)^p)` models chemical transport kinetics and thermal avalanche effects smoothly, keeping `eta_thermal <= 1.0` at all times. For low charge rates (`C_rate <= C_threshold`), thermal tapering is negligible and `eta_thermal = 1.0000`.
 
 **Step 6: Average Effective Full-Cycle Power (`P_effective`)**
-Combines peak wattage, baseline Constant Current / Constant Voltage (CC/CV) curve ratio, cell architecture, protocol efficiency, and thermal tapering:
-`P_effective = P_peak * eff_eta * F_arch * F_protocol * F_Crate`
-*   **High-Power Fast Charging (`C_rate > 1.5 h^-1`):** `eff_eta = eta_base = 0.45` (45% average full-cycle efficiency across CC and CV phases under thermal tapering).
-*   **Low-Power Standard Charging (`C_rate <= 1.5 h^-1`):** `eff_eta = 0.45 + 0.32 * (1.5 - C_rate)` (smoothly scaling baseline efficiency up to ~85% for practical low-power smartphones; while `C_rate -> 0` yields a mathematical intercept of 93%, real-world physical smartphones operate at a minimum `C_rate ~= 0.25 h^-1` where `0.45 + 0.32 * 1.25 ~= 0.85`, bounded by unavoidable PMIC conversion losses, internal battery resistance, and CV trickle tailing).
+Combines peak wattage, theoretical maximum CC/CV power delivery ratio, cell architecture, protocol efficiency, and thermal tapering:
+`P_effective = P_peak * eff_eta_CCCV * eta_arch * eta_protocol * eta_thermal`
+
+*   **High-Power Fast Charging (`C_rate > C_threshold`):** `eff_eta_CCCV = eta_CCCV = 0.72` (Baseline = `0.72`; 72% theoretical maximum full-cycle CC/CV average power ratio for unthrottled battery hardware).
+*   **Low-Power Standard Charging (`C_rate <= C_threshold`):** `eff_eta_CCCV = eta_CCCV + s_low * (C_threshold - C_rate)` (Baseline parameters `eta_CCCV = 0.72`, `s_low = 0.15`, `C_threshold = 1.50`).
 
 **Step 7: Predicted Duration (`T_predicted`) & Speed Component (`S_speed`)**
 1. **Predicted Full Charge Duration (`T_predicted`):**
@@ -4919,70 +4926,17 @@ Combines peak wattage, baseline Constant Current / Constant Voltage (CC/CV) curv
 > **Method-Specific Normalization & Domain Floor Alignment Rationale:**
 > `Battery_Wired_Charge_Time_Predicted_Max_Mins` is explicitly aligned to **`241.0` minutes** (the standard 4-hour `0.0` score floor, matching Method A's benchmark floor `Battery_Wired_Charge_Time_Benchmark_Max_Mins`). In smartphone evaluation, any full-charge duration exceeding 4 hours (241.0 minutes) receives a `0.00` score floor. Aligning this 0.0 score floor prevents extreme legacy 5W budget outliers (e.g. Nokia 2.4, which takes >5 hours to charge a 4,500 mAh cell at 5W) from inflating Method C's max domain bound to 300+ minutes, which would expand the logarithmic denominator and create artificial score bias against Method A.
 
-##### Empirical Verification Table: Method A vs. Method C Across 44 Authentic Devices
-Below is the empirical alignment verification table evaluating 44 real-world smartphones across all charging tiers from 5W to 240W, comparing verified GSMArena laboratory benchmarks (Method A) against the analytical physics predictor (Method C) calibrated under Option 1 (Aligned 241.0-Minute Score Floor).
+##### Empirical Calibration & Optimization Study Reference
 
-| Device Model                 |  Power  | T_A (Bench) |  T_C (Pred) |  Score A  |  Score C  | dScore (A-C) |   dT (A-C)  | Source                                                                                 |
-| :--------------------------- | :-----: | :---------: | :---------: | :-------: | :-------: | :----------: | :---------: | :------------------------------------------------------------------------------------- |
-| **Realme GT3**               | 240.0 W | **  9.6 m** | **  9.5 m** | **10.00** | **10.00** |  **+0.00**   | ** +0.1 m** | [GSMArena Review](https://www.gsmarena.com/realme_gt3-review-2537p3.php)               |
-| **Redmi Note 12 Explorer**   | 210.0 W | **  9.0 m** | ** 10.0 m** | **10.00** | ** 9.82** |  **+0.18**   | ** -1.0 m** | [GSMArena Review](https://www.gsmarena.com/redmi_note_12_explorer-review-2501p3.php)   |
-| **iQOO 11 Pro**              | 200.0 W | ** 12.0 m** | ** 11.3 m** | ** 9.12** | ** 9.44** |  **-0.32**   | ** +0.7 m** | [GSMArena Review](https://www.gsmarena.com/iqoo_11_pro-review-2515p3.php)              |
-| **Motorola Edge 50 Pro**     | 125.0 W | ** 18.0 m** | ** 20.7 m** | ** 7.89** | ** 7.58** |  **+0.31**   | ** -2.7 m** | [GSMArena Review](https://www.gsmarena.com/motorola_edge_50_pro-review-2688p3.php)     |
-| **Xiaomi 13 Pro**            | 120.0 W | ** 19.0 m** | ** 18.4 m** | ** 7.73** | ** 7.94** |  **-0.21**   | ** +0.6 m** | [GSMArena Review](https://www.gsmarena.com/xiaomi_13_pro-review-2527p3.php)            |
-| **Xiaomi 12T Pro**           | 120.0 W | ** 19.0 m** | ** 19.0 m** | ** 7.73** | ** 7.84** |  **-0.11**   | ** -0.0 m** | [GSMArena Review](https://www.gsmarena.com/xiaomi_12t_pro-review-2486p3.php)           |
-| **Poco F4 GT**               | 120.0 W | ** 17.0 m** | ** 18.0 m** | ** 8.07** | ** 8.02** |  **+0.05**   | ** -1.0 m** | [GSMArena Review](https://www.gsmarena.com/poco_f4_gt-review-2419p3.php)               |
-| **Vivo X100 Pro**            | 100.0 W | ** 31.0 m** | ** 24.1 m** | ** 6.24** | ** 7.11** |  **-0.87**   | ** +6.9 m** | [GSMArena Review](https://www.gsmarena.com/vivo_x100_pro-review-2646p3.php)            |
-| **OnePlus 12**               | 100.0 W | ** 26.0 m** | ** 24.1 m** | ** 6.77** | ** 7.11** |  **-0.34**   | ** +1.9 m** | [GSMArena Review](https://www.gsmarena.com/oneplus_12-review-2658p3.php)               |
-| **OnePlus 11**               | 100.0 W | ** 25.0 m** | ** 22.5 m** | ** 6.89** | ** 7.33** |  **-0.44**   | ** +2.5 m** | [GSMArena Review](https://www.gsmarena.com/oneplus_11-review-2524p3.php)               |
-| **Xiaomi 14**                |  90.0 W | ** 35.0 m** | ** 28.6 m** | ** 5.87** | ** 6.58** |  **-0.71**   | ** +6.4 m** | [GSMArena Review](https://www.gsmarena.com/xiaomi_14-review-2675p3.php)                |
-| **Honor Magic 6 Pro**        |  80.0 W | ** 36.0 m** | ** 39.9 m** | ** 5.78** | ** 5.55** |  **+0.23**   | ** -3.9 m** | [GSMArena Review](https://www.gsmarena.com/honor_magic6_pro-review-2673p3.php)         |
-| **OnePlus 12R**              |  80.0 W | ** 32.0 m** | ** 37.5 m** | ** 6.14** | ** 5.75** |  **+0.39**   | ** -5.5 m** | [GSMArena Review](https://www.gsmarena.com/oneplus_12r-review-2662p3.php)              |
-| **Motorola Edge 40**         |  68.0 W | ** 44.0 m** | ** 37.1 m** | ** 5.17** | ** 5.78** |  **-0.61**   | ** +6.9 m** | [GSMArena Review](https://www.gsmarena.com/motorola_edge_40-review-2565p3.php)         |
-| **Xiaomi 13**                |  67.0 W | ** 42.0 m** | ** 38.4 m** | ** 5.31** | ** 5.67** |  **-0.36**   | ** +3.6 m** | [GSMArena Review](https://www.gsmarena.com/xiaomi_13-review-2525p3.php)                |
-| **Honor Magic 5 Pro**        |  66.0 W | ** 48.0 m** | ** 43.7 m** | ** 4.91** | ** 5.27** |  **-0.36**   | ** +4.3 m** | [GSMArena Review](https://www.gsmarena.com/honor_magic5_pro-review-2548p3.php)         |
-| **Asus ROG Phone 7**         |  65.0 W | ** 42.0 m** | ** 51.5 m** | ** 5.31** | ** 4.77** |  **+0.54**   | ** -9.5 m** | [GSMArena Review](https://www.gsmarena.com/asus_rog_phone_7-review-2550p3.php)         |
-| **Samsung Galaxy S24 Ultra** |  45.0 W | ** 59.0 m** | ** 61.0 m** | ** 4.28** | ** 4.24** |  **+0.04**   | ** -2.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2659p3.php) |
-| **Samsung Galaxy S23 Ultra** |  45.0 W | ** 59.0 m** | ** 61.0 m** | ** 4.28** | ** 4.24** |  **+0.04**   | ** -2.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s23_ultra-review-2526p3.php) |
-| **Samsung Galaxy S22 Ultra** |  45.0 W | ** 59.0 m** | ** 61.0 m** | ** 4.28** | ** 4.24** |  **+0.04**   | ** -2.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s22_ultra-review-2382p3.php) |
-| **Nothing Phone (2)**        |  45.0 W | ** 55.0 m** | ** 57.7 m** | ** 4.49** | ** 4.42** |  **+0.07**   | ** -2.7 m** | [GSMArena Review](https://www.gsmarena.com/nothing_phone_(2)-review-2586p3.php)        |
-| **Google Pixel 9 Pro XL**    |  37.0 W | ** 79.0 m** | ** 73.5 m** | ** 3.39** | ** 3.67** |  **-0.28**   | ** +5.5 m** | [GSMArena Review](https://www.gsmarena.com/google_pixel_9_pro_xl-review-2735p3.php)    |
-| **Google Pixel 8 Pro**       |  30.0 W | ** 81.0 m** | ** 86.6 m** | ** 3.32** | ** 3.16** |  **+0.16**   | ** -5.6 m** | [GSMArena Review](https://www.gsmarena.com/google_pixel_8_pro-review-2628p3.php)       |
-| **Apple iPhone 16 Pro Max**  |  30.0 W | **107.0 m** | ** 97.9 m** | ** 2.47** | ** 2.78** |  **-0.31**   | ** +9.1 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_16_pro_max-review-2748p3.php)  |
-| **Apple iPhone 14 Pro Max**  |  29.0 W | **112.0 m** | ** 94.3 m** | ** 2.33** | ** 2.90** |  **-0.57**   | **+17.7 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_14_pro_max-review-2479p3.php)  |
-| **Apple iPhone 15 Pro Max**  |  27.0 W | **109.0 m** | **101.5 m** | ** 2.41** | ** 2.67** |  **-0.26**   | ** +7.5 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_15_pro_max-review-2618p3.php)  |
-| **Apple iPhone 13 Pro Max**  |  27.0 W | **106.0 m** | **100.4 m** | ** 2.50** | ** 2.71** |  **-0.21**   | ** +5.6 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_13_pro_max-review-2317p3.php)  |
-| **Samsung Galaxy S24**       |  25.0 W | ** 75.0 m** | ** 83.7 m** | ** 3.55** | ** 3.27** |  **+0.28**   | ** -8.7 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s24-review-2661p3.php)       |
-| **Samsung Galaxy S23**       |  25.0 W | ** 72.0 m** | ** 82.1 m** | ** 3.67** | ** 3.33** |  **+0.34**   | **-10.1 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s23-review-2523p3.php)       |
-| **Samsung Galaxy A55**       |  25.0 W | ** 85.0 m** | ** 86.0 m** | ** 3.17** | ** 3.18** |  **-0.01**   | ** -1.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_a55-review-2679p3.php)       |
-| **Samsung Galaxy A54**       |  25.0 W | ** 82.0 m** | ** 86.0 m** | ** 3.28** | ** 3.18** |  **+0.10**   | ** -4.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_a54-review-2544p3.php)       |
-| **Samsung Galaxy A34**       |  25.0 W | ** 84.0 m** | ** 86.0 m** | ** 3.21** | ** 3.18** |  **+0.03**   | ** -2.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_a34-review-2545p3.php)       |
-| **Google Pixel 7 Pro**       |  23.0 W | **109.0 m** | ** 87.8 m** | ** 2.41** | ** 3.12** |  **-0.71**   | **+21.2 m** | [GSMArena Review](https://www.gsmarena.com/google_pixel_7_pro-review-2484p3.php)       |
-| **Apple iPhone 11 Pro Max**  |  18.0 W | **120.0 m** | **105.2 m** | ** 2.12** | ** 2.56** |  **-0.44**   | **+14.8 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_11_pro_max-review-1991p3.php)  |
-| **LG G7 ThinQ**              |  18.0 W | **108.0 m** | ** 95.2 m** | ** 2.44** | ** 2.87** |  **-0.43**   | **+12.8 m** | [GSMArena Review](https://www.gsmarena.com/lg_g7_thinq-review-1763p3.php)              |
-| **Apple iPhone XS Max**      |  15.0 W | **131.0 m** | **103.9 m** | ** 1.85** | ** 2.60** |  **-0.75**   | **+27.1 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_xs_max-review-1823p3.php)      |
-| **Apple iPhone X**           |  15.0 W | **125.0 m** | **101.4 m** | ** 2.00** | ** 2.67** |  **-0.67**   | **+23.6 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_x-review-1681p3.php)           |
-| **Samsung Galaxy S10**       |  15.0 W | **108.0 m** | ** 98.3 m** | ** 2.44** | ** 2.77** |  **-0.33**   | ** +9.7 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s10-review-1902p3.php)       |
-| **Samsung Galaxy S9**        |  15.0 W | **107.0 m** | ** 95.0 m** | ** 2.47** | ** 2.87** |  **-0.40**   | **+12.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s9-review-1734p3.php)        |
-| **Samsung Galaxy S8**        |  15.0 W | **100.0 m** | ** 95.0 m** | ** 2.68** | ** 2.87** |  **-0.19**   | ** +5.0 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_s8-review-1603p3.php)        |
-| **Apple iPhone 8**           |  5.0 W  | **148.0 m** | **141.5 m** | ** 1.48** | ** 1.64** |  **-0.16**   | ** +6.5 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_8-review-1667p3.php)           |
-| **Apple iPhone 7 Plus**      |  5.0 W  | **241.0 m** | **200.9 m** | ** 0.00** | ** 0.56** |  **-0.56**   | **+40.1 m** | [GSMArena Review](https://www.gsmarena.com/apple_iphone_7_plus-review-1502p3.php)      |
-| **Nokia 2.4**                |  5.0 W  | **215.0 m** | **292.5 m** | ** 0.35** | ** 0.00** |  **+0.35**   | **-77.5 m** | [GSMArena Review](https://www.gsmarena.com/nokia_2_4-review-2187p3.php)                |
-| **Samsung Galaxy A03 Core**  |  7.7 W  | **205.0 m** | **220.5 m** | ** 0.49** | ** 0.27** |  **+0.22**   | **-15.5 m** | [GSMArena Review](https://www.gsmarena.com/samsung_galaxy_a03_core-review-2371p3.php)  |
-> [!IMPORTANT]
-> **Overall Systematic Bias & Accuracy Summary:**
+A comprehensive mathematical calibration and loss function optimization study evaluating Method C across 44 authentic smartphone benchmarks from GSMArena laboratory data is documented in [section_8_2_method_c_mse_huber_optimization_study.md].
+
+> [!NOTE]
+> **Rationale for Retaining the Baseline Analytical Model:**
+> While numerical optimization (evaluating Mean Squared Error — MSE, Mean Absolute Error — MAE, and Huber loss formulations) was conducted across the 44-device benchmark dataset, none of the unconstrained "optimized" parameter sets were deployed in this framework for the following reasons:
+> 1. **Physical Soundness & Parameter Uncertainty:** Pure mathematical optimization across 44 devices yields parameters that lack physical realism—including inverted efficiency hierarchies across charging protocols (Parameters 5 to 9) and artificially low thermal onset thresholds (`C_threshold << 1.50 h^-1`).
+> 2. **Unmodeled Physical Factors:** Mathematical optimizers allowed electrical efficiency constants to shift unnaturally to compensate for unmodeled device-specific hardware behaviors (such as firmware-level thermal throttling limits and chassis thermodynamic heat dissipation). Empirical outlier analysis confirms that certain devices (such as the LG G7 ThinQ, exhibiting a duration delta of approximately 20.1 minutes) implement conservative firmware-enforced thermal throttling algorithms that aggressively reduce charging wattage (dropping from 18W down to ~5–7W once internal battery temperatures reach threshold limits around 38°C) to keep heat dissipation within safe cell limits.
 > 
-> ##### 1. Summary Metrics Comparison
-> | Metric                                               | Full Dataset (44 Smartphones) | Excluding Nokia 2.4 (43 Smartphones) | Excluding Nokia 2.4 & A03 Core (42 Smartphones) |
-> | :--------------------------------------------------- | :---------------------------: | :----------------------------------: | :----------------------------------------------: |
-> | **Mean Duration Difference (`T_A - T_C`)**           |      **`+2.16` minutes**      |          **`+4.01` minutes**          |               **`+4.47` minutes**                |
-> | **Mean Absolute Duration Error (`\|T_A - T_C\|`)**   |      **`9.29` minutes**      |           **`7.71` minutes**          |               **`7.52` minutes**                 |
-> | **Mean Score Difference (`S_A - S_C`)**              |      **`-0.164` points**      |          **`-0.176` points**          |              **`-0.186` points**                 |
-> | **Mean Absolute Score Difference (`\|S_A - S_C\|`)** |      **`0.318` points**       |           **`0.317` points**          |               **`0.320` points**                 |
-> 
-> ##### 2. Outlier Justification & Technical Explanation
-> *   **Nokia 2.4 Physical Duration Skew:** Nokia 2.4 combines a large 4,500 mAh battery with a minimal 5W (5V/1A) charger, producing a physical predicted duration `T_C = 292.5` minutes (`4.88` hours) vs. GSMArena benchmark `T_A = 215.0` minutes (a single-device duration delta of **`-77.5` minutes**).
-> *   **Samsung Galaxy A03 Core Finetuned Accuracy:** Under the low-power efficiency scaling (`eff_eta = 0.45 + 0.32 * (1.5 - C_rate)`), Samsung Galaxy A03 Core (5,000 mAh battery with 7.7W charging) produces `T_C = 220.5` minutes vs. GSMArena benchmark `T_A = 205.0` minutes (a single-device duration delta of only **`-15.5` minutes**, yielding an 81% reduction in prediction error).
-> *   **Score Floor Protection:** In Method C scoring, any predicted duration `T_C >= 241.0` minutes is clamped to the score floor of `241.0` minutes (receiving Score `0.00`). Because Nokia 2.4 receives Method C Score `0.00` (Method A Score `0.35`), these extreme physical duration tails are trimmed by the `T_max = 241.0` minute score floor and do **not** distort the score framework.
+> Consequently, the baseline analytical physical model (with sound, descending efficiency hierarchies and physical thermal onset threshold) is retained. Future framework iterations will revisit empirical parameter optimization once a substantially larger database of benchmark devices is gathered and model improvements are implemented, among which eventually the integration of thermodynamic cooling metrics from **Section 6.10 (Thermal Dissipation & Stability Index — TDSI)** into the charging kinetics.
 
 
 #### 8.2.2 Ecosystem Interoperability & Advanced Hardware Features
