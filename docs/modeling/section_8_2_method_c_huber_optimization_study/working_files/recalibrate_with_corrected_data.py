@@ -1,3 +1,20 @@
+"""
+Section 8.2 Method C Parameter Calibration & Optimization Study
+---------------------------------------------------------------
+Data Integrity & Hardware Verification Protocol:
+1. Strict 4-Tier Evidence Hierarchy for Maximum Input Power (P_peak):
+   - Tier 1: Measured DC/AC input power from laboratory meters (ChargerLAB / Notebookcheck).
+   - Tier 2: Manufacturer-published official accepted phone input wattage.
+   - Tier 3: Documented charging mode capabilities.
+   - Tier 4: Inferred from bundled wall charger rating (strictly avoided if phone input differs).
+
+2. Cell Architecture Verification Protocol (1S vs 2S):
+   - Cell architecture is verified via teardowns and official hardware specs.
+   - Dual-cell series (2S) battery packs operating at 7.70V nominal reduce per-cell electrical
+     current and internal resistive heating (I^2 * R) by 75%, pushing thermal onset boundary C0_dual to 2.66 h^-1.
+   - Motorola Edge 50 Pro (125W), OnePlus 12R (80W), and Asus ROG Phone 7 (65W) are verified 2S dual-cell series implementations.
+"""
+
 import os
 import re
 import numpy as np
