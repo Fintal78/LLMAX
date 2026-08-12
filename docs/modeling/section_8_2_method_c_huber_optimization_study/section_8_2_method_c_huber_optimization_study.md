@@ -22,10 +22,10 @@ Method C predicts full 0% to 100% charging duration `T_predicted` (minutes) by c
 *   `C_rate = P_peak / E_supply` (h^-1): Continuous charging current rate normalized by stored energy.
 *   `eta_low`: Baseline low-power full-cycle utilization fraction.
 *   `C0_base`: Architecture-dependent baseline thermal saturation onset threshold. This parameter is where the fundamental difference between Single-Cell and Dual-Cell architectures is mathematically enforced:
-    *   **Single-Cell:** Lower threshold. The entire charging wattage is pushed at a standard voltage, meaning current intensity (Amperes) is very high. This generates massive `I^2 * R` Joule heating within the single cell and forces early thermal power tapering.
-    *   **Dual-Cell:** A physically split 2S architecture doubles the system voltage (e.g., 7.7V nominal instead of 3.85V). Because `Power = Voltage * Current`, doubling the voltage means the required current is exactly halved (`I_dual = 0.5 * I_single`) for the same charging wattage:
-        - **At the Battery Cell Level:** Connecting two cells in series doubles nominal voltage and halves current (`I_dual = 0.5 * I_single`). For a series pack resistance of `2R` (two cells of resistance `R`), cell Joule heating is `Heat_battery = (0.5 * I)^2 * (2R) = 0.25 * I^2 * 2R = 0.50 * (I^2 * R)`, yielding a **50% reduction** in battery cell internal heat generation.
-        - **At the Motherboard & PCB Trace Level:** Motherboard copper traces and connector ribbons have a fixed resistance (`R_trace`). Halving the current reduces PCB trace Joule heating to `Heat_trace = (0.5 * I)^2 * R_trace = 0.25 * (I^2 * R_trace)`, yielding an exact **75% reduction** in motherboard heat generation. Furthermore, it enables high-efficiency (~97%) 2:1 charge pumps. This combined reduction in thermal generation allows dual-cell devices to sustain much higher charge rates before reaching thermal saturation, as reflected in the higher `C0_base` threshold.
+    *   **Single-Cell:** Lower threshold. The entire charging wattage is pushed at a standard nominal voltage, meaning current intensity (Amperes) is very high. This generates high `I^2 * R` Joule heating along Printed Circuit Board traces and forces early thermal power tapering.
+    *   **Dual-Cell:** A physically split 2S (2-Cell Series) architecture doubles nominal system voltage (7.70V vs 3.85V). Because Power = Voltage * Current (`P = V * I`), doubling the voltage means electrical current is exactly halved (`I_dual = 0.5 * I_single`) for identical charging power:
+        - **At the Battery Cell Level:** For a given total battery capacity (Milliampere-hours), splitting the pack into two equal series cells halves the physical electrode surface area of each individual cell. Because battery internal resistance is inversely proportional to electrode surface area and capacity, each half-capacity cell has twice the internal resistance (`2R` per cell) of an equivalent single cell of full capacity (`R`). Connecting these two cells in series sums their internal resistances to `4R` (`2R + 2R`). Cell Joule heating is `Heat_battery = (0.5 * I)^2 * (4R) = 0.25 * I^2 * 4R = I^2 * R`, yielding **0% reduction** (identical heat generation) in battery cell internal heat generation.
+        - **At the Motherboard & Printed Circuit Board Trace Level:** Printed Circuit Board copper traces, connector ribbons, and Power Management Integrated Circuits have fixed resistance (`R_trace`). Halving the current reduces trace Joule heating to `Heat_trace = (0.5 * I)^2 * R_trace = 0.25 * (I^2 * R_trace)`, yielding an exact **75% reduction** (ratio of 1/4) in motherboard trace heat generation. Furthermore, it enables high-efficiency (~97%) 2:1 charge pumps. Because motherboard trace heating is the primary thermal bottleneck in high-power charging, this 75% trace heat reduction allows dual-cell devices to sustain much higher charge rates before reaching thermal saturation, as reflected in the higher `C0_base` threshold (`C0_dual` >> `C0_single`).
 *   `C0_effective`: Thermally scaled effective onset threshold (`C0_effective = C0_base * f_thermal(power_ratio) * f_skin_headroom(T_limit)`).
 *   `k`: Non-linear thermal taper severity multiplier.
 *   `p`: Power saturation curvature exponent.
@@ -48,7 +48,7 @@ Method C couples directly to Section 6.10's physical chassis cooling metrics via
 *   **Physical & Statistical Justification for Setting `f_thermal = 1.0000` Neutralized:**
     While `f_thermal(power_ratio)` provides an analytical link to 3DMark gaming thermal stability, empirical evaluation across the 44-device benchmark suite demonstrates that setting `f_thermal = 1.0000` universally is physically and statistically superior for charging modeling:
     1. **Statistical Insignificance of Partial Correlation:** Controlling for normalized charge rate `C_rate`, the partial correlation between `f_thermal` and empirical charge duration `T_A` is statistically insignificant (`r = -0.1467`, `p = 0.3419`), confirming that gaming stability adds no independent predictive signal beyond `C_rate`.
-    2. **Workload Mechanism Disparity:** 3DMark Wild Life Extreme stress testing measures sustained 100% GPU/CPU active silicon power draw (5W–12W), whereas battery charging heat generation stems from internal cell impedance (`I^2 * R`) and PMIC conversion losses. Coupling charging kinetics directly to gaming benchmarks introduces cross-domain distortion.
+    2. **Workload Mechanism Disparity:** 3DMark Wild Life Extreme stress testing measures sustained 100% GPU/CPU active silicon power draw (5W–12W), whereas battery charging heat generation stems from internal cell impedance (`I^2 * R`) and Power Management Integrated Circuit (PMIC) conversion losses. Coupling charging kinetics directly to gaming benchmarks introduces cross-domain distortion.
     3. **Empirical Precision Gain:** Neutralizing `f_thermal = 1.0000` preserves overall predictive MAE (`9.23 mins` vs `9.28 mins`) while significantly reducing peak relative percentage errors on ultra-fast chargers from `+72.3%` down to `+54.0%`.
 
 ### 1.3 Physical Derivation of the Skin Temperature Headroom Factor `f_skin_headroom(T_limit)`
@@ -71,8 +71,8 @@ The physical scaling relationship between allowable skin temperature limits (`T_
        `f_skin_headroom(T_limit) = ((T_limit - 25.0) / 15.0)^0.5`
 
        **Mathematical Analysis & Assessment of Negligible Impact:**
-       Detailed empirical analysis across the 44-device benchmark suite demonstrates that the actual predictive impact of `f_skin_headroom` on full charging duration `T_predicted` is negligible (< 0.2 minutes or < 12 seconds variance per device). This negligible sensitivity is governed by sub-linear exponent damping (`p ≈ 0.23–0.29`):
-       * **Sub-Linear Exponent Damping (`p ≈ 0.23–0.29`):** In the continuous system power retention factor `F_system = eta_low / (1.0 + k * max(0, C_rate - C0_effective)^p)`, the effective onset threshold `C0_effective` is subtracted from continuous charge rate `C_rate` before being raised to the power exponent `p` (calibrated at `p = 0.2893` for `delta = 20.0 mins`). Because `C_rate >> C0_effective` across active fast-charging devices, reducing `f_skin_headroom` from `1.0000` to `0.8165` alters `(C_rate - C0_effective)` by only a few percent (conservatively under ~3%). Raising this term to the sub-linear exponent `p ≈ 0.2893` (acting like a 4th root) severely compresses that variation down to a tiny fraction of a percent in the denominator, altering `F_system` by less than `+0.0010` and `T_predicted` by under 12 seconds.
+       Detailed empirical analysis across the 44-device benchmark suite demonstrates that the actual predictive impact of `f_skin_headroom` on full charging duration `T_predicted` is negligible (<< 1 minute per device). This negligible sensitivity is governed by sub-linear exponent damping (`p << 1`):
+       * **Sub-Linear Exponent Damping (`p << 1`):** In the continuous system power retention factor `F_system = eta_low / (1 + k * max(0, C_rate - C0_effective)^p)`, the effective onset threshold `C0_effective` is subtracted from continuous charge rate `C_rate` before being raised to the power exponent `p`. Because `C_rate >> C0_effective` across active fast-charging devices, reducing `f_skin_headroom` from `1.0000` to `0.8165` alters `(C_rate - C0_effective)` by only a few percent (conservatively under ~3%). Raising this term to the sub-linear exponent `p ≈ 0.2` (acting like a 5th root) severely compresses that variation down to a tiny fraction of a percent in the denominator, altering `F_system` by less than `+0.0010` and `T_predicted` by much less than a 1 minute.
 
        Furthermore, enforcing vendor-specific skin temperature thresholds (`T_limit`) relies on arbitrary, brand-dependent firmware throttling policies (specifically Apple's conservative skin thermal limits and extended Constant Voltage trickle charging) that introduce subjective vendor biases into an otherwise objective physical loss model. Consequently, we completely eliminate these biases and remove its impact by setting `f_skin_headroom` to 1.0 (`f_skin_headroom = 1.0000`) universally across all devices.
        **Skin Headroom Scaling Neutralization:**
@@ -80,16 +80,7 @@ The physical scaling relationship between allowable skin temperature limits (`T_
 
 ---
 
-## 2. Hardware Spec Audit (44 Devices)
-
-All 44 benchmark devices were audited against official manufacturer hardware specifications and teardowns to verify nominal voltage (V_nominal), battery energy (E_supply), peak input power (P_peak), and cell architecture:
-
-*   **Dual-Cell Series (2S) Verification:** Dual-cell architectures operate at double nominal voltage (7.70V vs 3.85V), halving per-cell electrical current for a given wattage and reducing internal resistive heating (P_loss = I^2 * R) by 75%.
-*   **Audited Corrections:** Motorola Edge 50 Pro (125W), OnePlus 12R (80W), and Asus ROG Phone 7 (65W) were verified as dual-cell series arrays (2S).
-
----
-
-## 3. Huber Loss Threshold (`delta`) Sensitivity Sweep & Boundary Interior Verification
+## 2. Huber Loss Threshold (`delta`) Sensitivity Sweep & Boundary Interior Verification
 
 Using deterministic global optimization (`Differential Evolution`, `seed=42`, `popsize=20`, `maxiter=800`), we evaluated model performance across 12 candidate Huber loss thresholds (`delta = 0.0` to `100.0` mins) to analyze parameter sensitivity across the defined search domain bounds (`eta_low ∈ [0.50, 1.00]`, `C0_single and C0_dual ∈ [0.00, 15.00] h^-1`, `k ∈ [0.00, 10.00]`, `p ∈ [0.01, 5.00]`):
 
@@ -113,14 +104,14 @@ Using deterministic global optimization (`Differential Evolution`, `seed=42`, `p
 
 ---
 
-## 4. Residual Analysis & Sub-Dataset Validation
+## 3. Residual Analysis & Sub-Dataset Validation
 
 ### 4.1 Sub-Dataset Performance Breakdown
 *   **Standard Android Devices (34 devices):** MAE_T is **3.5 to 5.0 mins**. Model predictions for modern fast-chargers (Samsung, OnePlus, Xiaomi, Vivo, ROG Phone, Nothing, Pixel) display an average residual error of 3.5 to 5.0 minutes.
 *   **Apple iPhones & LG G7 ThinQ (10 devices):** MAE_T is **22.64 mins**. Large negative residuals (Delta = -20 to -35 mins) are concentrated exclusively in Apple and LG hardware.
 
 
-## 5. Master Device Prediction Matrix
+## 4. Master Device Prediction Matrix
 Below is the complete device-by-device prediction table under the primary calibrated configuration (`delta = 0.0 mins (Pure MAE Primary)`, `eta_low = 0.9670`, `C0_single_base = 0.4051 h^-1`, `C0_dual_base = 2.6087 h^-1`, `k = 1.1191`, `p = 0.1341`):
 
 | Smartphone Device Model      | Arch   | P_peak (W) | E_supply (Wh) | C_rate (h^-1) | P_eff (W) | F_system | `C0_effective` | `C0_base` | Benchmark `T_A` | Predicted `T_C` | Residual Error (`Delta`) | Error % |
@@ -172,17 +163,17 @@ Below is the complete device-by-device prediction table under the primary calibr
 
 ---
 
-## 6. Data Integrity & Hardware Verification Guidelines
+## 5. Data Integrity & Hardware Verification Guidelines
 
 To ensure future iterations of the charging model maintain physical validity and eliminate data corruption risks, the following mandatory data integrity rules (formally integrated into Section 8.2 of [scoring_rules.md](file:///c:/Users/Ion/.gemini/antigravity/scratch/smartphone_db/docs/scoring_rules.md#L4919-L4945)) MUST be enforced across all input dataset updates:
 
 1. **Strict 4-Tier Evidence Hierarchy for Maximum Charging Input Power (`P_peak`):**
    *   `P_peak` represents the phone's actual accepted physical input power in Watts (W), NOT the wall charger output rating.
-   *   *Hierarchy:* 1) Measured Direct Current (DC) / Alternating Current (AC) input power from laboratory meters (e.g., ChargerLAB or Notebookcheck); 2) Official manufacturer accepted input wattage; 3) Documented charging mode capabilities; 4) Inferred from charger (strictly forbidden if phone input differs).
+   *   *Hierarchy:* (1) Measured Direct Current (DC) / Alternating Current (AC) input power from laboratory meters (e.g., ChargerLAB or Notebookcheck); (2) Official manufacturer accepted input wattage; (3) Documented charging mode capabilities; (4) Inferred from charger (strictly forbidden if phone input differs).
 
 2. **Cell Architecture Verification Protocol (Single-Cell 1S vs Dual-Cell Series 2S):**
    *   Cell architecture MUST NOT be inferred from marketing claims or wattage thresholds alone.
-   *   Dual-Cell Series Configuration (2S) operating at 7.70V nominal halves per-cell electrical current and reduces resistive heating (`P_loss = I^2 * R`) by 75%. All high-power series implementations (125W TurboPower, 80W–100W SuperVOOC, 65W–120W HyperCharge) MUST be verified via official teardowns and correctly assigned `C0_dual = 2.66 h^-1`.
+   *   Dual-Cell Series Configuration (2S) operating at 7.70V nominal halves electrical current for a given wattage. While internal cell heating remains identical, this reduces motherboard trace and connector resistive heating (`P_loss = I^2 * R_trace`) by 75% (ratio of 1/4). All high-power series implementations (125W TurboPower, 80W–100W SuperVOOC, 65W–120W HyperCharge) MUST be verified via official teardowns and correctly assigned `C0_dual`.
 
 3. **Exact Stored Battery Energy (`E_supply`) & Nominal Voltage (`V_nominal`):**
    *   Exact Watt-hour (Wh) energy ratings printed on official battery cell labels MUST be used where published.
