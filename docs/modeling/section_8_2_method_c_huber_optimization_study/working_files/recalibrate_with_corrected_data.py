@@ -21,7 +21,12 @@ import numpy as np
 from scipy.optimize import differential_evolution
 
 def parse_and_correct_dataset():
-    filepath = r"C:\Users\Ion\.gemini\antigravity\scratch\smartphone_db\docs\modeling\NOT_USED\section_8_2_method_c_mse_huber_optimization_study\section_8_2_method_c_mse_huber_optimization_study.md"
+    filepath = os.path.join(
+        os.path.dirname(__file__),
+        "..", "..", "NOT_USED",
+        "alternate_section_8_2_method_c_mse_huber_optimization_study",
+        "section_8_2_method_c_mse_huber_optimization_study.md"
+    )
     
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()

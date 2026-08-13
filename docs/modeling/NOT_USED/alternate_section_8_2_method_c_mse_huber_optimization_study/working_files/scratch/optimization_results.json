@@ -1,0 +1,811 @@
+{
+  "dataset_size": 44,
+  "search_domains": {
+    "C_threshold": [
+      0.6,
+      2.5
+    ],
+    "k": [
+      0.01,
+      0.6
+    ],
+    "p": [
+      0.1,
+      0.8
+    ],
+    "eta_base": [
+      0.35,
+      0.55
+    ],
+    "s_low": [
+      0.1,
+      0.7
+    ],
+    "T_handshake": [
+      0.5,
+      0.5
+    ],
+    "F_charge_pump": [
+      1.0,
+      1.5
+    ],
+    "F_pps": [
+      0.9,
+      1.35
+    ],
+    "F_fixed_pd": [
+      0.75,
+      1.2
+    ],
+    "F_legacy_5v": [
+      0.65,
+      1.05
+    ],
+    "F_apple": [
+      0.7,
+      1.1
+    ],
+    "F_arch": [
+      0.95,
+      1.45
+    ]
+  },
+  "params": {
+    "baseline": [
+      1.5,
+      0.12,
+      0.3,
+      0.45,
+      0.32,
+      0.5,
+      1.1,
+      1.05,
+      0.95,
+      0.85,
+      0.88,
+      1.25
+    ],
+    "pure_mse": [
+      0.7133,
+      0.4179,
+      0.5431,
+      0.5044,
+      0.7,
+      0.5,
+      1.5,
+      1.35,
+      1.1404,
+      1.038,
+      0.9564,
+      1.2995
+    ],
+    "pure_mae": [
+      1.3467,
+      0.1686,
+      0.3834,
+      0.4216,
+      0.4406,
+      0.5,
+      1.479,
+      1.2365,
+      0.9798,
+      0.8746,
+      0.8603,
+      1.0582
+    ],
+    "huber_10": [
+      1.2987,
+      0.2061,
+      0.4908,
+      0.4273,
+      0.5174,
+      0.5,
+      1.401,
+      1.2486,
+      0.9978,
+      0.8187,
+      0.8652,
+      1.1552
+    ]
+  },
+  "duration_metrics": {
+    "baseline": {
+      "MSE_T": 259.11,
+      "RMSE_T": 16.1,
+      "MAE_T": 9.29,
+      "Mean_dT": 2.18,
+      "T_min_C": 9.47,
+      "T_max_C": 292.57
+    },
+    "pure_mse": {
+      "MSE_T": 130.77,
+      "RMSE_T": 11.44,
+      "MAE_T": 6.53,
+      "Mean_dT": -0.01,
+      "T_min_C": 12.53,
+      "T_max_C": 250.39
+    },
+    "pure_mae": {
+      "MSE_T": 164.47,
+      "RMSE_T": 12.82,
+      "MAE_T": 6.17,
+      "Mean_dT": 1.36,
+      "T_min_C": 10.16,
+      "T_max_C": 268.33
+    },
+    "huber_10": {
+      "MSE_T": 158.12,
+      "RMSE_T": 12.57,
+      "MAE_T": 6.4,
+      "Mean_dT": 0.42,
+      "T_min_C": 11.41,
+      "T_max_C": 267.88
+    }
+  },
+  "score_metrics_strategy1": {
+    "baseline": {
+      "MSE_S": 0.3733,
+      "RMSE_S": 0.611,
+      "MAE_S": 0.5137,
+      "Mean_dS": -0.4641
+    },
+    "pure_mse": {
+      "MSE_S": 0.3589,
+      "RMSE_S": 0.5991,
+      "MAE_S": 0.4909,
+      "Mean_dS": -0.4622
+    },
+    "pure_mae": {
+      "MSE_S": 0.2834,
+      "RMSE_S": 0.5323,
+      "MAE_S": 0.4368,
+      "Mean_dS": -0.4069
+    },
+    "huber_10": {
+      "MSE_S": 0.3545,
+      "RMSE_S": 0.5954,
+      "MAE_S": 0.5072,
+      "Mean_dS": -0.483
+    }
+  },
+  "score_metrics_strategy2": {
+    "baseline": {
+      "MSE_S": 0.133,
+      "RMSE_S": 0.3646,
+      "MAE_S": 0.31,
+      "Mean_dS": -0.0964
+    },
+    "pure_mse": {
+      "MSE_S": 0.1639,
+      "RMSE_S": 0.4049,
+      "MAE_S": 0.2992,
+      "Mean_dS": 0.0776
+    },
+    "pure_mae": {
+      "MSE_S": 0.1137,
+      "RMSE_S": 0.3372,
+      "MAE_S": 0.2309,
+      "Mean_dS": -0.0673
+    },
+    "huber_10": {
+      "MSE_S": 0.1245,
+      "RMSE_S": 0.3529,
+      "MAE_S": 0.266,
+      "Mean_dS": 0.0243
+    }
+  },
+  "huber_sweep": [
+    {
+      "delta": 5.0,
+      "MSE_T": 160.61,
+      "RMSE_T": 12.67,
+      "MAE_T": 6.31,
+      "Mean_dT": 0.61,
+      "params": [
+        1.2987,
+        0.2275,
+        0.4954,
+        0.433,
+        0.5118,
+        0.5,
+        1.4713,
+        1.2566,
+        0.9794,
+        0.8155,
+        0.863,
+        1.1305
+      ]
+    },
+    {
+      "delta": 7.5,
+      "MSE_T": 159.3,
+      "RMSE_T": 12.62,
+      "MAE_T": 6.39,
+      "Mean_dT": 0.46,
+      "params": [
+        1.2987,
+        0.2132,
+        0.4977,
+        0.4278,
+        0.517,
+        0.5,
+        1.4161,
+        1.2582,
+        0.993,
+        0.816,
+        0.8672,
+        1.1582
+      ]
+    },
+    {
+      "delta": 10.0,
+      "MSE_T": 147.32,
+      "RMSE_T": 12.14,
+      "MAE_T": 6.25,
+      "Mean_dT": 0.32,
+      "params": [
+        1.1968,
+        0.2856,
+        0.5078,
+        0.4265,
+        0.5764,
+        0.5,
+        1.5,
+        1.35,
+        1.0885,
+        0.8316,
+        0.9373,
+        1.2292
+      ]
+    },
+    {
+      "delta": 12.5,
+      "MSE_T": 156.93,
+      "RMSE_T": 12.53,
+      "MAE_T": 6.42,
+      "Mean_dT": 0.42,
+      "params": [
+        1.2987,
+        0.1995,
+        0.4935,
+        0.4224,
+        0.5222,
+        0.5,
+        1.4062,
+        1.2545,
+        1.0078,
+        0.8223,
+        0.8726,
+        1.1542
+      ]
+    },
+    {
+      "delta": 15.0,
+      "MSE_T": 155.97,
+      "RMSE_T": 12.49,
+      "MAE_T": 6.47,
+      "Mean_dT": 0.42,
+      "params": [
+        1.2987,
+        0.1927,
+        0.4974,
+        0.4179,
+        0.5267,
+        0.5,
+        1.4105,
+        1.26,
+        1.0173,
+        0.8259,
+        0.8793,
+        1.1534
+      ]
+    },
+    {
+      "delta": 20.0,
+      "MSE_T": 134.73,
+      "RMSE_T": 11.61,
+      "MAE_T": 6.42,
+      "Mean_dT": 0.58,
+      "params": [
+        0.7133,
+        0.5149,
+        0.4923,
+        0.5416,
+        0.7,
+        0.5,
+        1.5,
+        1.3424,
+        1.1287,
+        1.0167,
+        0.9486,
+        1.2891
+      ]
+    }
+  ],
+  "device_matrix": [
+    {
+      "name": "Realme GT3",
+      "power_w": 240.0,
+      "T_A": 9.6,
+      "T_C": 11.4,
+      "S_A": 10.0,
+      "S_C": 9.28,
+      "dS": 0.72,
+      "dT": -1.8,
+      "url": "https://www.gsmarena.com/realme_gt3-review-2537p3.php"
+    },
+    {
+      "name": "Redmi Note 12 Explorer",
+      "power_w": 210.0,
+      "T_A": 9.0,
+      "T_C": 12.0,
+      "S_A": 10.0,
+      "S_C": 9.13,
+      "dS": 0.87,
+      "dT": -3.0,
+      "url": "https://www.gsmarena.com/redmi_note_12_explorer-review-2501p3.php"
+    },
+    {
+      "name": "iQOO 11 Pro",
+      "power_w": 200.0,
+      "T_A": 12.0,
+      "T_C": 13.3,
+      "S_A": 9.12,
+      "S_C": 8.81,
+      "dS": 0.31,
+      "dT": -1.3,
+      "url": "https://www.gsmarena.com/iqoo_11_pro-review-2515p3.php"
+    },
+    {
+      "name": "Motorola Edge 50 Pro",
+      "power_w": 125.0,
+      "T_A": 18.0,
+      "T_C": 21.2,
+      "S_A": 7.89,
+      "S_C": 7.39,
+      "dS": 0.5,
+      "dT": -3.2,
+      "url": "https://www.gsmarena.com/motorola_edge_50_pro-review-2688p3.php"
+    },
+    {
+      "name": "Xiaomi 13 Pro",
+      "power_w": 120.0,
+      "T_A": 19.0,
+      "T_C": 20.1,
+      "S_A": 7.73,
+      "S_C": 7.55,
+      "dS": 0.18,
+      "dT": -1.1,
+      "url": "https://www.gsmarena.com/xiaomi_13_pro-review-2527p3.php"
+    },
+    {
+      "name": "Xiaomi 12T Pro",
+      "power_w": 120.0,
+      "T_A": 19.0,
+      "T_C": 20.7,
+      "S_A": 7.73,
+      "S_C": 7.47,
+      "dS": 0.26,
+      "dT": -1.7,
+      "url": "https://www.gsmarena.com/xiaomi_12t_pro-review-2486p3.php"
+    },
+    {
+      "name": "Poco F4 GT",
+      "power_w": 120.0,
+      "T_A": 17.0,
+      "T_C": 19.7,
+      "S_A": 8.07,
+      "S_C": 7.61,
+      "dS": 0.46,
+      "dT": -2.7,
+      "url": "https://www.gsmarena.com/poco_f4_gt-review-2419p3.php"
+    },
+    {
+      "name": "Vivo X100 Pro",
+      "power_w": 100.0,
+      "T_A": 31.0,
+      "T_C": 25.4,
+      "S_A": 6.24,
+      "S_C": 6.84,
+      "dS": -0.6,
+      "dT": 5.6,
+      "url": "https://www.gsmarena.com/vivo_x100_pro-review-2646p3.php"
+    },
+    {
+      "name": "OnePlus 12",
+      "power_w": 100.0,
+      "T_A": 26.0,
+      "T_C": 25.4,
+      "S_A": 6.77,
+      "S_C": 6.84,
+      "dS": -0.07,
+      "dT": 0.6,
+      "url": "https://www.gsmarena.com/oneplus_12-review-2658p3.php"
+    },
+    {
+      "name": "OnePlus 11",
+      "power_w": 100.0,
+      "T_A": 25.0,
+      "T_C": 23.9,
+      "S_A": 6.89,
+      "S_C": 7.03,
+      "dS": -0.14,
+      "dT": 1.1,
+      "url": "https://www.gsmarena.com/oneplus_11-review-2524p3.php"
+    },
+    {
+      "name": "Xiaomi 14",
+      "power_w": 90.0,
+      "T_A": 35.0,
+      "T_C": 28.0,
+      "S_A": 5.87,
+      "S_C": 6.54,
+      "dS": -0.67,
+      "dT": 7.0,
+      "url": "https://www.gsmarena.com/xiaomi_14-review-2675p3.php"
+    },
+    {
+      "name": "Honor Magic 6 Pro",
+      "power_w": 80.0,
+      "T_A": 36.0,
+      "T_C": 40.4,
+      "S_A": 5.78,
+      "S_C": 5.43,
+      "dS": 0.35,
+      "dT": -4.4,
+      "url": "https://www.gsmarena.com/honor_magic6_pro-review-2673p3.php"
+    },
+    {
+      "name": "OnePlus 12R",
+      "power_w": 80.0,
+      "T_A": 32.0,
+      "T_C": 35.6,
+      "S_A": 6.14,
+      "S_C": 5.82,
+      "dS": 0.32,
+      "dT": -3.6,
+      "url": "https://www.gsmarena.com/oneplus_12r-review-2662p3.php"
+    },
+    {
+      "name": "Motorola Edge 40",
+      "power_w": 68.0,
+      "T_A": 44.0,
+      "T_C": 38.6,
+      "S_A": 5.17,
+      "S_C": 5.57,
+      "dS": -0.4,
+      "dT": 5.4,
+      "url": "https://www.gsmarena.com/motorola_edge_40-review-2565p3.php"
+    },
+    {
+      "name": "Xiaomi 13",
+      "power_w": 67.0,
+      "T_A": 42.0,
+      "T_C": 39.1,
+      "S_A": 5.31,
+      "S_C": 5.53,
+      "dS": -0.22,
+      "dT": 2.9,
+      "url": "https://www.gsmarena.com/xiaomi_13-review-2525p3.php"
+    },
+    {
+      "name": "Honor Magic 5 Pro",
+      "power_w": 66.0,
+      "T_A": 48.0,
+      "T_C": 43.8,
+      "S_A": 4.91,
+      "S_C": 5.19,
+      "dS": -0.28,
+      "dT": 4.2,
+      "url": "https://www.gsmarena.com/honor_magic5_pro-review-2548p3.php"
+    },
+    {
+      "name": "Asus ROG Phone 7",
+      "power_w": 65.0,
+      "T_A": 42.0,
+      "T_C": 50.6,
+      "S_A": 5.31,
+      "S_C": 4.75,
+      "dS": 0.56,
+      "dT": -8.6,
+      "url": "https://www.gsmarena.com/asus_rog_phone_7-review-2550p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S24 Ultra",
+      "power_w": 45.0,
+      "T_A": 59.0,
+      "T_C": 58.7,
+      "S_A": 4.28,
+      "S_C": 4.3,
+      "dS": -0.02,
+      "dT": 0.3,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2659p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S23 Ultra",
+      "power_w": 45.0,
+      "T_A": 59.0,
+      "T_C": 58.7,
+      "S_A": 4.28,
+      "S_C": 4.3,
+      "dS": -0.02,
+      "dT": 0.3,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s23_ultra-review-2526p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S22 Ultra",
+      "power_w": 45.0,
+      "T_A": 59.0,
+      "T_C": 58.7,
+      "S_A": 4.28,
+      "S_C": 4.3,
+      "dS": -0.02,
+      "dT": 0.3,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s22_ultra-review-2382p3.php"
+    },
+    {
+      "name": "Nothing Phone (2)",
+      "power_w": 45.0,
+      "T_A": 55.0,
+      "T_C": 55.9,
+      "S_A": 4.49,
+      "S_C": 4.45,
+      "dS": 0.04,
+      "dT": -0.9,
+      "url": "https://www.gsmarena.com/nothing_phone_(2)-review-2586p3.php"
+    },
+    {
+      "name": "Google Pixel 9 Pro XL",
+      "power_w": 37.0,
+      "T_A": 79.0,
+      "T_C": 68.6,
+      "S_A": 3.39,
+      "S_C": 3.82,
+      "dS": -0.43,
+      "dT": 10.4,
+      "url": "https://www.gsmarena.com/google_pixel_9_pro_xl-review-2735p3.php"
+    },
+    {
+      "name": "Google Pixel 8 Pro",
+      "power_w": 30.0,
+      "T_A": 81.0,
+      "T_C": 80.3,
+      "S_A": 3.32,
+      "S_C": 3.34,
+      "dS": -0.02,
+      "dT": 0.7,
+      "url": "https://www.gsmarena.com/google_pixel_8_pro-review-2628p3.php"
+    },
+    {
+      "name": "Apple iPhone 16 Pro Max",
+      "power_w": 30.0,
+      "T_A": 107.0,
+      "T_C": 110.3,
+      "S_A": 2.47,
+      "S_C": 2.38,
+      "dS": 0.09,
+      "dT": -3.3,
+      "url": "https://www.gsmarena.com/apple_iphone_16_pro_max-review-2748p3.php"
+    },
+    {
+      "name": "Apple iPhone 14 Pro Max",
+      "power_w": 29.0,
+      "T_A": 112.0,
+      "T_C": 106.5,
+      "S_A": 2.33,
+      "S_C": 2.48,
+      "dS": -0.15,
+      "dT": 5.5,
+      "url": "https://www.gsmarena.com/apple_iphone_14_pro_max-review-2479p3.php"
+    },
+    {
+      "name": "Apple iPhone 15 Pro Max",
+      "power_w": 27.0,
+      "T_A": 109.0,
+      "T_C": 114.6,
+      "S_A": 2.41,
+      "S_C": 2.26,
+      "dS": 0.15,
+      "dT": -5.6,
+      "url": "https://www.gsmarena.com/apple_iphone_15_pro_max-review-2618p3.php"
+    },
+    {
+      "name": "Apple iPhone 13 Pro Max",
+      "power_w": 27.0,
+      "T_A": 106.0,
+      "T_C": 112.9,
+      "S_A": 2.5,
+      "S_C": 2.31,
+      "dS": 0.19,
+      "dT": -6.9,
+      "url": "https://www.gsmarena.com/apple_iphone_13_pro_max-review-2317p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S24",
+      "power_w": 25.0,
+      "T_A": 75.0,
+      "T_C": 78.0,
+      "S_A": 3.55,
+      "S_C": 3.43,
+      "dS": 0.12,
+      "dT": -3.0,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s24-review-2661p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S23",
+      "power_w": 25.0,
+      "T_A": 72.0,
+      "T_C": 76.6,
+      "S_A": 3.67,
+      "S_C": 3.49,
+      "dS": 0.18,
+      "dT": -4.6,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s23-review-2523p3.php"
+    },
+    {
+      "name": "Samsung Galaxy A55",
+      "power_w": 25.0,
+      "T_A": 85.0,
+      "T_C": 87.1,
+      "S_A": 3.17,
+      "S_C": 3.1,
+      "dS": 0.07,
+      "dT": -2.1,
+      "url": "https://www.gsmarena.com/samsung_galaxy_a55-review-2679p3.php"
+    },
+    {
+      "name": "Samsung Galaxy A54",
+      "power_w": 25.0,
+      "T_A": 82.0,
+      "T_C": 87.1,
+      "S_A": 3.28,
+      "S_C": 3.1,
+      "dS": 0.18,
+      "dT": -5.1,
+      "url": "https://www.gsmarena.com/samsung_galaxy_a54-review-2544p3.php"
+    },
+    {
+      "name": "Samsung Galaxy A34",
+      "power_w": 25.0,
+      "T_A": 84.0,
+      "T_C": 87.1,
+      "S_A": 3.21,
+      "S_C": 3.1,
+      "dS": 0.11,
+      "dT": -3.1,
+      "url": "https://www.gsmarena.com/samsung_galaxy_a34-review-2545p3.php"
+    },
+    {
+      "name": "Google Pixel 7 Pro",
+      "power_w": 23.0,
+      "T_A": 109.0,
+      "T_C": 84.1,
+      "S_A": 2.41,
+      "S_C": 3.2,
+      "dS": -0.79,
+      "dT": 24.9,
+      "url": "https://www.gsmarena.com/google_pixel_7_pro-review-2484p3.php"
+    },
+    {
+      "name": "Apple iPhone 11 Pro Max",
+      "power_w": 18.0,
+      "T_A": 120.0,
+      "T_C": 121.2,
+      "S_A": 2.12,
+      "S_C": 2.09,
+      "dS": 0.03,
+      "dT": -1.2,
+      "url": "https://www.gsmarena.com/apple_iphone_11_pro_max-review-1991p3.php"
+    },
+    {
+      "name": "LG G7 ThinQ",
+      "power_w": 18.0,
+      "T_A": 108.0,
+      "T_C": 100.4,
+      "S_A": 2.44,
+      "S_C": 2.66,
+      "dS": -0.22,
+      "dT": 7.6,
+      "url": "https://www.gsmarena.com/lg_g7_thinq-review-1763p3.php"
+    },
+    {
+      "name": "Apple iPhone XS Max",
+      "power_w": 15.0,
+      "T_A": 131.0,
+      "T_C": 122.8,
+      "S_A": 1.85,
+      "S_C": 2.05,
+      "dS": -0.2,
+      "dT": 8.2,
+      "url": "https://www.gsmarena.com/apple_iphone_xs_max-review-1823p3.php"
+    },
+    {
+      "name": "Apple iPhone X",
+      "power_w": 15.0,
+      "T_A": 125.0,
+      "T_C": 122.2,
+      "S_A": 2.0,
+      "S_C": 2.07,
+      "dS": -0.07,
+      "dT": 2.8,
+      "url": "https://www.gsmarena.com/apple_iphone_x-review-1681p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S10",
+      "power_w": 15.0,
+      "T_A": 108.0,
+      "T_C": 104.1,
+      "S_A": 2.44,
+      "S_C": 2.55,
+      "dS": -0.11,
+      "dT": 3.9,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s10-review-1902p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S9",
+      "power_w": 15.0,
+      "T_A": 107.0,
+      "T_C": 108.9,
+      "S_A": 2.47,
+      "S_C": 2.42,
+      "dS": 0.05,
+      "dT": -1.9,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s9-review-1734p3.php"
+    },
+    {
+      "name": "Samsung Galaxy S8",
+      "power_w": 15.0,
+      "T_A": 100.0,
+      "T_C": 108.9,
+      "S_A": 2.68,
+      "S_C": 2.42,
+      "dS": 0.26,
+      "dT": -8.9,
+      "url": "https://www.gsmarena.com/samsung_galaxy_s8-review-1603p3.php"
+    },
+    {
+      "name": "Apple iPhone 8",
+      "power_w": 5.0,
+      "T_A": 148.0,
+      "T_C": 141.2,
+      "S_A": 1.48,
+      "S_C": 1.63,
+      "dS": -0.15,
+      "dT": 6.8,
+      "url": "https://www.gsmarena.com/apple_iphone_8-review-1667p3.php"
+    },
+    {
+      "name": "Apple iPhone 7 Plus",
+      "power_w": 5.0,
+      "T_A": 241.0,
+      "T_C": 189.2,
+      "S_A": 0.0,
+      "S_C": 0.74,
+      "dS": -0.74,
+      "dT": 51.8,
+      "url": "https://www.gsmarena.com/apple_iphone_7_plus-review-1502p3.php"
+    },
+    {
+      "name": "Nokia 2.4",
+      "power_w": 5.0,
+      "T_A": 215.0,
+      "T_C": 267.9,
+      "S_A": 0.35,
+      "S_C": 0.0,
+      "dS": 0.35,
+      "dT": -52.9,
+      "url": "https://www.gsmarena.com/nokia_2_4-review-2187p3.php"
+    },
+    {
+      "name": "Samsung Galaxy A03 Core",
+      "power_w": 7.7,
+      "T_A": 205.0,
+      "T_C": 205.8,
+      "S_A": 0.49,
+      "S_C": 0.48,
+      "dS": 0.01,
+      "dT": -0.8,
+      "url": "https://www.gsmarena.com/samsung_galaxy_a03_core-review-2371p3.php"
+    }
+  ]
+}
