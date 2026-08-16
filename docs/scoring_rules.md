@@ -4304,8 +4304,8 @@ To align with the system's power demand (W) in our supply-and-demand model, the 
 
 **Nominal Voltage Detection Logic:**
 To correctly identify `V_nominal`, we apply the following prioritized hierarchy:
-1. **Explicit Voltage:** If the database contains a numeric value for `battery_voltage_v`, use that value.
-2. **Dual-Cell configuration:** If the text field `battery_cell_configuration` contains "Dual-cell", "Dual cell", "2S", or "dual-cell" (case-insensitive), use **7.70 V** (two 3.85V cells in series).
+1. **Explicit Voltage:** If an explicit battery voltage is published in the specifications, set `V_nominal` to that value.
+2. **Dual-Cell configuration:** If the battery cell architecture indicates a dual-cell (2S) configuration, use **7.70 V** (two 3.85V cells in series).
 3. **High-Power Charging Heuristic:** If the maximum wired charging speed is **120 Watts or higher**, use **7.70 V** (ultra-fast charging architectures require dual-cell configurations to halve current and prevent excessive thermal losses).
 4. **Default Fallback:** Otherwise, use **3.85 V** (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
 
@@ -4703,7 +4703,7 @@ To ensure complete clarity and physical consistency across the scoring framework
 
 ### 🔹 8.2 Wired Charging System
 *Description:* Comprehensive evaluation of the wired charging system, comprising pure full-charge duration performance, open universal USB Power Delivery ecosystem interoperability, and hardware bypass power delivery capability.
-*   **Measurement:** Canonical full charge duration in minutes (`T_final`) evaluated via Method A (Empirical Benchmark), Method B (Nearest-Neighbor Interpolation), or Method C (Analytical Physics Predictor) to yield `S_speed`, combined with continuous open USB-PD speed ratio (`S_protocol`) and hardware battery-bypass direct drive (`S_bypass`).
+*   **Measurement:** Canonical full charge duration in minutes (`T_final`) evaluated via Method A (Empirical Benchmark), Method B (Nearest-Neighbor Interpolation), or Method C (Analytical Physics Predictor) to yield `S_speed`, combined with continuous open USB-PD speed ratio (`S_interoperability`) and hardware battery-bypass direct drive (`S_bypass`).
 *   **Unit:** Minutes (mins) for speed duration; Composite Score (0.0 to 10.0) for overall section score.
 *   **Significance:** Minimizes wall-tethered downtime when battery power is depleted, guarantees fast charging across non-proprietary third-party chargers, and prevents overheating during plugged-in heavy use (gaming, GPS navigation, mobile hotspot tethering).
 
@@ -4711,33 +4711,19 @@ To ensure complete clarity and physical consistency across the scoring framework
 To provide a complete and transparent evaluation of a smartphone's wired charging system, the overall Section 8.2 score is derived from **three distinct, non-overlapping hardware components**:
 
 1. **Pure Charging Speed Score (`S_speed` — 88% Weight):**
-   * **What it measures:** The real-world physical duration in minutes required to charge a completely depleted smartphone battery from 0% to 100% State of Charge (SoC) using its fastest official wall charger.
+   * **What it measures:** The real-world physical duration in minutes required to charge a completely depleted smartphone battery from 0% to 100% State of Charge using its fastest official wall charger.
    * **Why & Weight Rationale (88%):** Primary utility impacting 100% of users on 100% of charge cycles. Minimizing wall-tethered downtime is the dominant physical driver of charging satisfaction.
 
-2. **Universal Protocol Interoperability Score (`S_protocol` — 9% Weight):**
-   * **What it measures:** The percentage of maximum charging performance accessible when using open, non-proprietary third-party chargers (such as USB Power Delivery / Programmable Power Supply — USB-PD / PPS), rather than vendor-locked proprietary wall adapters.
-   * **Why & Weight Rationale (9%):** Secondary utility impacting users when charging away from home (office, travel, laptop chargers). Creates a meaningful penalty for vendor lock-in without allowing a slow universal phone to outscore an ultra-fast proprietary phone (`S_protocol << S_speed`).
+2. **Universal Protocol Interoperability Score (`S_interoperability` — 9% Weight):**
+   * **What it measures:** The percentage of maximum charging performance accessible when using open, non-proprietary third-party chargers (such as USB Power Delivery — USB-PD, an open universal fast-charging standard defined by the USB Implementers Forum, and Programmable Power Supply — PPS, an advanced extension allowing real-time voltage and current micro-adjustments), rather than vendor-locked proprietary wall adapters.
+   * **Why & Weight Rationale (9%):** Secondary utility impacting users when charging away from home (office, travel, laptop chargers). Creates a meaningful penalty for vendor lock-in without allowing a slow universal phone to outscore an ultra-fast proprietary phone (`S_interoperability << S_speed`).
 
 3. **Hardware Bypass Charging / Direct Drive Score (`S_bypass` — 3% Weight):**
-   * **What it measures:** A Power Management Integrated Circuit (PMIC) feature that routes wall electricity **directly to the logic board and processor**, bypassing the battery cell entirely during plugged-in use.
-   * **Why & Weight Rationale (3%):** Niche utility for heavy plugged-in workloads (3D gaming, GPS navigation in sunlight, hotspot tethering). Normal plugged-in use forces current into the battery while pulling heavy current out, generating extreme heat; direct drive powers the processor directly to keep the battery cool. Weighted at 3% to reward hardware capability without distorting everyday smartphone scores (`S_bypass << S_protocol`).
+   * **What it measures:** A Power Management Integrated Circuit (PMIC, an on-board silicon chip regulating internal power conversion and bus rails) feature that routes wall electricity **directly to the logic board and processor**, bypassing the battery cell entirely during plugged-in use.
+   * **Why & Weight Rationale (3%):** Niche utility for heavy plugged-in workloads (3D gaming, GPS navigation in sunlight, hotspot tethering). Normal plugged-in use forces current into the battery while pulling heavy current out, generating extreme heat; direct drive powers the processor directly to keep the battery cool. Weighted at 3% to reward hardware capability without distorting everyday smartphone scores (`S_bypass << S_interoperability`).
 
 ##### Section 8.2 Overall Composite Formula
-`Final Score 8.2 = 0.88 * S_speed + 0.09 * S_protocol + 0.03 * S_bypass` (Clamped 0.0 to 10.0)
-
-> [!NOTE]
-> **Abbreviations Used in This Section:**
-> *   **PD**: Power Delivery (open universal USB fast-charging standard defined by the USB Implementers Forum)
-> *   **PPS**: Programmable Power Supply (advanced extension of USB Power Delivery allowing real-time voltage/current micro-adjustments)
-> *   **QC**: Quick Charge (Qualcomm proprietary fast-charging protocol series)
-> *   **CC**: Constant Current (first phase of lithium-ion battery charging where maximum current is delivered)
-> *   **CV**: Constant Voltage (second phase of lithium-ion battery charging where voltage is capped and current tapers toward zero)
-> *   **BMS**: Battery Management System (on-board micro-controller monitoring battery temperature, cell voltages, and charging currents)
-> *   **PMIC**: Power Management Integrated Circuit (silicon chip regulating internal power conversion and bus rails)
-> *   **DC**: Direct Current (unidirectional flow of electric charge used by mobile components and batteries)
-> *   **AC**: Alternating Current (mains wall outlet electricity converted to Direct Current by external power bricks)
-> *   **SoC (Battery)**: State of Charge (percentage of remaining stored electrical energy in a battery cell, 0% to 100%)
-> *   **SoC (Processor)**: System-on-Chip (main semiconductor package containing Central Processing Unit and Graphics Processing Unit)
+`Final Score 8.2 = 0.88 * S_speed + 0.09 * S_interoperability + 0.03 * S_bypass` (Clamped 0.0 to 10.0)
 
 #### 8.2.1 Pure Wired Charging Speed
 Evaluates the physical time required to restore a depleted smartphone battery from 0% to 100% State of Charge under standard laboratory conditions.
@@ -4749,7 +4735,7 @@ Method A is the primary empirical benchmark calculation used when a verified lab
 To guarantee 100% empirical rigor, eliminate inter-benchmark protocol offsets, and avoid data bias, **Method A strictly utilizes the GSMArena Wired Charging Speed Benchmark (`charging_time_100_mins`) as its single canonical data source**.
 
 **Engineering Justification for Excluding Multi-Source Blending:**
-1. **Strict Protocol Standardization:** GSMArena executes a fully controlled laboratory protocol: the phone is discharged to 0% State of Charge (SoC), allowed to rest until reaching a stable ambient temperature (22°C to 25°C), and charged with the screen turned off using the manufacturer's maximum supported official fast-charging brick and original high-current cable.
+1. **Strict Protocol Standardization:** GSMArena executes a fully controlled laboratory protocol: the phone is discharged to 0% State of Charge, allowed to rest until reaching a stable ambient temperature (22°C to 25°C), and charged with the screen turned off using the manufacturer's maximum supported official fast-charging brick and original high-current cable.
 2. **Database Uniformity & Historical Depth:** GSMArena maintains a continuous, uninterrupted benchmark database covering over 1,500 smartphones from 2016 through 2026, ensuring consistent measurement criteria across a decade of mobile hardware.
 3. **Elimination of Inter-Benchmark Bias:** Secondary review outlets (such as PhoneArena or NotebookCheck) utilize differing criteria—such as testing with bundled in-box chargers (which may be lower wattage than the phone's maximum capability) or defining "100%" at initial UI prompt rather than true mains wall-power termination. Blending data from multiple outlets introduces systemic offsets of 5 to 15 minutes for identical devices. Standardizing strictly on GSMArena eliminates this variance completely.
 
@@ -4761,9 +4747,9 @@ When a GSMArena test result is present in the database:
 ###### 8.2.1.A.3 Charging Speed Component Score (`S_speed`)
 The charging speed score (`S_speed`) is computed directly from the extracted duration `T_final` using a **Logarithmic Utility Normalization Formula**:
 
-`S_speed = 10 * (log(Battery_Wired_Charge_Time_Benchmark_Max_Mins) - log(T_final)) / (log(Battery_Wired_Charge_Time_Benchmark_Max_Mins) - log(Battery_Wired_Charge_Time_Benchmark_Min_Mins))` (Clamped 0.0 to 10.0)
+`S_speed = 10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(T_final)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins))` (Clamped 0.0 to 10.0)
 
-*   `Battery_Wired_Charge_Time_Benchmark_Min_Mins` and `Battery_Wired_Charge_Time_Benchmark_Max_Mins`: Normalization constants defined in `scoring_constants.md`.
+*   `Battery_Wired_Charge_Time_Min_Mins` and `Battery_Wired_Charge_Time_Max_Mins`: Normalization constants defined in `scoring_constants.md`.
 
 > [!NOTE]
 > **Why Logarithmic Utility Normalization (`log(T)`)?**
@@ -4777,74 +4763,88 @@ When the target device lacks direct benchmark data, we use a technical predictiv
 
 ###### 8.2.1.B.1 The 3-Component Physical Similarity Space
 To map devices into a dimensionally homogeneous coordinate system, we measure how much the target device differs from a candidate neighbor device across its primary physical charging parameters derived from **Method C: Technical Predictor Model** (detailed in Section 8.2.1.C):
-1. **Stored Battery Energy (`E_supply`, in Watt-hours - Wh):** Total nominal battery energy (`(Capacity_mAh * V_nominal) / 1000`).
+1. **Stored Battery Energy (`E_supply`, in Watt-hours - Wh):** Total nominal battery energy.
 2. **Peak Rated Power (`P_peak`, in Watts - W):** Maximum supported continuous wired wattage.
-3. **Cell Architecture Match:** Categorical indicator representing whether both devices share the same cell architecture (Single-Cell, Dual-Cell, or Unknown).
+3. **Predicted Charge Duration (`T_predicted`, in minutes - mins):** Analytical baseline charging duration calculated by Method C.
+
+> [!NOTE]
+> **Logarithmic System Identity & Implicit Architecture Alignment:**
+> Taking the logarithm of Method C's fundamental equation yields the exact physical identity:
+> `log(T_predicted) = log(E_supply) - log(P_peak) - log(F_system) + log(60)`
+> If two devices have near-identical `log(E_supply)`, `log(P_peak)`, and `log(T_predicted)`, then `log(F_system)` and `C_rate` (`P_peak / E_supply`) are also mathematically guaranteed to be near-identical. Because Single-Cell (1S) and Dual-Cell Series (2S) architectures differ by a factor of 6.6x in baseline onset threshold (`C0_single = 0.4051 h^-1` vs. `C0_dual = 2.6813 h^-1`), similarity across these three logarithmic dimensions naturally forces neighbor devices to share the **exact same cell architecture** without requiring artificial penalty offsets.
 
 ###### 8.2.1.B.2 Feature Distance Formula
-The similarity between the target device and a candidate neighbor device is computed using a **Log-Standardized Euclidean Distance** with a categorical penalty for architecture mismatches. Using the logarithmic domain `log` resolves dimensional analysis failures that occur when directly summing absolute differences in Watts and Watt-hours.
+The similarity between the target device and a candidate neighbor device is computed using a **Log-Standardized Euclidean Distance** across all continuous physical dimensions:
 
-`Distance = Sqrt( (Delta_log_E_supply)^2 + (Delta_log_P_peak)^2 + Penalty_arch )`
+`Distance = Sqrt( (Delta_log_E_supply)^2 + (Delta_log_P_peak)^2 + (Delta_log_T_predicted)^2 )`
 
 *   `Delta_log_E_supply = log(E_supply_target) - log(E_supply_neighbor)`
 *   `Delta_log_P_peak = log(P_peak_target) - log(P_peak_neighbor)`
-*   `Penalty_arch`: `0.0` if `Architecture_target == Architecture_neighbor`, else `1.0`
+*   `Delta_log_T_predicted = log(T_predicted_target) - log(T_predicted_neighbor)`
 *   **Search Space:** All devices with known GSMArena full charge benchmarks (Method A), **excluding the target device** itself.
 *   **Selection:** Pick the 3 distinct neighbor devices with the smallest `Distance`.
 
 ###### 8.2.1.B.3 Interpolation, Calibration & Speed Component Score (`S_speed`)
-1. **Compute Neighbor Predicted Average:** Calculate the inverse-distance weighted average predicted charge duration of the 3 neighbors (from Method C):
-   `Weight_i = 1 / Distance_i`
-   `Avg_Predicted_Neighbors = Sum(T_predicted_Neighbor_i * Weight_i) / Sum(Weight_i)`
-2. **Compute Correction Ratio:** Measures how the target device's physical profile structurally differs from its neighbors:
+1. **Compute Neighbor Predicted Average:** Calculate the average predicted charge duration of the 3 nearest neighbors (from Method C):
+   `Avg_Predicted_Neighbors = (T_predicted_Neighbor1 + T_predicted_Neighbor2 + T_predicted_Neighbor3) / 3`
+2. **Compute Correction Ratio:** Measures how the target device's physical profile structurally differs from its neighbors (where `T_predicted_Target` is the target device's predicted charge duration calculated via Method C):
    `Correction_Ratio = T_predicted_Target / Avg_Predicted_Neighbors`
-3. **Compute Neighbor Empirical Average:** Calculate the inverse-distance weighted average real-world benchmark charge duration of the 3 neighbors (from Method A):
-   `Avg_Benchmark_Neighbors = Sum(T_GSMArena_Neighbor_i * Weight_i) / Sum(Weight_i)`
+3. **Compute Neighbor Empirical Average:** Calculate the average real-world benchmark charge duration of the 3 nearest neighbors (from Method A):
+   `Avg_Benchmark_Neighbors = (T_GSMArena_Neighbor1 + T_GSMArena_Neighbor2 + T_GSMArena_Neighbor3) / 3`
 4. **Calculate Interpolated Full Charge Duration (`T_interpolated`):**
    `T_final = T_interpolated = Correction_Ratio * Avg_Benchmark_Neighbors`
    *Score Source Tag:* Logged as `"Method B (Nearest Neighbor Interpolation)"`.
 5. **Compute Speed Component Score (`S_speed_MethodB`):**
-   `S_speed_MethodB = 10 * (log(Battery_Wired_Charge_Time_Interpolation_Max_Mins) - log(T_final)) / (log(Battery_Wired_Charge_Time_Interpolation_Max_Mins) - log(Battery_Wired_Charge_Time_Interpolation_Min_Mins))` (Clamped 0.0 to 10.0)
+   `S_speed_MethodB = 10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(T_final)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins))` (Clamped 0.0 to 10.0)
 
-   *   `Battery_Wired_Charge_Time_Interpolation_Min_Mins` and `Battery_Wired_Charge_Time_Interpolation_Max_Mins`: Normalization constants defined in `scoring_constants.md`.
+   *   `Battery_Wired_Charge_Time_Min_Mins` and `Battery_Wired_Charge_Time_Max_Mins`: Shared normalization constants defined in `scoring_constants.md`.
 
 > [!NOTE]
-> **Method B Normalization Rationale:**
-> Method B utilizes dedicated interpolation normalization constants (`Battery_Wired_Charge_Time_Interpolation_Min_Mins` and `Battery_Wired_Charge_Time_Interpolation_Max_Mins`) from `scoring_constants.md` to preserve strict architectural isolation across all three evaluation paths (`Benchmark`, `Interpolation`, `Predicted`). Defining explicit Method B bounds ensures that interpolated durations (`T_interpolated`) map cleanly onto an exact `[0.0, 10.0]` score range.
+> **Unified Benchmark-Aligned Normalization Rationale:**
+> Method B uses the unified normalization constants (`Battery_Wired_Charge_Time_Min_Mins` and `Battery_Wired_Charge_Time_Max_Mins`) defined in `scoring_constants.md`, which are shared across all three evaluation paths (`Method A`, `Method B`, `Method C`) to guarantee complete scale invariance (see [section_8_2_method_c_huber_optimization_study.md] for detailed mathematical justification and strategy evaluation).
 
 
 ##### 8.2.1.C Method C: Technical Predictor Model (Tertiary, Analytical Method)
-Method C is the standalone analytical physics model. It is used as a fallback when physical benchmark logs and neighbor reference pools are unavailable, and serves as the **Predictor** input (`T_predicted`) for Method B interpolation.
+Method C is the standalone analytical physics model. Its parameter values are calibrated and justified across 40+ empirical laboratory benchmarks in [section_8_2_method_c_huber_optimization_study.md]. It is used as a fallback when physical benchmark logs and neighbor reference pools are unavailable, and serves as the **Predictor** input (`T_predicted`) for Method B interpolation.
 
-###### 8.2.1.C.1 Conceptual Physics & The Fundamental Equation
+###### 8.2.1.C.1 Conceptual Physics & The Fundamental Equations
 In mobile battery engineering, evaluating charging speed solely by **Peak Rated Wattage** (Watts) is fundamentally misleading. A 45 Watt (W) charger powering a small 2,500 Milliampere-hour (mAh) battery replenishes energy far faster than an identical 45 Watt (W) charger powering a massive 6,000 Milliampere-hour (mAh) battery. 
 
 Furthermore, Lithium-Ion and Lithium-Polymer battery cells cannot accept constant power throughout a charge cycle. Charging occurs in two non-linear phases:
 1. **Constant Current (CC) Phase (0% to ~50–80% State of Charge):** The Battery Management System (BMS) delivers high current. Power input reaches or approaches peak wattage (`P_peak`).
 2. **Constant Voltage (CV) / Trickle Phase (~80% to 100% State of Charge):** Internal cell resistance rises and lithium ions saturate the graphite anode. To prevent metallic lithium plating, internal cell swelling, and thermal runaway, the Battery Management System (BMS) forces voltage to cap and exponentially decays current toward zero.
 
-The true metric of user utility is **Full Charge Duration (`T_full` in minutes)**—the exact time needed to restore a depleted phone (0% State of Charge) to complete capacity (100% State of Charge) under standard operating temperatures.
+The true metric of user utility is **Full Charge Duration (`T_predicted` in minutes)**—the exact time needed to restore a depleted phone (0% State of Charge) to complete capacity (100% State of Charge) under standard operating temperatures.
 
 The model estimates the physical consequences of publicly observable characteristics, answering one fundamental question: *Given only publicly observable characteristics of a phone, how long should a 0–100% charge take?*
 
-The fundamental equation representing this physical process is:
+The fundamental equations representing this physical process are:
 
-`T_full = 60 * E_supply / P_effective`
+`T_predicted = (E_supply / P_effective) * 60`
+
+`P_effective = P_peak * F_system(C_rate)`
+
+`F_system = min(1, eta_low / (1 + k * max(0, C_rate - C0_effective)^p))`
+
+`C0_effective = C0_base * f_thermal(power_ratio) * f_skin_headroom(T_limit)`
 
 Where:
-*   `E_supply`: Battery energy in Watt-hours (Wh).
-*   `P_effective`: The average effective power delivered over the entire charge cycle in Watts (W).
-
-To calculate `P_effective` from publicly available specifications, the model limits the peak rated wattage (`P_peak`) by three modifying factors:
-`P_effective = P_peak * eta_base * F_arch * F_taper`
-
-*   `eta_base`: Baseline utilization fraction.
-*   `F_arch`: Architecture loss factor representing single-cell vs. dual-cell efficiency.
-*   `F_taper`: Phenomenological peak-to-average power retention factor at high C-rates.
+*   `T_predicted`: Full 0% to 100% charging duration expressed in minutes (min) (hence the factor of 60 converting hours to minutes).
+*   `E_supply`: Stored battery energy capacity in Watt-hours (Wh).
+*   `P_effective`: Average effective power delivered over the entire charge cycle in Watts (W).
+*   `P_peak`: Maximum physical input charging power accepted by the smartphone hardware in Watts (W).
+*   `C_rate`: Continuous charging current rate normalized by stored energy (`C_rate = P_peak / E_supply` in reciprocal hours, `h^-1`).
+*   `F_system(C_rate)`: Continuous full-cycle power retention factor.
+*   `eta_low = 0.9679`: Baseline low-power full-cycle utilization fraction.
+*   `C0_effective`: Thermally scaled effective onset threshold (`C0_effective = C0_base` since `f_thermal` and `f_skin_headroom` are neutralized to 1.0).
+*   `C0_base`: Architecture-dependent baseline thermal saturation onset threshold.
+*   `k = 1.1265`: Non-linear thermal taper severity multiplier.
+*   `p = 0.1344`: Power saturation curvature exponent.
 
 > [!NOTE]
-> **Energy Conservation Note:**
-> No factor may exceed 1.0. Architecture is modeled as a bounded loss factor (single cells are less efficient than dual cells), not a power multiplier. Protocol efficiency is not double-counted here as it is captured separately in the `S_protocol` score and intrinsically represented within the `P_peak` value.
+> **Parameter Justification & Calibration Study:**
+> The numerical values for the 5 physical parameters above (`eta_low`, `C0_single`, `C0_dual`, `k`, `p`) are derived and justified in detail via global deterministic optimization on empirical benchmarks in [section_8_2_method_c_huber_optimization_study.md].
+
 
 ###### 8.2.1.C.2 Step-by-Step Mathematical Derivation
 Method C is populated for **all** devices to serve as the baseline physical predictor model. It serves as the ultimate fallback score for unbenchmarked devices when fewer than 3 nearest neighbors exist in the database.
@@ -4855,9 +4855,9 @@ Calculates total nominal energy capacity in Watt-hours (Wh):
 Otherwise: `E_supply = (Capacity_mAh * V_nominal) / 1000` (Wh)
 *   `Capacity_mAh`: Equivalent single-cell battery capacity in Milliampere-hours (mAh).
 *   `V_nominal`: Nominal battery voltage in Volts (V), resolved dynamically via the **Nominal Voltage Detection Logic** (matching Section 8.1):
-    1. **Explicit Voltage:** If `battery_voltage_v` is explicitly provided, use that value.
-    2. **Dual-Cell Series Array (when capacity is stated per cell):** If `battery_cell_configuration` indicates Dual-cell / 2S and capacity is stated per individual cell, use **7.70 V** (two 3.85V cells in series).
-    3. **Default Single-Cell Baseline:** Otherwise, use **3.85 V** (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
+    1. **Explicit Voltage:** If an explicit battery voltage is published in the specifications, set `V_nominal` to that value.
+    2. **Dual-Cell Series Array (when capacity is stated per cell):** If the battery cell architecture indicates a dual-cell (2S) configuration and capacity is stated per individual cell, set `V_nominal = 7.70 V` (two 3.85V cells in series).
+    3. **Default Single-Cell Baseline:** Otherwise, set `V_nominal = 3.85 V` (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
 *   *Note: Cell architecture MUST NOT be inferred from charging wattage thresholds to maintain model stability across various devices.*
 
 **Step 2: Maximum Charging Input Power (`P_peak`)**
@@ -4877,19 +4877,19 @@ Calculates the peak continuous charge rate relative to battery capacity (in reci
 *Electrochemical Kinetics Rationale:* C-Rate normalizes the charging speed relative to the battery's size. A 1.0 C-rate implies the battery would theoretically charge in one hour if power remained constant. High C-rates drive faster lithium-ion intercalation at the anode but generate exponentially more heat, which dictates when and how severely the system must engage thermal throttling in subsequent steps.
 
 **Step 4: Continuous Full-Cycle Power Retention Factor (`F_system`)**
-Models the peak-to-average charging power retention as a continuous phenomenological function of continuous charge rate (`C_rate`) and cell architecture (`C0_arch`):
+Calculates the continuous peak-to-average charging power retention factor `F_system`:
 
-`F_system = min(1.0, eta_low / (1.0 + k * max(0, C_rate - C0_arch)^p))`
+`F_system = min(1, eta_low / (1 + k * max(0, C_rate - C0_effective)^p))`
 
-Where:
-*   `eta_low = 0.9695`: Unthrottled baseline full-cycle efficiency floor (representing unconstrained ~97% peak power utilization for low-power charging regimes).
-*   `C0_arch`: Architecture-dependent thermal saturation onset threshold:
-    *   `C0_single = 0.4051 h^-1`: Single-cell array thermal onset boundary.
-    *   `C0_dual = 2.6594 h^-1`: Dual-cell series array thermal onset boundary (2S operation doubles system voltage to 7.7V, halving per-cell current and pushing unthrottled charging up to ~2.66C).
-*   `k = 1.1128`: Non-linear thermal taper severity multiplier.
-*   `p = 0.1298`: Power saturation curvature exponent.
+`C0_effective = C0_base * f_thermal(power_ratio) * f_skin_headroom(T_limit)`
 
-*Phenomenological Rationale:* `F_system` replaces arbitrary multiplicative loss chains with a single, physically bounded peak-to-average power retention function. Low-power chargers operating below C0_arch sustain nearly 97% effective power (`F_system ≈ eta_low`), while extreme fast-charging regimes (C_rate \gg C0_arch) experience continuous, bounded tapering that models the Constant Current to Constant Voltage (CC/CV) transition and thermal throttling without imposing artificial floors.
+*   **Architecture-Dependent Onset Thresholds (`C0_base`):**
+    *   **Single-Cell (1S) Array (`C0_single = 0.4051 h^-1`):** Single-cell batteries operate at ~3.85 Volts (V) nominal, requiring high current to accept peak charging power. Higher current increases Printed Circuit Board (PCB) trace Joule heating (`I^2 * R`), triggering power tapering at a lower onset charge rate threshold (`C0 ≈ 0.41 h^-1`).
+    *   **Dual-Cell Series (2S) Array (`C0_dual = 2.6813 h^-1`):** Dual-cell series arrays double system voltage to ~7.70 Volts (V) nominal, halving per-cell current for equivalent wattages and reducing Printed Circuit Board (PCB) Joule heat by 75%. This enables 2S architectures to sustain unthrottled charging up to a significantly higher onset threshold (`C0 ≈ 2.68 h^-1`).
+    *   **Impact on Charging Duration (`T_predicted`):** The onset threshold `C0_base` dictates when power tapering begins. Devices with high onset thresholds (such as 2S arrays) maintain peak power utilization over a larger fraction of the Constant Current (CC, the first phase of lithium-ion battery charging where maximum current is delivered) phase, resulting in higher average effective power (`P_effective`) and substantially shorter predicted full charge durations (`T_predicted`).
+
+*   **Neutralization of Operational Multipliers (`f_thermal = 1.0`, `f_skin_headroom = 1.0`):**
+    In the 44-device calibration, System-on-Chip (SoC, the main semiconductor package containing CPU and GPU) thermal load (`f_thermal`) and skin temperature headroom (`f_skin_headroom`) are fixed to `1.0` (neutralized) because observable hardware specifications (peak wattage `P_peak` and cell architecture 1S vs. 2S) already capture the dominant thermal constraints. Adding additional empirical thermal multipliers introduced model over-parameterization without improving prediction accuracy. For full mathematical derivations, sensitivity sweeps, and optimization matrices, see [section_8_2_method_c_huber_optimization_study.md].
 
 **Step 5: Average Effective Full-Cycle Power (`P_effective`)**
 Calculates actual sustained average charging power delivered over the entire 0% to 100% cycle:
@@ -4897,47 +4897,44 @@ Calculates actual sustained average charging power delivered over the entire 0% 
 
 **Step 6: Predicted Duration (`T_predicted`) & Speed Component (`S_speed`)**
 1. **Predicted Full Charge Duration (`T_predicted`):**
-   `T_final = T_predicted = (E_supply / P_effective) * 60 + T_handshake`
-   *   `T_handshake = 0.5 mins`: Fixed hardware protocol negotiation delay.
+   `T_final = T_predicted = (E_supply / P_effective) * 60`
 
 2. **Compute Method C Speed Component Score (`S_speed_MethodC`):**
-   `S_speed_MethodC = 10 * (log(Battery_Wired_Charge_Time_Predicted_Max_Mins) - log(T_predicted)) / (log(Battery_Wired_Charge_Time_Predicted_Max_Mins) - log(Battery_Wired_Charge_Time_Predicted_Min_Mins))` (Clamped 0.0 to 10.0)
+   `S_speed_MethodC = 10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(T_predicted)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins))` (Clamped 0.0 to 10.0)
 
-   *   `Battery_Wired_Charge_Time_Predicted_Min_Mins` and `Battery_Wired_Charge_Time_Predicted_Max_Mins`: Normalization constants defined in `scoring_constants.md`.
+   *   `Battery_Wired_Charge_Time_Min_Mins` and `Battery_Wired_Charge_Time_Max_Mins`: Shared normalization constants defined in `scoring_constants.md`.
 
 > [!NOTE]
-> **Method-Specific Normalization & Domain Floor Alignment Rationale:**
-> `Battery_Wired_Charge_Time_Predicted_Max_Mins` is explicitly aligned to **`241.0` minutes** (the standard 4-hour `0.0` score floor, matching Method A's benchmark floor `Battery_Wired_Charge_Time_Benchmark_Max_Mins`). In smartphone evaluation, any full-charge duration exceeding 4 hours (241.0 minutes) receives a `0.00` score floor.
+> **Unified Benchmark-Aligned Normalization Rationale:**
+> Method C uses the unified normalization constants (`Battery_Wired_Charge_Time_Min_Mins` and `Battery_Wired_Charge_Time_Max_Mins`) defined in `scoring_constants.md`, which are shared across all three evaluation paths (`Method A`, `Method B`, `Method C`) to guarantee complete scale invariance (see [section_8_2_method_c_huber_optimization_study.md] for detailed mathematical justification and strategy evaluation).
 > 
-> *Nokia 2.4 Verification Calculation Example (4,500 mAh, 5W):*
-> *   `E_supply`: (4,500 mAh * 3.85 V) / 1000 = 17.325 Wh
-> *   `C_rate`: 5.0 W / 17.325 Wh = 0.2886 h^-1
-> *   `F_system`: 0.9695 (Since 0.2886 h^-1 < 0.4051 h^-1 threshold, no taper penalty applies)
-> *   `P_effective`: 5.0 W * 0.9695 = 4.848 W
-> *   `T_predicted`: (17.325 Wh / 4.848 W) * 60 + 0.5 = 215.0 minutes (GSMArena laboratory benchmark: 215.0 minutes)
 
 ##### Empirical Calibration & Optimization Study Reference
 
-A comprehensive mathematical calibration and loss function optimization study evaluating Method C across 44 authentic smartphone benchmarks from GSMArena laboratory data is documented in [section_8_2_method_c_mse_huber_optimization_study.md]. Please note that the optimization study evaluated an earlier iteration of the Method C model (which included distinct protocol efficiency parameters), so the exact equations and parameter models differ from the finalized analytical model documented here.
+The physical parameters of Method C (`eta_low`, `C0_single`, `C0_dual`, `k`, `p`) were calibrated across 44 authentic smartphone laboratory benchmarks from GSMArena data using a robust Huber loss optimization framework (`delta = 0.0 mins / Pure MAE Primary`).
+
+The complete mathematical derivation, statistical loss function theory, sensitivity sweeps, boundary interior checks, normalization constant strategy evaluations, and master 44-device prediction dataset are documented in [section_8_2_method_c_huber_optimization_study.md].
 
 > [!NOTE]
-> **Rationale for Retaining the Baseline Analytical Model:**
-> While numerical optimization (evaluating Mean Squared Error — MSE, Mean Absolute Error — MAE, and Huber loss formulations) was conducted across the 44-device benchmark dataset, none of the unconstrained "optimized" parameter sets were deployed in this framework for the following reasons:
-> 1. **Physical Soundness & Parameter Uncertainty:** Pure mathematical optimization across 44 devices yields parameters that lack physical realism—including inverted efficiency hierarchies across charging protocols and artificially low thermal onset thresholds (`C_threshold << 1.50 h^-1`).
-> 2. **Unmodeled Physical Factors:** Mathematical optimizers allowed electrical efficiency constants to shift unnaturally to compensate for unmodeled device-specific hardware behaviors (such as firmware-level thermal throttling limits and chassis thermodynamic heat dissipation). Empirical outlier analysis confirms that certain devices (such as the LG G7 ThinQ, exhibiting a duration delta of approximately 20.1 minutes) implement conservative firmware-enforced thermal throttling algorithms that aggressively reduce charging wattage (dropping from 18W down to ~5–7W once internal battery temperatures reach threshold limits around 38°C) to keep heat dissipation within safe cell limits.
+> **Summary of Optimization Calibration Results:**
+> * **Duration Precision (`T`-metrics):** Across all 44 benchmark devices, the calibrated Method C model achieves an overall Mean Absolute Error (`MAE_T`) of **9.91 minutes** and Root Mean Square Error (`RMSE_T`) of **15.26 minutes**.
+> * **Standard Android Sub-Dataset:** Modern fast-charging smartphones (Samsung S-series, OnePlus, Xiaomi, Vivo, ROG Phone, Nothing, Pixel) achieve an average duration residual (`MAE_T`) of **5.97 minutes** (`RMSE_T = 10.34 mins`).
+> * **Extreme Outliers & Vendor Firmware Tuning:** The largest duration residuals are concentrated in Apple iPhones and the LG G7 ThinQ (`MAE_T = 23.57 mins`, `RMSE_T = 25.73 mins`, likely driven by conservative vendor Battery Management System BMS thermal management policies and extended Constant Voltage CV trickle charging profiles) as well as specific Samsung mid-range hardware (Samsung Galaxy A55 and A54 exhibiting a `+37.7 minute` / `+59.8%` outlier residual compared to the Galaxy A34 baseline due to Exynos PMIC charging controller tuning differences).
+> * **Normalized Speed Score Accuracy (`S`-metrics under Strategy 2):** Converting physical duration predictions into speed scores via Benchmark-Aligned Normalization Constants (`T_min = 9.0 mins`, `T_max = 241.0 mins`) achieves a Mean Absolute Score Error (`MAE_S`) of **0.453 points** (on a 0.0 to 10.0 scale) and near-zero overall score bias (`Mean_dS = -0.024 points`) with zero clipping.
 > 
-> Consequently, the baseline analytical physical model (with sound phenomenological constraints) is retained. Future framework iterations will revisit empirical parameter optimization once a substantially larger database of benchmark devices is gathered and model improvements are implemented, among which eventually the integration of thermodynamic cooling metrics from **Section 6.10 (Thermal Dissipation & Stability Index — TDSI)** into the charging kinetics.
+> For historical traceability, an earlier exploratory 12-parameter calibration study is preserved in [section_8_2_method_c_mse_huber_optimization_study.md]. That early model was discarded because its unconstrained 12-parameter optimization suffered from severe over-parameterization, parameter instability, and physically unviable parameter values (such as inverted protocol efficiency hierarchies), whereas the active 5-parameter model delivers stronger physical grounding through a significantly simpler architecture while achieving comparable accuracy against empirical benchmark data.
+
 
 #### 8.2.2 Ecosystem Interoperability & Advanced Hardware Features
 Evaluates hardware features and charging ecosystem openness that are not reflected in single-charger laboratory speed benchmarks.
 
-##### 8.2.2.A Universal Protocol Interoperability Score (`S_protocol`, 9% Weight)
-Evaluates charging ecosystem freedom by calculating the continuous ratio of maximum power accessible via open, non-proprietary USB Power Delivery (USB-PD 3.0/3.1 PPS or fixed PD) relative to the device's peak advertised wattage:
+##### 8.2.2.A Universal Protocol Interoperability Score (`S_interoperability`, 9% Weight)
+Evaluates charging ecosystem freedom by calculating the continuous ratio of maximum power accessible via open, non-proprietary USB Power Delivery (USB-PD 3.0/3.1 Programmable Power Supply — PPS or fixed PD) relative to the device's peak rated wattage (`P_peak`):
 
-`S_protocol = 10.0 * (P_universal_USB_PD / P_max_advertised)` (Clamped 0.0 to 10.0)
+`S_interoperability = 10 * (P_universal_USB_PD / P_peak)` (Clamped 0.0 to 10.0)
 
 *   `P_universal_USB_PD`: Maximum power input (in Watts) achieved when connected to a standard, open USB Power Delivery charger.
-*   `P_max_advertised`: Maximum rated wired charging power (in Watts) of the device using manufacturer proprietary adapters.
+*   `P_peak`: Maximum peak rated wired charging power input (in Watts) accepted by the smartphone hardware using official proprietary adapters (identical to `P_peak` in Section 8.2.1).
 
 ###### Sourcing Hierarchy & Evidence Verification Rules
 To guarantee maximum data reproducibility, resolve unannounced USB-PD fallback wattages, and eliminate brand bias (as highlighted by industry analyses from AndroidAuthority and ChargerLAB), `P_universal_USB_PD` MUST be extracted using the following **6-Tier Evidence Hierarchy**:
@@ -4949,27 +4946,41 @@ To guarantee maximum data reproducibility, resolve unannounced USB-PD fallback w
 5. **Tier 5 — Notebookcheck Hardware Reviews:** Oscilloscope and power meter charging protocol tests.
 6. **Tier 6 — AndroidAuthority Charging Deep-Dives:** Empirical USB-PD vs. proprietary brick comparative measurements.
 
-###### Deterministic Fallback Rule for Unspecified USB-PD Wattage
-When official documentation confirms that a device supports USB Power Delivery but omits the exact maximum wattage, and no empirical measurement (Tiers 3–6) exists in the database:
-*   Default `P_universal_USB_PD` to standard baseline USB-PD fallback: **18.0 W** for high-power devices (`P_max >= 30.0 W`), or **15.0 W** for standard devices (`P_max < 30.0 W`).
-*   Log score source tag as `"USB-PD Supported (Unspecified - Standard 18W Baseline Fallback)"`.
+###### Deterministic Multi-Tier Fallback Rules for Universal Charging Wattage
+When explicit empirical or manufacturer documentation (Tiers 1–6) is not yet available for a device, `P_universal_USB_PD` is resolved deterministically using a conservative multi-tier physical decision tree:
 
-**Ecosystem Benchmark Calibration Reference Table:**
+1. **Explicit Measured / Documented Power (`P_measured` / `P_documented`):**
+   If verified data exists in Tiers 1–6 (datasheets, USB-IF certified profiles, POWER-Z logs, or laboratory reviews), set `P_universal_USB_PD = P_measured`. Explicit empirical evidence MUST NEVER be overridden by fallback rules.
 
-| Device Class                                                          | `P_max` | `P_universal` | Ratio  | `S_protocol` |
-| :-------------------------------------------------------------------- | :-----: | :-----------: | :----: | :----------: |
-| **Full Universal Standard** (e.g., Samsung S24 Ultra, Pixel 9 Pro XL) | 45.0 W  |    45.0 W     | 1.0000 |  **10.00**   |
-| **High Universal Fallback** (e.g., OnePlus 12, Xiaomi 13 Pro)         | 120.0 W |    65.0 W     | 0.5417 |   **5.42**   |
-| **Moderate Universal Fallback** (e.g., Realme GT3)                    | 240.0 W |    65.0 W     | 0.2708 |   **2.71**   |
-| **Basic Legacy Fallback** (e.g., Older Vivo / Oppo models)            | 80.0 W  |    18.0 W     | 0.2250 |   **2.25**   |
-| **Proprietary Only / Legacy 5V** (No USB-PD support)                  | 18.0 W  |     0.0 W     | 0.0000 |   **0.00**   |
+2. **USB-PD Supported, but Maximum Wattage Unspecified:**
+   If official specifications confirm USB Power Delivery (USB-PD / PPS) support but omit the numerical wattage limit:
+   `P_universal_USB_PD = min(P_peak, P_era)`
 
-*Ecosystem Class Descriptions:*
-*   **Full Universal Standard (10.00):** Charges at 100% max speed on any open off-the-shelf USB-PD PPS charger.
-*   **High Universal Fallback (5.42–8.00):** Uses proprietary protocol for max speed, but maintains 50%–80% fast charging on universal chargers.
-*   **Moderate Universal Fallback (2.71):** Ultra-high proprietary speed, but drops to ~27% relative performance on standard USB-PD chargers.
-*   **Basic Legacy Fallback (2.25):** Proprietary fast charging; drops to basic 18W rate on universal chargers.
-*   **Proprietary Only / Legacy 5V (0.00):** Devices lacking active USB Power Delivery (USB-PD) negotiation drop to basic legacy 5V USB BC 1.2 trickle charging (`P_universal_USB_PD = 0.0 W`), yielding `S_protocol = 10.0 * (0.0 / P_max) = 0.00`.
+   *Where `P_era` is a conservative, year-dependent ceiling representing the evolution of the USB-PD ecosystem:*
+   *   **2016–2017:** `P_era = 10.0 W` (Legacy 5V/2A early USB-PD 2.0 adoption; e.g. Google Pixel 1st gen)
+   *   **2018–2019:** `P_era = 15.0 W` (Standard 5V/3A baseline USB-PD profile; e.g. Pixel 3, early Samsung PD)
+   *   **2020–2021:** `P_era = 20.0 W` (USB-PD 3.0 / early PPS adoption; e.g. Pixel 5 at 18W, Samsung S20 at 25W PD PPS)
+   *   **2022–2023:** `P_era = 25.0 W` (Mainstream PD 3.0 PPS; e.g. Samsung S22/S23 at 25W, Pixel 7/8 at 21W–27W)
+   *   **2024–2026:** `P_era = 30.0 W` (Mature PD 3.1 PPS ecosystem; e.g. Pixel 9 Pro at 27W–37W, Samsung S24 Ultra at 45W)
+
+3. **USB Type-C Present, but No Evidence of USB-PD Support:**
+   If the device features a USB Type-C port but lacks documented USB-PD protocol support (e.g., proprietary legacy fast-charging only):
+   `P_universal_USB_PD = min(P_peak, 15.0 W)` (USB Type-C specification maximum without PD: 5V/3A via CC pin current advertisement).
+
+4. **Legacy Micro-USB / Proprietary Connector without Universal Fast Charging:**
+   If the device uses a Micro-USB port without universal fast-charging support:
+   `P_universal_USB_PD = min(P_peak, 5.0 W)` (Standard 5V/1A USB BC 1.2 trickle charging).
+
+5. **No Open/Universal USB Charging Compatibility:**
+   If the device lacks any open USB charging compatibility:
+   `P_universal_USB_PD = 0.0 W`.
+
+> [!NOTE]
+> **Industry Prevalence of Unspecified USB-PD Fallback Wattages:**
+> Official OEM datasheets frequently state that a device supports open USB Power Delivery (USB-PD / PPS) while deliberately omitting the exact numerical wattage limit. This occurs because manufacturers prioritize highlighting headline proprietary fast-charging speeds (e.g., OnePlus 100W SUPERVOOC, Xiaomi 120W HyperCharge, Vivo 120W FlashCharge) to drive proprietary wall-charger accessory sales, or omit peak limits entirely to avoid regulatory over-promising (e.g., Apple iPhone spec sheets list *"Fast-charge capable"* without publishing maximum numerical PD wattages). 
+> **Data Availability & Structural Monotonicity Rationale:**
+> All required inputs for this decision tree—launch release year, USB port type, USB-PD claim status, and peak rated wattage (`P_peak`)—are 100% public data fields available across standard smartphone specification databases (such as GSMArena). Formulating all fallback rules with the physical minimum cap `min(P_peak, P_fallback)` guarantees complete structural coherence and strict monotonicity across capability tiers: `Explicit Logged PD >= Unspecified PD >= Basic Type-C >= Micro-USB >= Proprietary Only`. The `P_era` progression (10 → 15 → 20 → 25 → 30 W) tracks the real-world evolution of the USB-PD ecosystem validated against ChargerLAB and AndroidAuthority empirical data, while high-power proprietary flagships (120W–240W) default to conservative physical ceilings until Tiers 1–6 logs verify higher negotiated power levels.
+
 
 ##### 8.2.2.B Hardware Bypass Charging / Direct Drive Feature Score (`S_bypass`, 3% Weight)
 Evaluates hardware capability to route electrical current directly from the wall charger to system components (PMIC/logic board), completely bypassing the battery cell during plugged-in high-load use (gaming, GPS navigation, mobile hotspot tethering):
@@ -4985,71 +4996,63 @@ Evaluates hardware capability to route electrical current directly from the wall
 
 
 #### 8.2.3 Composite Section Score Calculation
-The final Section 8.2 score combines pure wired charging speed (`S_speed`), universal protocol interoperability (`S_protocol`), and hardware bypass charging (`S_bypass`):
+The final Section 8.2 score combines pure wired charging speed (`S_speed`), universal protocol interoperability (`S_interoperability`), and hardware bypass charging (`S_bypass`):
 
-`Final Score 8.2 = 0.88 * S_speed + 0.09 * S_protocol + 0.03 * S_bypass` (Clamped 0.0 to 10.0)
+`Final Score 8.2 = 0.88 * S_speed + 0.09 * S_interoperability + 0.03 * S_bypass` (Clamped 0.0 to 10.0)
 
 
 #### 8.2.4 Model Validation Worked Examples
 Below are 2 detailed, verified worked examples evaluating real-world flagship devices across Method A (Empirical GSMArena Benchmark) and Method C (Analytical Physics Predictor), calculating the final composite section score.
 
 ##### Example 1: Samsung Galaxy S24 Ultra (45W Universal Fast Charging)
-*   **Empirical Source:** [GSMArena Samsung Galaxy S24 Ultra Review — Charging Test](https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2659p3.php)
-*   **Verified Benchmark Data (`T_GSMArena`):** `59.0 minutes` (0% to 100% full charge time using official 45W USB-PD PPS charger).
+*   **Empirical Source:** [GSMArena Samsung Galaxy S24 Ultra Review — Charging Test](https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2670p3.php)
+*   **Verified Benchmark Data (`T_GSMArena`):** `65.0 minutes` (0% to 100% full charge time using official 45W USB-PD PPS charger; 69% reached in 30 minutes).
 *   **Hardware Specifications:**
     *   `P_peak`: `45.0 W`
     *   `Capacity_mAh`: 5,000 mAh at 3.85V (`E_supply = 19.25 Wh`)
-    *   `F_arch`: `0.94` (Single-cell battery design loss factor)
-    *   `P_universal_USB_PD`: `45.0 W` -> `S_protocol = 10.0 * (45.0 / 45.0) = 10.00`
+    *   `Cell Architecture`: Single-Cell (`C0_single = 0.4051 h^-1`)
+    *   `P_universal_USB_PD`: `45.0 W` -> `S_interoperability = 10.0 * (45.0 / 45.0) = 10.00`
     *   `S_bypass`: `10.00` (Supports Game Booster "Pause USB Power Delivery" direct drive)
 *   **Step-by-Step Method C Speed Calculations:**
     1. *Continuous C-Rate:* `C_rate = 45.0 / 19.25 = 2.3377 h^-1`
-    2. *C-Rate Tapering Factor:*
-       `F_taper = 1.0 / (1.0 + 0.06 * max(0, 2.3377 - 1.50)^0.80) = 1.0 / (1.0 + 0.06 * 0.8377^0.80) = 1.0 / (1.0 + 0.06 * 0.8679) = 1.0 / 1.0521 = 0.9505`
+    2. *Continuous Full-Cycle Power Retention Factor (`F_system`):*
+       `F_system = min(1.0, 0.9679 / (1.0 + 1.1265 * max(0, 2.3377 - 0.4051)^0.1344)) = 0.9679 / (1.0 + 1.1265 * 1.0918) = 0.4339`
     3. *Average Effective Full-Cycle Power:*
-       `P_effective = 45.0 * 0.53 * 0.94 * 0.9505 = 21.31 W`
+       `P_effective = 45.0 * 0.4339 = 19.52 W`
     4. *Method C Predicted Duration (`T_predicted`):*
-       `T_predicted = (19.25 / 21.31) * 60 = 54.20 minutes`
+       `T_predicted = (19.25 / 19.52) * 60 = 59.2 minutes`
 *   **Method A vs. Method C Alignment Comparison:**
-    *   *Method C Pure Speed Score:* `54.20 minutes` -> `S_speed_MethodC = 10 * (log(241.0) - log(54.20)) / (log(241.0) - log(9.46)) = 10 * (2.3820 - 1.7340) / (2.3820 - 0.9759) = 4.61`
-    *   *Method A Pure Speed Score:* `59.00 minutes` -> `S_speed_MethodA = 10 * (log(241.0) - log(59.00)) / (log(241.0) - log(9.00)) = 10 * (2.3820 - 1.7709) / (2.3820 - 0.9542) = 4.28`
-    *   *Method A Final Composite Score (Case 1 Selected):*
-        `Final Score 8.2 = 0.88 * 4.28 + 0.09 * 10.00 + 0.03 * 10.00 = 3.77 + 0.90 + 0.30 = 4.97`
+    *   *Method A Pure Speed Score (Empirical `T_GSMArena = 65.0 min`):* `S_speed_MethodA = 10 * (log(241.0) - log(65.0)) / (log(241.0) - log(9.00)) = 3.99`
+    *   *Method C Pure Speed Score (Analytical Physics `T_predicted = 59.2 min`):* `S_speed_MethodC = 10 * (log(241.0) - log(59.2)) / (log(241.0) - log(9.00)) = 4.27`
+    *   *Method A Final Composite Score:*
+        `Final Score 8.2 = 0.88 * 3.99 + 0.09 * 10.00 + 0.03 * 10.00 = 3.51 + 0.90 + 0.30 = 4.71`
     *   *Method C Final Composite Score (Fallback):*
-        `Final Score 8.2 = 0.88 * 4.61 + 0.09 * 10.00 + 0.03 * 10.00 = 4.06 + 0.90 + 0.30 = 5.26`
+        `Final Score 8.2 = 0.88 * 4.27 + 0.09 * 10.00 + 0.03 * 10.00 = 3.76 + 0.90 + 0.30 = 4.96`
 
 ##### Example 2: Xiaomi 13 Pro (120W Dual-Cell Proprietary Direct Charge)
-*   **Empirical Source:** [GSMArena Xiaomi 13 Pro Review — Charging Test](https://www.gsmarena.com/xiaomi_13_pro-review-2527p3.php)
+*   **Empirical Source:** [GSMArena Xiaomi 13 Review — Charging Test](https://www.gsmarena.com/xiaomi_13-review-2531p3.php)
 *   **Verified Benchmark Data (`T_GSMArena`):** `19.0 minutes` (0% to 100% full charge time in 120W Boost Mode).
 *   **Hardware Specifications:**
     *   `P_peak`: `120.0 W`
     *   `Capacity_mAh`: 4,820 mAh at 3.85V (`E_supply = 18.56 Wh`)
-    *   `F_arch`: `1.00` (Dual-cell series battery array reference)
-    *   `P_universal_USB_PD`: `65.0 W` -> `S_protocol = 10.0 * (65.0 / 120.0) = 5.42`
+    *   `Cell Architecture`: Dual-Cell (`C0_dual = 2.6813 h^-1`)
+    *   `P_universal_USB_PD`: `65.0 W` -> `S_interoperability = 10.0 * (65.0 / 120.0) = 5.42`
     *   `S_bypass`: `0.00` (No native hardware bypass charging)
 *   **Step-by-Step Method C Speed Calculations:**
     1. *Continuous C-Rate:* `C_rate = 120.0 / 18.56 = 6.4655 h^-1`
-    2. *C-Rate Tapering Factor:*
-       `F_taper = 1.0 / (1.0 + 0.06 * max(0, 6.4655 - 1.50)^0.80) = 1.0 / (1.0 + 0.06 * 4.9655^0.80) = 1.0 / (1.0 + 0.06 * 3.6015) = 1.0 / 1.2161 = 0.8223`
+    2. *Continuous Full-Cycle Power Retention Factor (`F_system`):*
+       `F_system = min(1.0, 0.9679 / (1.0 + 1.1265 * max(0, 6.4655 - 2.6813)^0.1344)) = 0.9679 / (1.0 + 1.1265 * 1.1979) = 0.4124`
     3. *Average Effective Full-Cycle Power:*
-       `P_effective = 120.0 * 0.53 * 1.00 * 0.8223 = 52.30 W`
+       `P_effective = 120.0 * 0.4124 = 49.49 W`
     4. *Method C Predicted Duration (`T_predicted`):*
-       `T_predicted = (18.56 / 52.30) * 60 = 21.29 minutes`
+       `T_predicted = (18.56 / 49.49) * 60 = 22.5 minutes`
 *   **Method A vs. Method C Alignment Comparison:**
-    *   *Method C Pure Speed Score:* `21.29 minutes` -> `S_speed_MethodC = 10 * (log(241.0) - log(21.29)) / (log(241.0) - log(9.46)) = 10 * (2.3820 - 1.3282) / (2.3820 - 0.9759) = 7.49`
-    *   *Method A Pure Speed Score:* `19.00 minutes` -> `S_speed_MethodA = 10 * (log(241.0) - log(19.00)) / (log(241.0) - log(9.00)) = 10 * (2.3820 - 1.2788) / (2.3820 - 0.9542) = 7.73`
-    *   *Method A Final Composite Score (Case 1 Selected):*
+    *   *Method C Pure Speed Score:* `22.5 minutes` -> `S_speed_MethodC = 10 * (log(241.0) - log(22.5)) / (log(241.0) - log(9.00)) = 7.21`
+    *   *Method A Pure Speed Score:* `19.00 minutes` -> `S_speed_MethodA = 10 * (log(241.0) - log(19.00)) / (log(241.0) - log(9.00)) = 7.73`
+    *   *Method A Final Composite Score:*
         `Final Score 8.2 = 0.88 * 7.73 + 0.09 * 5.42 + 0.03 * 0.00 = 6.80 + 0.49 + 0.00 = 7.29`
     *   *Method C Final Composite Score (Fallback):*
-        `Final Score 8.2 = 0.88 * 7.49 + 0.09 * 5.42 + 0.03 * 0.00 = 6.59 + 0.49 + 0.00 = 7.08`
-
-#### 8.2.5 Non-Overlap & Anti-Double-Counting Rules
-To preserve absolute framework integrity and eliminate double-counting, Section 8.2 is strictly delineated from adjacent battery, financial, and connectivity subsections:
-
-*   **Section 8.1 (Battery Endurance):** Section 8.1 evaluates active runtime endurance hours (`T_active`) during battery discharge under active daily workloads (calls, web browsing, video playback, gaming). In contrast, Section 8.2 evaluates energy replenishment (charging speed) from wall power. They measure opposite physical directions of the battery lifecycle with zero functional overlap.
-*   **Section 8.4 (Wired Reverse Charging):** Section 8.4 evaluates peak power output in Watts (energy export) when the smartphone acts as a portable power bank to charge external accessories or secondary phones via USB-C. In contrast, Section 8.2 evaluates peak power input in Watts (energy import) when the smartphone is the recipient of wall power.
-*   **Section 8.6 (Charger Adequacy):** Section 8.6 evaluates the unboxing package contents and financial value of bundled accessories (the ratio of included in-box charger wattage to maximum supported device wattage). In contrast, Section 8.2 evaluates the device hardware's native charging performance assuming an adequate wall charger is used.
-*   **Section 7.8 (USB Data Speed):** Section 7.8 evaluates digital data packet transmission bandwidth (Mbps / Gbps) over USB data lines and DisplayPort Alt Mode video output. In contrast, Section 8.2 evaluates VBUS and CC line electrical power negotiation and physical battery charging duration.
+        `Final Score 8.2 = 0.88 * 7.21 + 0.09 * 5.42 + 0.03 * 0.00 = 6.34 + 0.49 + 0.00 = 6.83`
 
 
 ### 🔹 8.3 Wireless Charging Speed

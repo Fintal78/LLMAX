@@ -2,17 +2,13 @@
 
 > [!IMPORTANT]
 > **Study Target & Scope:** This document presents the complete mathematical derivation, hyperparameter sensitivity analysis, and empirical calibration study for **Method C (Physical Loss-Based Charging Duration Predictor)** across 44 real-world smartphone benchmarks from GSMArena laboratory data.
->
-> All formulas avoid arbitrary booster multipliers and obey strict energy conservation (`P_effective <= P_peak`).
 
 > [!NOTE]
-> **Framework Implementation Status (Baseline Model Retained):**
-> None of the three candidate optimization sets (Option 1: Pure MSE, Option 2: Pure MAE, Option 3: Huber Loss) will be deployed into [scoring_rules.md](../scoring_rules.md) at this stage.
+> **Framework Implementation Status & Relationship to [scoring_rules.md]:**
+> This document records an earlier, exploratory 12-parameter calibration study. It is preserved for historical traceability and auditing but it is NOT used in [scoring_rules.md].
 > 
-> **Rationale & Future Roadmap:**
-> As detailed in the observations in **Section 3.2**, the unconstrained mathematical optimization yields significant parameter uncertainty and physically questionable values (such as inverted efficiency hierarchies across Parameters 5 to 9 and artificially depressed thermal onset thresholds `C_threshold << 1.50 C`). The optimizer achieved low empirical duration variance by allowing mathematical parameters to compensate for unmodeled physical factors (e.g., firmware-level thermal throttling and chassis heat dissipation).
-> 
-> Consequently, the baseline analytical model in [scoring_rules.md](../scoring_rules.md) is maintained. This calibration study will be revisited in a future iteration once a substantially larger database of benchmark devices is gathered and the physical formulation is enriched (e.g., incorporating thermodynamic dissipation metrics from Section 6.10 Thermal Dissipation & Stability Index — TDSI).
+> **Rationale:**
+> As detailed in the observations in **Section 3.2**, the unconstrained 12-parameter mathematical optimization evaluated in this document yielded parameter uncertainty and physically questionable values (such as inverted efficiency hierarchies across Parameters 5 to 9 and potentially depressed thermal onset thresholds `C_threshold << 1.50 C`). The optimizer achieved low empirical duration variance by allowing mathematical parameters to compensate for unmodeled physical factors (e.g., firmware-level thermal throttling and chassis heat dissipation).
 
 ---
 
