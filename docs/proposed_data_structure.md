@@ -61,7 +61,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-07-31"
+    "last_updated": "2026-08-17"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -4968,22 +4968,82 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           "value": 5000,
           "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-12771.php",
           "exact_extract": "BATTERY [...] Li-Ion 5000 mAh, non-removable"
-          // SCORING GUIDELINE: Total charge capacity in milliampere-hours (mAh).
+          // SCORING GUIDELINE: Battery capacity in mAh. This value must be mathematically compatible with battery_nominal_voltage_v so that their product represents the complete physical battery pack.
+          //
+          // EXTRACTION & PROVENANCE RULES:
+          //   1. Total Combined Pack Capacity: If the published capacity represents the complete battery pack (e.g. '5000 mAh' or '5000 mAh total'), store the total pack capacity.
+          //   2. Per-Cell Capacity: If the published capacity explicitly represents one cell of a series battery (e.g. '2 x 2500 mAh' or '2500 mAh per cell'), store the per-cell capacity.
+          //   3. Illegal Pairing Prohibitions: Never combine total pack capacity with series-pack voltage (7.70V). Never combine per-cell capacity with single-cell voltage (3.85V) when cells are connected in series.
+          //   4. Missing Data Handling: If no capacity specifications exist in any source, set value = "Not found", source = "N/A", exact_extract = "N/A". If Wh is directly published and mAh capacity is completely unstated, set value = "N/A", source = "N/A", exact_extract = "N/A".
+        },
+        "peak_charging_power_w": {
+          "value": 45.0,
+          "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+          "exact_extract": "45W wired charging"
+          // SCORING GUIDELINE: Maximum peak rated continuous wired charging input power accepted by the smartphone hardware in Watts (W) (P_peak). Sourced according to the 4-Tier Evidence Hierarchy: (1) Measured input power [e.g. ChargerLAB/Notebookcheck], (2) Original Equipment Manufacturer (OEM) published accepted wattage, (3) Documented charging mode, (4) Inferred from charger [least reliable].
+        },
+        "battery_cell_architecture": {
+          "value": "Single-Cell (1S)",
+          "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+          "exact_extract": "45W wired charging",
+          "classification_method": "Power-Inferred",
+          "confidence_level": "Low"
+          // SCORING GUIDELINE: Physical battery cell architecture used by the charging model to distinguish single-cell, parallel multi-cell, and series multi-cell charging systems (governs c0_base in Section 8.2).
+          //
+          // PERMITTED VALUES:
+          //   • value: ["Single-Cell (1S)", "Dual-Cell Series (2S)", "Dual-Cell Parallel", "Multi-Cell Series (3S+)", "Unknown"]
+          //   • classification_method: ["Direct", "Technical Secondary Source", "Power-Inferred", "Default"]
+          //   • confidence_level: ["High", "Medium", "Low"]
+          //
+          // DETERMINISTIC CLASSIFICATION & PROVENANCE RULES:
+          //   1. DIRECT EVIDENCE: If an official manufacturer document, official technical specification, regulatory filing, service documentation, or technically credible teardown explicitly identifies the cell architecture, use the documented architecture. classification_method = "Direct" or "Technical Secondary Source". confidence_level = "High". Populate source with the document URL and exact_extract with the verbatim architecture quote.
+          //   2. EXPLICIT CELL-COUNT EVIDENCE: If a reliable source explicitly states '2 x X mAh', 'dual-cell', 'two cells in series', '2S', 'dual-cell parallel', '1S2P', 'split-cell battery', or equivalent, classify the documented architecture. confidence_level = "High" when configuration is unambiguous. Populate source with document URL and exact_extract with verbatim text.
+          //   3. POWER-INFERRED DUAL-CELL: If no direct architecture evidence is available and P_peak >= 65 W, classify as "Dual-Cell Series (2S)". classification_method = "Power-Inferred". confidence_level = "Medium". Inherit source from peak_charging_power_w.source and exact_extract from peak_charging_power_w.exact_extract.
+          //   4. POWER-INFERRED SINGLE-CELL: If no direct architecture evidence is available and P_peak < 65 W, classify as "Single-Cell (1S)" with classification_method = "Power-Inferred". Set confidence_level = "Medium" if P_peak < 45 W, or confidence_level = "Low" if 45 W <= P_peak < 65 W (lower confidence transition band). Inherit source from peak_charging_power_w.source and exact_extract from peak_charging_power_w.exact_extract.
+          //   5. MISSING POWER DEFAULT: If architecture evidence is unavailable and P_peak is unknown, classify as "Single-Cell (1S)" using default baseline. classification_method = "Default". confidence_level = "Low". Set source = "N/A", exact_extract = "N/A".
+          //   6. CONFLICTING EVIDENCE: If direct evidence contradicts power-based inference, always use direct evidence and ignore power-based inference.
+          //   7. UNKNOWN: "Unknown" should be used ONLY when available evidence explicitly establishes that architecture cannot be determined AND applying default single-cell baseline would create a demonstrably misleading result. Otherwise use appropriate inferred/default classification so device remains scorable. Set source = "N/A", exact_extract = "N/A", confidence_level = "Low".
+          //
+          // POWER-INFERENCE RATIONALE: Charging power is an inference signal, not proof of architecture. The 65 W threshold is an operational classification threshold selected to maximize automated coverage of modern split-cell implementations while limiting false dual-cell classifications. It is not a physical law.
+          // IMPORTANT: Never infer Dual-Cell Series solely because a manufacturer advertises a proprietary fast-charging protocol. When direct architecture evidence exists, it always overrides power-based inference.
         },
         "battery_nominal_voltage_v": {
           "value": 3.85,
           "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
-          "exact_extract": "Nominal Voltage: 3.85V"
-          // SCORING GUIDELINE: Nominal operating voltage in Volts (V). To correctly identify this value, apply the following prioritized Nominal Voltage Detection Logic:
-          //   1. Explicit Voltage: If manufacturer specifications or reliable teardown data contains an explicit numeric value for the battery voltage in Volts (V), use that value.
-          //   2. Dual-Cell Configuration: If the battery configuration is verified to be dual-cell (e.g., text descriptions in specifications or teardowns contain "Dual-cell", "Dual cell", "2S", or "dual-cell" [case-insensitive]), use 7.70 Volts (V) (representing two 3.85 Volts [V] cells connected in series).
-          //   3. High-Power Charging Heuristic: If the maximum wired charging speed is 120 Watts (W) or higher, use 7.70 Volts (V) (as ultra-fast charging architectures require dual-cell configurations to halve charging current and prevent excessive thermal losses).
-          //   4. Default Fallback: Otherwise, use 3.85 Volts (V) (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
+          "exact_extract": "45W wired charging"
+          // SCORING GUIDELINE: Nominal battery voltage multiplier in Volts (V) used to calculate stored battery energy. Established or confirmed referencing battery_cell_architecture.
+          //
+          // PRIORITY & PROVENANCE RULES:
+          //   1. Explicit Pack Voltage: If an explicit nominal voltage for the battery pack is publicly documented, use that value. Populate source with the voltage URL and exact_extract with the verbatim voltage text.
+          //   2. Per-Cell Voltage Scale (Dual-Cell Series 2S): If battery_cell_architecture is classified as Dual-Cell Series (2S), capacity is explicitly given per cell, and per-cell nominal voltage is documented, use 2 x the per-cell nominal voltage (e.g. 7.70 V). Populate source with battery_cell_architecture.source and exact_extract with battery_cell_architecture.exact_extract.
+          //   3. Dual-Cell Total Capacity Baseline (Dual-Cell Series 2S): If battery_cell_architecture is classified as Dual-Cell Series (2S) but published capacity is total pack capacity (e.g. 5000 mAh total), use the standard 3.85 V system baseline. Populate source with battery_cell_architecture.source and exact_extract with battery_cell_architecture.exact_extract.
+          //   4. Single-Cell Baseline (Single-Cell 1S or Dual-Cell Parallel): If battery_cell_architecture is classified as Single-Cell (1S) or Dual-Cell Parallel (1S2P), use documented nominal voltage when available; otherwise use standard 3.85 V baseline. Populate source with battery_cell_architecture.source and exact_extract with battery_cell_architecture.exact_extract.
+          //   5. Multi-Cell Series Baseline (3S/4S Gaming/Foldable Architectures): If battery_cell_architecture is classified as Multi-Cell Series (3S or 4S), use N x per-cell nominal voltage (e.g. 3 x 3.85 V = 11.55 V) when capacity is per-cell, or standard 3.85 V baseline when capacity is total pack capacity. Populate source with battery_cell_architecture.source and exact_extract with battery_cell_architecture.exact_extract.
+          //   6. Effective Voltage Provenance: When Effective Voltage Override is applied (derived from Published Wh), record Published Wh source URL in source and Published Wh verbatim text in exact_extract.
         },
         "energy_capacity_wh": {
           "value": 19.2500,
           "calculation_formula": "(battery_capacity_mah.value * battery_nominal_voltage_v.value) / 1000",
-          // Stored energy in Watt-hours (Wh).
+          "source": "N/A",
+          "exact_extract": "N/A"
+          // SCORING GUIDELINE: Stored nominal battery energy in Watt-hours (Wh). The value can either be calculated from calculation_formula, or directly obtained from source when an official published Wh rating is available.
+          //
+          // VALIDATION & PROVENANCE RULES:
+          //   1. VALUE DETERMINATION PATHS:
+          //      1a. Calculated Energy (Standard Path): Calculate energy from matched mAh/voltage pair using calculation_formula. Set source = "N/A", exact_extract = "N/A".
+          //      1b. Direct Published Wh Sourcing (Authoritative Path): If energy capacity is directly extracted from published Wh rating, set value to published Wh, populate source with Wh URL, exact_extract with verbatim Wh text, and set calculation_formula = "Directly extracted from specification".
+          //
+          //   2. PUBLISHED Wh CONSISTENCY CHECK & 5% ERROR REMEDIATION:
+          //      2a. Relative Difference Calculation: If a reliable published Wh value exists alongside mAh/voltage, calculate relative difference: |energy_capacity_wh.value - Published_Wh| / Published_Wh.
+          //      2b. Acceptable Variance (Difference <= 5%): Retain the calculated value for field "value" and keep calculation_formula = "(battery_capacity_mah.value * battery_nominal_voltage_v.value) / 1000".
+          //      2c. Unacceptable Variance (Difference > 5% Remediation Procedure): If difference > 5%, execute the following steps in sequence:
+          //          - Step 1 (Capacity Representation Check): Re-check whether published mAh represents total pack capacity vs per-cell capacity.
+          //          - Step 2 (Voltage Scale Check): Re-check whether nominal voltage represents single-cell voltage vs series-pack voltage.
+          //          - Step 3 (Effective Voltage Override): If capacity representation and architecture are verified correct but published Wh still differs by > 5%, set energy_capacity_wh.value = Published_Wh, set calculation_formula = "Directly extracted from specification", and derive an effective nominal voltage stored in battery_nominal_voltage_v.value = (Published_Wh * 1000) / battery_capacity_mah.value. Also store Published Wh source URL in battery_nominal_voltage_v.source and Published Wh verbatim quote in battery_nominal_voltage_v.exact_extract.
+          //      2d. Physical Architecture Integrity: Never modify battery_cell_architecture (e.g. changing 1S to 2S or vice versa) solely to force mathematical agreement with a published Wh rating. Physical cell layout is governed independently by battery_cell_architecture classification rules.
+          //
+          //   3. MISSING DATA HANDLING:
+          //      If battery capacity (battery_capacity_mah.value) is missing ("Not found"), set value = "Not found", source = "N/A", exact_extract = "N/A", calculation_formula = "N/A".
         },
 
         // --- [2] DEMAND MODELING (P_demand) ---
@@ -5238,24 +5298,225 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "8_2_wired_charging_speed": {
-      // SCORING GOAL: Evaluates maximum wired charging input.
-      "watts": {
-        "value": 45,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 8.00
-        // SCORING GUIDELINE: Apply Section 8.2 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=5W, Max=120W.
+    "8_2_wired_charging_system": {
+      // SCORING GOAL: Evaluates the smartphone wired charging system using three distinct, non-overlapping hardware components: 1) Pure Wired Charging Speed (evaluated via Method A GSMArena empirical benchmark, Method B Nearest Neighbor Interpolation, or Method C Analytical Physics Predictor), 2) Universal Protocol Interoperability, and 3) Hardware Bypass Charging / Direct Drive capability.
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: PURE WIRED CHARGING SPEED
+      // Evaluated via 3-Method Hierarchy: Method A (Primary) -> Method B (Secondary) -> Method C (Tertiary)
+      // ═══════════════════════════════════════════════════════════════════════════
+
+      // --- METHOD A: Empirical GSMArena Benchmark (Primary Path) ---
+      "method_a_benchmark_Wired_Speed": {
+        "gsmarena_charging_time": {
+          "value": 65.0,
+          "source": "https://www.gsmarena.com/samsung_galaxy_s24_ultra-review-2670p3.php",
+          "exact_extract": "Using the Samsung 45W adapter, our S24 Ultra got to 69% (nice) in 30 minutes and took 65 minutes to reach 100%."
+          // SCORING GUIDELINE: Sourced strictly from Global System for Mobile Communications Arena (GSMArena) Wired Charging Speed Benchmark. Extracted value is full charge duration T_final in minutes (mins) (0% to 100% State of Charge - SoC). If missing, set value to "Not found" and source/exact_extract to "N/A".
+        },
+        "subscore": 3.99,
+        "calculation_formula": "10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(gsmarena_charging_time.value)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Logarithmic Utility Normalization converting full charge duration in minutes into a normalized speed score (clamped 0.0 to 10.0). Uses shared constants from scoring_constants.md. Set subscore to "N/A" if gsmarena_charging_time.value is "Not found".
       },
+
+      // --- METHOD C: Technical Predictor Model (Tertiary / Baseline for Method B) ---
+      "method_c_prediction_model_Wired_Speed": {
+        // SCORING GOAL: Predicts full charge duration in minutes (T_predicted) using an analytical power retention model and converts it to a predicted speed score.
+
+        "battery_energy_wh": {
+          "value": 19.2500,
+          "value_path": "8_battery_and_charging.8_1_battery_endurance_score.method_c_prediction_model_Battery.energy_capacity_wh.value"
+          // SCORING GUIDELINE: Total stored nominal battery energy capacity E_supply in Watt-hours (Wh).
+        },
+        "peak_charging_power_w": {
+          "value": 45.0,
+          "value_path": "8_battery_and_charging.8_1_battery_endurance_score.method_c_prediction_model_Battery.peak_charging_power_w.value"
+          // SCORING GUIDELINE: Maximum peak rated continuous wired charging input power accepted by the smartphone hardware in Watts (W) (P_peak).
+        },
+        "c0_base": {
+          "value": 0.4051,
+          "calculation_formula": "(8_battery_and_charging.8_1_battery_endurance_score.method_c_prediction_model_Battery.battery_cell_architecture.value == 'Dual-Cell Series (2S)' || 'Multi-Cell Series (3S+)') ? 2.6813 : 0.4051"
+          // SCORING GUIDELINE: Baseline thermal saturation onset threshold C0_base in reciprocal hours (h^-1). Sourced directly from Section 8.1 battery cell architecture:
+          //   • If Section 8.1 battery_cell_architecture == "Dual-Cell Series (2S)" or "Multi-Cell Series (3S+)" → c0_base = 2.6813 h^-1 (series multi-cell baseline threshold).
+          //   • Otherwise ("Single-Cell (1S)", "Dual-Cell Parallel", or "Unknown") → c0_base = 0.4051 h^-1.
+          //
+          // MODEL UPDATE ALERT PROCEDURE: The C0_base thermal onset threshold has been empirically calibrated for Single-Cell (1S) and Dual-Cell Series (2S) architectures. If battery_cell_architecture is classified as "Multi-Cell Series (3S+)" (e.g., 3+ cells in series), c0_base inherits the series dual-cell baseline value (2.6813 h^-1) but the engine MUST raise a high-priority alert: "MODEL UPDATE ALERT: Multi-Cell Series (3S+) architecture detected for device ({device_id}). Empirical C0_base thermal saturation onset model requires calibration update."
+        },
+        "c_rate": {
+          "value": 2.3377,
+          "calculation_formula": "peak_charging_power_w.value / battery_energy_wh.value"
+          // SCORING GUIDELINE: Continuous charge rate normalized by battery energy capacity in reciprocal hours (h^-1). Keep 4 decimal places.
+        },
+        "power_retention_factor_f_system": {
+          "value": 0.4339,
+          "calculation_formula": "min(1, 0.9679 / (1 + 1.1265 * max(0, c_rate.value - c0_base.value) ^ 0.1344))"
+          // SCORING GUIDELINE: Continuous full-cycle peak-to-average power retention factor F_system. Evaluates tapering dynamics using calibrated physical parameters. Keep 4 decimal places.
+        },
+        "effective_average_power_w": {
+          "value": 19.5255,
+          "calculation_formula": "peak_charging_power_w.value * power_retention_factor_f_system.value"
+          // SCORING GUIDELINE: Average effective charging power P_effective delivered over the full 0% to 100% charge cycle in Watts (W). Keep 4 decimal places.
+        },
+        "t_predicted": {
+          "value": 59.1534,
+          "calculation_formula": "(battery_energy_wh.value / effective_average_power_w.value) * 60"
+          // SCORING GUIDELINE: Predicted full 0% to 100% charge duration in minutes (mins). Keep 4 decimal places.
+        },
+        "predicted_score": {
+          "value": 4.27,
+          "calculation_formula": "10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(t_predicted.value)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins)), clamped 0.0 to 10.0"
+          // SCORING GUIDELINE: Method C predicted charging speed score (S_speed_MethodC) normalized logarithmically using shared constants from scoring_constants.md.
+        }
+      },
+
+      // --- METHOD B: Nearest Neighbor Interpolation (Secondary Path) ---
+      "method_b_neighbor_interpolation_Wired_Speed": {
+        // SCORING GUIDELINE: Evaluated for all devices to validate precision. The search space includes all reference phones with verified GSMArena charging benchmarks (Method A), excluding the target device itself. Interpolation must use exactly 3 distinct neighbors.
+        // Step 1: Compute Log-Standardized Euclidean Distance in the 3-component physical charging space (battery_energy_wh, peak_charging_power_w, t_predicted):
+        //   Formula: Distance = Sqrt( (log(target.method_c_prediction_model_Wired_Speed.battery_energy_wh.value) - log(neighbor.method_c_prediction_model_Wired_Speed.battery_energy_wh.value))^2 + (log(target.method_c_prediction_model_Wired_Speed.peak_charging_power_w.value) - log(neighbor.method_c_prediction_model_Wired_Speed.peak_charging_power_w.value))^2 + (log(target.method_c_prediction_model_Wired_Speed.t_predicted.value) - log(neighbor.method_c_prediction_model_Wired_Speed.t_predicted.value))^2 )
+        // Step 2: Select the 3 distinct neighbors with the smallest distance.
+        // Step 3: Compute average neighbor predicted duration (avg_predicted_neighbors_mins) and average neighbor benchmark duration (avg_benchmark_neighbors_mins).
+        // Step 4: Calculate correction_ratio and interpolated_duration_mins.
+        // Step 5: Calculate interpolated_score.
+        "neighbors": [
+          {
+            // Neighbor1
+            "device_id_1": "google_pixel_9_pro_xl",
+            // GUIDELINE: The identity.id of the neighbor device (e.g., "google_pixel_9_pro_xl").
+            "euclidean_distance_1": 0.0421,
+            // GUIDELINE: Log-Standardized Euclidean distance from Step 1.
+            "predicted_duration_mins_1": 61.50,
+            // GUIDELINE: The neighbor's own Method C predicted full charge duration in minutes (t_predicted.value).
+            "benchmark_duration_mins_1": 67.00
+            // GUIDELINE: The neighbor's Method A GSMArena verified full charge benchmark duration in minutes (gsmarena_charging_time.value).
+          },
+          {
+            // Neighbor2
+            "device_id_2": "samsung_galaxy_s23_ultra",
+            "euclidean_distance_2": 0.0512,
+            "predicted_duration_mins_2": 58.80,
+            "benchmark_duration_mins_2": 59.00
+          },
+          {
+            // Neighbor3
+            "device_id_3": "nothing_phone_2",
+            "euclidean_distance_3": 0.0684,
+            "predicted_duration_mins_3": 57.20,
+            "benchmark_duration_mins_3": 55.00
+          }
+        ],
+        "avg_predicted_neighbors_mins": {
+          "value": 59.1667,
+          "calculation_formula": "(predicted_duration_mins_1 + predicted_duration_mins_2 + predicted_duration_mins_3) / 3"
+          // SCORING GUIDELINE: Arithmetic average of the 3 selected nearest neighbors' predicted durations in minutes.
+        },
+        "avg_benchmark_neighbors_mins": {
+          "value": 60.3333,
+          "calculation_formula": "(benchmark_duration_mins_1 + benchmark_duration_mins_2 + benchmark_duration_mins_3) / 3"
+          // SCORING GUIDELINE: Arithmetic average of the 3 selected nearest neighbors' Method A benchmark durations in minutes.
+        },
+        "correction_ratio": {
+          "value": 0.9998,
+          "calculation_formula": "target.method_c_prediction_model_Wired_Speed.t_predicted.value / avg_predicted_neighbors_mins.value"
+          // SCORING GUIDELINE: Ratio between target predicted duration and average predicted duration of nearest neighbors.
+        },
+        "interpolated_duration_mins": {
+          "value": 60.3212,
+          "calculation_formula": "correction_ratio.value * avg_benchmark_neighbors_mins.value"
+          // SCORING GUIDELINE: Interpolated full charge duration in minutes derived by applying correction ratio to average benchmark duration.
+        },
+        "interpolated_score": {
+          "value": 4.21,
+          "calculation_formula": "10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(interpolated_duration_mins.value)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins)), clamped 0.0 to 10.0"
+          // SCORING GUIDELINE: Logarithmic utility normalization converting interpolated duration in minutes into a normalized speed score (clamped 0.0 to 10.0). Uses shared constants from scoring_constants.md.
+        }
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: UNIVERSAL PROTOCOL INTEROPERABILITY (S_interoperability)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "universal_protocol_interoperability": {
+        "p_universal_usb_pd_w": {
+          "value": 45.0,
+          "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+          "exact_extract": "USB Power Delivery 3.0 PPS up to 45W"
+          // SCORING GUIDELINE: Maximum open universal USB Power Delivery (USB-PD 3.0/3.1 Programmable Power Supply - PPS or fixed PD) power input in Watts (W) accepted by the device (p_universal_usb_pd_w.value).
+          // SOURCING HIERARCHY (Tiers 1–6): (1) Official Datasheet, (2) USB Implementers Forum (USB-IF) Database, (3) ChargerLAB POWER-Z Protocol Analyzer Logs, (4) GSMArena Laboratory Reviews, (5) Notebookcheck Reviews, (6) AndroidAuthority Deep-Dives.
+          //
+          // DETERMINISTIC MULTI-TIER FALLBACK RULES & DECISION TREE (MANDATORY):
+          // When explicit empirical/manufacturer data (Tiers 1–6) is omitted, resolve p_universal_usb_pd_w.value deterministically using the following hierarchy:
+          //   1. Step 1: Explicit Measured / Documented Power (P_measured): If verified data exists in Tiers 1–6 → set p_universal_usb_pd_w.value = P_measured. Explicit empirical evidence MUST NEVER be overridden by fallbacks.
+          //      - Provenance: Populate source with the document/benchmark URL from Tiers 1–6 and exact_extract with the verbatim wattage quote.
+          //   2. Step 2: USB-PD Supported, but Maximum Wattage Unspecified:
+          //      If official specs confirm USB Power Delivery (USB-PD / PPS) support but omit numerical wattage limit:
+          //      p_universal_usb_pd_w.value = min(method_c_prediction_model_Wired_Speed.peak_charging_power_w.value, P_era)
+          //      Where P_era is determined by launch year from identity.release_date.value:
+          //        - 2016–2017: P_era = 10.0 W (Legacy 5V/2A early USB-PD 2.0)
+          //        - 2018–2019: P_era = 15.0 W (Standard 5V/3A baseline USB-PD)
+          //        - 2020–2021: P_era = 20.0 W (USB-PD 3.0 / early PPS)
+          //        - 2022–2023: P_era = 25.0 W (Mainstream PD 3.0 PPS)
+          //        - 2024–2026: P_era = 30.0 W (Mature PD 3.1 PPS ecosystem)
+          //      - Provenance: Populate source with the spec URL confirming USB-PD/PPS support and exact_extract with the verbatim USB-PD quote (e.g., "Supports USB Power Delivery").
+          //   3. Step 3: USB Type-C Present, but No Evidence of USB-PD Support:
+          //      If device features Universal Serial Bus Type-C (USB Type-C) port but lacks documented USB-PD protocol support:
+          //      p_universal_usb_pd_w.value = min(method_c_prediction_model_Wired_Speed.peak_charging_power_w.value, 15.0 W) (USB Type-C spec max without PD: 5V/3A via Configuration Channel - CC pin).
+          //      - Provenance: Populate source with the spec URL confirming USB Type-C port presence and exact_extract with verbatim Type-C text (e.g., "USB Type-C 2.0").
+          //   4. Step 4: Legacy Micro-USB / Proprietary Connector without Universal Fast Charging:
+          //      If device uses Micro Universal Serial Bus (Micro-USB) port without universal fast-charging support:
+          //      p_universal_usb_pd_w.value = min(method_c_prediction_model_Wired_Speed.peak_charging_power_w.value, 5.0 W) (Standard 5V/1A USB Battery Charging 1.2 - USB BC 1.2 trickle charging).
+          //      - Provenance: Populate source with the spec URL confirming Micro-USB port presence and exact_extract with verbatim Micro-USB text (e.g., "microUSB 2.0").
+          //   5. Step 5: No Open/Universal USB Charging Compatibility:
+          //      If device completely lacks open USB charging compatibility: p_universal_usb_pd_w.value = 0.0 W.
+          //      - Provenance: Set source = "N/A", exact_extract = "N/A".
+        },
+        "subscore": 10.00,
+        "calculation_formula": "10.0 * (p_universal_usb_pd_w.value / method_c_prediction_model_Wired_Speed.peak_charging_power_w.value), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Interoperability score S_interoperability.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 3: HARDWARE BYPASS CHARGING / DIRECT DRIVE (S_bypass)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "hardware_bypass_charging": {
+        "value": true,
+        "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+        "exact_extract": "Pause USB Power Delivery",
+        "subscore": 10.00
+        // SCORING GUIDELINE: Evaluates physical/firmware battery bypass direct drive capability routing wall power directly to Power Management Integrated Circuit (PMIC) / logic board skipping battery:
+        //   • true  → 10.00 (Native hardware/firmware bypass supported; routes wall power directly to PMIC/logic board, skipping battery to eliminate heat during plugged-in heavy use. Exhaustive OEM marketing terms & evidence keywords include: Samsung "Pause USB Power Delivery", ASUS ROG "Bypass Charging" / "Direct Power Supply", Sony Xperia "H.S. Power Control" [Heat Suppression], Xiaomi/Black Shark "Direct Power Supply" / "Bypass Charge", ZTE/RedMagic "Charge Bypass" / "Direct Power Mode", Infinix/TECNO "Bypass Charge", Lenovo Legion "Bypass Charging", Realme/Oppo/OnePlus "Bypass Charging" / "Direct Drive Power", Vivo/iQOO "Direct Power Supply").
+        //   • false → 0.00 (Lacks bypass charging; always routes current through the battery cell).
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. Step 1: Official / Empirical Documentation Proof (value: true): Set value: true (10.00 pts) ONLY if official datasheets, user manuals, OEM gaming settings, or verified review logs explicitly confirm battery bypass support.
+        //      - Provenance: Populate source with the document/manual/review URL and exact_extract with verbatim feature quote (e.g., "Pause USB Power Delivery").
+        //   2. Step 2: Default Rule (value: false): If no official documentation or review log verifies bypass charging → set value: false (0.00 pts).
+        //      - Provenance: Set source = "N/A", exact_extract = "N/A".
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 8.2 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 8.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "predicted": 4.96,
+        "calculation_formula": "0.88 * method_c_prediction_model_Wired_Speed.predicted_score.value + 0.09 * universal_protocol_interoperability.subscore + 0.03 * hardware_bypass_charging.subscore",
+        // SCORING GUIDELINE: Predicted composite score combining Method C predicted pure wired charging speed (88%), universal protocol interoperability (9%), and hardware bypass charging (3%).
         "final": {
-          // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 8.00,
-          "method_used": "Predictor",
+          "value": 4.71,
+          "calculation_formula": "Clamp(0.88 * (method_a_benchmark_Wired_Speed.subscore != 'N/A' ? method_a_benchmark_Wired_Speed.subscore : (method_b_neighbor_interpolation_Wired_Speed.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Wired_Speed.interpolated_score : method_c_prediction_model_Wired_Speed.predicted_score.value)) + 0.09 * universal_protocol_interoperability.subscore + 0.03 * hardware_bypass_charging.subscore, 0.00, 10.00)",
+          // SCORING GUIDELINE: Resolved strictly by the A->B->C hierarchy for pure wired charging speed (S_speed):
+          //   1. Use Method A if method_a_benchmark_Wired_Speed is available (and method_used is "Benchmark (GSMArena)").
+          //   2. Otherwise, use Method B if method_b_neighbor_interpolation_Wired_Speed is available (and method_used is "Neighbor Interpolation").
+          //   3. Otherwise, fall back to Method C (and method_used is "Predictor").
+          // The selected S_speed is then combined into the final composite score combining pure wired charging speed (88%), universal protocol interoperability (9%), and hardware bypass charging (3%).
+          "method_used": "Benchmark (GSMArena)",
+          // SCORING GUIDELINE: Set based on the A→B→C hierarchy used for S_speed. Use the following terms exclusively:
+          //   • Benchmark (GSMArena)   → Method A (empirical GSMArena full charge duration benchmark)
+          //   • Neighbor Interpolation → Method B (similar device benchmarks)
+          //   • Predictor              → Method C (analytical physics predictor model)
           "booster": "No",
+          // SCORING GUIDELINE: Must always be set to "No". No booster allowed for scoring sections using Benchmarks.
           "confidence": "N/A"
+          // SCORING GUIDELINE: "N/A" for single benchmark source or Predictor.
         }
       }
     },
@@ -5329,7 +5590,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "source": "TBD",
         "exact_extract": "Proof pending",
         "subscore": 0.00
-        // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from Sec 8.2.
+        // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from 8_battery_and_charging.8_2_wired_charging_system.method_c_prediction_model_Wired_Speed.peak_charging_power_w.value.
       },
       "scores": {
         "predicted": 0.00,

@@ -4300,14 +4300,11 @@ The relationship between battery capacity (Supply) and average power consumption
 - **Demand (P_demand, in Watts - W):** The average electrical power consumed by the device under active mixed-use conditions (web browsing, media streaming, voice calls, user interface interaction, and background synchronization).
 
 ##### 8.1.3.2 Supply Modeling (E_supply)
-To align with the system's power demand (W) in our supply-and-demand model, the battery's charge capacity (mAh) is converted to energy capacity (Wh) via `E_supply = (battery_capacity_mah * V_nominal) / 1000` where `V_nominal` is the nominal battery voltage in Volts.
+The total nominal stored energy capacity `E_supply` (in Watt-hours - Wh) is derived as:
+`E_supply = (Capacity_mAh * V_nominal) / 1000`
 
-**Nominal Voltage Detection Logic:**
-To correctly identify `V_nominal`, we apply the following prioritized hierarchy:
-1. **Explicit Voltage:** If an explicit battery voltage is published in the specifications, set `V_nominal` to that value.
-2. **Dual-Cell configuration:** If the battery cell architecture indicates a dual-cell (2S) configuration, use **7.70 V** (two 3.85V cells in series).
-3. **High-Power Charging Heuristic:** If the maximum wired charging speed is **120 Watts or higher**, use **7.70 V** (ultra-fast charging architectures require dual-cell configurations to halve current and prevent excessive thermal losses).
-4. **Default Fallback:** Otherwise, use **3.85 V** (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
+> [!NOTE]
+> For the complete, authoritative determination logic governing nominal battery voltage (`V_nominal`), battery cell architecture classification (1S, 2S, 3S+, 1S2P), effective voltage overrides, and multi-tier evidence fallbacks, refer to [proposed_data_structure.md Section 8.1].
 
 ##### 8.1.3.3 Demand Modeling (P_demand)
 Average power demand is modeled as the sum of hardware-governed display panel draw and software-scaled processing/connectivity active loads, scaled globally by the system's thermal efficiency factor:
@@ -4732,7 +4729,7 @@ Evaluates the physical time required to restore a depleted smartphone battery fr
 Method A is the primary empirical benchmark calculation used when a verified laboratory test log from GSMArena is available in the database.
 
 ###### 8.2.1.A.1 Canonical Benchmark Source Selection & Justification
-To guarantee 100% empirical rigor, eliminate inter-benchmark protocol offsets, and avoid data bias, **Method A strictly utilizes the GSMArena Wired Charging Speed Benchmark (`charging_time_100_mins`) as its single canonical data source**.
+To guarantee 100% empirical rigor, eliminate inter-benchmark protocol offsets, and avoid data bias, **Method A strictly utilizes the GSMArena Wired Charging Speed Benchmark as its single canonical data source**.
 
 **Engineering Justification for Excluding Multi-Source Blending:**
 1. **Strict Protocol Standardization:** GSMArena executes a fully controlled laboratory protocol: the phone is discharged to 0% State of Charge, allowed to rest until reaching a stable ambient temperature (22°C to 25°C), and charged with the screen turned off using the manufacturer's maximum supported official fast-charging brick and original high-current cable.
@@ -4850,24 +4847,17 @@ Where:
 Method C is populated for **all** devices to serve as the baseline physical predictor model. It serves as the ultimate fallback score for unbenchmarked devices when fewer than 3 nearest neighbors exist in the database.
 
 **Step 1: Stored Battery Energy (`E_supply`)**
-Calculates total nominal energy capacity in Watt-hours (Wh):
-`E_supply = Battery_Energy_Wh` (when published directly)
-Otherwise: `E_supply = (Capacity_mAh * V_nominal) / 1000` (Wh)
-*   `Capacity_mAh`: Equivalent single-cell battery capacity in Milliampere-hours (mAh).
-*   `V_nominal`: Nominal battery voltage in Volts (V), resolved dynamically via the **Nominal Voltage Detection Logic** (matching Section 8.1):
-    1. **Explicit Voltage:** If an explicit battery voltage is published in the specifications, set `V_nominal` to that value.
-    2. **Dual-Cell Series Array (when capacity is stated per cell):** If the battery cell architecture indicates a dual-cell (2S) configuration and capacity is stated per individual cell, set `V_nominal = 7.70 V` (two 3.85V cells in series).
-    3. **Default Single-Cell Baseline:** Otherwise, set `V_nominal = 3.85 V` (the industry-standard nominal voltage for a single-cell lithium-ion smartphone battery).
-*   *Note: Cell architecture MUST NOT be inferred from charging wattage thresholds to maintain model stability across various devices.*
+Evaluates total stored nominal battery energy capacity `E_supply` in Watt-hours (Wh):
+`E_supply = (Capacity_mAh * V_nominal) / 1000`
+
+*   *Note: Sourced directly from [Section 8.1]. Refer to Section 8.1 for the complete determination logic governing nominal voltage (`V_nominal`) and battery cell architecture.*
 
 **Step 2: Maximum Charging Input Power (`P_peak`)**
-`P_peak` is the highest publicly documented phone input power in Watts (W), not the charger output power. Evidence hierarchy:
-1. Measured input power (e.g., from ChargerLAB or Notebookcheck).
-2. Manufacturer-published accepted wattage.
-3. Documented charging mode.
-4. Inferred from charger (least reliable).
+`P_peak` is the maximum open wired charging power input accepted by the device in Watts (W), representing phone hardware capacity rather than charger output rating.
 
-*Data Integrity Rationale:* A bundled wall charger may be rated for 67W, while the phone hardware may be internally capped at 33W. Using the charger's maximum output instead of the phone's actual accepted input power causes massive prediction errors. The strict 4-tier evidence hierarchy ensures that the model relies on the most physically grounded measurements available, rather than marketing claims about the charging brick.
+*   *Note: Refer to [proposed_data_structure.md] for the complete evidence sourcing hierarchy.*
+
+*Data Integrity Rationale:* A bundled wall charger may be rated for 67W, while the phone hardware may be internally capped at 33W. Using the charger's maximum output instead of the phone's actual accepted input power causes massive prediction errors.
 
 **Step 3: Continuous C-Rate (`C_rate`)**
 Calculates the peak continuous charge rate relative to battery capacity (in reciprocal hours, `h^-1`):
