@@ -5045,16 +5045,142 @@ Below are 2 detailed, verified worked examples evaluating real-world flagship de
         `Final Score 8.2 = 0.88 * 7.21 + 0.09 * 5.42 + 0.03 * 0.00 = 6.34 + 0.49 + 0.00 = 6.83`
 
 
-### 🔹 8.3 Wireless Charging Speed
-*Description:* Charging speed without cables. Convenient for topping up battery by simply placing the phone on a pad.
-*   **Measurement:** Peak power input via wireless coil.
-*   **Unit:** Watts (W)
-*   **Significance:** Convenience and ease of topping up.
-*Formula:* `Score = 10 * ((1/Battery_Wireless_Charging_W_Min) - (1/Watts)) / ((1/Battery_Wireless_Charging_W_Min) - (1/Battery_Wireless_Charging_W_Max))` (Clamped 0-10)
-*   **Max Score (10.0):** ≥ Battery_Wireless_Charging_W_Max
-*   **Min Score (0.0):** ≤ Battery_Wireless_Charging_W_Min
+### 🔹 8.3 Wireless Charging System
+*Description:* Comprehensive evaluation of the wireless charging system, prioritizing real-world convenience and compatibility. Scores are derived from a theoretical speed prediction, universal interoperability with public standards (Qi/Qi2), and the physical convenience and efficiency of magnetic alignment.
+*   **Measurement:** Technical predicted charge duration in minutes (`T_predicted_wireless`), open universal charging power (`P_universal_wireless`), and magnetic hardware support tiers.
+*   **Unit:** Composite Score (0.0 to 10.0)
+*   **Significance:** Ensures rapid wireless top-ups using proprietary gear, guarantees compatibility with public/automotive wireless pads, and drastically improves convenience through reliable magnetic alignment.
+
+#### 8.3.0 Executive Framework Overview & Weights
+Because there is no widespread, standardized 0-100% empirical benchmark database for wireless charging, a hybrid approach combining measured times (for some phones) and theoretical predictions (for others) would introduce unacceptable bias (due to unmeasured real-world thermal throttling). Therefore, the overall Section 8.3 score uses a **100% Analytical Predictive Model** combined with hardware feature tiers:
+
+1. **Pure Wireless Charging Speed (`S_speed` — 40% Weight):**
+   * **What it measures:** The theoretical minimum physical duration required to charge the battery using the device's maximum supported wireless wattage, governed by a dedicated wireless thermal calibration curve and technology-specific transfer efficiencies.
+   * **Why & Weight Rationale (40%):** Represents the fastest possible wireless charging speed. While important, empirical user sentiment data shows users prioritize reliable universal compatibility over raw proprietary speed for wireless charging, hence its de-prioritization relative to wired charging speed.
+
+2. **Universal Open Standard Interoperability (`S_universal` — 40% Weight):**
+   * **What it measures:** How well the phone charges on common, third-party chargers—like the ones built into cars, coffee shop tables, or affordable nightstand docks—that aren't made by the phone's manufacturer. It scores the phone's charging speed on these public "open standard" (Qi/Qi2) pads against a 25W gold standard. The stakes are high for consumers: a phone might advertise an incredible "80W" charging speed on the box, but if it requires an expensive, proprietary dock to achieve that, it might drop to a painfully slow 5W on your car's built-in pad. This metric rewards phones that charge quickly on *any* standard charger, protecting users from being locked into a single expensive accessory ecosystem.
+   * **Why & Weight Rationale (40%):** Wireless charging is valued primarily for convenience and compatibility (cars, furniture, airports). A device that charges at 80W on a proprietary dock but drops to 5W on a generic pad provides a degraded real-world experience and is penalized here.
+
+3. **Magnetic Alignment Capability (`S_alignment` — 20% Weight):**
+   * **What it measures:** Whether the phone has built-in magnets around its wireless charging receiver (like Apple's MagSafe or the new Qi2 standard) that allow it to snap perfectly into place on a charger. It evaluates if the phone supports this effortlessly out of the box, or if it requires you to buy a specific manufacturer case to get the magnetic effect.
+   * **Why & Weight Rationale (20%):** The biggest frustration with older wireless charging is waking up to a dead phone because it was bumped slightly off-center during the night. Misalignment causes the charging pads to struggle, generating massive amounts of waste heat that slows down the charge and degrades battery health. Magnets solve this problem entirely by guaranteeing perfect alignment every single time. Beyond charging, they also unlock a highly convenient ecosystem of snap-on accessories, like floating car dash mounts, magnetic wallets, and attachable power banks.
+
+##### Section 8.3 Overall Composite Formula
+*   If the device does not support wireless charging, the score is mathematically zeroed:
+    `Final Score 8.3 = 0.00`
+*   If the device supports wireless charging:
+    `Final Score 8.3 = 0.40 * S_speed + 0.40 * S_universal + 0.20 * S_alignment` (Clamped 0.0 to 10.0)
+
+#### 8.3.1 Pure Wireless Charging Speed (`S_speed`)
+Wireless speed relies exclusively on an **Analytical Physics Predictor (Method C)** calibrated specifically for wireless inductive and thermal losses.
+
+1. **Continuous C-Rate:** 
+   First, evaluate the total stored nominal battery energy capacity (`E_supply`) in Watt-hours (Wh):
+   `E_supply = (Capacity_mAh * V_nominal) / 1000`
+   
+   *(Note: Sourced directly from Section 8.1. Refer to Section 8.1 for the complete determination logic governing nominal voltage `V_nominal` and battery cell architecture).*
+   
+   Then, calculate the continuous wireless C-Rate (in reciprocal hours, `h^-1`):
+   `C_rate_wireless = P_wireless_max / E_supply`
+   
+2. **Dedicated Wireless Thermal Factor (`F_thermal_wireless`):** 
+   Wireless charging generates distinct thermal penalties compared to wired charging, with heat from induction coils causing earlier and steeper thermal throttling. We apply a dedicated phenomenological thermal curve optimized to real-world datasets using the following wireless-specific calibration constants:
+   *   Threshold `C0_w` = 0.7778
+   *   Penalty scaling `k_w` = 1.1232
+   *   Exponent `p_w` = 0.2194
+   
+   `F_thermal_wireless = 1 / (1 + k_w * max(0, C_rate_wireless - C0_w)^p_w)`
+
+3. **Transfer Efficiency (`F_transfer`):** 
+   This coefficient is not extracted from the phone's spec sheet. Instead, it is a standardized framework default assigned by the agent based on the phone's verified wireless technology class. 
+   
+   Agents must use the following brand-agnostic guidelines to categorize any phone (ranked in descending order of efficiency):
+   *   **Proprietary High-Power with Active Cooling (0.83):** Highest efficiency. Active cooling physically forces ambient air over the induction coils, directly mitigating the immense thermal losses of high-wattage (≥30W) transfers. *Note: This active cooling fan is built into the wireless charging base/stand itself, not the smartphone.* By preventing thermal saturation, the charging stand maintains peak transfer efficiency longer than any passive system. Applies to official chargers with built-in fans (e.g., Xiaomi 80W HyperCharge, OnePlus 50W AirVOOC).
+   *   **Qi2 Magnetic (0.82):** Almost matches actively cooled stands. Hardware-enforced magnetic alignment guarantees that the transmitter and receiver coils are 100% concentric. In wireless charging, being off-center by even 3 millimeters causes massive magnetic flux leakage, dropping efficiency drastically. Magnets mathematically eliminate this misalignment variance, ensuring near-peak efficiency without a fan. (e.g., iPhone 12-17, Qi2 Androids).
+   *   **Qi EPP / Optimized Qi (0.78):** Standard 15W efficiency. Uses the Extended Power Profile for better power negotiation than legacy Qi, but lacks magnetic alignment. The average real-world placement by a user is always slightly off-center, leading to unavoidable moderate flux leakage and lower efficiency compared to perfect magnetic alignment. (e.g., Pixel 6-9, Galaxy S20-S24).
+   *   **Proprietary High-Power (0.78):** Ties with Qi EPP. While the peak wattage is high (>15W), pushing massive power without an active fan generates extreme waste heat rapidly. The system quickly thermally throttles to protect the battery, meaning the *average* transfer efficiency over a full 0-100% cycle degrades to match standard passive 15W charging. (e.g., fan-less proprietary stands).
+   *   **Basic Qi (0.72):** Lowest efficiency. Limited to legacy 5W-10W Baseline Power Profile (BPP). Uses older, less dense coil designs and basic one-way communication protocols, resulting in the highest proportion of energy being lost to heat and poor coupling. Applies to pre-2020 devices and modern budget phones.
+
+4. **Average Effective Power (`P_effective_wireless`):** 
+   `P_effective_wireless = P_wireless_max * F_transfer * F_thermal_wireless`
+
+5. **Predicted Duration (`T_predicted_wireless`):** 
+   `T_predicted_wireless = 60 * (E_supply / P_effective_wireless)`
+
+*   **Speed Component Score (`S_speed`):**
+    The predicted time is then normalized using a **Logarithmic Utility** curve:
+    `S_speed = 10 * (log(Battery_Wireless_Charge_Time_Max_Mins) - log(T_predicted_wireless)) / (log(Battery_Wireless_Charge_Time_Max_Mins) - log(Battery_Wireless_Charge_Time_Min_Mins))` (Clamped 0.0 to 10.0)
+
+**Huber Optimization Study & Validation Cases:**
+These parameters were determined via a Huber loss optimization study against real-world 0-100% wireless charging tests. The full Python optimization script, dataset, and generated thermal curve plots are maintained in the repository at `docs/modeling/section_8_3_method_c_huber_optimization_study/optimizer.py`. We selected a Huber loss `delta` of `10.0` (errors under 10 minutes are penalized quadratically, while larger errors are penalized linearly to prevent extreme outliers from skewing the curve).
+
+**Huber Delta Sensitivity Analysis:**
+
+| Huber Delta | `k`    | `p`    | `c0`   | Bias (mins) | MAE (mins) | RMSE (mins) | Max Err (mins) |
+| :---------- | :----- | :----- | :----- | :---------- | :--------- | :---------- | :------------- |
+| 0.0 (L1)    | 0.9769 | 0.4084 | 0.5761 | +0.89       | 13.77      | 18.18       | 30.21          |
+| 2.5         | 1.1567 | 0.2627 | 0.7755 | -1.63       | 7.97       | 12.22       | 23.06          |
+| 5.0         | 1.1446 | 0.2471 | 0.7765 | -1.67       | 8.20       | 12.05       | 22.90          |
+| 7.5         | 1.1334 | 0.2327 | 0.7773 | -1.69       | 8.42       | 11.92       | 22.75          |
+| 10.0        | 1.1232 | 0.2194 | 0.7778 | -1.68       | 8.62       | 11.85       | 22.60          |
+| 12.5        | 1.1197 | 0.2090 | 0.7782 | -1.53       | 8.80       | 11.78       | 22.25          |
+| 15.0        | 1.1527 | 0.2115 | 0.7783 | -0.56       | 8.83       | 11.57       | 20.72          |
+| 17.5        | 1.1855 | 0.2137 | 0.7783 | +0.41       | 8.87       | 11.47       | 19.18          |
+| 20.0        | 1.1992 | 0.2146 | 0.7783 | +0.81       | 8.88       | 11.46       | 18.54          |
+| 22.5        | 1.1992 | 0.2146 | 0.7783 | +0.81       | 8.88       | 11.46       | 18.54          |
+| 25.0        | 1.1992 | 0.2146 | 0.7783 | +0.81       | 8.88       | 11.46       | 18.54          |
+
 > [!NOTE]
-> **Why Inverse Proportional?** Just like wired charging, the time it takes to charge wirelessly follows an inverse hyperbolic curve where the charging time (T) is proportional to 1 / W. Scoring the wattage inversely perfectly models the raw minutes of charging time saved, recognizing that jumping from 5W to 15W is a transformative time-saver, while jumping from 50W to 60W is nearly negligible.
+> **Observation on L1 vs. Huber Convergence:** While optimizing for pure L1 loss (`delta=0.0`) should theoretically produce the lowest MAE, the sharp, non-differentiable bottom of the L1 curve causes the gradient-descent solver to fail and get stuck in a poor local minimum (`MAE=13.77`). By slightly rounding the bottom of the curve (`delta=2.5`), the solver gains the smooth gradients needed to mathematically converge, achieving the true lowest error (`MAE=7.97`). We ultimately adopt `delta=10.0` as our baseline to maintain generalized stability and prevent overfitting to our sample data.
+
+These `delta=10.0` parameters yield a predictive MAE of 8.62 minutes across diverse brands and power levels:
+
+| Device                   | Cap (mAh) | V_nom (V) | E_wh    | P_max (W) | C_rate | F_trans | F_therm | P_eff (W) | T_act (m) | T_pred (m) | Err (m) | Err (%) |
+| :----------------------- | :-------- | :-------- | :------ | :-------- | :----- | :------ | :------ | :-------- | :-------- | :--------- | :------ | :------ |
+| Xiaomi 14 Ultra          | 5000      | 3.85      | 19.2500 | 80        | 4.1558 | 0.83    | 0.4053  | 26.9119   | 46        | 42.9       | -3.1    | -6.7%   |
+| OnePlus 12               | 5400      | 3.85      | 20.7900 | 50        | 2.4050 | 0.83    | 0.4445  | 18.4468   | 55        | 67.6       | +12.6   | +22.9%  |
+| Samsung Galaxy S24 Ultra | 5000      | 3.85      | 19.2500 | 15        | 0.7792 | 0.78    | 0.7901  | 9.2442    | 125       | 124.9      | -0.1    | -0.1%   |
+| iPhone 15 Pro Max        | 4422      | 3.85      | 17.0247 | 15        | 0.8811 | 0.82    | 0.5943  | 7.3099    | 135       | 139.7      | +4.7    | +3.5%   |
+| Google Pixel 8 Pro       | 5050      | 3.85      | 19.4425 | 23        | 1.1830 | 0.83    | 0.5205  | 9.9363    | 140       | 117.4      | -22.6   | -16.1%  |
+
+**Input Sources & Categorization for Validation Cases:**
+*   **Xiaomi 14 Ultra:** 5000 mAh, 80W max. Uses the official Xiaomi 80W cooling-fan stand (fan built into the base) -> `F_trans` = 0.83.
+*   **OnePlus 12:** 5400 mAh, 50W max. Uses the official OnePlus 50W AirVOOC cooling-fan stand (fan built into the base) -> `F_trans` = 0.83.
+*   **Samsung Galaxy S24 Ultra:** 5000 mAh, 15W max. Uses standard 15W wireless chargers (no active fan) -> `F_trans` = 0.78.
+*   **iPhone 15 Pro Max:** 4422 mAh, 15W max. Uses the Apple MagSafe puck (perfect magnetic alignment) -> `F_trans` = 0.82.
+*   **Google Pixel 8 Pro:** 5050 mAh, 23W max. Uses the official Google Pixel Stand 2nd Gen (which features a built-in cooling fan in its base) -> `F_trans` = 0.83.
+
+#### 8.3.2 Universal Open Standard Interoperability (`S_universal`)
+Measures the highest charging power the phone itself accepts using an open Qi-family standard *without* a manufacturer-specific wireless protocol.
+*   **Formula:** `S_universal = 10 * P_universal_wireless / P_universal_wireless_max` (Clamped 0.0 to 10.0)
+*   **Parameters:**
+    *   `P_universal_wireless`: The highest supported wattage on open Qi/Qi2 standards (typically 5W, 7.5W, 10W, 15W, or 25W).
+    *   `P_universal_wireless_max` (Constant): The gold standard universal open Qi2 wattage benchmark, set to `25.0` W.
+
+> [!NOTE]
+> **Crucial Parameter Distinction:**
+> *   `P_wireless_max` represents the absolute maximum wireless charging power (including proprietary systems, e.g., 80W) that the phone is capable of accepting. It is used in 8.3.1 (`S_speed`) to calculate raw speed.
+> *   `P_universal_wireless` represents the highest charging power the phone accepts specifically on open, non-proprietary standards (Qi/Qi2). It is compared to the universal benchmark constant `P_universal_wireless_max` (25.0 W) in 8.3.2 (`S_universal`).
+> This distinction ensures that a phone with a massive proprietary charging speed does not artificially inflate its universal compatibility score.
+
+#### 8.3.3 Magnetic Alignment Capability (`S_alignment`)
+Measures how reliably the charging system maintains optimal coil alignment and supports magnetic mounting/accessories.
+*   **Formula:** Tiered assignment based on verified hardware capability.
+    *   **10.0:** Native Qi2 magnetic hardware, OR MagSafe iPhones 12-14 (which physically formed the basis of Qi2 despite predating its 2023 finalization).
+    *   **8.0:** Native proprietary magnetic alignment (built-in magnets, but relies on proprietary ecosystem, not Qi2).
+    *   **5.0:** Magnetic alignment requires/supports an **official OEM-sold or OEM-certified** magnetic case. Generic third-party aftermarket magnetic cases do NOT qualify.
+    *   **0.0:** No magnetic alignment hardware (standard Qi coil only).
+
+#### 8.3.4 Agent Data Extraction Hierarchy & Edge Cases
+To ensure absolute fairness and avoid bias during automated data extraction, AI agents must strictly adhere to the following rules:
+1. **Evidence Hierarchy:** Always pull wireless parameters in the following order: Tier 1 (Manufacturer Specs) → Tier 2 (Official Support Docs/Limits) → Tier 3 (Certification) → Tier 4 (Technical Reviews) → Tier 5 (Historical Fallback/Inference, tagged with Low Confidence).
+2. **Software-Unlock Timing:** When a device's wireless wattage was raised via an official post-launch software update (e.g., iPhone 8 unlocking 7.5W via iOS 11.2), use the maximum post-update wattage for `P_wireless_max`, NOT the launch day figure. Flag the score with a note when they differ.
+3. **Receive-Side Only (Contamination Risk):** Spec sheets routinely list receive-side wireless charging and reverse/share wireless charging together. Agents MUST explicitly exclude reverse/share wattage from 8.3 extraction.
+4. **Confidence Tagging & Historical Fallbacks:** If a pre-2020 phone lists "Qi wireless charging" but no wattage is documented, fallback to `P_universal_wireless = 5.0 W` and `P_wireless_max = 5.0 W`. This MUST be visibly logged as a Tier 5 deduction, clearly distinguishable from a phone that explicitly lists 5W on a Tier 1 spec sheet.
+5. **Confirmed-Absent vs. Insufficient-Data:** If a Tier 1-4 source explicitly confirms the device lacks wireless charging, score as `0.00` (Confirmed Absent). If the agent simply cannot find any documentation (common for white-label ODMs), set the state to `Insufficient_Data` and route to manual review. Do NOT silently score as `0.00`.
+6. **No Inference from Materials:** Do NOT infer the presence of wireless charging merely from a "glass back" or "flagship status".
+7. **No Inference from Magnets:** Do NOT infer "Qi2" certification merely from the presence of "magnets" (as proprietary magnetic systems exist). "Qi2-compatible case" does not equate to a native Qi2 phone.
 
 
 ### 🔹 8.4 Wired Reverse Charging
