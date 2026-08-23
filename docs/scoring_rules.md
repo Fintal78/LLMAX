@@ -5093,14 +5093,16 @@ Wireless speed relies exclusively on an **Analytical Physics Predictor (Method C
    `F_thermal_wireless = 1 / (1 + k_w * max(0, C_rate_wireless - C0_w)^p_w)`
 
 3. **Transfer Efficiency (`F_transfer`):** 
-   This coefficient is not extracted from the phone's spec sheet. Instead, it is a standardized framework default assigned by the agent based on the phone's verified wireless technology class. 
+   This coefficient models the baseline energy lost to electromagnetic flux leakage and hardware-level inductive coupling inefficiencies. While the separate `F_thermal_wireless` factor models the phone battery's dynamic thermal throttling when receiving high wattage, `F_transfer` acts as a static hardware modifier representing how well the charger's physical design (e.g., magnetic alignment or active cooling fans) preserves efficiency before the power even enters the phone.
    
-   Agents must use the following brand-agnostic guidelines to categorize any phone (ranked in descending order of efficiency):
-   *   **Proprietary High-Power with Active Cooling (0.83):** Highest efficiency. Active cooling physically forces ambient air over the induction coils, directly mitigating the immense thermal losses of high-wattage (≥30W) transfers. *Note: This active cooling fan is built into the wireless charging base/stand itself, not the smartphone.* By preventing thermal saturation, the charging stand maintains peak transfer efficiency longer than any passive system. Applies to official chargers with built-in fans (e.g., Xiaomi 80W HyperCharge, OnePlus 50W AirVOOC).
-   *   **Qi2 Magnetic (0.82):** Almost matches actively cooled stands. Hardware-enforced magnetic alignment guarantees that the transmitter and receiver coils are 100% concentric. In wireless charging, being off-center by even 3 millimeters causes massive magnetic flux leakage, dropping efficiency drastically. Magnets mathematically eliminate this misalignment variance, ensuring near-peak efficiency without a fan. (e.g., iPhone 12-17, Qi2 Androids).
-   *   **Qi EPP / Optimized Qi (0.78):** Standard 15W efficiency. Uses the Extended Power Profile for better power negotiation than legacy Qi, but lacks magnetic alignment. The average real-world placement by a user is always slightly off-center, leading to unavoidable moderate flux leakage and lower efficiency compared to perfect magnetic alignment. (e.g., Pixel 6-9, Galaxy S20-S24).
-   *   **Proprietary High-Power (0.78):** Ties with Qi EPP. While the peak wattage is high (>15W), pushing massive power without an active fan generates extreme waste heat rapidly. The system quickly thermally throttles to protect the battery, meaning the *average* transfer efficiency over a full 0-100% cycle degrades to match standard passive 15W charging. (e.g., fan-less proprietary stands).
-   *   **Basic Qi (0.72):** Lowest efficiency. Limited to legacy 5W-10W Baseline Power Profile (BPP). Uses older, less dense coil designs and basic one-way communication protocols, resulting in the highest proportion of energy being lost to heat and poor coupling. Applies to pre-2020 devices and modern budget phones.
+   The framework defines 4 physical efficiency tiers. The fundamental physical reasons for these efficiency differences are as follows:
+
+   *   **Tier 1: Active Cooling (0.83):** Highest efficiency. The charging base contains a physical fan. By actively forcing ambient air over the transmitting induction coils, the system lowers the baseline electrical resistance of the copper, offering the highest static transfer efficiency before the power even reaches the phone.
+   *   **Tier 2: Magnetic Alignment (0.82):** Hardware-enforced magnetic alignment guarantees that the transmitter and receiver coils are 100% concentric. In standard wireless charging, being off-center by even a few millimeters causes massive magnetic flux leakage. Magnets mathematically eliminate this misalignment variance, ensuring near-perfect static coupling. *(Note: Modeling this 0.82 efficiency gain is not double-counting with the `Magnetic Alignment Capability` (`S_alignment`) score; `F_transfer` strictly models the **electrical physics** required to accurately predict real-world charging speed, while the `S_alignment` metric independently scores the **convenience of the magnetic accessory ecosystem** (e.g., snap-on car mounts and wallets). Additionally, the dynamic thermal penalty of high wattage is handled by `F_thermal_wireless`).*
+   *   **Tier 3: Advanced Passive (0.78):** Uses advanced 2-way communication profiles (like Qi EPP or Proprietary optimized protocols) for efficient power negotiation, but lacks fans or magnets. The average real-world placement by a user is always slightly off-center, leading to unavoidable moderate flux leakage. This tier covers all modern passive chargers (from standard 15W Qi up to proprietary 50W passive stands). *Note: Their static coupling efficiencies are identical; the thermal consequence of pushing higher peak power is handled entirely by the `F_thermal_wireless` equation to prevent double-counting.*
+   *   **Tier 4: Basic Qi BPP (0.72):** Lowest efficiency. Uses the legacy Qi Baseline Power Profile (BPP) limited to 5W. Unlike modern profiles, BPP relies on primitive one-way communication (the receiver can only send basic "power up/down" pulses to the transmitter) and older coil standards. This lack of precise power negotiation results in the highest proportion of baseline energy being lost to poor inductive coupling.
+
+   *(Note: For the exact categorization rules and edge-case precedence, refer to the `proposed_data_structure.md` file.)*
 
 4. **Average Effective Power (`P_effective_wireless`):** 
    `P_effective_wireless = P_wireless_max * F_transfer * F_thermal_wireless`
@@ -5109,7 +5111,7 @@ Wireless speed relies exclusively on an **Analytical Physics Predictor (Method C
    `T_predicted_wireless = 60 * (E_supply / P_effective_wireless)`
 
 *   **Speed Component Score (`S_speed`):**
-    The predicted time is then normalized using a **Logarithmic Utility** curve:
+    The predicted time is then normalized using a **Logarithmic Utility** curve *(refer to Section 8.2.1.A.3 "Charging Speed Component Score" for the justification of applying logarithmic utility normalization to charging times)*:
     `S_speed = 10 * (log(Battery_Wireless_Charge_Time_Max_Mins) - log(T_predicted_wireless)) / (log(Battery_Wireless_Charge_Time_Max_Mins) - log(Battery_Wireless_Charge_Time_Min_Mins))` (Clamped 0.0 to 10.0)
 
 **Huber Optimization Study & Validation Cases:**
@@ -5165,22 +5167,16 @@ Measures the highest charging power the phone itself accepts using an open Qi-fa
 > This distinction ensures that a phone with a massive proprietary charging speed does not artificially inflate its universal compatibility score.
 
 #### 8.3.3 Magnetic Alignment Capability (`S_alignment`)
-Measures how reliably the charging system maintains optimal coil alignment and supports magnetic mounting/accessories.
-*   **Formula:** Tiered assignment based on verified hardware capability.
-    *   **10.0:** Native Qi2 magnetic hardware, OR MagSafe iPhones 12-14 (which physically formed the basis of Qi2 despite predating its 2023 finalization).
-    *   **8.0:** Native proprietary magnetic alignment (built-in magnets, but relies on proprietary ecosystem, not Qi2).
-    *   **5.0:** Magnetic alignment requires/supports an **official OEM-sold or OEM-certified** magnetic case. Generic third-party aftermarket magnetic cases do NOT qualify.
-    *   **0.0:** No magnetic alignment hardware (standard Qi coil only).
+Measures the device's official magnetic alignment capability, evaluating how reliably the charging system maintains optimal coil alignment and supports magnetic mounting/accessories.
+*   **Formula:** Tiered assignment based on verified official capability.
+    *   **10.0 (Tier 1: Native Qi2 (MPP) / MagSafe):** Requires native Magnetic Power Profile (MPP) hardware built into the phone. Includes Apple MagSafe on iPhone 12-17 and Qi2 MPP certified Androids.
+    *   **8.0 (Tier 2: Native Proprietary Magnetic):** Requires built-in magnets intended for charging alignment, but relies on a proprietary ecosystem rather than Qi2 MPP (e.g., Realme MagDart).
+    *   **5.0 (Tier 3: OEM Magnetic Case Required):** The phone lacks built-in charging magnets but officially supports a first-party/OEM-certified magnetic case to achieve alignment. Generic third-party aftermarket rings/cases do NOT qualify.
+    *   **0.0 (Tier 4: No official magnetic alignment):** Standard induction coil only. Device supports wireless charging but lacks any qualifying native or OEM magnetic alignment.
 
-#### 8.3.4 Agent Data Extraction Hierarchy & Edge Cases
-To ensure absolute fairness and avoid bias during automated data extraction, AI agents must strictly adhere to the following rules:
-1. **Evidence Hierarchy:** Always pull wireless parameters in the following order: Tier 1 (Manufacturer Specs) → Tier 2 (Official Support Docs/Limits) → Tier 3 (Certification) → Tier 4 (Technical Reviews) → Tier 5 (Historical Fallback/Inference, tagged with Low Confidence).
-2. **Software-Unlock Timing:** When a device's wireless wattage was raised via an official post-launch software update (e.g., iPhone 8 unlocking 7.5W via iOS 11.2), use the maximum post-update wattage for `P_wireless_max`, NOT the launch day figure. Flag the score with a note when they differ.
-3. **Receive-Side Only (Contamination Risk):** Spec sheets routinely list receive-side wireless charging and reverse/share wireless charging together. Agents MUST explicitly exclude reverse/share wattage from 8.3 extraction.
-4. **Confidence Tagging & Historical Fallbacks:** If a pre-2020 phone lists "Qi wireless charging" but no wattage is documented, fallback to `P_universal_wireless = 5.0 W` and `P_wireless_max = 5.0 W`. This MUST be visibly logged as a Tier 5 deduction, clearly distinguishable from a phone that explicitly lists 5W on a Tier 1 spec sheet.
-5. **Confirmed-Absent vs. Insufficient-Data:** If a Tier 1-4 source explicitly confirms the device lacks wireless charging, score as `0.00` (Confirmed Absent). If the agent simply cannot find any documentation (common for white-label ODMs), set the state to `Insufficient_Data` and route to manual review. Do NOT silently score as `0.00`.
-6. **No Inference from Materials:** Do NOT infer the presence of wireless charging merely from a "glass back" or "flagship status".
-7. **No Inference from Magnets:** Do NOT infer "Qi2" certification merely from the presence of "magnets" (as proprietary magnetic systems exist). "Qi2-compatible case" does not equate to a native Qi2 phone.
+> [!NOTE]
+> **Methodological Justification for Tiers & Ambiguity Limits:**
+> A strict conceptual boundary separates "native hardware" from "official capability". By evaluating *capability*, Tier 3 correctly rewards manufacturers who explicitly engineer a case-based magnetic ecosystem (e.g., Huawei, OnePlus), while explicitly punishing reliance on generic third-party aftermarket stickers/cases. Additionally, stringent ambiguity rules (detailed in the data schema) mandate that "Qi2 Ready" marketing or the mere physical presence of magnets (e.g., for speakers or cameras) do NOT automatically grant Tier 1 or Tier 2 scores without explicit documentation of charging alignment intent.
 
 
 ### 🔹 8.4 Wired Reverse Charging

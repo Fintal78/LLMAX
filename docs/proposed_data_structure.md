@@ -5520,21 +5520,167 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "8_3_wireless_charging_speed": {
-      // SCORING GOAL: Evaluates maximum wireless charging input.
-      "watts": {
-        "value": 15,
+    "8_3_wireless_charging_system": {
+      // SCORING GOAL: Comprehensive evaluation of the wireless charging system, prioritizing real-world convenience and compatibility. Scores are derived from a theoretical speed prediction, universal interoperability with public standards (Qi/Qi2), and the physical convenience and efficiency of magnetic alignment.
+      
+      "wireless_charging_supported": {
+        "value": "Yes",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // SCORING GUIDELINE: Evaluates whether the device supports any form of wireless charging.
+        //   • "Yes" → Device supports wireless charging.
+        //   • "No"  → Device lacks wireless charging (either explicitly confirmed absent or not found in documentation).
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. CONFIRMED ABSENT: If an authoritative source (e.g., manufacturer specifications, official support documents, certification databases, or reputable technical reviews) explicitly confirms the device lacks wireless charging, set value to "No". Put "N/A" in all data blocks of the 3 components (`pure_wireless_charging_speed`, `universal_open_standard_interoperability`, `magnetic_alignment_capability`) for their values, sources, extracts, and subscores. Then follow the guidelines of SECTION 8.3 COMPOSITE SCORE CALCULATION for the rating.
+        //   2. INSUFFICIENT DATA: If the agent simply cannot find any documentation confirming presence or absence (common for white-label ODMs), set value to "No" by default, but you MUST tag this by setting source to "Insufficient Data - Routed to manual review" and exact_extract to "N/A". Do NOT silently assume it is confirmed absent.
+        //   3. NO MATERIAL INFERENCE: Do NOT infer the presence of wireless charging merely from a "glass back" or "flagship status".
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: PURE WIRELESS CHARGING SPEED (S_speed)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "pure_wireless_charging_speed": {
+        "battery_energy_wh": {
+          "value": 19.2500,
+          "value_path": "8_battery_and_charging.8_1_battery_endurance_score.method_c_prediction_model_Battery.energy_capacity_wh.value"
+          // SCORING GUIDELINE: Total stored nominal battery energy capacity E_supply in Watt-hours (Wh). Inherited from Section 8.1.
+        },
+        "peak_wireless_charging_power_w": {
+          "value": 15.0,
+          "source": "https://www.samsung.com/global/galaxy/galaxy-s24-ultra/specs/",
+          "exact_extract": "15W wireless charging"
+          // SCORING GUIDELINE: Maximum absolute wireless charging power input in Watts (W) accepted by the smartphone hardware.
+          //
+          // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+          //   1. EVIDENCE HIERARCHY: Always pull wireless parameters in the following order: Tier 1 (Manufacturer Specs) → Tier 2 (Official Support Docs/Limits) → Tier 3 (Certification) → Tier 4 (Technical Reviews) → Tier 5 (Historical Fallback).
+          //   2. RECEIVE-SIDE ONLY: Spec sheets routinely list receive-side wireless charging and reverse/share wireless charging together. You MUST explicitly exclude reverse/share wattage from this field.
+          //   3. SOFTWARE-UNLOCK TIMING: When a device's wireless wattage was raised via an official post-launch software update (e.g., iPhone 8 unlocking 7.5W via iOS 11.2), use the maximum post-update wattage, NOT the launch day figure. Flag the score with a note in exact_extract when they differ.
+          //   4. HISTORICAL FALLBACK: If a pre-2020 phone lists "Qi wireless charging" but no wattage is documented, fallback to 5.0 W. This MUST be visibly logged as a Tier 5 deduction in source/exact_extract, clearly distinguishable from a phone that explicitly lists 5W on a Tier 1 spec sheet.
+          //   5. ABSENT WIRELESS CHARGING: If wireless_charging_supported.value is "No", set value, source, exact_extract, and subscore across all data blocks in this component to "N/A".
+        },
+        "c_rate_wireless": {
+          "value": 0.7792,
+          "calculation_formula": "peak_wireless_charging_power_w.value / battery_energy_wh.value"
+          // SCORING GUIDELINE: Continuous charge rate normalized by battery energy capacity in reciprocal hours (h^-1). Keep 4 decimal places.
+        },
+        "thermal_factor": {
+          "value": 0.7901,
+          "calculation_formula": "1 / (1 + 1.1232 * max(0, c_rate_wireless.value - 0.7778) ^ 0.2194)"
+          // SCORING GUIDELINE: Dedicated wireless thermal throttling curve modeling heat from induction coils (F_thermal_wireless). Keep 4 decimal places.
+        },
+        "transfer_efficiency": {
+          "value": "Tier 3: Advanced Passive",
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 0.78
+          // SCORING GUIDELINE: Standardized transfer efficiency framework default assigned based on the verified wireless technology class.
+          // PRECEDENCE RULE: If a device qualifies for multiple tiers, assign the highest applicable Tier.
+          // Use the following exact strings for "value" and related coefficient for "subscore":
+          //   • "Tier 1: Active Cooling"         → 0.83 (Condition: Requires a built-in active cooling fan in the official charging base/stand)
+          //   • "Tier 2: Magnetic Alignment"     → 0.82 (Condition: Requires a native magnetic alignment ring built into the phone hardware. e.g., MagSafe, Qi2, proprietary magnetic)
+          //   • "Tier 3: Advanced Passive"       → 0.78 (Condition: Any wireless charging protocol >5W that lacks a built-in fan and lacks magnetic alignment. e.g., Qi EPP 15W, Apple 7.5W, Samsung Fast Charge, proprietary >15W chargers)
+          //   • "Tier 4: Basic Qi (5W BPP)"      → 0.72 (Condition: Limited to legacy 5W Qi Baseline Power Profile (BPP) only)
+          //
+          // AMBIGUITY RULES: 
+          //   1. Do NOT infer "Magnetic Alignment" merely from a "magnetic case". The phone hardware itself must have the magnetic ring.
+          //   2. FALLBACK: If the charging protocol or physical charger design is undocumented, assume the absence of premium hardware features (no fan, no magnets). Categorize the tier strictly based on the extracted peak wattage (e.g., Tier 3 if >5W, Tier 4 if exactly 5W).
+        },
+        "effective_average_power_w": {
+          "value": 9.2442,
+          "calculation_formula": "peak_wireless_charging_power_w.value * transfer_efficiency.subscore * thermal_factor.value"
+          // SCORING GUIDELINE: Average effective wireless charging power delivered over the full 0% to 100% charge cycle in Watts (W). Keep 4 decimal places.
+        },
+        "t_predicted_wireless_mins": {
+          "value": 124.9433,
+          "calculation_formula": "60 * (battery_energy_wh.value / effective_average_power_w.value)"
+          // SCORING GUIDELINE: Predicted wireless 0% to 100% charge duration in minutes (mins). Keep 4 decimal places.
+        },
+        "subscore": 4.26,
+        "calculation_formula": "10 * (log(Battery_Wireless_Charge_Time_Max_Mins) - log(t_predicted_wireless_mins.value)) / (log(Battery_Wireless_Charge_Time_Max_Mins) - log(Battery_Wireless_Charge_Time_Min_Mins)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Pure Wireless Charging Speed Score (S_speed). Logarithmic utility normalization converting duration in minutes into a normalized speed score. Uses constants from scoring_constants.md.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: UNIVERSAL OPEN STANDARD INTEROPERABILITY (S_universal)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "universal_open_standard_interoperability": {
+        "p_universal_wireless_w": {
+          "value": 15.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: Highest explicitly documented manufacturer-supported wattage for Qi/Qi2-compatible wireless charging, subject to the proprietary/fallback rules below (P_universal_wireless).
+          // This must be the charging input power the smartphone receives using a publicly interoperable WPC Qi-family standard (Qi or Qi2), without requiring a manufacturer-specific wireless charging transmitter, dock, authentication mechanism, or proprietary charging protocol.
+          // Note: The field should accept ANY documented manufacturer-supported Qi power (e.g., 7.5W, 11W, 12W, 15W, 25W).
+          // 
+          // EVIDENCE HIERARCHY (Log the applied tier and evidence type in `source` and `exact_extract`):
+          //   Tier 1: Manufacturer specification (Official tech specs, product page, user manual).
+          //   Tier 2: WPC certification (Certified Product Database, Qi/Qi2 profile info).
+          //   Tier 3: Reliable independent technical documentation (Reputable review/testing site, regulatory docs).
+          //   Tier 4: Retail/carrier documentation (Only when higher tiers are unavailable).
+          //   Tier 5: Methodological fallback (The predetermined 5W / 15W fallback rules below).
+          // 
+          // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+          //   1. EXPLICIT QI/QI2 WATTAGE: Prefer manufacturer specifications. If an authoritative source explicitly states a Qi/Qi2 wattage (e.g., "Qi2 wireless charging up to 25 W"), use that exact value.
+          //   2. SOFTWARE-UNLOCK TIMING: When a device's open wireless wattage was raised via an official post-launch software update (e.g., iPhone 8 unlocking 7.5W Qi via iOS 11.2, or iPhone 13/14 unlocking 15W Qi2 via iOS 17.2), use the maximum post-update wattage, NOT the launch day figure. Flag the score with a note in exact_extract when they differ.
+          //   3. QI2 CERTIFICATION: Qi2 / MPP implies 15.0 W, unless the device is specifically certified for the newer 25 W profile (Qi2 25W / Qi v2.2.1 / MPP25), which implies 25.0 W. WPC states the original Qi2 delivered 15 W, while Qi2 25W launched in July 2025.
+          //   4. NO INFERENCE FROM MAGSAFE/PROPRIETARY: Never infer open Qi wattage from proprietary MagSafe or other proprietary wireless charging wattages. Apple explicitly distinguishes MagSafe and Qi (e.g., iPhone 12 supports 15W MagSafe but only 7.5W Qi). MagSafe ≠ Qi2 for scoring purposes unless explicitly documented as supporting Qi2 at that power.
+          //   5. DETERMINISTIC FALLBACKS: If a device supports wireless charging but lacks an explicitly documented standard Qi/Qi2 wattage, use the following deterministic inferences (must be labeled as Tier 5 estimates in `exact_extract`):
+          //      - Explicit Qi2 25W         → 25.0 W
+          //      - Explicit Qi2, no wattage → 15.0 W
+          //      - Explicit Qi, no wattage  → 5.0 W
+          //      - Proprietary wireless >15 W + no disclosed Qi fallback, released ≥2020 → 15.0 W (Note: 15 W is the relevant upper bound for the original Qi EPP class; newer Qi2/Qi v2.2 profiles can support higher power).
+          //      - Proprietary wireless >15 W + no disclosed Qi fallback, released <2020 → 5.0 W
+          //      - Qi mentioned but no wattage and no proprietary fast wireless protocol → 5.0 W
+          //      - No wireless charging → "N/A" (value, source, exact_extract, and subscore are set to "N/A")
+        },
+        "subscore": 6.00,
+        "calculation_formula": "10 * (p_universal_wireless_w.value / 25.0), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Universal Open Standard Interoperability Score (S_universal). 25.0 W is the gold standard universal open Qi2 wattage benchmark.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 3: MAGNETIC ALIGNMENT CAPABILITY (S_alignment)
+      // ═══════════════════════════════════════════════════════════════════════════
+      "magnetic_alignment_capability": {
+        "value": "Tier 4: No official magnetic alignment",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 5.00
-        // SCORING GUIDELINE: Apply Section 8.3 Inverse Proportional formula. Score = 10 * ((1/Min) - (1/value)) / ((1/Min) - (1/Max)). Min=7.5W, Max=50W. Set to 0 if unsupported.
+        "subscore": 0.00
+        // SCORING GUIDELINE: Measures the device's official magnetic alignment capability (how reliably the charging system maintains optimal coil alignment). Use the following exact strings for "value" and related score for "subscore":
+        //   • "Tier 1: Native Qi2 (MPP) / MagSafe"           → 10.00 (Requires native Magnetic Power Profile (MPP) hardware built into the phone. Includes Apple MagSafe on iPhone 12-17 and Qi2 MPP certified Androids).
+        //   • "Tier 2: Native Proprietary Magnetic"          → 8.00 (Requires built-in magnets intended for charging alignment, but relies on a proprietary ecosystem rather than Qi2 MPP. e.g., Realme MagDart).
+        //   • "Tier 3: OEM Magnetic Case Required"           → 5.00 (The phone lacks built-in charging magnets but officially supports a first-party/OEM-certified magnetic case to achieve alignment. Generic third-party aftermarket rings/cases do NOT qualify).
+        //   • "Tier 4: No official magnetic alignment"       → 0.00 (Standard induction coil only. Device supports wireless charging but lacks any qualifying native or OEM magnetic alignment).
+        //   • ABSENT WIRELESS CHARGING: If wireless_charging_supported.value is "No", set value, source, exact_extract, and subscore to "N/A" instead of Tier 4.
+        //   • INSUFFICIENT EVIDENCE: If wireless charging is supported but sources are inaccessible or contradictory regarding magnets, set value to "N/A — Insufficient evidence" during research rather than prematurely assigning 0.00.
+        // 
+        // EVIDENCE HIERARCHY (Log the applied tier and evidence type in `source` and `exact_extract`):
+        //   Tier A: Manufacturer technical documentation (Tech specs, manuals, official accessory docs).
+        //   Tier B: WPC certification (Crucial for verifying Qi2 MPP).
+        //   Tier C: Reliable physical/technical testing (Teardowns).
+        //   Tier D: Retail listings / secondary sources (Do NOT treat a retailer's "MagSafe compatible" label as evidence of native hardware).
+        // 
+        // CRITICAL AMBIGUITY RULES:
+        //   1. "Magnetic accessory compatible" ≠ native magnetic: Do not award Tier 1 or 2 just because a manufacturer sells a magnetic mount or wallet. Evidence must show the phone or qualifying OEM case creates the charging alignment mechanism.
+        //   2. Case behavior ≠ Native behavior: A phone without magnets + an official magnetic case is Tier 3, not Tier 1. Do not infer native hardware from the assembled phone+case behavior.
+        //   3. Proprietary ≠ Qi2: A proprietary magnetic system remains Tier 2 unless independently documented as Qi2 MPP.
+        //   4. Magnet presence alone is insufficient: Teardowns finding speaker or camera magnets do not qualify. Magnets must be explicitly for wireless-charging alignment.
+        //   5. "Qi2 Ready": A phone marketed as "Qi2 Ready" that achieves this via an approved accessory case is Tier 3. Do not automatically convert "Qi2 Ready" to Tier 1 without native MPP hardware.
+        //   6. Magnetic Strength Irrelevant: Do not score based on holding force or magnet count; this metric evaluates categorical capability.
+        //   7. Tier 4 Assignment Protocol: Tier 4 may ONLY be assigned after verifying the manufacturer's specs, manuals, official accessories, and WPC certification, with no qualifying native or OEM magnetic mechanism found. Absence of immediate documentation is not automatic proof of absence.
       },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 8.3 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 5.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "predicted": 4.10,
+        "calculation_formula": "(wireless_charging_supported.value == 'Yes') ? Clamp(0.40 * pure_wireless_charging_speed.subscore + 0.40 * universal_open_standard_interoperability.subscore + 0.20 * magnetic_alignment_capability.subscore, 0.00, 10.00) : 0.00",
+        // SCORING GUIDELINE: Composite score combining pure wireless charging speed (40%), universal open standard interoperability (40%), and magnetic alignment capability (20%). If wireless_charging_supported.value is 'No', the score is mathematically zeroed (0.00).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 5.00,
+          "value": 4.10,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
