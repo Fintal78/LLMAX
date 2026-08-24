@@ -162,7 +162,8 @@
 *   `Battery_Wireless_Charge_Time_Max_Mins` = 360.0 (Score 0.0 | Anchor for maximum credible wireless charging duration. A modern large battery (5000-6000mAh) restricted to legacy 5W passive Qi mathematically requires 320 to 385 minutes to charge, making 360 minutes a realistic floor).
 
 ### 8.4 Wired Reverse Charging
-*   `Battery_Reverse_Wired_W_Max` = 10 (Score 10)
+*   `Battery_Reverse_Wired_W_Min` = 0.0 (Score 0.0 | No reverse charging floor)
+*   `Battery_Reverse_Wired_W_Max` = 30.0 (Score 10.0 | Benchmark ceiling for reverse-wired output)
 
 ### 8.5 Wireless Reverse Charging
 *   `Battery_Reverse_Wireless_W_Max` = 10 (Score 10)

@@ -5179,16 +5179,62 @@ Measures the device's official magnetic alignment capability, evaluating how rel
 > A strict conceptual boundary separates "native hardware" from "official capability". By evaluating *capability*, Tier 3 correctly rewards manufacturers who explicitly engineer a case-based magnetic ecosystem (e.g., Huawei, OnePlus), while explicitly punishing reliance on generic third-party aftermarket stickers/cases. Additionally, stringent ambiguity rules (detailed in the data schema) mandate that "Qi2 Ready" marketing or the mere physical presence of magnets (e.g., for speakers or cameras) do NOT automatically grant Tier 1 or Tier 2 scores without explicit documentation of charging alignment intent.
 
 
-### 🔹 8.4 Wired Reverse Charging
-*Description:* Ability to use the phone as a power bank to charge other devices via a USB-C cable.
-*   **Measurement:** Peak power output via USB-C port.
-*   **Unit:** Watts (W)
-*   **Significance:** Useful for sharing power with other phones or charging larger accessories.
-*Formula:* `Score = 10 * (Watts / Battery_Reverse_Wired_W_Max)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ Battery_Reverse_Wired_W_Max
-    *   **Min Score (0.0):** 0W (None)
+### 🔹 8.4 Wired Reverse Charging System
+*Description:* Comprehensive evaluation of the wired reverse charging system, measuring the smartphone's ability to act as a physical power bank to charge external devices (such as wireless earbuds, other smartphones, or tablets) via a Universal Serial Bus Type-C (USB-C) cable.
+*   **Measurement:** Peak continuous power output via USB-C port (`P_reverse_wired`) combined with verified source-mode protocol capability (`S_protocol`).
+*   **Unit:** Composite Score (0.0 to 10.0) derived from Watts (W) and categorical source protocol tiers.
+*   **Significance:** Enables asynchronous emergency top-ups for secondary devices. High-power output allows for charging larger devices (tablets, laptops), while verified open source protocols (like Universal Serial Bus Power Delivery — USB-PD) ensure safe, standardized power negotiation between host and recipient.
+
+#### 8.4.0 Executive Framework Overview & Core Component Definitions
+To provide a complete and transparent evaluation, the overall Section 8.4 score is derived from **two distinct, non-overlapping hardware components**:
+
+1. **Pure Power Output Score (`S_power` — 80% Weight):**
+   * **What it measures:** The highest verified continuous electrical power output in Watts (`P_reverse_wired`) the smartphone can deliver from its physical port to an externally connected device in a reverse-power / source configuration under documented operating conditions.
+   * **Why & Weight Rationale (80%):** The raw amount of energy transferred per minute is the dominant physical driver of user utility. A 30W output can viably charge a tablet or rapidly rescue a depleted smartphone, whereas a 2.5W output is strictly limited to slow trickle-charging low-capacity wearables.
+
+2. **Protocol Interoperability Score (`S_protocol` — 20% Weight):**
+   * **What it measures:** The highest verified USB power-source capability supported by the host device during reverse power transfer (`S_protocol`), evaluating host-side communication standards (open USB-PD Source versus Type-C CC pin current advertisement versus legacy USB On-The-Go — OTG 5V current dumping).
+   * **Why & Weight Rationale (20%):** High wattage without standardized protocol handshaking creates thermal strain and compatibility risks. Smart source-side protocols guarantee open interoperability across third-party accessories and enable safe power negotiation.
+
+##### Section 8.4 Overall Composite Formula
+`Final Score 8.4 = 0.80 * S_power + 0.20 * S_protocol` (Clamped 0.0 to 10.0)
+
+> [!IMPORTANT]
+> **Strict Source-Side Evaluation & Boundary Rules:**
+> 1. **Source vs. Sink Separation:** Inbound charging capability (e.g. accepting 45W USB-PD from a wall charger) MUST NEVER be used to infer outbound reverse charging capability. Dual-Role Power (DRP) controllers can support high-wattage inbound charging while capping outbound reverse charging to basic 5V rails.
+> 2. **Inclusions (Count):** Phone acting as a power source via a physical cable to external devices (phone to earbuds, phone to phone, phone to smartwatch, phone to tablet, or phone to active USB peripheral).
+> 3. **Exclusions (Do Not Count):** Inbound wall charging, wireless reverse charging (scored separately in Section 8.5), proprietary dock outputs where the phone is not sourcing through its physical port, and passive USB peripherals that do not establish the phone as an active power source.
+
+#### 8.4.1 Component 1: Pure Power Output (`S_power`)
+Evaluates the continuous energy transfer capability during reverse charging using a **Linear Benchmark Normalization Formula**:
+
+`S_power = 10 * (P_reverse_wired - Battery_Reverse_Wired_W_Min) / (Battery_Reverse_Wired_W_Max - Battery_Reverse_Wired_W_Min)` (Clamped 0.0 to 10.0)
+
+*   `P_reverse_wired`: The highest explicitly documented or lab-tested continuous source power output available from the physical port in Watts (W).
+*   `Battery_Reverse_Wired_W_Min` and `Battery_Reverse_Wired_W_Max`: Normalization constants defined in `scoring_constants.md`.
+
 > [!NOTE]
-> **Why Linear?** Similar to wireless reverse, the output range is small (4.5W to ~10W). Linear scaling provides a fair and intuitive distribution of scores based on raw power output.
+> **Why Linear Utility Normalization for Reverse Charging?**
+> Unlike primary wall charging (Section 8.2) where the goal is a complete 0% to 100% full charge cycle—making *total duration* the core metric, which inherently possesses diminishing marginal logarithmic utility—reverse wired charging is primarily utilized as an **asynchronous emergency top-up** (for example, tethering a friend's phone for 15 minutes before a flight). 
+> 
+> In a fixed-time emergency scenario, the absolute amount of physical energy transferred to the recipient is strictly linear with respect to output wattage. A 15W output delivers exactly three times more functional battery energy in a 15-minute window than a 5W output. Linear Normalization provides an auditable, transparent scale reflecting the real-world utility of emergency power sharing.
+
+#### 8.4.2 Component 2: Standard Protocol Interoperability (`S_protocol`)
+
+Evaluates the verified source-side negotiation standards of the reverse charging connection. 
+
+| Score    | Protocol Class                                | Source-Side Qualification Criteria                            |
+| :------: | :-------------------------------------------- | :------------------------------------------------------------ |
+| **10.0** | **USB Power Delivery Source (USB-PD)**        | Documented/tested to negotiate active USB-PD source contracts |
+| **7.5**  | **USB Type-C Current Advertisement Source**   | Standardized CC-pin resistor current advertisement (no PD)    |
+| **3.0**  | **Legacy USB OTG / 5V Source**                | Legacy 5V VBUS host power output without CC/PD negotiation    |
+| **0.0**  | **No Wired Reverse Output**                   | Physically or firmware-blocked from sourcing power            |
+
+*Detailed Engineering Justifications & Protocol Analysis:*
+*   **10.0 — USB Power Delivery Source (USB-PD):** The host device contains Dual-Role Power (DRP) controllers capable of broadcasting active USB-PD Power Data Objects (PDOs) over the Configuration Channel (CC) line using Biphase Mark Coding (BMC). This enables standardized open power contracts across compliant USB-PD recipient devices.
+*   **7.5 — USB Type-C Current Advertisement Source:** Utilizes standardized Type-C CC-pin pull-up resistors (`Rp`) to advertise source current levels (such as 5V at 1.5A or 5V at 3.0A) without full USB-PD protocol messaging. Safely regulates host output while maintaining open compatibility across Type-C devices.
+*   **3.0 — Legacy USB On-The-Go (OTG) / 5V Source:** Legacy host power output originally designed for low-drain computer peripherals (such as computer mice or flash drives) via 5V VBUS rails (e.g. 500mA USB 2.0 standard). Lacks modern Type-C CC current advertisement or USB-PD source handshaking.
+*   **0.0 — No Wired Reverse Output:** The device hardware or firmware does not support power sourcing via its physical port.
 
 
 ### 🔹 8.5 Wireless Reverse Charging
