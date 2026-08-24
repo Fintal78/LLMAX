@@ -61,7 +61,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "meta": {
     "schema_version": "6.8",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-08-17"
+    "last_updated": "2026-08-24"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -5687,21 +5687,81 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         }
       }
     },
-    "8_4_reverse_wired": {
-      // SCORING GOAL: Evaluates reverse wired charging output capability.
-      "watts": {
-        "value": 0,
+    "8_4_wired_reverse_charging": {
+      // SCORING GOAL: Evaluates the device's capability to act as a wired power bank (source) for external devices. The score combines pure power output and standard protocol interoperability.
+      
+      "reverse_wired_charging_supported": {
+        "value": "Yes",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // SCORING GUIDELINE: Evaluates whether the device supports wired reverse charging (acting as a power source to externally connected devices via its physical port).
+        //   • "Yes" → Device supports wired reverse charging (e.g., Universal Serial Bus On-The-Go — USB OTG power output, Power Share, Reverse Charging).
+        //   • "No"  → Device explicitly lacks or is blocked from sourcing power.
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. CONFIRMED ABSENT: If an authoritative source (e.g., spec sheet, review) explicitly confirms the device cannot source power to external devices, set value to "No". Put "N/A" for values, sources, and exact_extracts in `p_reverse_wired` and `s_protocol` data blocks, and set their subscores to 0.00.
+        //   2. INSUFFICIENT DATA / OMISSION: Most primary databases (like GSMArena) often omit reverse wired charging if it's a baseline feature (like standard 5V Universal Serial Bus On-The-Go — USB OTG, a protocol standard enabling the phone to act as a host and supply power to connected USB devices). You MUST proactively scan at least three distinct sources (e.g., GSMArena, Official Specs, Wikipedia, Notebookcheck, external reviews) to cross-reference (Omni-Scan Rule). If no source mentions it, but the device has a physical port (such as USB Type-C, Micro-USB, or Lightning) supporting USB OTG, set value to "Yes" (baseline 5V power sourcing). Do NOT blindly assume "No" without proof.
+        //   3. SOURCE VS SINK SEPARATION: Inbound charging capability (e.g., accepting 45W from a wall charger) MUST NEVER be used to infer outbound reverse charging capability.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: PURE POWER OUTPUT
+      // ═══════════════════════════════════════════════════════════════════════════
+      "p_reverse_wired": {
+        "value": 7.5,
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 0.00
-        // SCORING GUIDELINE: Section 8.4 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        "subscore": 6.23,
+        // SCORING GUIDELINE: The highest explicitly documented or lab-tested continuous source power output available from the physical port in Watts (W).
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
+        // Always extract the exact peak outbound wattage (e.g., 10W, 15W, 27W) from Tier 1 (Manufacturer Specs) or Tier 2/3 (Reviews/Datasheets). CRUCIAL WARNING: Ensure you do NOT accidentally extract the device's inbound wall-charging speed (e.g., 45W or 65W Fast Charging) as the reverse wired wattage. The wattage MUST explicitly apply to OUTBOUND / reverse charging.
+        // Independent Lab Tests: To use a lab measurement as Tier 2/3 evidence, the test must demonstrate stable, continuous power delivery to a sink device (e.g., measuring 5.1V x 1.47A), not just a momentary transient spike or a basic confirmation of OTG host mode.
+        // If the exact wattage is unlisted, resolve `value` deterministically based on protocol support and connector type:
+        //   1. Explicit Wattage Documented: If verified data exists (e.g., "15W reverse charging") → set value = Documented Wattage.
+        //   2. Explicit Source Profile Documented: If the source outputs are listed as voltage/current profiles (e.g., 9V/2A), calculate P = V × A and use the highest supported continuous source wattage.
+        //   3. USB Power Delivery (PD) Source Supported (No Wattage): If device explicitly supports USB Power Delivery (PD) Source mode but omits max wattage → set value = 15.0 (Standard USB-PD baseline output for phones).
+        //   4. Standard USB Type-C OTG (No PD): If device has a USB Type-C port and supports reverse charging/OTG but lacks USB Power Delivery (PD) source confirmation → set value = 4.5 (Standard 5V/0.9A USB 3.0 output) for devices released before 2020, or 7.5 (5V/1.5A Type-C Current Advertisement (Rp)) for devices released in 2020 or later. Default fallback for unknown release dates is 4.5.
+        //   5. Legacy Micro-USB OTG: If device uses Micro-USB and supports OTG power → set value = 2.5 (Standard 5V/500mA legacy USB 2.0 output).
+        //   6. Not Supported: If reverse_wired_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        "calculation_formula": "10 * (log(p_reverse_wired.value + 1) - log(Battery_Reverse_Wired_W_Min + 1)) / (log(Battery_Reverse_Wired_W_Max + 1) - log(Battery_Reverse_Wired_W_Min + 1)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Normalizes the output logarithmically using constants from scoring_constants.md.
       },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: STANDARD PROTOCOL INTEROPERABILITY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "s_protocol": {
+        "value": "Tier 2: USB Type-C Current Advertisement Source",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 7.50
+        // SCORING GUIDELINE: Evaluates the verified source-side negotiation standards of the reverse charging connection.
+        // Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: USB Power Delivery (PD) Source"                   → 10.00
+        //     Definition & Evidence: The host device contains Dual-Role Power (DRP) controllers capable of broadcasting active USB-PD Power Data Objects (PDOs) over the Configuration Channel (CC) line. Assign this tier ONLY if source-side USB-PD is explicitly documented or verified (e.g., "USB-PD Reverse Charging" or "Output: 5V/3A, 9V/2A PD"). CRUCIAL WARNING: General mentions of "USB-PD" usually refer to inbound wall charging (Sink). To qualify for Tier 1, the device MUST explicitly support USB-PD as an OUTBOUND or SOURCE capability.
+        //   • "Tier 2: USB Type-C Current Advertisement (Rp) Source"     → 7.50
+        //     Definition & Evidence: Utilizes standardized Type-C Configuration Channel (CC) pin pull-up resistors (Rp) to advertise source current levels (e.g., 5V/1.5A or 5V/3.0A) without full USB-PD protocol messaging. Assign this tier if source-side CC/Rp current advertisement is explicitly documented or verified, unless Tier 1 is established. To qualify, the device MUST explicitly support this as an OUTBOUND or SOURCE capability.
+        //   • "Tier 3: Legacy USB On-The-Go (OTG) Source"                → 3.00
+        //     Definition & Evidence: Legacy host power output via 5V VBUS rails (e.g., 500mA or 900mA standard). This acts as the baseline fallback: Assign this tier if wired reverse output is confirmed to be working, but neither PD source nor CC/Rp source advertisement is established in public evidence. To qualify, the device MUST explicitly support On-The-Go (OTG) as an OUTBOUND or SOURCE capability.
+        //   • "Tier 4: No Wired Reverse Source"                          → 0.00
+        //     Definition & Evidence: Physically or firmware-blocked from sourcing power.
+        //
+        // PROHIBITED INFERENCES (MANDATORY):
+        //   - WATTAGE IS NOT PROTOCOL: Never infer protocol tiers purely from P_reverse_wired output capability (e.g., >15W ≠ PD, 15W/7.5W ≠ Type-C CC, ≤5W ≠ OTG). The documentation must explicitly establish the negotiation mechanism.
+        //   - CONNECTOR TYPE IS NOT PROTOCOL: A USB-C connector does not prove Tier 1 or Tier 2. A Micro-USB connector does not automatically prove Tier 3 (the device must explicitly support OTG).
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 8.4 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 0.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "predicted": 6.48,
+        "calculation_formula": "0.80 * p_reverse_wired.subscore + 0.20 * s_protocol.subscore",
+        // SCORING GUIDELINE: The final score balances raw power output (80%) with protocol safety and universal interoperability (20%).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
+          "value": 6.48,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
