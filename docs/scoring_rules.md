@@ -4700,16 +4700,16 @@ To ensure complete clarity and physical consistency across the scoring framework
 
 ### 🔹 8.2 Wired Charging System
 *Description:* Comprehensive evaluation of the wired charging system, comprising pure full-charge duration performance, open universal USB Power Delivery ecosystem interoperability, and hardware bypass power delivery capability.
-*   **Measurement:** Canonical full charge duration in minutes (`T_final`) evaluated via Method A (Empirical Benchmark), Method B (Nearest-Neighbor Interpolation), or Method C (Analytical Physics Predictor) to yield `S_speed`, combined with continuous open USB-PD speed ratio (`S_interoperability`) and hardware battery-bypass direct drive (`S_bypass`).
+*   **Measurement:** Canonical full charge duration in minutes (`T_final`) evaluated via Method A (Empirical Benchmark), Method B (Nearest-Neighbor Interpolation), or Method C (Analytical Physics Predictor) to yield `S_speed`, combined with open USB-PD interoperability score (`S_interoperability`) and hardware battery-bypass direct drive (`S_bypass`).
 *   **Unit:** Minutes (mins) for speed duration; Composite Score (0.0 to 10.0) for overall section score.
-*   **Significance:** Minimizes wall-tethered downtime when battery power is depleted, guarantees fast charging across non-proprietary third-party chargers, and prevents overheating during plugged-in heavy use (gaming, GPS navigation, mobile hotspot tethering).
+*   **Significance:** Ensures fast charging using standard or proprietary gear while rewarding open USB Power Delivery compatibility and thermal preservation via direct-drive bypass capability.
 
-#### 8.2.0 Executive Framework Overview & Core Component Definitions
-To provide a complete and transparent evaluation of a smartphone's wired charging system, the overall Section 8.2 score is derived from **three distinct, non-overlapping hardware components**:
+#### 8.2.0 Executive Framework Overview & Weights
+To provide a complete and transparent evaluation, the overall Section 8.2 score is derived from **three distinct, non-overlapping hardware components**:
 
-1. **Pure Charging Speed Score (`S_speed` — 88% Weight):**
-   * **What it measures:** The real-world physical duration in minutes required to charge a completely depleted smartphone battery from 0% to 100% State of Charge using its fastest official wall charger.
-   * **Why & Weight Rationale (88%):** Primary utility impacting 100% of users on 100% of charge cycles. Minimizing wall-tethered downtime is the dominant physical driver of charging satisfaction.
+1. **Pure Wired Charging Speed (`S_speed` — 88% Weight):**
+   * **What it measures:** Full-cycle charging time from 0% to 100% state of charge in minutes (`T_final`), using the fastest official wall charger, and evaluated via empirical GSMArena lab tests (Method A), nearest-neighbor interpolation (Method B), or an analytical physics model (Method C).
+   * **Why & Weight Rationale (88%):** Primary driver of user utility. The dominant real-world benefit is minimizing total time tethered to a wall socket.
 
 2. **Universal Protocol Interoperability Score (`S_interoperability` — 9% Weight):**
    * **What it measures:** The percentage of maximum charging performance accessible when using open, non-proprietary third-party chargers (such as USB Power Delivery — USB-PD, an open universal fast-charging standard defined by the USB Implementers Forum, and Programmable Power Supply — PPS, an advanced extension allowing real-time voltage and current micro-adjustments), rather than vendor-locked proprietary wall adapters.
@@ -4919,20 +4919,17 @@ The complete mathematical derivation, statistical loss function theory, sensitiv
 Evaluates hardware features and charging ecosystem openness that are not reflected in single-charger laboratory speed benchmarks.
 
 ##### 8.2.2.A Universal Protocol Interoperability Score (`S_interoperability`, 9% Weight)
-Evaluates charging ecosystem freedom by calculating the continuous ratio of maximum power accessible via open, non-proprietary USB Power Delivery (USB-PD 3.0/3.1 Programmable Power Supply — PPS or fixed PD) relative to the device's peak rated wattage (`P_peak`):
+Evaluates charging ecosystem utility by measuring the raw physical power accessible via open, non-proprietary USB Power Delivery (USB-PD 3.0/3.1 Programmable Power Supply — PPS or fixed PD).
 
-`S_interoperability = 10 * (P_universal_USB_PD / P_peak)` (Clamped 0.0 to 10.0)
+`S_interoperability = 10 * (log(P_universal_USB_PD + 1) - log(Battery_Universal_Wired_W_Min + 1)) / (log(Battery_Universal_Wired_W_Max + 1) - log(Battery_Universal_Wired_W_Min + 1))` (Clamped 0.0 to 10.0)
 
 *   `P_universal_USB_PD`: Maximum power input (in Watts) achieved when connected to a standard, open USB Power Delivery charger.
-*   `P_peak`: Maximum peak rated wired charging power input (in Watts) accepted by the smartphone hardware using official proprietary adapters (identical to `P_peak` in Section 8.2.1).
+*   `Battery_Universal_Wired_W_Min` and `Battery_Universal_Wired_W_Max`: Normalization constants defined in `scoring_constants.md`.
 
 > [!NOTE]
-> **Normalization Assessment**
-> This formula (`S_interoperability = 10 * (P_universal_USB_PD / P_peak)`) might not be perfectly normalized to a true 0-10 scale in practice, as `P_universal_USB_PD` rarely reaches exactly 0 Watts (W) for modern devices.
-> 
-> However, an additional layer of Min/Max normalization is deliberately omitted for two practical reasons:
-> 1. Devices that heavily rely on proprietary fast charging (e.g., a 240 Watts (W) peak phone falling back to a 15 Watts (W) Universal Serial Bus (USB) standard) naturally yield very low ratio values. This results in a score close to 0 (e.g., 0.625), ensuring the range still practically maps close to the intended [0, 10] scale.
-> 2. This metric only carries a limited weight of 9% within the broader Section 8.2 score. Adding another complex normalization formula to shift these marginal lower bounds down to an absolute zero would have a negligible impact on the final score and does not justify the added mathematical complexity.
+> **Why Absolute Logarithmic Normalization?**
+> The real-world user utility of open USB Power Delivery scales logarithmically rather than linearly. Moving from 0W to baseline power (15W–30W) provides massive "zero-to-one" utility—enabling universal interoperability across any standard laptop charger, public hub, or third-party power bank without requiring proprietary adapters. However, beyond mainstream fast-charging thresholds (45W–65W), additional wattage yields diminishing returns in actual charge time due to battery thermal management constraints and extended constant-voltage trickle phases.
+> Evaluating open-standard power on an absolute logarithmic scale measures universal ecosystem freedom directly as an independent physical capability, heavily rewarding baseline open compatibility while properly tapering off at excessive wattages.
 
 ###### Sourcing Hierarchy & Evidence Verification Rules
 To guarantee maximum data reproducibility, resolve unannounced USB-PD fallback wattages, and eliminate brand bias (as highlighted by industry analyses from AndroidAuthority and ChargerLAB), `P_universal_USB_PD` MUST be extracted using the following **6-Tier Evidence Hierarchy**:
@@ -5009,7 +5006,7 @@ Below are 2 detailed, verified worked examples evaluating real-world flagship de
     *   `P_peak`: `45.0 W`
     *   `Capacity_mAh`: 5,000 mAh at 3.85V (`E_supply = 19.25 Wh`)
     *   `Cell Architecture`: Single-Cell (`C0_single = 0.4051 h^-1`)
-    *   `P_universal_USB_PD`: `45.0 W` -> `S_interoperability = 10.0 * (45.0 / 45.0) = 10.00`
+    *   `P_universal_USB_PD`: `45.0 W` -> `S_interoperability = 10 * (log(45.0 + 1) - log(0 + 1)) / (log(100.0 + 1) - log(0 + 1)) = 8.30`
     *   `S_bypass`: `10.00` (Supports Game Booster "Pause USB Power Delivery" direct drive)
 *   **Step-by-Step Method C Speed Calculations:**
     1. *Continuous C-Rate:* `C_rate = 45.0 / 19.25 = 2.3377 h^-1`
@@ -5023,9 +5020,9 @@ Below are 2 detailed, verified worked examples evaluating real-world flagship de
     *   *Method A Pure Speed Score (Empirical `T_GSMArena = 65.0 min`):* `S_speed_MethodA = 10 * (log(241.0) - log(65.0)) / (log(241.0) - log(9.00)) = 3.99`
     *   *Method C Pure Speed Score (Analytical Physics `T_predicted = 59.2 min`):* `S_speed_MethodC = 10 * (log(241.0) - log(59.2)) / (log(241.0) - log(9.00)) = 4.27`
     *   *Method A Final Composite Score:*
-        `Final Score 8.2 = 0.88 * 3.99 + 0.09 * 10.00 + 0.03 * 10.00 = 3.51 + 0.90 + 0.30 = 4.71`
+        `Final Score 8.2 = 0.88 * 3.99 + 0.09 * 8.30 + 0.03 * 10.00 = 3.51 + 0.75 + 0.30 = 4.56`
     *   *Method C Final Composite Score (Fallback):*
-        `Final Score 8.2 = 0.88 * 4.27 + 0.09 * 10.00 + 0.03 * 10.00 = 3.76 + 0.90 + 0.30 = 4.96`
+        `Final Score 8.2 = 0.88 * 4.27 + 0.09 * 8.30 + 0.03 * 10.00 = 3.76 + 0.75 + 0.30 = 4.80`
 
 ##### Example 2: Xiaomi 13 Pro (120W Dual-Cell Proprietary Direct Charge)
 *   **Empirical Source:** [GSMArena Xiaomi 13 Review — Charging Test](https://www.gsmarena.com/xiaomi_13-review-2531p3.php)
@@ -5034,7 +5031,7 @@ Below are 2 detailed, verified worked examples evaluating real-world flagship de
     *   `P_peak`: `120.0 W`
     *   `Capacity_mAh`: 4,820 mAh at 3.85V (`E_supply = 18.56 Wh`)
     *   `Cell Architecture`: Dual-Cell (`C0_dual = 2.6813 h^-1`)
-    *   `P_universal_USB_PD`: `65.0 W` -> `S_interoperability = 10.0 * (65.0 / 120.0) = 5.42`
+    *   `P_universal_USB_PD`: `65.0 W` -> `S_interoperability = 10 * (log(65.0 + 1) - log(0 + 1)) / (log(100.0 + 1) - log(0 + 1)) = 9.08`
     *   `S_bypass`: `0.00` (No native hardware bypass charging)
 *   **Step-by-Step Method C Speed Calculations:**
     1. *Continuous C-Rate:* `C_rate = 120.0 / 18.56 = 6.4655 h^-1`
@@ -5048,9 +5045,9 @@ Below are 2 detailed, verified worked examples evaluating real-world flagship de
     *   *Method C Pure Speed Score:* `22.5 minutes` -> `S_speed_MethodC = 10 * (log(241.0) - log(22.5)) / (log(241.0) - log(9.00)) = 7.21`
     *   *Method A Pure Speed Score:* `19.00 minutes` -> `S_speed_MethodA = 10 * (log(241.0) - log(19.00)) / (log(241.0) - log(9.00)) = 7.73`
     *   *Method A Final Composite Score:*
-        `Final Score 8.2 = 0.88 * 7.73 + 0.09 * 5.42 + 0.03 * 0.00 = 6.80 + 0.49 + 0.00 = 7.29`
+        `Final Score 8.2 = 0.88 * 7.73 + 0.09 * 9.08 + 0.03 * 0.00 = 6.80 + 0.82 + 0.00 = 7.62`
     *   *Method C Final Composite Score (Fallback):*
-        `Final Score 8.2 = 0.88 * 7.21 + 0.09 * 5.42 + 0.03 * 0.00 = 6.34 + 0.49 + 0.00 = 6.83`
+        `Final Score 8.2 = 0.88 * 7.21 + 0.09 * 9.08 + 0.03 * 0.00 = 6.34 + 0.82 + 0.00 = 7.16`
 
 
 ### 🔹 8.3 Wireless Charging System
@@ -5163,16 +5160,17 @@ These `delta=10.0` parameters yield a predictive MAE of 8.62 minutes across dive
 
 #### 8.3.2 Universal Open Standard Interoperability (`S_universal`)
 Measures the highest charging power the phone itself accepts using an open Qi-family standard *without* a manufacturer-specific wireless protocol.
-*   **Formula:** `S_universal = 10 * P_universal_wireless / P_universal_wireless_max` (Clamped 0.0 to 10.0)
+*   **Formula:** `S_universal = 10 * (log(P_universal_wireless + 1) - log(Battery_Universal_Wireless_W_Min + 1)) / (log(Battery_Universal_Wireless_W_Max + 1) - log(Battery_Universal_Wireless_W_Min + 1))` (Clamped 0.0 to 10.0)
 *   **Parameters:**
-    *   `P_universal_wireless`: The highest supported wattage on open Qi/Qi2 standards (typically 5W, 7.5W, 10W, 15W, or 25W).
-    *   `P_universal_wireless_max` (Constant): The gold standard universal open Qi2 wattage benchmark, set to `25.0` W.
+    *   `P_universal_wireless`: The highest supported wattage on open Qi/Qi2 standards for the considered device (typically 0W, 5W, 7.5W, 10W, 15W, or 25W).
+    *   `Battery_Universal_Wireless_W_Min` and `Battery_Universal_Wireless_W_Max`: Normalization constants defined in `scoring_constants.md`.
 
 > [!NOTE]
-> **Crucial Parameter Distinction:**
-> *   `P_wireless_max` represents the absolute maximum wireless charging power (including proprietary systems, e.g., 80W) that the phone is capable of accepting. It is used in 8.3.1 (`S_speed`) to calculate raw speed.
-> *   `P_universal_wireless` represents the highest charging power the phone accepts specifically on open, non-proprietary standards (Qi/Qi2). It is compared to the universal benchmark constant `P_universal_wireless_max` (25.0 W) in 8.3.2 (`S_universal`).
-> This distinction ensures that a phone with a massive proprietary charging speed does not artificially inflate its universal compatibility score.
+> **Why Logarithmic Utility Normalization for Universal Wireless Charging?**
+> The utility of universal wireless charging scales logarithmically, not linearly. The jump from 0W to 5W provides massive "zero-to-one" utility (the fundamental convenience of cable-free charging on any public or automotive pad). However, due to thermal throttling constraints inherent to inductive charging, the actual time saved by moving from 20W to 25W is far less dramatic. A linear scale would unfairly penalize modern 15W Qi2 flagships by strictly measuring them against a 25W ceiling. Logarithmic normalization perfectly captures this reality, heavily rewarding baseline open standards while properly tapering off at excessive wattages.
+> 
+> *(Mathematical Note: The `+ 1` offset inside the `log()` functions prevents a mathematical undefined error when wattage is 0.0 W, safely anchoring the baseline to exactly `log(1) = 0.0` points).*
+
 
 #### 8.3.3 Magnetic Alignment Capability (`S_alignment`)
 Measures the device's official magnetic alignment capability, evaluating how reliably the charging system maintains optimal coil alignment and supports magnetic mounting/accessories.

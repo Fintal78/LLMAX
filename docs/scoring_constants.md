@@ -156,10 +156,14 @@
 ### 8.2 Wired Charging System
 *   `Battery_Wired_Charge_Time_Min_Mins` = 9.0 (Score 10.0 | Benchmark-aligned minimum duration ceiling: 9.0 mins for 210W Redmi Note 12 Explorer; shared across Method A, Method B, and Method C to guarantee complete scale invariance)
 *   `Battery_Wired_Charge_Time_Max_Mins` = 241.0 (Score 0.0 | Benchmark-aligned maximum duration floor: 241.0 mins for 5W Apple iPhone 7 Plus; shared across Method A, Method B, and Method C to guarantee complete scale invariance)
+*   `Battery_Universal_Wired_W_Min` = 0.0 (Score 0.0 | Absolute floor for devices lacking universal USB Power Delivery support or open fallback protocol across 2016–2026)
+*   `Battery_Universal_Wired_W_Max` = 100.0 (Score 10.0 | Gold standard universal USB-PD 3.0 Standard Power Range specification peak reached by high-power PPS and dual-port flagships across 2016–2026)
 
 ### 8.3 Wireless Charging System
 *   `Battery_Wireless_Charge_Time_Min_Mins` = 30.0 (Score 10.0 | Anchor for minimum credible wireless charging duration. Due to severe thermal throttling inherent to inductive transfer, even a theoretical 100W actively-cooled charger into a small 4000mAh battery mathematically asymptotes at ~29.5 minutes. Setting this lower would make a 10.0 score physically impossible).
 *   `Battery_Wireless_Charge_Time_Max_Mins` = 360.0 (Score 0.0 | Anchor for maximum credible wireless charging duration. A modern large battery (5000-6000mAh) restricted to legacy 5W passive Qi mathematically requires 320 to 385 minutes to charge, making 360 minutes a realistic floor).
+*   `Battery_Universal_Wireless_W_Min` = 0.0 (Score 0.0 | No universal wireless charging support)
+*   `Battery_Universal_Wireless_W_Max` = 25.0 (Score 10.0 | The gold standard universal open Qi v2.2 specification peak)
 
 ### 8.4 Wired Reverse Charging
 *   `Battery_Reverse_Wired_W_Min` = 0.0 (Score 0.0 | No reverse charging floor)

@@ -5365,7 +5365,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "predicted_score": {
           "value": 4.27,
           "calculation_formula": "10 * (log(Battery_Wired_Charge_Time_Max_Mins) - log(t_predicted.value)) / (log(Battery_Wired_Charge_Time_Max_Mins) - log(Battery_Wired_Charge_Time_Min_Mins)), clamped 0.0 to 10.0"
-          // SCORING GUIDELINE: Method C predicted charging speed score (S_speed_MethodC) normalized logarithmically using shared constants from scoring_constants.md.
+          // SCORING GUIDELINE: Method C predicted charging speed score normalized logarithmically using shared constants from scoring_constants.md.
         }
       },
 
@@ -5433,7 +5433,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
-      // COMPONENT 2: UNIVERSAL PROTOCOL INTEROPERABILITY (S_interoperability)
+      // COMPONENT 2: UNIVERSAL PROTOCOL INTEROPERABILITY
       // ═══════════════════════════════════════════════════════════════════════════
       "universal_protocol_interoperability": {
         "p_universal_usb_pd_w": {
@@ -5469,9 +5469,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //      If device completely lacks open USB charging compatibility: p_universal_usb_pd_w.value = 0.0 W.
           //      - Provenance: Set source = "N/A", exact_extract = "N/A".
         },
-        "subscore": 10.00,
-        "calculation_formula": "10.0 * (p_universal_usb_pd_w.value / method_c_prediction_model_Wired_Speed.peak_charging_power_w.value), clamped 0.0 to 10.0"
-        // SCORING GUIDELINE: Interoperability score S_interoperability.
+        "subscore": 8.30,
+        "calculation_formula": "10 * (log(p_universal_usb_pd_w.value + 1) - log(Battery_Universal_Wired_W_Min + 1)) / (log(Battery_Universal_Wired_W_Max + 1) - log(Battery_Universal_Wired_W_Min + 1)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Interoperability score.
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
@@ -5497,11 +5497,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // SECTION 8.2 COMPOSITE SCORE CALCULATION
       // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 4.96,
+        "predicted": 4.80,
         "calculation_formula": "0.88 * method_c_prediction_model_Wired_Speed.predicted_score.value + 0.09 * universal_protocol_interoperability.subscore + 0.03 * hardware_bypass_charging.subscore",
         // SCORING GUIDELINE: Predicted composite score combining Method C predicted pure wired charging speed (88%), universal protocol interoperability (9%), and hardware bypass charging (3%).
         "final": {
-          "value": 4.71,
+          "value": 4.56,
           "calculation_formula": "Clamp(0.88 * (method_a_benchmark_Wired_Speed.subscore != 'N/A' ? method_a_benchmark_Wired_Speed.subscore : (method_b_neighbor_interpolation_Wired_Speed.interpolated_score != 'N/A' ? method_b_neighbor_interpolation_Wired_Speed.interpolated_score : method_c_prediction_model_Wired_Speed.predicted_score.value)) + 0.09 * universal_protocol_interoperability.subscore + 0.03 * hardware_bypass_charging.subscore, 0.00, 10.00)",
           // SCORING GUIDELINE: Resolved strictly by the A->B->C hierarchy for pure wired charging speed (S_speed):
           //   1. Use Method A if method_a_benchmark_Wired_Speed is available (and method_used is "Benchmark (GSMArena)").
@@ -5602,7 +5602,7 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
-      // COMPONENT 2: UNIVERSAL OPEN STANDARD INTEROPERABILITY (S_universal)
+      // COMPONENT 2: UNIVERSAL OPEN STANDARD INTEROPERABILITY
       // ═══════════════════════════════════════════════════════════════════════════
       "universal_open_standard_interoperability": {
         "p_universal_wireless_w": {
@@ -5634,9 +5634,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
           //      - Qi mentioned but no wattage and no proprietary fast wireless protocol → 5.0 W
           //      - No wireless charging → "N/A" (value, source, exact_extract, and subscore are set to "N/A")
         },
-        "subscore": 6.00,
-        "calculation_formula": "10 * (p_universal_wireless_w.value / 25.0), clamped 0.0 to 10.0"
-        // SCORING GUIDELINE: Universal Open Standard Interoperability Score (S_universal). 25.0 W is the gold standard universal open Qi2 wattage benchmark.
+        "subscore": 8.51,
+        "calculation_formula": "10 * (log(p_universal_wireless_w.value + 1) - log(Battery_Universal_Wireless_W_Min + 1)) / (log(Battery_Universal_Wireless_W_Max + 1) - log(Battery_Universal_Wireless_W_Min + 1)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Universal Open Standard Interoperability Score.
       },
 
       // ═══════════════════════════════════════════════════════════════════════════
@@ -5675,12 +5675,12 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       // SECTION 8.3 COMPOSITE SCORE CALCULATION
       // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 4.10,
+        "predicted": 5.11,
         "calculation_formula": "(wireless_charging_supported.value == 'Yes') ? Clamp(0.40 * pure_wireless_charging_speed.subscore + 0.40 * universal_open_standard_interoperability.subscore + 0.20 * magnetic_alignment_capability.subscore, 0.00, 10.00) : 0.00",
         // SCORING GUIDELINE: Composite score combining pure wireless charging speed (40%), universal open standard interoperability (40%), and magnetic alignment capability (20%). If wireless_charging_supported.value is 'No', the score is mathematically zeroed (0.00).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 4.10,
+          "value": 5.11,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
