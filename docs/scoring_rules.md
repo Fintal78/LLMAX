@@ -4926,6 +4926,14 @@ Evaluates charging ecosystem freedom by calculating the continuous ratio of maxi
 *   `P_universal_USB_PD`: Maximum power input (in Watts) achieved when connected to a standard, open USB Power Delivery charger.
 *   `P_peak`: Maximum peak rated wired charging power input (in Watts) accepted by the smartphone hardware using official proprietary adapters (identical to `P_peak` in Section 8.2.1).
 
+> [!NOTE]
+> **Normalization Assessment**
+> This formula (`S_interoperability = 10 * (P_universal_USB_PD / P_peak)`) might not be perfectly normalized to a true 0-10 scale in practice, as `P_universal_USB_PD` rarely reaches exactly 0 Watts (W) for modern devices.
+> 
+> However, an additional layer of Min/Max normalization is deliberately omitted for two practical reasons:
+> 1. Devices that heavily rely on proprietary fast charging (e.g., a 240 Watts (W) peak phone falling back to a 15 Watts (W) Universal Serial Bus (USB) standard) naturally yield very low ratio values. This results in a score close to 0 (e.g., 0.625), ensuring the range still practically maps close to the intended [0, 10] scale.
+> 2. This metric only carries a limited weight of 9% within the broader Section 8.2 score. Adding another complex normalization formula to shift these marginal lower bounds down to an absolute zero would have a negligible impact on the final score and does not justify the added mathematical complexity.
+
 ###### Sourcing Hierarchy & Evidence Verification Rules
 To guarantee maximum data reproducibility, resolve unannounced USB-PD fallback wattages, and eliminate brand bias (as highlighted by industry analyses from AndroidAuthority and ChargerLAB), `P_universal_USB_PD` MUST be extracted using the following **6-Tier Evidence Hierarchy**:
 
