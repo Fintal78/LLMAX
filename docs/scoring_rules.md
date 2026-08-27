@@ -5221,7 +5221,7 @@ Evaluates the continuous energy transfer capability during reverse charging usin
 
 > [!NOTE]
 > **Why Logarithmic Utility Normalization for Reverse Charging?**
-> The primary real-world use case for reverse wired charging is performing emergency top-ups for small wearables (such as TWS earbuds or smartwatches) or giving a dead phone just enough battery to make an emergency call.
+> The primary real-world use case for reverse wired charging is performing emergency top-ups for small wearables (such as True Wireless Stereo (TWS) earbuds or smartwatches) or giving a dead phone just enough battery to make an emergency call.
 > 
 > Most wearables physically bottleneck inbound charging at 2W–5W. Because of this hardware limitation, a 30W source provides virtually zero additional utility over a 5W source when charging these devices. The jump from 0W (no capability) to 4.5W (basic Type-C) yields massive "zero-to-one" utility, whereas the jump from 15W to 30W yields steeply diminishing returns (only benefiting the rare edge-case of fast-charging another full-sized smartphone). Logarithmic normalization perfectly captures this reality, heavily rewarding baseline support while properly tapering off at excessive wattages.
 > 
@@ -5246,15 +5246,76 @@ Evaluates the verified source-side negotiation standards of the reverse charging
 
 
 ### 🔹 8.5 Wireless Reverse Charging
-*Description:* Ability to charge other devices (like earbuds or watches) wirelessly by placing them on the back of the phone.
-*   **Measurement:** Peak power output via wireless coil.
-*   **Unit:** Watts (W)
-*   **Significance:** Convenient for emergency top-ups of accessories on the go.
-*Formula:* `Score = 10 * (Watts / Battery_Reverse_Wireless_W_Max)` (Clamped 0-10)
-    *   **Max Score (10.0):** ≥ Battery_Reverse_Wireless_W_Max
-    *   **Min Score (0.0):** 0W (None)
+*Description:* Comprehensive evaluation of the device's ability to act as a wireless power source for other devices (such as True Wireless Stereo (TWS) earbuds, smartwatches, or emergency phone top-ups), assessing pure power output alongside universal protocol interoperability and magnetic alignment capability.
+*   **Measurement:** Highest verified continuous wireless source power (`P_reverse_wireless`), combined with open standard Qi compatibility (`S_protocol`) and hardware magnetic alignment support (`S_alignment`).
+*   **Unit:** Watts (W) for pure power; Composite Score (0.0 to 10.0) for overall section score.
+*   **Significance:** Ensures convenient and reliable wireless top-ups for accessories on the go, prioritizing universally open standards and physical alignment security over peak proprietary wattage.
+
+#### 8.5.0 Executive Framework Overview & Weights
+Section 8.5 evaluates the smartphone's ability to transmit wireless power to an external device. Three **independent** characteristics are measured: power output (`S_power`), transmission protocol (`S_protocol`), and mechanical alignment (`S_alignment`).
+
+*   **P_reverse_wireless must never be used to infer S_protocol or S_alignment.** (e.g., A 5W output does not guarantee Qi, and a 20W output does not guarantee proprietary).
+*   **Source-Side Evidence Only:** Supporting standard Qi as a *receiver* does not prove the phone transmits standard Qi as a *source*. 
+
+The final score is derived as follows:
+
+1. **Pure Power Output (`S_power` — 60% Weight):**
+   * **What it measures:** The maximum verified continuous reverse wireless power output from the device's charging coil in Watts (W).
+   * **Why & Weight Rationale (60%):** Power receives the largest weight because it directly determines the maximum energy-transfer capability of the host transmitter, while protocol and alignment determine compatibility and reliability.
+
+2. **Universal Protocol Interoperability (`S_protocol` — 20% Weight):**
+   * **What it measures:** The verified wireless transmission protocol used by the HOST phone.
+   * **Why & Weight Rationale (20%):** Open standards guarantee that a user's phone can charge any third-party TWS earbuds or compatible smartwatches. Vendor-locked systems that restrict reverse charging via software handshakes provide a degraded ecosystem experience.
+
+3. **Magnetic Alignment Capability (`S_alignment` — 20% Weight):**
+   * **What it measures:** The presence of an officially supported magnetic mechanism capable of aligning an external wireless-power receiver with the transmitting coil.
+   * **Why & Weight Rationale (20%):** Provides a physical mechanism for maintaining receiver-to-transmitter coil alignment, drastically improving convenience and reliability.
+
+##### Section 8.5 Overall Composite Formula
+*   If the device does not support wireless reverse charging:
+    `Final Score 8.5 = 0.00`
+*   If the device supports wireless reverse charging:
+    `Final Score 8.5 = 0.60 * S_power + 0.20 * S_protocol + 0.20 * S_alignment` (Clamped 0.0 to 10.0)
+
+#### 8.5.1 Component 1: Pure Power Output (`S_power`)
+Evaluates the continuous energy transfer capability during reverse wireless charging. 
+
+`S_power = 10 * (log(P_reverse_wireless + 1) - log(Battery_Reverse_Wireless_W_Min + 1)) / (log(Battery_Reverse_Wireless_W_Max + 1) - log(Battery_Reverse_Wireless_W_Min + 1))` (Clamped 0.0 to 10.0)
+
+*   `P_reverse_wireless`: The highest verified continuous electrical power delivered by the smartphone's wireless transmission coil to a compatible external receiver. **"Continuous"** means the highest power sustained under normal documented operating conditions for long enough to constitute an actual charging mode, excluding momentary negotiation peaks.
+*   `Battery_Reverse_Wireless_W_Min` and `Battery_Reverse_Wireless_W_Max`: Fixed scoring benchmarks defined in `scoring_constants.md`.
+
 > [!NOTE]
-> **Why Linear?** The range of reverse wireless charging is narrow (typically 4.5W to 10W). A linear scale accurately reflects that 10W is roughly twice as fast/useful as 4.5W for small accessory batteries.
+> **Why Logarithmic Utility Normalization for Reverse Wireless Charging?**
+> The primary real-world use case for reverse wireless charging is performing emergency top-ups for small wearables (TWS earbuds, smartwatches). 
+> 
+> Because these accessories physically bottleneck inbound wireless charging at 2W–5W, a 20W proprietary reverse-charging source provides virtually zero additional utility over a 5W universal source when charging them. A logarithmic normalization is used to represent this diminishing marginal utility. For example, an initial 10W jump from 0W to 10W provides massive utility by enabling device charging, whereas the identical 10W jump from 10W to 20W provides steeply diminishing returns. This approach correctly models the normalization as a methodological assumption rewarding baseline support, mirroring the logic used in Section 8.4.
+> 
+> *(Mathematical Note: The `+ 1` offset inside the `log()` functions prevents a mathematical undefined error when the reverse wireless output is 0.0 W, safely anchoring the baseline to exactly `log(1) = 0.0` points).*
+
+**Power Evidence Hierarchy Precedence:**
+1. Explicit manufacturer reverse-wireless output wattage.
+2. Explicit manufacturer source voltage/current specification (Calculate wattage by multiplying voltage in Volts by current in Amps: `W = V × A`).
+3. Reliable controlled independent laboratory measurement.
+
+#### 8.5.2 Component 2: Standard Protocol Interoperability (`S_protocol`)
+Evaluates the verified ecosystem openness of the reverse wireless transmission. 
+
+> [!IMPORTANT]
+> **Strict Source-Side Evaluation & Smartwatch Exclusions:**
+> The protocol interoperability score evaluates the **host phone's** transmission standard. If a phone outputs standard universal Qi, it scores a 10.0 for protocol, even if a user's specific smartwatch (like an Apple Watch or Galaxy Watch 7) uses a proprietary receiver that refuses standard Qi power. The phone is not penalized for the accessory's restrictions.
+
+*   **10.0 (Protocol Tier 1) — Universal Open Standard (Qi / Qi2 / PMA / AirFuel):** Phone is explicitly documented or independently verified to TRANSMIT wireless power using the Wireless Power Consortium (WPC) Qi or Qi2 standard, the Power Matters Alliance (PMA) standard, or the AirFuel Alliance standard.
+    *   *Deterministic Ecosystem Fallback:* Historically, Android-ecosystem OEMs (e.g., Samsung, Google, Huawei) universally implement reverse transmission via standard Qi Baseline Power Profile (BPP) to ensure cross-compatibility with their own highly fragmented accessory ecosystems. Therefore, if reverse wireless transmission is confirmed but the exact protocol is unstated, standard Android devices default to Tier 1. However, this fallback is strictly overridden—and the device demoted to Tier 2—if independent testing proves that a manufacturer (such as a Chinese OEM shifting strategy) has introduced software handshakes to restrict transmission exclusively to proprietary accessories.
+*   **3.0 (Protocol Tier 2) — Vendor-Locked / Accessory-Restricted:** Phone hardware includes wireless power sourcing components, but firmware/software handshakes restrict reverse charging strictly to proprietary/vendor-specific receivers (e.g., Apple iPhone 12–15 series restricting reverse charging to official MagSafe Battery Packs).
+*   **0.0 (Protocol Tier 3) — No Wireless Reverse Source:** Wireless reverse transmission is explicitly unsupported.
+
+#### 8.5.3 Component 3: Magnetic Alignment Capability (`S_alignment`)
+Evaluates the physical security of the charging connection.
+
+*   **10.0 (Alignment Tier 1) — Native Magnetic Alignment:** Phone itself contains an officially documented magnetic array intended to align an external wireless-power receiver with the transmitting coil (e.g., Qi2 MPP host).
+*   **5.0 (Alignment Tier 2) — OEM Magnetic Case Required:** Phone lacks qualifying native magnetic alignment hardware, but an official OEM/certified case is specifically documented to provide magnetic alignment for reverse wireless charging.
+*   **0.0 (Alignment Tier 3) — Standard Flat Coil:** Phone lacks built-in magnets and has no official OEM magnetic case. Devices relying on generic third-party magnetic cases or aftermarket adhesive rings fall into this tier.
 
 
 ### 🔹 8.6 Charger Adequacy (In-Box Performance Match)
