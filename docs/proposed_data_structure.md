@@ -5711,19 +5711,20 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         "value": 7.5,
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 6.23,
         // SCORING GUIDELINE: The highest explicitly documented or lab-tested continuous source power output available from the physical port in Watts (W).
+        // IMPORTANT: Only SOURCE/transmission power qualifies. CRUCIAL WARNING: Do NOT extract the device's inbound wall-charging speed (e.g., 45W or 65W Fast Charging) as reverse wattage.
         //
-        // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
-        // Always extract the exact peak outbound wattage (e.g., 10W, 15W, 27W) from Tier 1 (Manufacturer Specs) or Tier 2/3 (Reviews/Datasheets). CRUCIAL WARNING: Ensure you do NOT accidentally extract the device's inbound wall-charging speed (e.g., 45W or 65W Fast Charging) as the reverse wired wattage. The wattage MUST explicitly apply to OUTBOUND / reverse charging.
-        // Independent Lab Tests: To use a lab measurement as Tier 2/3 evidence, the test must demonstrate stable, continuous power delivery to a sink device (e.g., measuring 5.1V x 1.47A), not just a momentary transient spike or a basic confirmation of OTG host mode.
-        // If the exact wattage is unlisted, resolve `value` deterministically based on protocol support and connector type:
-        //   1. Explicit Wattage Documented: If verified data exists (e.g., "15W reverse charging") → set value = Documented Wattage.
-        //   2. Explicit Source Profile Documented: If the source outputs are listed as voltage/current profiles (e.g., 9V/2A), calculate P = V × A and use the highest supported continuous source wattage.
-        //   3. USB Power Delivery (PD) Source Supported (No Wattage): If device explicitly supports USB Power Delivery (PD) Source mode but omits max wattage → set value = 15.0 (Standard USB-PD baseline output for phones).
-        //   4. Standard USB Type-C OTG (No PD): If device has a USB Type-C port and supports reverse charging/OTG but lacks USB Power Delivery (PD) source confirmation → set value = 4.5 (Standard 5V/0.9A USB 3.0 output) for devices released before 2020, or 7.5 (5V/1.5A Type-C Current Advertisement (Rp)) for devices released in 2020 or later. Default fallback for unknown release dates is 4.5.
-        //   5. Legacy Micro-USB OTG: If device uses Micro-USB and supports OTG power → set value = 2.5 (Standard 5V/500mA legacy USB 2.0 output).
-        //   6. Not Supported: If reverse_wired_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        // EVIDENCE PRECEDENCE & AMBIGUITY RESOLUTION (MANDATORY):
+        //   Tier 1 — Explicit Manufacturer Wattage: Extract explicit manufacturer reverse-wired output wattage (e.g., "15W reverse charging").
+        //   Tier 2 — Explicit Electrical Profile: If outputs are listed as voltage/current profiles (e.g., 9V/2A), calculate highest continuous W = V × A. Do not round unless source does so.
+        //   Tier 3 — Reliable Independent Lab Test: If manufacturer data is missing, use highest measured continuous source power (e.g., measuring 5.1V × 1.47A), excluding momentary negotiation peaks or basic OTG host mode presence.
+        //   Tier 4 — USB Power Delivery (PD) Source Supported (No Wattage): If device explicitly supports USB Power Delivery (PD) Source mode but omits max wattage → set value = 15.0 W (Standard USB-PD baseline output for phones).
+        //   Tier 5 — Standard USB Type-C OTG / Rp Advertisement (No PD): If device has a USB Type-C port and supports reverse charging/OTG but lacks USB Power Delivery (PD) source confirmation → set value = 4.5 W (Standard 5V/0.9A USB 3.0 output) for devices released before 2020, or 7.5 W (5V/1.5A Type-C Current Advertisement (Rp)) for devices released in 2020 or later. Default fallback for unknown release dates is 4.5 W.
+        //   Tier 6 — Legacy Micro-USB OTG: If device uses Micro-USB and supports OTG power → set value = 2.5 W (Standard 5V/500mA legacy USB 2.0 output).
+        //   Tier 7 — Explicitly Unsupported: If reverse_wired_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        //
+        // CONFLICT RESOLUTION: Manufacturer-supported maximums always take precedence over isolated empirical lab measurements. A lower lab measurement does not reduce the documented manufacturer spec, and a higher lab measurement does not override it unless confirmed by the manufacturer.
+        "subscore": 6.23,
         "calculation_formula": "10 * (log(p_reverse_wired.value + 1) - log(Battery_Reverse_Wired_W_Min + 1)) / (log(Battery_Reverse_Wired_W_Max + 1) - log(Battery_Reverse_Wired_W_Min + 1)), clamped 0.0 to 10.0"
         // SCORING GUIDELINE: Normalizes the output logarithmically using constants from scoring_constants.md.
       },
@@ -5769,20 +5770,117 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "8_5_reverse_wireless": {
-      // SCORING GOAL: Evaluates reverse wireless charging output capability.
-      "watts": {
+      // SCORING GOAL: Evaluates the device's capability to act as a wireless power source for external devices. The score combines pure power output, protocol interoperability, and magnetic alignment capability.
+      
+      "reverse_wireless_charging_supported": {
+        "value": "Yes",
+        "source": "TBD",
+        "exact_extract": "Proof pending"
+        // SCORING GUIDELINE: Evaluates whether the device supports reverse wireless charging (acting as a wireless power source for external accessories).
+        //   • "Yes" → Device explicitly supports transmitting wireless power.
+        //   • "No"  → Device explicitly lacks reverse wireless charging capability.
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. CONFIRMED OR PRESUMED ABSENT ("No"): If an authoritative source explicitly confirms absence, OR if public technical sources completely omit mention (omission = absence):
+        //      • `reverse_wireless_charging_supported`: Set `value` = "No", `source` = public technical sources scanned, `exact_extract` = explicit quote or "[OMISSION]: Feature unmentioned in public technical specifications."
+        //      • Sub-components (`p_reverse_wireless`, `s_protocol`, `s_alignment`): Set `value` = "N/A", `source` = "N/A", `exact_extract` = "N/A", and `subscore` = 0.00. Then follow guidelines of SECTION 8.5 COMPOSITE SCORE CALCULATION.
+        //   2. INSUFFICIENT DATA / OMISSION (OMNI-SCAN RULE): Scan at least three distinct authoritative sources (e.g., Official Specs, GSMArena, User Manuals) before defaulting to "No". Do not blindly assume "No" on a single source's omission if the device is a premium flagship that supports inbound wireless charging.
+        //   3. SOURCE VS SINK SEPARATION & NO MATERIAL INFERENCE: Supporting standard Qi as a receiver (inbound charging) does NOT prove outbound reverse charging. Do NOT infer reverse wireless capability from a glass back, flagship tier, or inbound wireless charging support.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: PURE POWER OUTPUT
+      // ═══════════════════════════════════════════════════════════════════════════
+      "p_reverse_wireless": {
         "value": 4.5,
+        "source": "Methodological Baseline Fallback",
+        "exact_extract": "[ESTIMATED]: Reverse wireless charging explicitly supported; maximum output wattage not publicly documented.",
+        // SCORING GUIDELINE: The highest verified manufacturer-supported continuous electrical power delivered by the smartphone's wireless-transmission coil to an external receiver during reverse wireless charging, expressed in Watts (W).
+        // IMPORTANT: Only SOURCE/transmission power qualifies. Do not use: the phone's wireless charging INPUT power, the receiver's advertised maximum input, theoretical Qi/Qi2 limits, or momentary negotiation peaks.
+        //
+        // EVIDENCE PRECEDENCE & AMBIGUITY RESOLUTION (MANDATORY):
+        //   Tier 1 — Explicit Manufacturer Wattage: Extract explicit manufacturer reverse-wireless output wattage (e.g., "15W reverse charging").
+        //   Tier 2 — Explicit Manufacturer Electrical Profile: If outputs are listed as voltage/current profiles (e.g., 9V/1.1A), calculate highest continuous W = V × A. Do not round unless source does so.
+        //   Tier 3 — Reliable Independent Lab Test: If manufacturer data is missing, use highest measured continuous source power (excluding momentary negotiation peaks or transient spikes).
+        //   Tier 4 — Confirmed Capability, Wattage Unknown (Methodological Estimation Fallback): If reverse wireless charging is explicitly confirmed but no quantitative output wattage is documented, set value = 4.5, source = "Methodological Baseline Fallback", and exact_extract = "[ESTIMATED]: Reverse wireless charging explicitly supported; maximum output wattage not publicly documented."
+        //   Tier 5 — Explicitly Unsupported: If reverse_wireless_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        //
+        // CONFLICT RESOLUTION: Manufacturer-supported maximums always take precedence over isolated empirical lab measurements. A lower lab measurement does not reduce the documented manufacturer spec, and a higher lab measurement does not override it unless confirmed by the manufacturer.
+        "subscore": 5.60,
+        "calculation_formula": "10 * (log(p_reverse_wireless.value + 1) - log(Battery_Reverse_Wireless_W_Min + 1)) / (log(Battery_Reverse_Wireless_W_Max + 1) - log(Battery_Reverse_Wireless_W_Min + 1)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Normalizes power output logarithmically using constants from scoring_constants.md.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: STANDARD PROTOCOL INTEROPERABILITY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "s_protocol": {
+        "value": "Tier 1: Universal Open Standard (Qi / Qi2 / PMA / AirFuel)",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 5.00
-        // SCORING GUIDELINE: Section 8.5 scoring: 10.0 if >= 10W, 5.0 if < 10W (but supported), 0.0 if unsupported. Value in Watts.
+        "subscore": 10.00
+        // SCORING GUIDELINE: Evaluates the verified source interoperability of the reverse wireless transmission. Use exact Tier Names for "value" and related scores for "subscore":
+        //   • "Tier 1: Universal Open Standard (Qi / Qi2 / PMA / AirFuel)" → 10.00
+        //     Definition & Evidence: Phone is explicitly documented or verified to TRANSMIT wireless power using the Wireless Power Consortium (WPC) Qi/Qi2 standard, the Power Matters Alliance (PMA) standard, or the AirFuel Alliance standard.
+        //   • "Tier 2: Vendor-Locked / Accessory-Restricted"               → 3.00
+        //     Definition & Evidence: Firmware/software handshakes restrict reverse charging strictly to proprietary/vendor-specific receivers (e.g., Apple MagSafe Battery Pack restriction).
+        //   • "Tier 3: No Wireless Reverse Source"                         → 0.00
+        //     Definition & Evidence: Wireless reverse transmission is explicitly unsupported.
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
+        //   1. Strict Source-Side Evaluation: If the phone outputs standard Qi, it scores 10.0, even if the user's specific smartwatch refuses standard Qi power. The phone is not penalized for the accessory's restrictions.
+        //   2. STANDARD ANDROID ECOSYSTEM FALLBACK: If reverse wireless transmission is confirmed but the exact protocol is unstated, standard Android devices default to Tier 1.
+        //      - Justification: This fallback is a necessary methodological approximation to ensure high dataset scorable coverage. It is a highly accurate approximation because modern Android smartphones inherently reuse their internal standard Qi receiver coil and WPC-compliant controller integrated circuit (IC) for transmission. Therefore, unstated reverse wireless charging technically operates on the open WPC Qi Baseline Power Profile (BPP).
+        //      - Exceptions & Exclusions: Do NOT apply this fallback to Apple devices. Additionally, potentially exclude specific regional versions (e.g., Chinese-market exclusive models) or known closed ecosystems if independent evidence suggests the manufacturer artificially restricts transmission compatibility. If testing proves software handshakes restrict transmission exclusively to proprietary accessories, the fallback is strictly overridden and the device demoted to Tier 2.
+        //   3. EXPLICITLY UNSUPPORTED: If reverse_wireless_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        //   4. UNKNOWN CAPABILITY: If the transmission protocol is unstated and the Android fallback is excluded due to regional/proprietary exceptions without explicit protocol data → set value = "N/A — Insufficient evidence", source = "N/A — Insufficient evidence", exact_extract = "N/A — Insufficient evidence", and subscore = 0.00.
+        //
+        // PROHIBITED INFERENCES (MANDATORY):
+        //   - WATTAGE IS NOT PROTOCOL: Never infer protocol tiers purely from p_reverse_wireless output capability (e.g., 5W does not guarantee Qi, 20W does not guarantee proprietary).
       },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 3: MAGNETIC ALIGNMENT CAPABILITY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "s_alignment": {
+        "value": "Tier 3: No magnetic alignment",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Evaluates whether the HOST smartphone provides an officially supported magnetic mechanism for maintaining alignment between its reverse-wireless transmitting coil and the external receiving device. Use exact Tier Names for "value" and related scores for "subscore":
+        //   • "Tier 1: Native Magnetic Alignment"            → 10.00
+        //     Definition: The smartphone contains an integrated magnetic array that is documented or reliably verified to align an external wireless-power receiver with the phone's reverse-wireless transmitting coil.
+        //   • "Tier 2: OEM Magnetic Case"                    → 5.00
+        //     Definition: Phone lacks qualifying native magnetic hardware, but the manufacturer officially offers/certifies an OEM magnetic case specifically intended to provide alignment for reverse wireless charging.
+        //   • "Tier 3: No magnetic alignment"                → 0.00
+        //     Definition: Phone lacks built-in magnets and has no official OEM magnetic case for reverse wireless charging. Devices relying on generic third-party magnetic cases or aftermarket adhesive rings fall into this tier. This is the default tier when reverse wireless charging is confirmed but magnetic alignment is unstated.
+        //
+        // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
+        //   1. Explicit Manufacturer Alignment Specs: If official documentation explicitly establishes native magnetic alignment for reverse wireless transmission, assign Tier 1.
+        //   2. Verified Native Magnet Array (Teardown): If reliable independent technical evidence (e.g., teardowns) establishes a native magnet array physically positioned around the transmitting coil, assign Tier 1.
+        //   3. Unified Hardware Inference: If the device is verified to possess native MagSafe or WPC Qi2 MPP (Magnetic Power Profile) reception hardware (evaluating Section 8.3), infer Tier 1 (Native Magnetic Alignment) for reverse charging. Justification: In standard smartphone architecture, the magnet array and primary inductive coil form an integrated physical module, meaning the native magnets naturally provide passive mechanical alignment around the phone's charging zone. However, this is a high-probability methodological approximation rather than an absolute guarantee, as internal phone architecture could theoretically utilize a secondary offset coil for reverse transmission separate from the primary MPP magnet ring.
+        //   4. Official OEM Case: If an official OEM magnetic case specifically provides alignment for the reverse-wireless charging function, assign Tier 2.
+        //   5. Default Flat Coil Fallback: If reverse wireless charging is confirmed but no native magnetic alignment (including Qi2/MagSafe hardware) or qualifying OEM magnetic-case is publicly established, assign Tier 3. Set source = "Methodological fallback" and exact_extract = "Reverse wireless charging confirmed; no qualifying native magnetic alignment or official OEM magnetic case identified."
+        //   6. EXPLICITLY UNSUPPORTED: If reverse_wireless_charging_supported.value is "No" → set value = "N/A", source = "N/A", exact_extract = "N/A", and subscore = 0.00.
+        //   7. CONFLICTING EVIDENCE: If public sources conflict regarding the presence or function of magnetic alignment hardware, prioritize manufacturer documentation > official technical documentation > reliable independent physical verification. If the state genuinely cannot be determined due to conflicting evidence, set value = "N/A — Insufficient evidence", source = "N/A — Insufficient evidence", exact_extract = "N/A — Insufficient evidence", and subscore = 0.00.
+        //
+        // PROHIBITED INFERENCES (MANDATORY):
+        //   - Wattage does not establish magnetic alignment.
+        //   - Standard Qi/PMA/AirFuel receiving capability (without Qi2 MPP) does not establish magnetic alignment.
+        //   - Generic or uncertified third-party magnetic cases, aftermarket MagSafe/adhesive rings, magnetic wallets, or car mounts do NOT prove Tier 1 native hardware nor qualify for Tier 2 (only official OEM or officially certified partner cases qualify for Tier 2).
+        //   - A magnetic charging accessory does not prove that the phone itself contains native magnets.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 8.5 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 5.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits watts.subscore.
+        "predicted": 5.36,
+        "calculation_formula": "(reverse_wireless_charging_supported.value == 'Yes') ? Clamp(0.60 * p_reverse_wireless.subscore + 0.20 * s_protocol.subscore + 0.20 * s_alignment.subscore, 0.00, 10.00) : 0.00",
+        // SCORING GUIDELINE: Composite score balances raw power output (60%), protocol interoperability (20%), and magnetic alignment (20%). If reverse_wireless_charging_supported.value is 'No', the score is mathematically zeroed.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 5.00,
+          "value": 5.36,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
