@@ -5360,29 +5360,10 @@ The effective wattage is the minimum bottleneck in the charging chain:
 *(Note: Cable presence is independent of cable power rating.)*
 
 #### 8.6.4 Cable Power-Capability Evidence Hierarchy
-Use the following precedence to establish `P_cable_max`. USB-C connector type alone does NOT establish cable power capability.
-
-1.  **Explicit Wattage:** Manufacturer explicitly states the wattage (e.g., "100W cable"). `P_cable_max` = Stated Wattage.
-2.  **Explicit Current Rating:** Manufacturer explicitly states the current limit (e.g., "6A cable"). `P_cable_max = Current * V_peak` (where `V_peak` is the voltage at which the evaluated `P_peak` is achieved, sourced strictly from manufacturer specifications, regulatory certifications, or reliable independent testing. If `V_peak` is unknown, this calculation cannot be performed).
-3.  **Explicit System Capability:** Manufacturer explicitly states the included cable supports the phone's maximum charging mode. `P_cable_max = min(P_brick, P_peak)`.
-4.  **Standardized Certification:** Identifiable established standard (e.g., USB-IF Certified 240W, Thunderbolt 4).
-5.  **Independent Verification:** Reliable technical documentation (e.g., ChargerLAB, GSMArena) identifying the exact cable limit.
-6.  **Undocumented Cable (Deterministic Fallback):** If cable presence is confirmed but capability cannot be established via Tiers 1-5, do NOT assume maximum proprietary wattage. Mark as `cable_capability_undocumented` and apply the conservative physical baseline for the connector pair:
-    *   **USB-C to USB-C:** 60W (3A/20V standard baseline)
-    *   **USB-C to Lightning:** 27W (3A/9V Apple baseline)
-    *   **USB-A to USB-C:** 15W (3A/5V standard baseline)
-    *   **USB-A to Lightning / Micro-USB:** 12W (2.4A/5V legacy baseline)
-    *   **Unknown / Other:** 10W (2A/5V absolute baseline)
+Refer to `proposed_data_structure.md` for the complete deterministic precedence hierarchy, evidence guidelines, ambiguity resolution, and physical baseline fallbacks used to establish `P_cable_max`.
 
 #### 8.6.5 Charger Power-Capability Evidence Hierarchy
-Use the following precedence to establish `P_brick`. Do not use the adapter's total multi-port rating if the phone's relevant output port has a lower individual limit.
-
-1.  **Explicit Wattage:** Manufacturer explicitly states the maximum wattage of the relevant port in official retail or technical documentation. `P_brick` = Stated Wattage.
-2.  **Explicit Output Profile:** Manufacturer explicitly states the voltage and current output profile for the relevant port. `P_brick = V * I` (using the profile that yields the highest wattage).
-3.  **Independent Verification:** Reliable technical documentation, regulatory certification filings (e.g., 3C, FCC), or verified physical inspection (e.g., ChargerLAB) proving the exact port limit.
-4.  **Undocumented Charger (Deterministic Fallback):** If a wall charger is confirmed to be included but its relevant output capability cannot be established via Tiers 1-3, do NOT assume it matches the phone's maximum charging capability. Mark as `charger_capability_undocumented` and apply the conservative physical baseline for the charger's output port:
-    *   **USB-C Output Port:** 15W (3A/5V minimum baseline for USB-C receptacles).
-    *   **USB-A Output Port / Unknown:** 5W (1A/5V absolute legacy baseline).
+Refer to `proposed_data_structure.md` for the complete deterministic precedence hierarchy, evidence guidelines, ambiguity resolution, and physical baseline fallbacks used to establish `P_brick`.
 
 #### 8.6.6 Charging-Protocol Compatibility & Final Scores
 The included charger and cable must be evaluated as a complete charging path. If the phone's 100W proprietary charging mode requires a specific protocol, cable, or charger, those requirements must all be satisfied by items in the standard retail box before 100W can be credited.

@@ -5888,20 +5888,124 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "8_6_charger_in_box": {
-      // SCORING GOAL: Rewards devices that include a high-speed charger in the box.
-      "included_watts": {
-        "value": "Tier 5: None",
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 0.00
-        // SCORING GUIDELINE: Apply Section 8.6 Ratio formula. subscore = 10 * (Included_Watts / Max_Wired_Watts). Max_Wired_Watts retrieved from 8_battery_and_charging.8_2_wired_charging_system.method_c_prediction_model_Wired_Speed.peak_charging_power_w.value.
+      // SCORING GOAL: Evaluates the out-of-the-box charging experience available immediately after opening the standard retail package.
+      // A high-speed charger included saves money, guarantees compatibility, and ensures the user gets advertised speeds.
+      //
+      // EVALUATION BOUNDARIES & PACKAGE SELECTION (MANDATORY):
+      // The evaluation is strictly performed on the standard manufacturer retail package corresponding exactly to the device's JSON identity block (`identity.model_name`, `identity.model_aliases`, `identity.target_region.value`) at the evaluated release period.
+      //   - Included Items: Wall charger/adapter, charging cable, and official adapter heads included in the standard retail package.
+      //   - Excluded Items: Retailer-added accessories, promotional "free charger" gifts, carrier bundles, separately purchased accessories, and special launch bundles (unless defined by the OEM as the standard retail package).
+      //   - Market/SKU Fallback: If the exact regional package is unknown, use the manufacturer's documented global or principal-market standard package and record the assumption in the exact_extract. Never combine accessories from different regional packages.
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: PHONE PEAK CHARGING POWER
+      // ═══════════════════════════════════════════════════════════════════════════
+      "p_peak_w": {
+        "value": 45.0,
+        "value_path": "8_battery_and_charging.8_2_wired_charging_system.method_c_prediction_model_Wired_Speed.peak_charging_power_w.value"
+        // SCORING GUIDELINE: Maximum peak wired charging power of the phone. Inherited from Section 8.2.
       },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: CHARGER POWER CAPABILITY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "charger_power_capability": {
+        "charger_included": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: Evaluates if a wall charger/adapter is included in the standard retail package. (true/false)
+        },
+        "p_brick_w": {
+          "value": 45.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: Maximum relevant output power available to the phone from the included wall charger when the phone is the only connected device in Watts (W).
+          // If charger_included.value is false, set p_brick_w.value = 0.0 W, source = "N/A", and exact_extract = "N/A".
+          //
+          // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
+          // Selection Rule (Multiple Chargers): If multiple chargers are included in the standard package (e.g., wall and car charger), evaluate the single charger that produces the highest verified charging power with the phone. Do not add wattages together.
+          //
+          // Use the following precedence to establish p_brick_w. Do not use the adapter's total multi-port rating if the phone's relevant output port has a lower individual limit.
+          //   1. Explicit Wattage: Manufacturer explicitly states max wattage of the relevant port in official retail or technical documentation. value = Stated Wattage.
+          //   2. Explicit Output Profile: Manufacturer explicitly states voltage and current output profile for the relevant port. value = V * I (using the profile that yields the highest wattage).
+          //   3. Independent Verification: Reliable technical documentation, regulatory certification (e.g., 3C, FCC), or verified physical inspection (e.g., ChargerLAB) proving exact port limit.
+          //   4. Undocumented Charger (Deterministic Fallback): If a wall charger is confirmed included but output capability cannot be established via rules 1-3, do NOT assume it matches the phone's maximum capability. Mark source as "Deterministic Fallback", exact_extract as "charger_capability_undocumented" and apply the conservative physical baseline for the output port:
+          //      - USB-C Output Port: 15.0 W (3A/5V minimum baseline)
+          //      - USB-A Output Port / Unknown: 5.0 W (1A/5V absolute legacy baseline)
+          //
+          // PROHIBITED INFERENCES (MANDATORY):
+          //   - Charger wattage does not prove phone charging wattage (and vice versa).
+          //   - A promotional "free charger" does not establish standard box contents.
+          //   - A charger sold separately by the manufacturer does not count as included.
+        }
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 3: CABLE POWER CAPABILITY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "cable_power_capability": {
+        "cable_included": {
+          "value": true,
+          "source": "TBD",
+          "exact_extract": "Proof pending",
+          "subscore": 10.00
+          // SCORING GUIDELINE: Evaluates if a charging cable is included in the standard retail package.
+          //   • true  → 10.00 (A manufacturer-supplied charging cable is included).
+          //   • false → 0.00 (No charging cable is included).
+        },
+        "p_cable_max_w": {
+          "value": 60.0,
+          "source": "TBD",
+          "exact_extract": "Proof pending"
+          // SCORING GUIDELINE: The highest verified continuous charging power the included cable can safely support under the charging configuration being evaluated in Watts (W).
+          // If cable_included.value is false, set p_cable_max_w.value = 0, source = "N/A", and exact_extract = "N/A".
+          //
+          // AMBIGUITY RESOLUTION & FALLBACK HIERARCHY (MANDATORY):
+          // Use the following precedence to establish p_cable_max_w. USB-C connector type alone does NOT establish power capability.
+          //   1. Integrated / Captive-Cable Chargers: If the retail package includes a wall charger with an attached cable, set cable_included.value = true and set p_cable_max_w.value = p_brick_w.value (since the built-in cable is engineered to match the charger's full rated output power).
+          //   2. Explicit Wattage: Manufacturer explicitly states wattage (e.g., "100W cable"). value = Stated Wattage.
+          //   3. Explicit Current Rating: Manufacturer explicitly states current limit (e.g., "6A cable"). value = Current * V_peak (where V_peak is the voltage at which the phone's p_peak_w.value is achieved, sourced strictly from manufacturer specs or independent testing).
+          //   4. Explicit System Capability: Manufacturer explicitly states the included cable supports the phone's maximum charging mode. value = p_peak_w.value.
+          //   5. Standardized Certification: Identifiable established standard (e.g., USB-IF Certified 240W, Thunderbolt 4).
+          //   6. Independent Verification: Reliable technical documentation (e.g., ChargerLAB) identifying the exact cable limit.
+          //   7. Undocumented Cable (Deterministic Fallback): If cable presence is confirmed but capability cannot be established via rules 1-6, do NOT assume maximum proprietary wattage. Mark source as "Deterministic Fallback", exact_extract as "cable_capability_undocumented" and apply the conservative physical baseline for the connector pair:
+          //      - USB-C to USB-C: 60.0 W (3A/20V standard baseline)
+          //      - USB-C to Lightning: 27.0 W (3A/9V Apple baseline)
+          //      - USB-A to USB-C: 15.0 W (3A/5V standard baseline)
+          //      - USB-A to Lightning / Micro-USB: 12.0 W (2.4A/5V legacy baseline)
+          //      - Unknown / Other: 10.0 W (2A/5V absolute baseline)
+          //
+          // PROHIBITED INFERENCES (MANDATORY):
+          //   - Connector type alone (e.g., USB-C to USB-C) does not prove the cable supports high-power or proprietary fast charging (e.g., 100W, 120W) beyond its standard physical baseline (e.g., 60W for USB-C). Explicit evidence or certification is required.
+        }
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 4: EFFECTIVE IN-BOX POWER
+      // ═══════════════════════════════════════════════════════════════════════════
+      "effective_in_box_power": {
+        "p_inbox_effective": {
+          "value": 45.0,
+          "calculation_formula": "min(charger_power_capability.p_brick_w.value, cable_power_capability.p_cable_max_w.value, p_peak_w.value)"
+          // SCORING GUIDELINE: The effective wattage achievable using strictly the items included in the retail box (charger and cable), compared to the phone's maximum supported wired wattage. It is the minimum bottleneck in the charging chain.
+          // IMPORTANT COMPATIBILITY RULE: The included charger, cable, and p_peak_w must refer to the same charging configuration/protocol. If the phone's proprietary charging mode requires a specific protocol/cable/charger, those requirements must ALL be satisfied by items in the box before the full p_peak_w wattage can be credited. Otherwise, p_brick_w and p_cable_max_w must reflect the standard USB Power Delivery (USB-PD) / fallback wattage achievable by the included items with that phone.
+        },
+        "subscore": 10.00,
+        "calculation_formula": "10 * (effective_in_box_power.p_inbox_effective.value / p_peak_w.value), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: Charger Adequacy Score.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 8.6 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 0.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits included_watts.subscore.
+        "predicted": 10.00,
+        "calculation_formula": "0.20 * cable_power_capability.cable_included.subscore + 0.80 * effective_in_box_power.subscore",
+        // SCORING GUIDELINE: Composite score balancing the presence of a cable (20%) and the adequacy of the included charger relative to the phone's max speed (80%).
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.00,
+          "value": 10.00,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
