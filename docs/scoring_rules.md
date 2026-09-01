@@ -5318,16 +5318,96 @@ Evaluates the physical security of the charging connection.
 *   **0.0 (Alignment Tier 3) — Standard Flat Coil:** Phone lacks built-in magnets and has no official OEM magnetic case. Devices relying on generic third-party magnetic cases or aftermarket adhesive rings fall into this tier.
 
 
-### 🔹 8.6 Charger Adequacy (In-Box Performance Match)
-*Description:* What comes in the package. A high-speed charger included saves you money and ensures you get the fastest charging speeds right away.
-*   **Measurement:** Ratio of Included Charger Wattage to Maximum Supported Wired Charging Wattage.
-*   **Unit:** Efficiency Ratio (0.0 - 1.0)
-*   **Significance:** Determines if the user gets the device's full performance out of the box without extra purchases.
-*Formula:* `Score = 10 * (Included_Watts / Max_Wired_Watts)` (Clamped 0-10)
-    *   **Max Score (10.0):** Included Charger ≥ Max Device Speed (Ratio ≥ 1.0)
-    *   **Min Score (0.0):** No Charger (0W)
-> [!NOTE]
-> **Why Ratio?** A "good" unboxing experience means not needing to buy accessories. If a phone supports 120W but comes with a 60W charger, the user is missing out on half the advertised performance, hence a lower score. If a 20W phone comes with a 20W charger, the experience is complete (10/10).
+### 🔹 8.6 In-Box Charging Adequacy
+*Description:* Evaluates the out-of-the-box charging experience. A high-speed charger included saves money, guarantees compatibility, and ensures the user gets the advertised charging speeds immediately without navigating the complex ecosystem of third-party standards.
+*   **Measurement:** The effective wattage achievable using strictly the items included in the retail box (charger and cable), compared to the phone's maximum supported wired wattage.
+*   **Unit:** Composite Efficiency Score (0.0 to 10.0)
+*   **Significance:** Determines the immediate financial and practical value of the retail package. An "eco" box without a charger shifts the financial burden of fast charging onto the consumer.
+
+#### 8.6.1 Evaluation Boundaries
+Evaluates the charging capability available immediately after opening the standard retail package, without purchasing any additional accessories.
+
+The evaluation is strictly performed on the standard manufacturer retail package corresponding exactly to the device's JSON `identity` block. This requires matching the `model_name`, the specific SKU listed in `model_aliases`, and the market defined in `target_region`, at the evaluated release/package period.
+
+**Included Items:**
+*   Wall charger/adapter included in the standard manufacturer package.
+*   Charging cable included in the standard manufacturer package.
+*   Official adapter heads or charging accessories that form part of the standard charging package.
+
+**Excluded Items:**
+*   Retailer-added accessories or temporary promotional gifts (e.g., "free charger").
+*   Carrier bundles.
+*   Separately purchased accessories.
+*   Accessories included only in special launch bundles (unless defined by the manufacturer as the standard retail package).
+
+#### 8.6.2 Effective In-Box Power (`P_inbox_effective`)
+
+The effective wattage is the minimum bottleneck in the charging chain:
+`P_inbox_effective = min(P_brick, P_cable_max, P_peak)`
+
+*   `P_brick`: Maximum relevant output power available to the phone from the included wall charger when the phone is the only connected device (0W if no wall charger is included).
+*   `P_cable_max`: Highest verified continuous charging power the included cable can safely support under the charging configuration being evaluated (0W if no cable is included).
+*   `P_peak`: Maximum wired charging power defined by Section 8.2 for the evaluated phone.
+
+> [!IMPORTANT]
+> `P_brick`, `P_cable_max`, and `P_peak` must refer to the same charging configuration/protocol. Do not compare a proprietary phone peak against an included charger that can only achieve a lower USB-PD mode.
+
+#### 8.6.3 Cable Score (`S_cable`)
+
+*   **10.0:** A manufacturer-supplied charging cable is included in the standard retail package.
+*   **0.0:** No charging cable is included.
+
+*(Note: Cable presence is independent of cable power rating.)*
+
+#### 8.6.4 Cable Power-Capability Evidence Hierarchy
+Use the following precedence to establish `P_cable_max`. USB-C connector type alone does NOT establish cable power capability.
+
+1.  **Explicit Wattage:** Manufacturer explicitly states the wattage (e.g., "100W cable"). `P_cable_max` = Stated Wattage.
+2.  **Explicit Current Rating:** Manufacturer explicitly states the current limit (e.g., "6A cable"). `P_cable_max = Current * V_peak` (where `V_peak` is the voltage at which the evaluated `P_peak` is achieved, sourced strictly from manufacturer specifications, regulatory certifications, or reliable independent testing. If `V_peak` is unknown, this calculation cannot be performed).
+3.  **Explicit System Capability:** Manufacturer explicitly states the included cable supports the phone's maximum charging mode. `P_cable_max = min(P_brick, P_peak)`.
+4.  **Standardized Certification:** Identifiable established standard (e.g., USB-IF Certified 240W, Thunderbolt 4).
+5.  **Independent Verification:** Reliable technical documentation (e.g., ChargerLAB, GSMArena) identifying the exact cable limit.
+6.  **Undocumented Cable (Deterministic Fallback):** If cable presence is confirmed but capability cannot be established via Tiers 1-5, do NOT assume maximum proprietary wattage. Mark as `cable_capability_undocumented` and apply the conservative physical baseline for the connector pair:
+    *   **USB-C to USB-C:** 60W (3A/20V standard baseline)
+    *   **USB-C to Lightning:** 27W (3A/9V Apple baseline)
+    *   **USB-A to USB-C:** 15W (3A/5V standard baseline)
+    *   **USB-A to Lightning / Micro-USB:** 12W (2.4A/5V legacy baseline)
+    *   **Unknown / Other:** 10W (2A/5V absolute baseline)
+
+#### 8.6.5 Charger Power-Capability Evidence Hierarchy
+Use the following precedence to establish `P_brick`. Do not use the adapter's total multi-port rating if the phone's relevant output port has a lower individual limit.
+
+1.  **Explicit Wattage:** Manufacturer explicitly states the maximum wattage of the relevant port in official retail or technical documentation. `P_brick` = Stated Wattage.
+2.  **Explicit Output Profile:** Manufacturer explicitly states the voltage and current output profile for the relevant port. `P_brick = V * I` (using the profile that yields the highest wattage).
+3.  **Independent Verification:** Reliable technical documentation, regulatory certification filings (e.g., 3C, FCC), or verified physical inspection (e.g., ChargerLAB) proving the exact port limit.
+4.  **Undocumented Charger (Deterministic Fallback):** If a wall charger is confirmed to be included but its relevant output capability cannot be established via Tiers 1-3, do NOT assume it matches the phone's maximum charging capability. Mark as `charger_capability_undocumented` and apply the conservative physical baseline for the charger's output port:
+    *   **USB-C Output Port:** 15W (3A/5V minimum baseline for USB-C receptacles).
+    *   **USB-A Output Port / Unknown:** 5W (1A/5V absolute legacy baseline).
+
+#### 8.6.6 Charging-Protocol Compatibility & Final Scores
+The included charger and cable must be evaluated as a complete charging path. If the phone's 100W proprietary charging mode requires a specific protocol, cable, or charger, those requirements must all be satisfied by items in the standard retail box before 100W can be credited.
+
+**Final Charger Score:**
+`S_charger = 10 * (P_inbox_effective / P_peak)` (Clamped 0.0 to 10.0).
+
+**Final Section 8.6 Score:**
+`Final Score 8.6 = 0.20 * S_cable + 0.80 * S_charger` (Clamped 0.0 to 10.0).
+
+#### 8.6.7 Package Categories
+These are physical package states, not independent score tiers.
+
+*   **Category A (Complete Charging Experience):** Charger + cable included, and `P_inbox_effective >= P_peak`. Final score = 10.0.
+*   **Category B (Partial Charging Experience):** Charger + cable included, but `P_inbox_effective < P_peak`. Final score is continuously scaled between 2.0 and 10.0.
+*   **Category C (Cable Only):** Cable included, no charger included (`P_brick = 0W`). Final score = 2.0.
+*   **Category D (Barebones):** No charger and no cable. Final score = 0.0.
+
+#### 8.6.8 Edge Cases and Data Integrity Rules
+*   **Multiple Chargers:** While exceedingly rare, some luxury/special editions (e.g., Huawei Porsche Design) ship with multiple wall adapters for different region plugs, and some rugged/automotive bundles include both a wall and a car charger. If multiple chargers are included in the standard package, evaluate the single charger that produces the highest verified charging power with the phone. Do not add charger wattages together.
+*   **Market/SKU Fallback:** Because in-box contents can differ by market, the evaluated package must match `identity.target_region` and `identity.model_aliases` (SKU). If the exact regional package is unknown, use the manufacturer's documented global or principal-market standard package and record the assumption. Never combine accessories from different regional packages.
+*   **Prohibited Inferences:** 
+    *   Charger wattage does not prove phone charging wattage (and vice versa).
+    *   A promotional "free charger" does not establish standard box contents.
+    *   A charger sold separately by the manufacturer does not count as included.
 
 
 ## 🟣 9. Financial & Economic Value
