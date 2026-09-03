@@ -6016,16 +6016,36 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   "9_financial_and_economic_value": {
     "9_1_price": {
       // SCORING GOAL: Evaluates device price relative to standard flagships. Lower is better.
-      "usd": {
-        "value": 1299,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
+      "eur_normalized": {
+        "value": 1199,
+        "source": "ECB FX API",
+        "exact_extract": "Derived from native market price",
         "subscore": 0.80
-        // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price) - log(Min)) / (log(Max) - log(Min)). Min=100, Max=1600.
+        // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price_EUR) - log(Min)) / (log(Max) - log(Min)). Min=90, Max=1500.
+      },
+      "native_market": {
+        "price_native": 1299,
+        "price_currency": "USD",
+        "tax_inclusive": false,
+        "observation_date": "2026-09-03"
+        // GUIDELINE: Preserves the exact price, currency, and tax status scraped from the source for full traceability.
+      },
+      "major_currencies_converted": {
+        "usd": 1299,
+        "gbp": 1050,
+        "jpy": 185000,
+        "fx_rate_date": "2026-09-03"
+        // GUIDELINE: Provides global context using the exact same Script Run Date FX rate. Do NOT use these for the final score computation.
+      },
+      "market_state": {
+        "value": "Market A (NEW)",
+        "source": "System Logic",
+        "exact_extract": "N/A"
+        // GUIDELINE: Stores the market segment used to retrieve the price. Valid values are "Market A (NEW)" (for factory-sealed retail) or "Market B (SECONDARY)" (for good-condition refurbished/used).
       },
       "scores": {
         "predicted": 0.80,
-        // SCORING GUIDELINE: scores.predicted directly inherits usd.subscore.
+        // SCORING GUIDELINE: scores.predicted directly inherits eur_normalized.subscore.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 0.80,

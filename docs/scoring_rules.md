@@ -5394,15 +5394,71 @@ These are physical package states, not independent score tiers.
 ## 🟣 9. Financial & Economic Value
 
 ### 🔹 9.1 Price
-*Description:* The current market price in USD. Lower prices mean better accessibility for more people.
-*   **Measurement:** Manufacturer's Suggested Retail Price (MSRP) at launch or current average market price.
-*   **Unit:** USD ($)
-*   **Significance:** Primary barrier to entry and value determinant.
-*Formula:* `Score = 10 - 10 * (log(Price) - log(Price_USD_Min)) / (log(Price_USD_Max) - log(Price_USD_Min))` (Clamped 0-10)
-*   **Max Score (10.0):** ≤ Price_USD_Min
-*   **Min Score (0.0):** ≥ Price_USD_Max
+*Description:* The current fair-market purchase price of the exact smartphone configuration being evaluated. To ensure 100% coverage across the 2016–2026 decade, the system dynamically targets the "New" market for current devices, and the "Secondary" market for discontinued devices, using a universal Median to mathematically reject outliers.
+
+**1. Identity Anchoring (Mandatory Parameters)**
+Every queried price MUST perfectly match the JSON `identity` block:
+*   `identity.model_name` and `identity.model_aliases` (Regional SKU). This strictly enforces the correct **Cellular Connectivity (4G vs 5G)** and **Dual-SIM/eSIM configuration**.
+*   `identity.target_region.value` (Target market).
+*   `identity.hardware_configuration.storage_gb.value` (Exact storage tier).
+*   `identity.hardware_configuration.ram_gb.value` (Exact RAM configuration).
+*   `identity.hardware_configuration.chipset.value` (Exact SoC, e.g., Exynos vs Snapdragon).
+*   **Carrier Status:** The device must be **Factory Unlocked**. Do not include carrier-locked prices. A "carrier-locked" phone has a software restriction placed on it by a specific wireless provider (e.g., AT&T, Vodafone) that completely prevents the phone from reading SIM cards from any competing network. Carrier-locked phones in the primary market (Market A) often feature artificial price subsidies tied to long-term cellular contracts, masking the true upfront price. In the secondary market (Market B), these locked phones depreciate much faster and sell at a significant discount because buyers are trapped on that single network. Averaging these encumbered devices with fully unlocked devices creates a severe downward pricing bias that inaccurately reflects the true market price of a standard, unrestricted phone.
+*   **Special Editions:** Prices for luxury collaborations (e.g., Porsche Design, Thom Browne) or premium materials (e.g., Ceramic) must be excluded unless explicitly defined in `model_name`.
+
+**2. Exact Authorized Sources**
+The system is restricted to querying ONLY the following verified platforms.
+*   **For Market A (NEW):**
+    1. Manufacturer Direct Store (e.g., Apple.com, Samsung.com).
+    2. Amazon (Strictly "Shipped and Sold by Amazon").
+    3. Major Authorized Big-Box Retailers (e.g., BestBuy, Walmart, MediaMarkt).
+*   **For Market B (SECONDARY):**
+    1. Back Market (Strictly "Good" condition).
+    2. Amazon Renewed (Strictly "Excellent" or "Good" standard renewed).
+    3. Swappa (Strictly "Completed Sales" for "Good" condition).
+    4. eBay (Strictly "Sold/Completed Items" mapped to "Good" functional condition).
+
+**3. Dynamic Market-Selection Rule (Availability-Based)**
+The system dynamically selects the market based on availability, preventing obsolete "collector" prices from ruining the data.
+*   **Step 1:** Query Market A (NEW). If **≥ 2 valid independent observations** exist within the last 30 days, calculate the final price using Market A.
+*   **Step 2:** If Market A fails, query Market B (SECONDARY). If **≥ 3 valid independent observations** exist within the last 90 days, calculate the final price using Market B.
+*   **Step 3:** If neither market yields sufficient observations, return: `"N/A — Insufficient current market evidence"`.
+*(Note: Never average Market A and Market B together).*
+
+**4. Universal Statistical Aggregation (The Median)**
+To mathematically mitigate extreme outliers (scalpers, fake listings, broken devices) without relying on arbitrary trimming percentages, the final price is calculated using the **Universal Median**.
+*   **Plain English Definition:** The Median is the exact middle value in a list of prices sorted from lowest to highest. Exactly half the prices are lower than or equal to the median, and half are higher than or equal to it. If there is an even number of prices, it is the average of the two middle prices.
+*   **Formula:** Let the ordered list of N valid observations be P_1 <= P_2 <= ... <= P_N.
+    *   If N is odd: Median = P_((N+1)/2)
+    *   If N is even: Median = (P_(N/2) + P_((N/2) + 1)) / 2
+*   Unlike an arithmetic average, the Median is structurally resistant to extreme high/low anomalies, ensuring the market center is captured regardless of the number of observations.
+*   **Limitations (Nuance):** While highly robust against extreme outliers, the Median is not perfect. In polarized or bimodal markets (e.g., half the sellers price at 200 USD and half at 300 USD), the median will abruptly snap to one of the clusters rather than finding a blended middle ground. Furthermore, at very low sample sizes (e.g., N=3), a single miscategorized listing can still heavily dictate the result. The median is a statistical safeguard, not a magic bullet—which is why strict adherence to the Identity and Authorized Sources rules in Steps 1 and 2 is mandatory.
+
+**5. Currency, Tax, and FX Normalization Protocol**
+*(Note: All database objects and parameters referenced in this section are strictly mapped to the schema defined in `proposed_data_structure.md`.)*
+*   **Native Preservation:** Prices MUST be researched and captured in the currency actively used by the specific market defined in the `identity.target_region.value` parameter. For example, EUR if the target region is "EU", USD if the target region is "US". Do not artificially restrict research to a currency whitelist. The origin currency and origin price must be permanently stored for traceability (mapped strictly to the `price_native` and `price_currency` parameters within the `native_market` object).
+*   **Tax Handling:** Advertised consumer prices reflect differing regional tax laws based on the `identity.target_region.value` parameter. US prices are strictly scraped as Pre-Tax (as mandated by US retail displays), while EU/UK prices are strictly scraped as Post-Tax (VAT inclusive). The database must flag this via the `tax_inclusive` boolean (within the `native_market` object). When analyzing prices globally, devices must only be directly compared against devices having identical `tax_inclusive` values.
+*   **Canonical Currency (EUR):** All native prices are computationally converted to **EUR** (stored as the `price_base_eur` parameter within the `eur_normalized` object) for the final scoring formula, utilizing the high-reliability daily historical datasets provided by the European Central Bank (ECB).
+*   **FX Date (Script Run Date):** The conversion MUST use the exact ECB reference rate corresponding to the specific date the database evaluation script is run. This ensures the converted price reflects the closest economic reality to the user's time of observation, while vastly simplifying the architecture compared to tracking historical transaction dates. If no rate exists for that date (e.g., weekends), the most recent preceding valid FX rate is used. (This is stored as the `fx_rate_date` and `fx_rate` parameters within the `eur_normalized` object).
+*   **Market Boundaries:** Currency conversion does not bridge geographical markets. A USD listing shipped from the US cannot be averaged into an EU target market simply by converting it to EUR. Aggregate strictly within the defined `identity.target_region.value` parameter and ensure the listed device matches the exact `identity.hardware_configuration` (`storage_gb`, `ram_gb`, `chipset`).
+*   **Global Presentation:** Alongside the native and EUR prices, the final results should also indicate the equivalent price in major global currencies (e.g., USD, GBP, JPY) calculated using the same Script Run Date FX rate, to provide maximum readability for global users (these values are mapped into the `major_currencies_converted` object).
+*   **Accessories:** Price refers strictly to the handset package. Bundles including non-standard accessories (earbuds, smartwatches) must be excluded from the query.
+*   **Original Manufacturer's Suggested Retail Price (MSRP):** The MSRP (the initial launch price set by the manufacturer) is strictly prohibited as a substitute for live market evidence. MSRP is a static, historical number that does not reflect real-world depreciation, sales, or current street value.
+
+**Scoring Logic:**
+
+`Score = 10 * (log(Price_EUR_Max) - log(Price_EUR)) / (log(Price_EUR_Max) - log(Price_EUR_Min))`
+
+The min/max constants are dynamically selected based on the `native_market.tax_inclusive` boolean:
+*   If `tax_inclusive` is `true` (Post-Tax / VAT inclusive): `Price_EUR_Min = Price_EUR_PostTax_Min`, `Price_EUR_Max = Price_EUR_PostTax_Max`
+*   If `tax_inclusive` is `false` (Pre-Tax / Tax exclusive): `Price_EUR_Min = Price_EUR_PreTax_Min`, `Price_EUR_Max = Price_EUR_PreTax_Max`
+
+*   **Max Score (10.0):** `Price_EUR` ≤ `Price_EUR_Min`
+*   **Min Score (0.0):** `Price_EUR` ≥ `Price_EUR_Max`
+*   **Clamping:** The resulting subscore is strictly clamped between 0.0 and 10.0.
+
 > [!NOTE]
-> **Why Logarithmic?** Price sensitivity is relative. A $50 increase on a $150 phone is a massive 33% hike, whereas a $50 increase on a $1000 phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.
+> **Why Logarithmic?** Price sensitivity is relative. A 50 EUR increase on a 150 EUR phone is a massive 33% hike, whereas a 50 EUR increase on a 1000 EUR phone is a negligible 5%. The logarithmic scale reflects this relative impact on affordability.
 
 
 ### 🔹 9.2 Manufacturer Warranty Commitment

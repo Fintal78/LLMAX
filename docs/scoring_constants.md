@@ -177,4 +177,7 @@
 **9. Financial & Value**
 
 ### 9.1 Price
-*   `Price_USD_Min` = 100 (Score 10), `Price_USD_Max` = 1600 (Score 0)
+*   `Price_EUR_PostTax_Min` = 50.00 (Score 10.0 | Tax-inclusive (VAT) affordability floor for entry-level / secondary market in EUR across 2016–2026)
+*   `Price_EUR_PostTax_Max` = 2000.00 (Score 0.0 | Tax-inclusive (VAT) ceiling for ultra-flagship/foldable 1TB configurations in EUR across 2016–2026)
+*   `Price_EUR_PreTax_Min` = 40.00 (Score 10.0 | Tax-exclusive affordability floor for entry-level / secondary market in EUR across 2016–2026)
+*   `Price_EUR_PreTax_Max` = 1600.00 (Score 0.0 | Tax-exclusive ceiling for ultra-flagship/foldable 1TB configurations in EUR across 2016–2026)
