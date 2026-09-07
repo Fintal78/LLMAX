@@ -5406,22 +5406,26 @@ Every queried price MUST perfectly match the JSON `identity` block:
 *   **Carrier Status:** The device must be **Factory Unlocked**. Do not include carrier-locked prices. A "carrier-locked" phone has a software restriction placed on it by a specific wireless provider (e.g., AT&T, Vodafone) that completely prevents the phone from reading SIM cards from any competing network. Carrier-locked phones in the primary market (Market A) often feature artificial price subsidies tied to long-term cellular contracts, masking the true upfront price. In the secondary market (Market B), these locked phones depreciate much faster and sell at a significant discount because buyers are trapped on that single network. Averaging these encumbered devices with fully unlocked devices creates a severe downward pricing bias that inaccurately reflects the true market price of a standard, unrestricted phone.
 *   **Special Editions:** Prices for luxury collaborations (e.g., Porsche Design, Thom Browne) or premium materials (e.g., Ceramic) must be excluded unless explicitly defined in `model_name`.
 
-**2. Exact Authorized Sources**
-The system is restricted to querying ONLY the following verified platforms.
-*   **For Market A (NEW):**
-    1. Manufacturer Direct Store (e.g., Apple.com, Samsung.com).
-    2. Amazon (Strictly "Shipped and Sold by Amazon").
-    3. Major Authorized Big-Box Retailers (e.g., BestBuy, Walmart, MediaMarkt).
-*   **For Market B (SECONDARY):**
-    1. Back Market (Strictly "Good" condition).
-    2. Amazon Renewed (Strictly "Excellent" or "Good" standard renewed).
-    3. Swappa (Strictly "Completed Sales" for "Good" condition).
-    4. eBay (Strictly "Sold/Completed Items" mapped to "Good" functional condition).
+**2. Market Classification & Authorized Sources**
+The database categorizes pricing into two distinct, non-overlapping market tiers based strictly on physical hardware condition:
+*   **Market A (NEW / Primary Market):** Strictly covers **brand-new, factory-sealed devices**.
+    *   *Authorized Platforms:*
+        1. Manufacturer Direct Store (e.g., Apple.com, Samsung.com).
+        2. Amazon (Strictly "Shipped and Sold by Amazon").
+        3. Major Authorized Big-Box Retailers (e.g., BestBuy, Walmart, MediaMarkt).
+*   **Market B (SECONDARY / Used & Refurbished Market):** Strictly covers **pre-owned, used, or certified refurbished devices**. This market is queried ONLY as a fallback when brand-new Market A stock is no longer available in sufficient volume.
+    *   *Authorized Platforms:*
+        1. Back Market (Strictly "Good" condition).
+        2. Amazon Renewed (Strictly "Excellent" or "Good" standard renewed).
+        3. Swappa (Strictly "Completed Sales" for "Good" condition).
+        4. eBay (Strictly "Sold/Completed Items" mapped to "Good" functional condition).
 
 **3. Dynamic Market-Selection Rule (Availability-Based)**
-The system dynamically selects the market based on availability, preventing obsolete "collector" prices from ruining the data.
-*   **Step 1:** Query Market A (NEW). If **≥ 2 valid independent observations** exist within the last 30 days, calculate the final price using Market A.
-*   **Step 2:** If Market A fails, query Market B (SECONDARY). If **≥ 3 valid independent observations** exist within the last 90 days, calculate the final price using Market B.
+The market tier (Market A vs Market B) is determined *solely* by item condition (New vs Used/Refurbished). The 30-day and 90-day rules below act strictly as **seller dispatch lead-time filters** to ensure physical hardware availability and exclude fake listings or distant pre-orders:
+*   **Step 1:** Query Market A (NEW). If **≥ 2 valid independent observations** for brand-new devices are available for immediate dispatch (≤ 30 days lead time), calculate the final price using Market A.
+    *   *Why ≤ 30 days?* This buffer accommodates temporary out-of-stock backorders and supply chain restocking delays (common for highly popular or newly launched phones on official stores), while strictly excluding "vaporware" pre-orders that are months away from physical release.
+*   **Step 2:** If Market A fails (n < 2), query Market B (SECONDARY). If **≥ 3 valid independent observations** for refurbished/used devices are available for dispatch (≤ 90 days lead time), calculate the final price using Market B.
+    *   *Why ≤ 90 days?* This longer buffer accounts for the delayed lifecycle of the secondary market (it takes time for users to trade in devices, and for refurbishers to acquire, repair, and relist them), as well as longer potential international shipping times for refurbished stock.
 *   **Step 3:** If neither market yields sufficient observations, return: `"N/A — Insufficient current market evidence"`.
 *(Note: Never average Market A and Market B together).*
 
@@ -5438,10 +5442,10 @@ To mathematically mitigate extreme outliers (scalpers, fake listings, broken dev
 *(Note: All database objects and parameters referenced in this section are strictly mapped to the schema defined in `proposed_data_structure.md`.)*
 *   **Native Preservation:** Prices MUST be researched and captured in the currency actively used by the specific market defined in the `identity.target_region.value` parameter. For example, EUR if the target region is "EU", USD if the target region is "US". Do not artificially restrict research to a currency whitelist. The origin currency and origin price must be permanently stored for traceability (mapped strictly to the `price_native` and `price_currency` parameters within the `native_market` object).
 *   **Tax Handling:** Advertised consumer prices reflect differing regional tax laws based on the `identity.target_region.value` parameter. US prices are strictly scraped as Pre-Tax (as mandated by US retail displays), while EU/UK prices are strictly scraped as Post-Tax (VAT inclusive). The database must flag this via the `tax_inclusive` boolean (within the `native_market` object). When analyzing prices globally, devices must only be directly compared against devices having identical `tax_inclusive` values.
-*   **Canonical Currency (EUR):** All native prices are computationally converted to **EUR** (stored as the `price_base_eur` parameter within the `eur_normalized` object) for the final scoring formula, utilizing the high-reliability daily historical datasets provided by the European Central Bank (ECB).
-*   **FX Date (Script Run Date):** The conversion MUST use the exact ECB reference rate corresponding to the specific date the database evaluation script is run. This ensures the converted price reflects the closest economic reality to the user's time of observation, while vastly simplifying the architecture compared to tracking historical transaction dates. If no rate exists for that date (e.g., weekends), the most recent preceding valid FX rate is used. (This is stored as the `fx_rate_date` and `fx_rate` parameters within the `eur_normalized` object).
+*   **Canonical Currency (EUR):** All native prices are computationally converted to **EUR** (stored as the `value` parameter within the `eur_normalized` object) for the final scoring formula, utilizing the high-reliability daily historical datasets provided by the European Central Bank (ECB).
+*   **FX Date (Script Run Date):** The conversion MUST use the exact ECB reference rate corresponding to the specific date the database evaluation script is run. This ensures the converted price reflects the closest economic reality to the user's time of observation, while vastly simplifying the architecture compared to tracking historical transaction dates. If no rate exists for that date (e.g., weekends), the most recent preceding valid FX rate is used. (This is stored as the `identifier` parameter within the `eur_normalized` object to extract the multiplier from the `references/fx_rates_reference.md` table).
 *   **Market Boundaries:** Currency conversion does not bridge geographical markets. A USD listing shipped from the US cannot be averaged into an EU target market simply by converting it to EUR. Aggregate strictly within the defined `identity.target_region.value` parameter and ensure the listed device matches the exact `identity.hardware_configuration` (`storage_gb`, `ram_gb`, `chipset`).
-*   **Global Presentation:** Alongside the native and EUR prices, the final results should also indicate the equivalent price in major global currencies (e.g., USD, GBP, JPY) calculated using the same Script Run Date FX rate, to provide maximum readability for global users (these values are mapped into the `major_currencies_converted` object).
+*   **Global Presentation (90%+ Population Coverage):** Alongside the native and EUR prices, the final results should also indicate the equivalent price in a specific basket of 21 global fiat currencies calculated using the same Script Run Date FX rate, to provide maximum readability for global users. To ensure >90% coverage of the world population, this basket strictly consists of: USD, CNY, INR, IDR, PKR, NGN, BRL, BDT, RUB, MXN, ETB, JPY, PHP, EGP, VND, TRY, IRR, GBP, KRW, ZAR, and CHF (these values are mapped into the `global_currencies_converted` object).
 *   **Accessories:** Price refers strictly to the handset package. Bundles including non-standard accessories (earbuds, smartwatches) must be excluded from the query.
 *   **Original Manufacturer's Suggested Retail Price (MSRP):** The MSRP (the initial launch price set by the manufacturer) is strictly prohibited as a substitute for live market evidence. MSRP is a static, historical number that does not reflect real-world depreciation, sales, or current street value.
 

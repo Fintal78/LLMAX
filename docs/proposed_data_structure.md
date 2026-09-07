@@ -83,7 +83,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "value": "Global",
       "source": "TBD",
       "exact_extract": "Proof pending"
-      // GUIDELINE: The target region/market of this specific hardware SKU under review. Allowed values: "Global", "US" (United States), "China" (includes Hong Kong and Macau), "EU" (European Union), "CA" (Canada), or "Other". Use this field in Section 7.2 to resolve regional hardware variations.
+      // GUIDELINE: The target region/market of this specific hardware SKU under review. Allowed values: "Global", "US" (United States), "EU" (European Union & UK), "China" (Mainland, HK, Macau), "India", "Japan/Korea", or "Other". Use this field in Section 7.2 to resolve regional hardware variations.
+      // VARIANT FORKING RULE: Only create separate database records for different regions if the regional variant features hardware differences that impact scoring (e.g., different Chipset, Battery, or Charging specifications). Otherwise, default to "Global" or the device's primary launch region.
     },
     "hardware_configuration": {
       // GUIDELINE: Specifies the exact hardware tier being scored. A single device model can ship in multiple RAM/storage configurations — always document the specific variant below.
@@ -6015,44 +6016,133 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   },
   "9_financial_and_economic_value": {
     "9_1_price": {
-      // SCORING GOAL: Evaluates device price relative to standard flagships. Lower is better.
-      "eur_normalized": {
-        "value": 1199,
-        "source": "ECB FX API",
-        "exact_extract": "Derived from native market price",
-        "subscore": 0.80
-        // SCORING GUIDELINE: Calculate the Logarithmic Cost Score (Section 9.1). Score = 10 - 10 * (log(Price_EUR) - log(Min)) / (log(Max) - log(Min)). Min=90, Max=1500.
-      },
+      // SCORING GOAL: Evaluates device price using an inverted logarithmic scale. Lower is better.
       "native_market": {
-        "price_native": 1299,
-        "price_currency": "USD",
-        "tax_inclusive": false,
-        "observation_date": "2026-09-03"
-        // GUIDELINE: Preserves the exact price, currency, and tax status scraped from the source for full traceability.
+        "raw_observations": [
+          {
+            "id": "Observation 1",
+            "price": {
+              "value": 1299.00,
+              "currency": "USD",
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+              // GUIDELINE: The listing price (value) and related currency scraped directly from the authorized retailer listing in native currency.
+            },
+            "dispatch_days": {
+              "value": 2,
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+              // GUIDELINE: Estimated seller dispatch/delivery lead time in days (e.g., calculated from the retailer's "Delivery by [Date]" or "Dispatches in [X] days" metric). This is NOT the listing's "publish date". It measures the buyer's actual waiting period to verify physical hardware availability. Pre-orders or extended back-orders exceeding the limits must be excluded.
+            },
+            "condition": {
+              "value": "New",
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+              // GUIDELINE: Physical state of the item ("New" for factory-sealed Market A; "Refurbished - Excellent" or "Good" for Market B).
+            }
+          },
+          {
+            "id": "Observation 2",
+            "price": {
+              "value": 1299.00,
+              "currency": "USD",
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+            },
+            "dispatch_days": {
+              "value": 3,
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+            },
+            "condition": {
+              "value": "New",
+              "source": "TBD (Retailer URL)",
+              "exact_extract": "Proof pending"
+            }
+          }
+        ],
+        // ARRAY DUPLICATION GUIDELINE: The `9_1_price.native_market.raw_observations` array above contains two template entries. Evaluators MUST exhaustively search and add AS MANY reliable sources as possible to ensure a statistically robust median calculation. The minimums (n>=2 for `Market A (NEW)`, n>=3 for `Market B (SECONDARY)`) are an ABSOLUTE BARE MINIMUM threshold to prevent an immediate scoring failure, NOT a target or ceiling. You are strictly required to exceed these minimums whenever multiple reliable retailers list the device.
+        
+        "price_native": {
+          "value": 1299.00,
+          "currency": "USD",
+          "calculation_formula": "Calculated Median of 9_1_price.native_market.raw_observations[i].price.value"
+          // GUIDELINE: Ensure that all `currency` fields across all valid `raw_observations` match exactly before calculating the median. Mixed currencies in a single evaluation block are strictly forbidden. The agreed upon currency must be stored in `9_1_price.native_market.price_native.currency`.
+        },
+        "tax_inclusive": {
+          "value": false,
+          "value_path": "Derived from identity.target_region.value"
+        },
+        "market_state": {
+          "value": "Market A (NEW)",
+          "value_path": "Market A (NEW) or Market B (SECONDARY) derived from 9_1_price.native_market.raw_observations"
+        }
+        // SCORING GUIDELINE: The native market values MUST be sourced from the specific regional market defined in `identity.target_region.value`.
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        // STEP 1 - IDENTITY ANCHORING: The listed device MUST strictly match the exact Identity block parameters: `identity.brand`, `identity.model_name`, `identity.hardware_configuration.storage_gb.value`, `identity.hardware_configuration.ram_gb.value`, `identity.hardware_configuration.chipset.value`, and MUST be factory-unlocked (no carrier subsidies/contracts). Exclude special editions unless explicitly evaluating one.
+        // STEP 2 - REGION CURRENCY & TAX HANDLING: Fetch the market from `identity.target_region.value`. Use the following correspondence table to define the mandatory currency for market research and deduct `9_1_price.native_market.tax_inclusive.value`:
+        //   • "US"          => Currency: USD                            | tax_inclusive.value = false
+        //   • "EU"          => Currency: EUR (or GBP)                   | tax_inclusive.value = true (VAT included)
+        //   • "China"       => Currency: CNY                            | tax_inclusive.value = true
+        //   • "India"       => Currency: INR                            | tax_inclusive.value = true
+        //   • "Japan/Korea" => Currency: JPY or KRW                     | tax_inclusive.value = true
+        //   • "Global" (or "Other") => Currency: OPEN to all currencies | tax_inclusive.value = Set dynamically based on the local tax laws of the specific country from which the price was sourced (e.g., true for EUR, false for USD).
+        // STEP 3 - MARKET SELECTION & AUTHORIZED SOURCES:
+        //   - Query Market A (NEW): Factory-sealed devices sold directly by the Manufacturer (e.g., Apple.com, Samsung.com) or Tier-1 Authorized Retailers (e.g., Amazon, BestBuy, MediaMarkt).
+        //     Rule: Gather valid observations in `9_1_price.native_market.raw_observations` available for immediate dispatch (`9_1_price.native_market.raw_observations[i].dispatch_days.value <= 30`) with `9_1_price.native_market.raw_observations[i].condition.value = "New"`. If there are at least 2 valid observations (n>=2), calculate the median of `9_1_price.native_market.raw_observations[i].price.value` and assign it to `9_1_price.native_market.price_native.value`. Set `9_1_price.native_market.market_state.value = "Market A (NEW)"`. STOP here and use this Median.
+        //   - Query Market B (SECONDARY): If Market A fails (n<2), query secondary refurbished markets (e.g., Back Market, Swappa, eBay "Refurbished-Excellent").
+        //     Rule: Gather valid observations in `9_1_price.native_market.raw_observations` available for dispatch (`9_1_price.native_market.raw_observations[i].dispatch_days.value <= 90`) with `9_1_price.native_market.raw_observations[i].condition.value` equal to "Refurbished - Excellent" or "Good". If there are at least 3 valid observations (n>=3), calculate the median of `9_1_price.native_market.raw_observations[i].price.value` and assign it to `9_1_price.native_market.price_native.value`. Set `9_1_price.native_market.market_state.value = "Market B (SECONDARY)"`. Use this Median.
+        // STEP 4 - NOT FOUND FALLBACK: If both Market A (n<2) and Market B (n<3) fail to yield enough valid observations, set `9_1_price.native_market.price_native.value = "Not found"`, and raise a top-level SCORING BLOCKER alert. DO NOT use Manufacturer's Suggested Retail Price (MSRP) as a fallback.
       },
-      "major_currencies_converted": {
-        "usd": 1299,
-        "gbp": 1050,
-        "jpy": 185000,
-        "fx_rate_date": "2026-09-03"
-        // GUIDELINE: Provides global context using the exact same Script Run Date FX rate. Do NOT use these for the final score computation.
-      },
-      "market_state": {
-        "value": "Market A (NEW)",
-        "source": "System Logic",
-        "exact_extract": "N/A"
-        // GUIDELINE: Stores the market segment used to retrieve the price. Valid values are "Market A (NEW)" (for factory-sealed retail) or "Market B (SECONDARY)" (for good-condition refurbished/used).
+      "eur_normalized": {
+        "currency_conversion_mapping": {
+          "identifier": "USD",
+          "identifier_path": "9_1_price.native_market.price_native.currency",
+          "reference_table": "references/fx_rates_reference.md",
+          "fx_rate_eur_multiplier": 1.1619420000
+        },
+        "value": 1117.96,
+        "calculation_formula": "9_1_price.native_market.price_native.value / 9_1_price.eur_normalized.currency_conversion_mapping.fx_rate_eur_multiplier"
+        // SCORING GUIDELINE: Converts the native price to the Canonical Currency (EUR - Euro) for scoring.
+        // Use the mapping object to extract the exchange rate corresponding to the native currency from the reference table, then divide the native price by this rate to store the normalized EUR price in `value`.
       },
       "scores": {
-        "predicted": 0.80,
-        // SCORING GUIDELINE: scores.predicted directly inherits eur_normalized.subscore.
+        "predicted": 0.97,
+        "calculation_formula": "If 9_1_price.native_market.tax_inclusive.value == true: 10 * (log(Price_EUR_PostTax_Max) - log(9_1_price.eur_normalized.value)) / (log(Price_EUR_PostTax_Max) - log(Price_EUR_PostTax_Min)) -- ELSE -- If 9_1_price.native_market.tax_inclusive.value == false: 10 * (log(Price_EUR_PreTax_Max) - log(9_1_price.eur_normalized.value)) / (log(Price_EUR_PreTax_Max) - log(Price_EUR_PreTax_Min))",
+        // SCORING GUIDELINE: Applies the inverted logarithmic curve to calculate the predicted score. The min/max boundaries are dynamically chosen from `scoring_constants.md` depending on whether tax is inclusive or exclusive to ensure absolute equity across regions without inflation bias. The result is strictly clamped between 0.00 and 10.00.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 0.80,
+          "value": 0.97,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
         }
+      },
+      "global_currencies_converted": {
+        "reference_table": "references/fx_rates_reference.md",
+        "usd": 1299.00,
+        "cny": 8735.79,
+        "inr": 122743.28,
+        "idr": 22941236.39,
+        "pkr": 360368.58,
+        "ngn": 1741949.20,
+        "brl": 6610.64,
+        "bdt": 159559.75,
+        "rub": 112635.53,
+        "mxn": 22022.66,
+        "etb": 212055.96,
+        "jpy": 202696.45,
+        "php": 81179.71,
+        "egp": 66072.61,
+        "vnd": 33786655.87,
+        "try": 62910.58,
+        "irr": 1779882635.66,
+        "gbp": 961.03,
+        "krw": 1762679.37,
+        "zar": 20795.85,
+        "chf": 1050.14,
+        "calculation_formula": "9_1_price.eur_normalized.value * fx_rate_eur_multiplier (from reference table)"
+        // GUIDELINE: Provides global context by converting the normalized EUR price into these 21 currencies using the exchange rates from the reference table. These values are strictly for presentation and are not used for scoring.
       }
     },
     "9_2_manufacturer_warranty_commitment": {
