@@ -84,7 +84,6 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       "source": "TBD",
       "exact_extract": "Proof pending"
       // GUIDELINE: The target region/market of this specific hardware SKU under review. Allowed values: "Global", "US" (United States), "EU" (European Union & UK), "China" (Mainland, HK, Macau), "India", "Japan/Korea", or "Other". Use this field in Section 7.2 to resolve regional hardware variations.
-      // VARIANT FORKING RULE: Only create separate database records for different regions if the regional variant features hardware differences that impact scoring (e.g., different Chipset, Battery, or Charging specifications). Otherwise, default to "Global" or the device's primary launch region.
     },
     "hardware_configuration": {
       // GUIDELINE: Specifies the exact hardware tier being scored. A single device model can ship in multiple RAM/storage configurations — always document the specific variant below.
@@ -6155,7 +6154,8 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "9_2_manufacturer_warranty_commitment": {
-      // SCORING GOAL: Evaluates standard included warranty length.
+      // SCORING GOAL: Evaluates the original manufacturer's standard included warranty length.
+      // MANDATORY RULE: This component MUST evaluate the original manufacturer warranty terms for a brand-new device, completely independent of the `market_state` (Market A vs Market B) used in 9_1_price. Do NOT evaluate third-party or refurbisher warranties.
       "months": {
         "value": "Tier 3: 12 Months",
         "source": "TBD",
