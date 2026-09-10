@@ -5538,6 +5538,10 @@ Measures the duration of the commercial hardware defect warranty, evaluated stri
 #### 9.2.2 Component 2: Battery Capacity Protection (`S_battery`) — 30%
 Measures explicit manufacturer protection against normal battery-capacity degradation, evaluated strictly according to the Universal Evaluation Scope (9.2.0). Ordinary battery-defect coverage or removable batteries do NOT qualify without explicit capacity-retention guarantees.
 
+> [!NOTE]
+> **Separation of Financial Warranty vs. Physical Removability:**
+> Section 9.2.2 evaluates voluntary manufacturer financial guarantees (free battery replacements upon capacity degradation). While physical battery removability and user swappability are crucial for phone longevity, they do not qualify for points under `S_battery` without an explicit financial guarantee. Instead, physical battery removability and ease of replacement are explicitly measured and rewarded under [Section 9.3 Repairability] through teardown ratings.
+
 *   **Duration Score (`S_duration` — 60% of S_battery):** Evaluates the chronological length of the battery guarantee. A longer guarantee provides extended financial protection against the inevitable chemical aging of the lithium-ion cell, ensuring the phone remains usable for years without requiring a paid battery replacement.
     *   **Formula:** `S_duration = 10 * (Guarantee_Months - Warranty_Battery_Months_Min) / (Warranty_Battery_Months_Max - Warranty_Battery_Months_Min)` (Clamped 0.0 to 10.0)
 
@@ -5631,8 +5635,8 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
     
 
 ### 🔹 9.3 Repairability
-*Description:* How easy it is to fix. High scores mean you (or a shop) can easily replace a battery or screen, extending the phone's life.
-*   **Measurement:** Official iFixit teardown score (0-10) and/or EU Repairability Index (0-5).
+*Description:* How easy it is to fix. High scores mean you (or a shop) can easily replace a battery or screen, extending the phone's life. Physical battery removability and ease of battery replacement are major hardware accessibility factors directly evaluated and rewarded in this section.
+*   **Measurement:** Official iFixit teardown score (0-10) and/or European Union (EU) Repairability Index (0-5).
 *   **Unit:** Composite Repairability Score (0-10)
 *   **Significance:** Determines serviceability and long-term ownership viability.
 
