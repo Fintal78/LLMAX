@@ -5478,7 +5478,7 @@ Most standard smartphones offer a generic 1-year limited warranty. Regional cons
 3. Complimentary Accidental Screen Protection (`S_accidental_screen` — 10%)
 4. International / Cross-Border Warranty (`S_global` — 10%)
 
-**Universal Evaluation Scope (Applies to ALL 4 Components):**
+**🚨 CRITICAL MANDATORY REQUIREMENT: Universal Evaluation Scope (Applies to ALL 4 Components) 🚨**
 The evaluation of all four components MUST be strictly governed by the `target_region` defined in the device's identity block.
 *   **Specific Market (e.g., "US", "EU", "India"):** If the identity block specifies a regional market, ALL four components MUST be evaluated using the exact commercial terms published for that specific market.
 *   **Global Market ("Global"):** If the identity block specifies "Global", ALL four components MUST be evaluated using the longest/best explicitly documented manufacturer commercial offering found in ANY official market globally for that exact device SKU. 
@@ -5520,7 +5520,7 @@ Refer to `proposed_data_structure.md` for explicit guidelines on how to handle m
    * **Why (30%):** Battery degradation is the primary reason consumers replace smartphones. True capacity-retention guarantees are rare but provide massive longevity value.
 
 3. **Complimentary Accidental Screen Protection (`S_accidental_screen` — 10%):**
-   * **What it measures:** A one-time free screen replacement for accidental damage (drops/cracks) provided out-of-the-box, without a deductible (meaning **zero copay or out-of-pocket service fee** required from the consumer; the repair is 100% free).
+   * **What it measures:** A one-time free screen replacement for accidental damage (drops/cracks) provided out-of-the-box, without a deductible (meaning **zero out-of-pocket service fee** required from the consumer; the repair is 100% free).
    * **Why (10%):** While screen replacements are the most common and expensive repairs, accidental drops are situational, extrinsic events dependent on user behavior. Unlike intrinsic hardware failure (50% weight) or inevitable chemical battery degradation (30% weight) which universally affect all devices kept long enough, accidental damage only affects a fraction of users. Therefore, it is strictly weighted as a premium 10% service perk rather than a core baseline hardware longevity guarantee.
 
 4. **International / Cross-Border Warranty (`S_global` — 10%):**
@@ -5555,9 +5555,8 @@ Measures explicit manufacturer protection against normal battery-capacity degrad
 > Unlike the core hardware warranty, every additional year of a battery capacity guarantee directly and linearly extends the usable lifespan of the device without requiring the user to pay for an expensive battery replacement. Therefore, the utility scales linearly up to the observed ceiling.
 
 > [!IMPORTANT]
-> **Cycle Limits, Standard Daily Workload Parameter & Termination Rules:**
-> If a guarantee includes a cycle limit (e.g., "5 years OR 850 cycles"), it cannot be scored purely as 5 years, as a heavy user will hit the cycle limit early.
-> *   **Standard Workload Entry Parameter:** The cycle-to-duration conversion is governed by the modeling parameter `Standard_Workload_Cycles_Per_Year = 365.0` cycles/year (1 full charge cycle per day).
+> **Cycle Limits, Standard Daily Workload Parameter & Rationale:**
+> If a guarantee includes a cycle limit (e.g., "5 years OR 850 cycles"), it cannot be scored purely as 5 years, as a heavy user will hit the cycle limit early. The framework models a conversion using a `Standard_Workload_Cycles_Per_Year = 365.0` cycles/year (1 full charge cycle per day).
 > *   **Consolidation & Standard Rationale:** Grounded in IEC 61960 battery endurance testing standards and EU Ecodesign Regulation (EU 2023/1670), 1 cycle per day (365 cycles/year) serves as the universal baseline bridging technical cycle thresholds to calendar lifespan (e.g., 800 cycles = 2.19 years; 1,600 cycles = 4.38 years), balancing OEM heavy-use benchmarks (400 cycles/year) and moderate consumer workloads (250–333 cycles/year).
 > *   **Cycle-Equivalent Duration (Months):** `Cycle_Equivalent_Months = (Guaranteed_Cycles / Standard_Workload_Cycles_Per_Year) * 12`
 > *   **Effective Duration:** The final `Guarantee_Months` evaluated in `S_duration` takes the **minimum** of the chronological guarantee duration and `Cycle_Equivalent_Months`.
@@ -5581,17 +5580,15 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
 
 *   **5.0 (Tier 2 — Restricted / Conditional International Warranty):**
     *   **Definition:** The manufacturer offers an official International Warranty Service (IWS), but coverage is subject to specific administrative, regional, or channel restrictions.
-    *   **Common Material Restrictions:**
-        *   *Official Channel Requirement:* Valid only if purchased through officially authorized distributors in the home country (gray-market imports disqualified).
-        *   *Local Network Activation Rule:* The device must have been activated on a local cellular network in the purchase country before traveling abroad (e.g., Xiaomi IWS / OPPO IWS policies).
-        *   *Geographic & SKU Scope:* Restricted to a specific list of participating countries (e.g., EU-only cross-border coverage) or limited to specific flagship model SKUs (Stock Keeping Units / specific device variants).
-        *   *Part Availability Caveat:* Repairs abroad are strictly subject to local spare part availability in the destination market.
+    *   **Material Restrictions:** The presence of any qualifying material condition strictly mandates a Tier 2 classification. Refer to [proposed_data_structure.md] for the exhaustive details and applicable examples.
 
 *   **0.0 (Tier 3 — Regional / Single-Country Warranty):**
     *   **Definition:** The warranty is strictly region-locked or country-locked. Authorized service centers outside the original purchase territory will refuse free warranty service.
     *   **Examples:** Standard US or Asian market SKUs that require returning the phone to the original country of purchase for warranty repairs.
 
 #### 9.2.5 Temporal and Registration Validation Examples
+*(Note: All final score calculations below are evaluated using `Warranty_Composite_Score_Max = 5.84`, which corresponds to the current maximum un-normalized raw composite warranty score empirically observed across all benchmarked market devices — currently held by the market leader, the Crosscall Stellar-X5 — serving as the dynamic normalization ceiling denominator to scale raw scores onto a 0.0 to 10.0 scale).*
+
 *   **Example 1: Apple iPhone 15 Pro Max (US Market Record)**
     *   Evaluation Scope: Must strictly use US terms.
     *   Base Warranty: 12 Months -> `S_base` = 0.0
@@ -5603,10 +5600,10 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
 *   **Example 2: OnePlus 12 (Global Record)**
     *   Evaluation Scope: Maximum commercial duration verified across global markets.
     *   Base Warranty: 12 Months (Maximum commercial verified) -> `S_base` = 0.0
-    *   Battery Guarantee: 48 Months (80% health) -> `S_duration = 10 * (48 - 12) / (60 - 12) = 7.50`, `S_capacity = 10 * (80.0 - 70.0) / (90.0 - 70.0) = 5.00`. `S_battery = (0.60 * 7.50) + (0.40 * 5.00) = 6.50`
+    *   Battery Guarantee: 48 Months (80% health) -> `S_duration = 10 * (48 - 0) / (60 - 0) = 8.00`, `S_capacity = 10 * (80.0 - 70.0) / (90.0 - 70.0) = 5.00`. `S_battery = (0.60 * 8.00) + (0.40 * 5.00) = 6.80`
     *   Screen Protection: None -> `S_accidental_screen` = 0.0
     *   International: Regional -> `S_global` = 0.0
-    *   `Raw Score = (0.50 * 0.0) + (0.30 * 6.50) + 0 + 0 = 1.95`. `Final Score = 10 * (1.95 / Warranty_Composite_Score_Max) = 3.48`
+    *   `Raw Score = (0.50 * 0.0) + (0.30 * 6.80) + 0 + 0 = 2.04`. `Final Score = 10 * (2.04 / Warranty_Composite_Score_Max) = 3.49`
 
 *   **Example 3: Xiaomi 14 Ultra (Global Record)**
     *   Evaluation Scope: Maximum commercial duration verified across global markets.
@@ -5614,7 +5611,7 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
     *   Battery Guarantee: None -> `S_battery` = 0.0
     *   Screen Protection: 6 Months Free Replacement -> `S_accidental_screen` = 5.0
     *   International: Xiaomi IWS (Restricted to designated markets/channels) -> `S_global` = 5.0
-    *   `Raw Score = (0.50 * 4.31) + (0.30 * 0.0) + (0.10 * 5.0) + (0.10 * 5.0) = 3.16`. `Final Score = 10 * (3.16 / Warranty_Composite_Score_Max) = 5.64`
+    *   `Raw Score = (0.50 * 4.31) + (0.30 * 0.0) + (0.10 * 5.0) + (0.10 * 5.0) = 3.16`. `Final Score = 10 * (3.16 / Warranty_Composite_Score_Max) = 5.41`
 
 *   **Example 4: Fairphone 5 (Global Record)**
     *   Evaluation Scope: Maximum commercial duration verified across global markets. *(Note: Warranty requires registration and depends on purchase year).*
@@ -5622,15 +5619,15 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
     *   Battery Guarantee: Removable battery, but no capacity guarantee -> `S_battery` = 0.0
     *   Screen Protection: None -> `S_accidental_screen` = 0.0
     *   International: Regional (EU focused) -> `S_global` = 0.0
-    *   `Raw Score = (0.50 * 10.0) + 0 + 0 + 0 = 5.00`. `Final Score = 10 * (5.00 / Warranty_Composite_Score_Max) = 8.93`
+    *   `Raw Score = (0.50 * 10.0) + 0 + 0 + 0 = 5.00`. `Final Score = 10 * (5.00 / Warranty_Composite_Score_Max) = 8.56`
 
 *   **Example 5: Crosscall Stellar-X5 (Current Market Leader)**
     *   Evaluation Scope: Maximum commercial duration verified across global markets.
     *   Base Warranty: 60 Months (5 years) -> `S_base` = 10.0
-    *   Battery Guarantee: 60 Months OR 850 cycles (70% health). The 850 cycle limit evaluates to `(850 / 365) * 12 = 27.95 months`. Taking the minimum yields 27.95 months. `S_duration = 10 * (27.95 - 12) / (60 - 12) = 3.32`. `S_capacity = 10 * (70.0 - 70.0) / (90.0 - 70.0) = 0.00`. `S_battery = (0.60 * 3.32) + (0.40 * 0.00) = 1.99`
+    *   Battery Guarantee: 60 Months OR 850 cycles (70% health). The 850 cycle limit evaluates to `(850 / 365) * 12 = 27.95 months`. Taking the minimum yields 27.95 months. `S_duration = 10 * (27.95 - 0) / (60 - 0) = 4.66`. `S_capacity = 10 * (70.0 - 70.0) / (90.0 - 70.0) = 0.00`. `S_battery = (0.60 * 4.66) + (0.40 * 0.00) = 2.80`
     *   Screen Protection: None -> `S_accidental_screen` = 0.0
     *   International: Regional -> `S_global` = 0.0
-    *   `Raw Score = (0.50 * 10.0) + (0.30 * 1.99) + 0 + 0 = 5.60`. `Final Score = 10 * (5.60 / Warranty_Composite_Score_Max) = 10.00`
+    *   `Raw Score = (0.50 * 10.0) + (0.30 * 2.80) + 0 + 0 = 5.84`. `Final Score = 10 * (5.84 / Warranty_Composite_Score_Max) = 10.00`
     *(Note: Crosscall's 5-year battery claim is heavily penalized for its 850-cycle limit and 70% capacity threshold, revealing it as marketing fluff for power users).*
     
 

@@ -6153,26 +6153,130 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
         // GUIDELINE: Provides global context by converting the normalized EUR price into these 21 currencies using the exchange rates from the reference table. These values are strictly for presentation and are not used for scoring.
       }
     },
-    "9_2_manufacturer_warranty_commitment": {
-      // SCORING GOAL: Evaluates the original manufacturer's standard included warranty length.
-      // MANDATORY RULE: This component MUST evaluate the original manufacturer warranty terms for a brand-new device, completely independent of the `market_state` (Market A vs Market B) used in 9_1_price. Do NOT evaluate third-party or refurbisher warranties.
-      "months": {
-        "value": "Tier 3: 12 Months",
+    "9_2_comprehensive_warranty_and_guarantees": {
+      // SCORING GOAL: Evaluates the manufacturer's voluntary financial protection provided with the smartphone. The score combines base hardware warranty (50%), battery capacity protection (30%), complimentary accidental screen protection (10%), and international/cross-border warranty (10%).
+      //
+      // 🚨 CRITICAL MANDATORY REQUIREMENT: UNIVERSAL EVALUATION SCOPE & LOGIC TREE 🚨
+      // The evaluation of all four components MUST be strictly governed by the `target_region` defined in the device's identity block (exact path: `identity.target_region.value`).
+      //   1. REGION MATCHING: If the identity specifies a regional market (e.g., "US", "EU", "India"), use the exact commercial terms for that specific market. If "Global", use the longest/best explicitly documented manufacturer commercial offering found in ANY official market globally for that exact device SKU.
+      //   2. NEW DEVICE STATE: All warranty components must be evaluated using terms for a brand-new device, independent of the `market_state` (New vs. Secondary) used in 9_1_price.
+      //   3. EXCLUSION OF STATUTORY LAWS: Statutory consumer laws imposed on sellers (e.g., the EU 2-year legal conformity guarantee) MUST NOT be counted. Only evaluate the manufacturer's own explicitly stated voluntary commercial warranty.
+      //   4. EXCLUSION OF PAID PLANS: Paid insurance plans (e.g., AppleCare+, Samsung Care+, Xiaomi Care) and extended warranties purchased separately MUST NOT be counted. Only complimentary out-of-the-box coverage qualifies.
+      //   5. REGISTRATION REQUIREMENTS: If a manufacturer requires the user to register the device online within X days of purchase to activate the free warranty (e.g., Fairphone 5-year warranty), this DOES qualify as long as registration is free and available to all buyers in the target region.
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 1: BASE MANUFACTURER HARDWARE WARRANTY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "base_hardware_warranty_months": {
+        "value": 12,
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 3.00
-        // SCORING GUIDELINE: Map months to scores using the following exact Tier Names for "value":
-        //   • "Tier 1: >= 36 Months" → 10.00
-        //   • "Tier 2: 24 Months"    → 7.00
-        //   • "Tier 3: 12 Months"    → 3.00
-        //   • "Tier 4: < 12 Months"  → 0.00
+        "subscore": 0.00,
+        "calculation_formula": "10 * (log(base_hardware_warranty_months.value) - log(Warranty_Base_Months_Min)) / (log(Warranty_Base_Months_Max) - log(Warranty_Base_Months_Min)), clamped 0.0 to 10.0"
+        // SCORING GUIDELINE: The manufacturer's voluntary commercial warranty covering hardware defects, expressed in months.
+        //   • "value" must be a Continuous Numeric integer (e.g., 12, 24, 36).
+        // 
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. MANUFACTURER VS RETAILER: Look specifically for "Manufacturer Warranty" or "Commercial Warranty". Ignore retailer guarantees. For example, in the EU, if a manufacturer offers a 1-year commercial warranty, enter 12, do NOT enter 24 based on the EU conformity law.
+        //   2. COMPONENT SPECIFIC LIMITS: Some manufacturers offer 24 months for the phone but only 6 months for the inbox charger/cable. Score the warranty duration applicable to the main smartphone unit (motherboard/display/internals).
+        //   3. FALLBACK (NOT FOUND): If standard warranty length is not explicitly documented for the region, fallback to the industry-standard minimum of 12 months. Set source = "Methodological Fallback", exact_extract = "Manufacturer warranty unstated; applying 12-month baseline".
       },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 2: BATTERY CAPACITY PROTECTION
+      // ═══════════════════════════════════════════════════════════════════════════
+      "battery_capacity_protection": {
+        // SCORING GOAL: Evaluates explicit manufacturer guarantees that the battery will retain a specific capacity threshold over a specific duration/cycle limit.
+        // IMPORTANT: Standard hardware defect coverage for a battery (e.g., swelling or exploding) does NOT qualify. The manufacturer must explicitly guarantee capacity retention (e.g., "retains 80% capacity for 4 years").
+        "guarantee_months": {
+          "value": 0,
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": 0.00,
+          "calculation_formula": "10 * (guarantee_months.value - Warranty_Battery_Months_Min) / (Warranty_Battery_Months_Max - Warranty_Battery_Months_Min), clamped 0.0 to 10.0"
+          // SCORING GUIDELINE: The chronological length of the explicit battery capacity guarantee in months.
+          // 
+          // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+          //   1. EXPLICIT CAPACITY GUARANTEE: Check if the manufacturer explicitly advertises a battery capacity retention guarantee (e.g., OnePlus/Oppo "4-year durable battery", Xiaomi "1600 cycles").
+          //   2. ABSENCE OF GUARANTEE: If no explicit capacity retention guarantee exists, set `value` = 0, `source` = "N/A", `exact_extract` = "N/A".
+          //   3. CYCLE LIMIT CONVERSION RULE: If a guarantee includes a cycle limit (e.g., "5 years OR 850 cycles" or just "1600 cycles"), calculate `Cycle_Equivalent_Months = (Guaranteed_Cycles / 365) * 12`.
+          //      - If the guarantee lists BOTH time and cycles (e.g., "4 years or 1600 cycles"): Calculate `Cycle_Equivalent_Months`. Set `value` to the minimum of the chronological guarantee duration and `Cycle_Equivalent_Months`.
+          //      - If the guarantee lists ONLY cycles (e.g., "tested for 1600 cycles"): Calculate `Cycle_Equivalent_Months` and set `value` to that result.
+          //   4. TIME ONLY: If the guarantee is purely chronological (e.g., "12 months") with no cycle limit, set `value` to that number.
+        },
+        "guaranteed_capacity_percent": {
+          "value": 0.0,
+          "source": "N/A",
+          "exact_extract": "N/A",
+          "subscore": 0.00,
+          "calculation_formula": "10 * (guaranteed_capacity_percent.value - Warranty_Battery_Capacity_Percent_Min) / (Warranty_Battery_Capacity_Percent_Max - Warranty_Battery_Capacity_Percent_Min), clamped 0.0 to 10.0"
+          // SCORING GUIDELINE: The specific health threshold (percentage) at which the battery is eligible for a free replacement under the capacity guarantee.
+          // 
+          // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+          //   1. EXPLICIT THRESHOLD: If the manufacturer states the threshold (e.g., 80%), set `value` to that percentage.
+          //   2. MISSING THRESHOLD FALLBACK: If a capacity retention guarantee exists (e.g., "long life battery guarantee") but the exact threshold percentage is omitted in public documentation, default conservatively to the minimum baseline threshold equal to Warranty_Battery_Capacity_Percent_Min. Set `source` = "Methodological Fallback", `exact_extract` = "Capacity threshold percentage unstated; applying Warranty_Battery_Capacity_Percent_Min baseline".
+          //   3. NO GUARANTEE: If no capacity-retention guarantee exists (`guarantee_months.value` is 0), set `value` = 0.0, `source` = "N/A", `exact_extract` = "N/A".
+        },
+        "subscore": 0.00,
+        "calculation_formula": "(guarantee_months.value > 0) ? (0.60 * guarantee_months.subscore + 0.40 * guaranteed_capacity_percent.subscore) : 0.00"
+        // SCORING GUIDELINE: Weighted subscore for battery capacity protection (60% duration, 40% health threshold). The ternary guard `(guarantee_months.value > 0)` ensures evaluation robustness by deterministically zeroing the subscore when no active commercial warranty duration exists, preventing non-warranty health claims or default threshold entries from awarding false-positive points.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 3: COMPLIMENTARY ACCIDENTAL SCREEN PROTECTION
+      // ═══════════════════════════════════════════════════════════════════════════
+      "accidental_screen_protection_months": {
+        "value": 0,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00,
+        "calculation_formula": "10 * min(accidental_screen_protection_months.value / Warranty_Accidental_Screen_Months_Max, 1)"
+        // SCORING GUIDELINE: Months of complimentary accidental-damage screen protection supplied without a mandatory deductible or service fee (meaning the repair is 100% free with zero out-of-pocket cost for the consumer).
+        // 
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. FREE OF CHARGE: The protection MUST be 100% free (no deductible, no activation fee). If the screen replacement requires a fee (e.g., "Screen replacement for $29"), it does NOT qualify. Set `value` = 0.
+        //   2. DURATION SPECIFIED: If free and duration is specified (e.g., "1 free screen replacement in the first 6 months"), set `value` to the stated months (e.g., 6).
+        //   3. DURATION UNSTATED FALLBACK: If a free screen replacement is offered but the eligibility window is unstated, fallback to 3 months. Set `source` = "Methodological Fallback", `exact_extract` = "Screen replacement duration unstated; applying 3-month baseline". (Assessment: Perpetual screen replacements do not exist due to extreme liability. Because several manufacturers offer strict 100-day [~3 months] screen protection tiers, defaulting to 6 months would unfairly penalize honest disclosures and improperly inflate scores for vague marketing. Therefore, an unstated duration must conservatively fallback to the lowest common industry promotional tier of 3 months).
+        //   4. NOT INCLUDED: If no such complimentary protection exists, set `value` = 0, `source` = "N/A", `exact_extract` = "N/A".
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPONENT 4: INTERNATIONAL / CROSS-BORDER WARRANTY
+      // ═══════════════════════════════════════════════════════════════════════════
+      "international_warranty": {
+        "value": "Tier 3: Regional / Single-Country Warranty",
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 0.00
+        // SCORING GUIDELINE: Evaluates whether the manufacturer's voluntary commercial warranty is honored at official service centers outside the original country of purchase.
+        // Use the following exact Tier Names for "value" with related scores for "subscore":
+        //   • "Tier 1: Unrestricted True Global Warranty"               → 10.00
+        //   • "Tier 2: Restricted / Conditional International Warranty" → 5.00
+        //   • "Tier 3: Regional / Single-Country Warranty"              → 0.00
+        // 
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. INITIAL ELIGIBILITY CHECK: Verify if the manufacturer explicitly offers a "Global Warranty" or "International Warranty Service (IWS)". This verification serves as the scoring gateway: if confirmed, proceed to evaluate the device against Tier 1 and Tier 2 conditions; if absent, the device strictly defaults to Tier 3.
+        //   2. TIER 1 CONDITIONS: To qualify for Tier 1, the coverage must be global without severe caveats. The traveler must be able to present the phone at any authorized service center worldwide for repair with a standard proof of purchase.
+        //   3. TIER 2 CONDITIONS: Assign Tier 2 if an International Warranty exists but enforces any of the following explicit material restrictions (the presence of ANY one of these exhaustive conditions strictly mandates a Tier 2 classification):
+        //      - Valid only if purchased from official authorized distributors (no gray market).
+        //      - Must be activated on a local cellular network in the purchase country before traveling abroad.
+        //      - Restricted to a subset of participating countries (e.g., EU-only cross-border).
+        //      - Subject to local spare part availability.
+        //      - Repair-Only Limitation: Explicitly excludes full device replacements or refunds abroad, even if unrepairable.
+        //      - Component Exclusion: Explicitly excludes major component replacements (e.g., motherboards) due to regional cellular band or software differences.
+        //   4. TIER 3 CONDITIONS (FALLBACK): If no international warranty is mentioned, or it is explicitly stated that repairs must be done in the country of purchase, assign Tier 3. Assume Tier 3 by default unless explicitly documented otherwise.
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════════
+      // SECTION 9.2 COMPOSITE SCORE CALCULATION
+      // ═══════════════════════════════════════════════════════════════════════════
       "scores": {
-        "predicted": 3.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits months.subscore.
+        "predicted": 0.00,
+        "calculation_formula": "10 * ((0.50 * base_hardware_warranty_months.subscore + 0.30 * battery_capacity_protection.subscore + 0.10 * accidental_screen_protection_months.subscore + 0.10 * international_warranty.subscore) / Warranty_Composite_Score_Max), clamped 0.0 to 10.0",
+        // SCORING GUIDELINE: Composite score combining base hardware warranty (50%), battery capacity protection (30%), complimentary accidental screen protection (10%), and international warranty (10%), normalized against the historically highest observed market score.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 3.00,
+          "value": 0.00,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"

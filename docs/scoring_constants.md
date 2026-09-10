@@ -185,9 +185,9 @@
 ### 9.2 Warranty Commitment
 *   `Warranty_Base_Months_Min` = 12 (Score 0.0 | Baseline standard limited warranty floor of 12 months / 1 year)
 *   `Warranty_Base_Months_Max` = 60 (Score 10.0 | State-of-the-art voluntary manufacturer hardware warranty ceiling of 60 months / 5 years)
-*   `Warranty_Battery_Months_Min` = 12 (Score 0.0 | Baseline capacity protection duration floor of 12 months)
+*   `Warranty_Battery_Months_Min` = 0 (Score 0.0 | True baseline capacity protection duration floor of 0 months, as most standard warranties exclude explicit capacity retention guarantees)
 *   `Warranty_Battery_Months_Max` = 60 (Score 10.0 | State-of-the-art capacity protection duration ceiling of 60 months)
 *   `Warranty_Battery_Capacity_Percent_Min` = 70.0 (Score 0.0 | Minimum capacity retention threshold floor of 70%)
 *   `Warranty_Battery_Capacity_Percent_Max` = 90.0 (Score 10.0 | Maximum capacity retention threshold ceiling of 90%)
 *   `Warranty_Accidental_Screen_Months_Max` = 12 (Score 10.0 | Maximum complimentary screen protection ceiling of 12 months)
-*   `Warranty_Composite_Score_Max` = 5.60 (Score 10.0 | Maximum empirically observed raw composite warranty score across all evaluated devices, currently held by Crosscall Stellar-X5. Serves as a dynamic normalization ceiling)
+*   `Warranty_Composite_Score_Max` = 5.84 (Score 10.0 | Maximum empirically observed raw composite warranty score across all evaluated devices, currently held by Crosscall Stellar-X5. Serves as a dynamic normalization ceiling)
