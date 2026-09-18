@@ -5749,7 +5749,7 @@ To ensure data integrity when AI agents evaluate devices, each subscore must be 
 2.  **Partially Verified:** Some but not all required attributes are known (e.g., battery adhesive is known, but access depth is not).
 3.  **Inferred:** Derived from a demonstrably identical internal platform or sibling model. *(Note: Similar appearance or shared chipset is insufficient; internal architectural parity must be explicitly demonstrated).*
 4.  **Unknown:** No reliable evidence exists. Unknown must NOT silently be treated as a factual zero.
-5.  **Imputed:** A fallback conservative midpoint value inserted ONLY when a complete numerical dataset is mandatory. Imputed values must be explicitly flagged.
+5.  **Imputed:** A placeholder fallback score (usually a conservative mid-tier value) assigned when no explicit evidence exists, but a numerical score must be forced into the field to prevent calculation errors in the final aggregate formula. It indicates an educated guess rather than a verified fact. Imputed values must be explicitly flagged.
 
 **Evidence Hierarchy:**
 1. Official service manuals and repair programs.

@@ -59,9 +59,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "6.8",
+    "schema_version": "6.9",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-08-24"
+    "last_updated": "2026-09-18"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -115,7 +115,11 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   },
   "1_design_and_build_quality": {
     "form_factor": {
-      // The physical shape and deployment style of the device. Allowed values: "Bar" (standard slab, the default for modern smartphones), "Flip" (clamshell foldable that folds horizontally), "Fold" (book-style foldable that opens to a tablet-sized screen), "Slider" (keyboard or screen slides out), "Rugged" (reinforced thick body for extreme conditions). Used for filtering and display only — not scored.
+      // GUIDELINE: Categorize the physical shape and deployment style of the device into exactly one of the following allowed values using strict "if...then..." logic. This is CRITICAL as it dictates the multi-display screen repairability scoring logic in Section 9.3:
+      //   - If the device consists of exactly two distinct displays (one continuous flexible OLED panel that bends across the hinge AND one rigid glass outer cover display), then value = "Flexible Foldable" (e.g., Galaxy Z Fold, Z Flip, Razr).
+      //   - If the device consists of exactly two physically separate, rigid, non-bending screens joined by a mechanical hinge (with no outer screen), then value = "Dual-Screen Rigid" (e.g., Microsoft Surface Duo).
+      //   - If the device has a standard non-folding chassis with a single primary screen, then value = "Bar" (standard slab).
+      //   - If the device has a physical keyboard or screen that slides out on rails, then value = "Slider".
       "value": "Bar",
       "source": "TBD",
       "exact_extract": "Proof pending"
@@ -6284,20 +6288,200 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
       }
     },
     "9_3_repairability": {
-      // SCORING GOAL: Evaluates official repairability scores.
-      "european_union_repairability_index": {
-        "value": 7.50,
-        "source": "TBD",
-        "exact_extract": "Proof pending",
-        "subscore": 7.50
-        // SCORING GUIDELINE: Direct inheritance. Max 10.00.
+      // SCORING GOAL: Comprehensive evaluation of technical serviceability measuring how easily consumers or independent technicians can access, remove, replace, and restore major failure-prone components (battery and display), while accounting for parts availability, service documentation, calibration requirements, and software-based repair restrictions.
+      // 
+      // EVIDENCE RULES LOGGING (MANDATORY):
+      // Each exact_extract string MUST be prepended with its Evidence State in brackets. The states are:
+      //   • [VERIFIED]: Directly supported by official manuals, official parts portals, or detailed independent teardown guides.
+      //   • [PARTIALLY VERIFIED]: Some but not all required attributes are known.
+      //   • [INFERRED]: Derived from a demonstrably identical internal platform or sibling model.
+      //   • [UNKNOWN]: No reliable evidence exists.
+      //   • [IMPUTED]: A placeholder fallback score (usually a conservative mid-tier value) assigned when no explicit evidence exists, but a numerical score must be forced into the field to prevent calculation errors in the final aggregate formula. It indicates an educated guess rather than a verified fact.
+      
+      "s_battery_repair": {
+        // COMPONENT A: Battery Extraction Score
+        "s_battery_extraction": {
+          "value": "Tier 3: Reliable Pull-Tabs",
+          "source": "https://www.ifixit.com/Device/Samsung_Galaxy_S24_Ultra",
+          "exact_extract": "[VERIFIED]: Features pull-tabs for the battery which simplifies removal compared to older models that relied on heavy adhesive.",
+          "subscore": 7.5
+          // SCORING GUIDELINE: Evaluates the physical mechanism and adhesive strength securing the battery to the chassis, measuring the risk of thermal runaway, puncture, or physical damage when removing the cell itself. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Tool-less Removal"        → 10.0
+          //     Definition: Battery is removable without tools by the user.
+          //   • "Tier 2: Screw/Clip Secured"       → 9.0
+          //     Definition: Battery secured by screws, clips, or bracket with no adhesive extraction required.
+          //   • "Tier 3: Reliable Pull-Tabs"       → 7.5
+          //     Definition: Reliable stretch-release tabs (pull-tabs) that normally remove the battery without heat or solvents.
+          //   • "Tier 4: Fragile Pull-Tabs"        → 5.0
+          //     Definition: Pull tabs exist but are frequently documented as fragile, incomplete, or difficult.
+          //   • "Tier 5: Conventional Adhesive"    → 3.0
+          //     Definition: Conventional adhesive requiring heat, solvent, or careful prying.
+          //   • "Tier 6: Destructive Adhesive"     → 0.0
+          //     Definition: Strong adhesive causing removal to be practically destructive, severely bent, unsafe, or not realistically serviceable.
+        },
+        // COMPONENT B: Battery Access-Path Score
+        "s_battery_access": {
+          "value": "Tier 2: Minor Disassembly",
+          "source": "https://www.ifixit.com/Device/Samsung_Galaxy_S24_Ultra",
+          "exact_extract": "[VERIFIED]: Accessible after removing the glued glass rear cover (requiring heat) and minor internal shields/brackets.",
+          "subscore": 8.0
+          // SCORING GUIDELINE: Measures the structural depth of the battery within the device, indicating how many fragile or complex components (like motherboards or screens) must be successfully removed before the battery is even reachable. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Direct Access"            → 10.0
+          //     Definition: Battery directly accessible after removing a user-removable rear cover.
+          //   • "Tier 2: Minor Disassembly"        → 8.0
+          //     Definition: Accessible after removing the rear cover (screwed or glued) plus minor shields or brackets.
+          //   • "Tier 3: Major Disassembly"        → 4.0
+          //     Definition: Requires major disassembly involving the motherboard, cameras, or removing multiple stacked modules to access the battery.
+          //   • "Tier 4: Destructive Access"       → 0.0
+          //     Definition: Access is destructive, impractical, or a highly fragile major component (like the display) must be removed first from a glued chassis.
+        },
+        "scores": {
+          "predicted": 7.68,
+          "calculation_formula": "0.65 * s_battery_extraction.subscore + 0.35 * s_battery_access.subscore"
+        }
+      },
+      "s_screen_repair": {
+        // MULTI-DISPLAY ARCHITECTURE RULES & VERIFICATION WARNING (MANDATORY):
+        // 🚨 EXPLICIT VERIFICATION REQUIRED: Check the exact `1_design_and_build_quality.form_factor.value` first to determine the device type used for the rules below (e.g., "Flexible Foldable", "Dual-Screen Rigid", "Bar", or "Slider"). If there is ANY doubt regarding the device type, you MUST cross-reference multiple priority sources to confirm it before scoring this section.
+        //   - If "Flexible Foldable" (e.g. Fold/Flip): You MUST score BOTH the inner flexible screen (primary_screen) and outer rigid screen (secondary_screen). The predicted score is: (0.70 * primary_screen score) + (0.30 * secondary_screen score).
+        //   - If "Dual-Screen Rigid" (e.g. Surface Duo): You MUST score BOTH screens. The predicted score is: (0.50 * primary_screen score) + (0.50 * secondary_screen score).
+        //   - If "Bar" or "Slider": Score ONLY the single primary_screen. You MUST set ALL fields in the `secondary_screen` object to "N/A". The predicted score is exactly the primary_screen score.
+        
+        "primary_screen": {
+          // DEFINITION: For Bar/Slider phones, this is the sole main display. For Flexible Foldables, this is the inner flexible folding screen. For Dual-Screen Rigid devices, this is the left or primary main display.
+          // COMPONENT A: Entry Path & Modularity Score (Primary)
+          "s_entry_modularity": {
+            "value": "Tier 2: Simple Rear Entry",
+            "source": "https://www.ifixit.com/Device/Samsung_Galaxy_S24_Ultra",
+            "exact_extract": "[VERIFIED]: Simple rear-entry path. The display is strongly bonded and commonly supplied integrated with a mid-frame assembly, requiring transfer of internal components.",
+            "subscore": 7.0
+            // SCORING GUIDELINE: Evaluates the primary physical path required to access the display assembly and whether the screen can be replaced independently or requires a pre-assembled mid-frame. Use the following exact Tier Names for "value" with related scores as subscore:
+            //   • "Tier 1: Modular/Front Entry"      → 10.0
+            //     Definition: Display independently accessible from the front, or through a genuinely modular chassis. Separates cleanly from a reusable frame.
+            //   • "Tier 2: Simple Rear Entry"        → 7.0
+            //     Definition: Simple rear-entry path. Replacement is practical but commonly supplied integrated with a mid-frame assembly.
+            //   • "Tier 3: Extensive Disassembly"    → 3.0
+            //     Definition: Extensive disassembly required. Only large integrated assemblies are realistically serviceable.
+            //   • "Tier 4: Practically Destructive"  → 0.0
+            //     Definition: Display replacement is practically destructive or technically infeasible for independent repair.
+          },
+          // COMPONENT B: Disassembly & Adhesive Risk Score (Primary)
+          "s_disassembly_adhesive": {
+            "value": "Tier 2: Moderate Adhesive",
+            "source": "https://www.ifixit.com/Device/Samsung_Galaxy_S24_Ultra",
+            "exact_extract": "[VERIFIED]: Moderate adhesive requiring controlled heating for the rear glass. Internal components are secured by screws, offering a manageable repair risk.",
+            "subscore": 7.0
+            // SCORING GUIDELINE: Measures the amount of collateral disassembly required and the strength of adhesives holding the chassis together when attempting a screen replacement, indicating the risk of destroying reusable components. Use the following exact Tier Names for "value" with related scores as subscore:
+            //   • "Tier 1: Minimal Adhesive"         → 10.0
+            //     Definition: Screws, clips, or minimal replaceable adhesive. Only cover, shield, and connector work required. Low risk of collateral damage.
+            //   • "Tier 2: Moderate Adhesive"        → 7.0
+            //     Definition: Moderate adhesive with controlled heating. Battery, speakers, or several secondary parts must be removed. Manageable repair risk.
+            //   • "Tier 3: Very Strong Adhesive"     → 3.0
+            //     Definition: Very strong adhesive requiring substantial heat. Motherboard or major modules must be removed. High risk of collateral damage.
+            //   • "Tier 4: Non-serviceable"          → 0.0
+            //     Definition: Separation is effectively non-serviceable. Nearly complete teardown required with very high probability of destroying reusable components.
+          }
+        },
+        "secondary_screen": {
+          // DEFINITION: For Bar/Slider phones, this is not applicable (N/A). For Flexible Foldables, this is the outer rigid cover display. For Dual-Screen Rigid devices, this is the right or secondary display. Do not swap or confuse this with the primary_screen.
+          // COMPONENT A: Entry Path & Modularity Score (Secondary)
+          "s_entry_modularity": {
+            "value": "N/A",
+            "source": "N/A",
+            "exact_extract": "N/A",
+            "subscore": "N/A"
+            // SCORING GUIDELINE: Apply the same scoring methodology and Tier Definitions as the primary_screen. However, you MUST set all fields (including subscore) to "N/A" if the device is a standard single-screen Bar or Slider phone.
+          },
+          // COMPONENT B: Disassembly & Adhesive Risk Score (Secondary)
+          "s_disassembly_adhesive": {
+            "value": "N/A",
+            "source": "N/A",
+            "exact_extract": "N/A",
+            "subscore": "N/A"
+            // SCORING GUIDELINE: Apply the same scoring methodology and Tier Definitions as the primary_screen. However, you MUST set all fields (including subscore) to "N/A" if the device is a standard single-screen Bar or Slider phone.
+          }
+        },
+        "scores": {
+          "predicted": 7.00,
+          "calculation_formula": "Let primary_score = (0.60 * primary_screen.s_entry_modularity.subscore + 0.40 * primary_screen.s_disassembly_adhesive.subscore). Let secondary_score = (0.60 * secondary_screen.s_entry_modularity.subscore + 0.40 * secondary_screen.s_disassembly_adhesive.subscore). If 1_design_and_build_quality.form_factor.value == 'Flexible Foldable' -> (0.70 * primary_score) + (0.30 * secondary_score). If 'Dual-Screen Rigid' -> (0.50 * primary_score) + (0.50 * secondary_score). Otherwise (Bar/Slider) -> primary_score (secondary_screen fields are N/A and ignored)."
+        }
+      },
+      "s_openness": {
+        // COMPONENT A: Replacement-Parts Availability
+        "s_parts": {
+          "value": "Tier 1: Broad OEM Availability",
+          "source": "https://samsungselfrepair.shop",
+          "exact_extract": "[VERIFIED]: Broad genuine parts availability through the official Samsung Self-Repair program and authorized distributors.",
+          "subscore": 10.0
+          // SCORING GUIDELINE: Assesses whether the manufacturer officially provides genuine replacement parts directly to consumers or independent repair shops, preventing reliance on unregulated aftermarket supplies. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Broad OEM Availability"   → 10.0
+          //     Definition: Broad genuine parts availability through OEM or officially OEM-authorized independent distribution channels.
+          //   • "Tier 2: Partial OEM Availability" → 7.0
+          //     Definition: Official parts available for major repairs but incomplete coverage.
+          //   • "Tier 3: Third-Party Supply"       → 4.0
+          //     Definition: Mainly aftermarket, grey-market, or inconsistent third-party supply.
+          //   • "Tier 4: No Reliable Supply"       → 0.0
+          //     Definition: Parts are extremely difficult to obtain or no reliable replacement-parts evidence exists.
+        },
+        // COMPONENT B: Service Documentation
+        "s_manuals": {
+          "value": "Tier 1: Free Public Manuals",
+          "source": "https://samsungselfrepair.shop",
+          "exact_extract": "[VERIFIED]: Free official service manuals and repair procedures are publicly available via the Samsung Self-Repair program.",
+          "subscore": 10.0
+          // SCORING GUIDELINE: Evaluates whether the manufacturer publicly provides free, detailed, and official service manuals to ensure safe and correct repair procedures. Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Free Public Manuals"      → 10.0
+          //     Definition: Free official service manuals and repair procedures publicly available.
+          //   • "Tier 2: Restricted Manuals"       → 7.0
+          //     Definition: Official documentation available for major repairs, or restricted authorized service documentation.
+          //   • "Tier 3: Independent/Third-Party"  → 3.0
+          //     Definition: Manufacturer-endorsed third-party documentation, or independent teardown guides only.
+          //   • "Tier 4: No Reliable Documentation"→ 0.0
+          //     Definition: No reliable repair documentation exists.
+        },
+        // COMPONENT C: Calibration and Parts-Pairing Score
+        "s_calibration": {
+          "value": "Tier 1: No Pairing / Public Tools",
+          "source": "https://samsungselfrepair.shop",
+          "exact_extract": "[VERIFIED]: Calibration is required for displays and biometric sensors, but Samsung provides the Self-Repair Assistant app to consumers for post-repair calibration.",
+          "subscore": 10.0
+          // SCORING GUIDELINE: Measures the presence and severity of software-based Digital Rights Management (DRM) or cryptographic parts-pairing that intentionally disables features or blocks functionality when an unauthorized replacement part is installed. (Note: Warnings alone do not automatically constitute a zero; this evaluates the severity of the functional lock). Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: No Pairing / Public Tools"→ 10.0
+          //     Definition: No parts pairing; replacement parts function normally without special authorization, OR calibration tools are publicly available to consumers.
+          //   • "Tier 2: Restricted Calibration"   → 7.0
+          //     Definition: Calibration is available, but restricted to authorized or registered independent repairers.
+          //   • "Tier 3: Persistent Warnings"      → 4.0
+          //     Definition: Repair works fully, but causes persistent non-critical warnings (e.g., "Unknown Part") or cosmetic/statistical loss (e.g., battery health metric hidden).
+          //   • "Tier 4: Proprietary Lock"         → 0.0
+          //     Definition: Proprietary cryptographic pairing prevents practical use. Biometric sensors disabled, cameras impaired, or device refuses normal operation without proprietary server authorization.
+        },
+        // COMPONENT D: Donor-Part and Salvage Compatibility
+        "s_salvage": {
+          "value": "Tier 2: Non-Critical Warnings",
+          "source": "https://www.ifixit.com/News/90103/samsung-galaxy-s24-ultra-teardown",
+          "exact_extract": "[PARTIALLY VERIFIED]: Donor parts are physically interchangeable, though software may flag mismatched serialized components with non-critical warnings unless recalibrated.",
+          "subscore": 7.0
+          // SCORING GUIDELINE: Assesses whether a perfectly functioning genuine part harvested from an identical broken device (donor part) can be installed and used without artificial software restrictions, promoting e-waste reduction. (Note: This is distinct from Calibration, as some OEMs offer calibration for new parts but intentionally block used serial numbers. Salvage measures the specific right to reuse existing hardware). Use the following exact Tier Names for "value" with related scores as subscore:
+          //   • "Tier 1: Fully Unrestricted"       → 10.0
+          //     Definition: Genuine harvested donor parts work normally across identical devices with no restriction.
+          //   • "Tier 2: Non-Critical Warnings"    → 7.0
+          //     Definition: Donor parts work, but non-critical calibration warnings may remain.
+          //   • "Tier 3: Functionally Restricted"  → 3.0
+          //     Definition: Only selected components are reusable; most serialized components are functionally restricted.
+          //   • "Tier 4: Effectively Locked"       → 0.0
+          //     Definition: Genuine donor parts are effectively rejected, locked, or rendered unusable by the OS.
+        },
+        "scores": {
+          "predicted": 9.25,
+          "calculation_formula": "0.25 * s_parts.subscore + 0.15 * s_manuals.subscore + 0.35 * s_calibration.subscore + 0.25 * s_salvage.subscore"
+        }
       },
       "scores": {
-        "predicted": 7.50,
-        // SCORING GUIDELINE: scores.predicted directly inherits european_union_repairability_index.subscore.
+        "predicted": 7.95,
+        "calculation_formula": "Clamp(0.40 * s_battery_repair.scores.predicted + 0.30 * s_screen_repair.scores.predicted + 0.30 * s_openness.scores.predicted, 0.00, 10.00)",
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
-          "value": 7.50,
+          "value": 7.95,
           "method_used": "Predictor",
           "booster": "No",
           "confidence": "N/A"
