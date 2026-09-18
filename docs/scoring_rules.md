@@ -5632,26 +5632,142 @@ Measures whether the manufacturer's voluntary commercial warranty is honored at 
     
 
 ### 🔹 9.3 Repairability
-*Description:* How easy it is to fix. High scores mean you (or a shop) can easily replace a battery or screen, extending the phone's life. Physical battery removability and ease of battery replacement are major hardware accessibility factors directly evaluated and rewarded in this section.
-*   **Measurement:** Official iFixit teardown score (0-10) and/or European Union (EU) Repairability Index (0-5).
-*   **Unit:** Composite Repairability Score (0-10)
-*   **Significance:** Determines serviceability and long-term ownership viability.
+*Description:* Comprehensive evaluation of a smartphone’s technical serviceability, measuring how easily consumers or independent technicians can access, remove, replace, and restore major failure-prone components—primarily the battery and display—while accounting for parts availability, service documentation, calibration requirements, and software-based repair restrictions.
+*   **Measurement:** Deterministic physical repair architecture, component access paths, extraction difficulty, parts availability, service documentation, and calibration openness.
+*   **Unit:** Composite Repairability Score from 0.0 to 10.0.
+*   **Scope:** This section measures technical repairability and repair-ecosystem openness. It excludes region-specific repair prices, labor costs, warranty coverage, insurance, software-update duration, and general durability.
 
-**Scoring Logic:**
-The final score is the average of the iFixit Score (0-10) and the converted EU Repairability Index (0-10).
-*   **EU Conversion:** `EU_Converted_Score = EU_Index_Value * 2`
-*   If both are available: `Score = (iFixit_Score + EU_Converted_Score) / 2`
-*   If only one is available: `Score = Available_Score`
-*   If neither is available: `Score = N/A` (Not Scored)
+#### 9.3.0 Executive Framework Overview
+This framework uses a deterministic physical-and-software model rather than directly importing third-party repairability scores (such as iFixit or the French/EU Repairability Index). Relying on external indexes introduces severe methodological flaws and coverage gaps for a 2016–2026 database:
+*   **EU Repairability Index Flaws:** Launched only in 2021 (leaving 2016-2020 devices completely unscored), this index relies on *self-reported* manufacturer data. This creates massive "repair-washing" biases, where a brand can score highly by providing a PDF manual despite gluing a phone permanently shut.
+*   **iFixit Flaws:** While an excellent independent metric, iFixit suffers from extreme "flagship bias," ignoring thousands of budget and mid-range devices globally. Furthermore, their historical scores are mathematically incompatible across the decade, as a 7/10 in 2016 meant something entirely different before the era of software parts-pairing.
+*   **The Deterministic Solution:** By natively scoring deterministic facts (e.g., "does it use pull tabs?", "is there DRM?"), this framework remains immune to self-reporting bias and ensures a 2016 budget phone is judged on the exact same scale as a 2026 flagship.
 
-**Confidence Score:**
-*   **Unknown:** Only one source available (iFixit OR EU).
-*   **High:** Both sources available, difference ≤ 1.0 point.
-*   **Medium:** Both sources available, difference ≤ 2.5 points.
-*   **Low:** Both sources available, difference > 2.5 points.
+The framework is designed to be highly robust and scalable for autonomous evaluation by AI agents across smartphones from 2016–2026. However, individual observations may remain **unknown** where reliable public text-based evidence (reviews, guides, official docs) is unavailable. The model relies heavily on text-documented ecosystem policies (which are highly scalable to scrape per brand) and broad architectural metrics.
 
-*   **Max Score (10.0):** iFixit 10 / EU Index 5.0
-*   **Min Score (0.0):** iFixit 0 / EU Index 0.0
+**The Three Pillars:**
+*   Battery Replacement Accessibility — 40%
+*   Screen Replacement Accessibility — 30%
+*   Repair Ecosystem Openness — 30%
+
+`Final Score 9.3 = 0.40 * S_battery_repair + 0.30 * S_screen_repair + 0.30 * S_openness`
+*(Weighting Justification: The Battery (40%) receives the highest priority as it is a volatile chemical component with a guaranteed 100% degradation failure rate. The Screen (30%) is the most common accidental break, while Openness (30%) governs the critical software and parts policies that control both).*
+*(The result is clamped to the range 0.0–10.0 and rounded only after the complete calculation).*
+
+#### 9.3.1 Battery Replacement Accessibility (`S_battery_repair`) — 40%
+**What it measures:** The difficulty, access path, extraction method, and physical risk involved in replacing the internal battery.
+*(Note: Battery construction type, such as "pouch-cell" packaging, is descriptive metadata only and is not itself a repairability score).*
+
+`S_battery_repair = 0.65 * S_battery_extraction + 0.35 * S_battery_access`
+*(Weighting Justification: Extraction (65%) is weighted heavier because prying a glued lithium-ion battery carries a severe physical safety risk of thermal runaway or fire, whereas navigating a complex access path (35%) is tedious but generally non-volatile and safe).* 
+
+**A. Battery Extraction Score (`S_battery_extraction`)**
+*Definition:* Evaluates the physical mechanism and adhesive strength securing the battery to the chassis, measuring the risk of thermal runaway, puncture, or physical damage when removing the cell itself.
+*   **10.0:** Battery is removable without tools by the user.
+*   **9.0:** Battery secured by screws, clips, or bracket with no adhesive extraction required.
+*   **7.5:** Reliable stretch-release tabs (pull-tabs) that normally remove the battery without heat or solvents.
+*   **5.0:** Pull tabs exist but are frequently documented as fragile, incomplete, or difficult.
+*   **3.0:** Conventional adhesive requiring heat, solvent, or careful prying.
+*   **0.0:** Strong adhesive causing removal to be practically destructive, severely bent, unsafe, or not realistically serviceable.
+
+**B. Battery Access-Path Score (`S_battery_access`)**
+*Definition:* Measures the structural depth of the battery within the device, indicating how many fragile or complex components (like motherboards or screens) must be successfully removed before the battery is even reachable.
+*   **10.0:** Battery directly accessible after removing a user-removable rear cover.
+*   **8.0:** Accessible after removing the rear cover (screwed or glued) plus minor shields or brackets.
+*   **4.0:** Requires major disassembly involving the motherboard, cameras, or removing multiple stacked modules to access the battery.
+*   **0.0:** Access is destructive, impractical, or a highly fragile major component (like the display) must be removed first from a glued chassis.
+
+#### 9.3.2 Screen Replacement Accessibility (`S_screen_repair`) — 30%
+**What it measures:** The practical difficulty, disassembly burden, and modularity involved in replacing the complete display assembly. This has been consolidated for AI scalability to rely on broadly documented architectural facts rather than granular micro-steps.
+
+`S_screen_repair = 0.60 * S_entry_modularity + 0.40 * S_disassembly_adhesive`
+*(Weighting Justification: The fundamental architectural entry path (60%) dictates the overarching complexity and modularity of the screen repair, while the collateral disassembly of secondary parts (40%) poses a slightly lower risk since those parts are normally less fragile than the OLED panel itself).*
+
+**A. Entry Path & Modularity Score (`S_entry_modularity`)**
+*Definition:* Evaluates the primary physical path required to access the display assembly and whether the screen can be replaced independently or requires a pre-assembled mid-frame.
+*   **10.0:** Display independently accessible from the front, or through a genuinely modular chassis. Display separates cleanly from a reusable frame.
+*   **7.0:** Simple rear-entry path. Display replacement is practical but commonly supplied integrated with a mid-frame assembly.
+*   **3.0:** Extensive disassembly required. Only large integrated assemblies are realistically serviceable.
+*   **0.0:** Display replacement is practically destructive or technically infeasible for independent repair.
+
+**B. Disassembly & Adhesive Risk Score (`S_disassembly_adhesive`)**
+*Definition:* Measures the amount of collateral disassembly required and the strength of adhesives holding the chassis together when attempting a screen replacement, indicating the risk of destroying reusable components.
+*   **10.0:** Screws, clips, or minimal replaceable adhesive. Only cover, shield, and connector work required. Low risk of collateral damage.
+*   **7.0:** Moderate adhesive with controlled heating. Battery, speakers, or several secondary parts must be removed. Manageable repair risk.
+*   **3.0:** Very strong adhesive requiring substantial heat. Motherboard or major modules must be removed. High risk of collateral damage.
+*   **0.0:** Separation is effectively non-serviceable. Nearly complete teardown required with very high probability of destroying reusable components.
+
+**Multi-Display & Foldable Smartphone Rules:**
+*(Note: This database strictly evaluates smartphones, excluding tablets. Devices categorized below, including the Microsoft Surface Duo, are classified as smartphones due to their native cellular telephony hardware and OS classification).*
+To ensure precise scoring across all multi-screen smartphone architectures, devices are classified into two distinct hardware configurations:
+1. **Flexible Foldables (e.g., Galaxy Z Fold, Z Flip, Motorola Razr):** These devices consist of exactly **two** distinct displays. They have **one** single, continuous, flexible OLED panel that bends across the hinge (the "inner display"—it is physically one piece, not two separate halves), and **one** rigid glass screen on the exterior (the "outer cover display"). Because replacing the continuous flexible inner display is the primary challenge and usually involves the complex hinge assembly, it is weighted heavier:
+   `S_screen_repair_flexible = 0.70 * S_inner_display + 0.30 * S_outer_display`
+2. **Dual-Screen Rigid Devices (e.g., Microsoft Surface Duo):** These devices consist of **two** physically separate, rigid, non-bending screens joined by a mechanical hinge (with no outer screen). Because the two halves are physically independent panels, their repair risks are symmetrical. They are weighted equally:
+   `S_screen_repair_dual_rigid = 0.50 * S_screen_left + 0.50 * S_screen_right`
+
+*In all configurations, every individual display is scored using the exact same standard screen metrics (`S_entry_modularity` and `S_disassembly_adhesive`) before the final weighting is applied.*
+
+#### 9.3.3 Repair Ecosystem Openness (`S_openness`) — 30%
+**What it measures:** The availability of legitimate replacement parts, service documentation, calibration tools, and usable donor parts. This section scales well for AI agents, as brand-wide software and distribution policies are heavily documented in text on the web.
+
+`S_openness = 0.25 * S_parts + 0.15 * S_manuals + 0.35 * S_calibration + 0.25 * S_salvage`
+*(Weighting Justification: Calibration/DRM (35%) is the heaviest penalty because software locks are a hard binary block that instantly render hardware useless. Parts (25%) and Salvage (25%) are weighted equally because they serve two distinct but equally vital pillars of the repair economy: new Parts (25%) empower individual consumers and DIY repair, while Salvage (25%) empowers independent repair shops to affordably harvest components from broken phones, which is the primary driver of e-waste reduction. Manuals (15%) receive the lowest weight because independent communities often provide excellent teardown guides even when official manuals are withheld).*
+
+**A. Replacement-Parts Availability (`S_parts`)**
+*Definition:* Assesses whether the manufacturer officially provides genuine replacement parts directly to consumers or independent repair shops, preventing reliance on unregulated aftermarket supplies.
+*   **10.0:** Broad genuine parts availability through OEM or officially OEM-authorized independent distribution channels.
+*   **7.0:** Official parts available for major repairs but incomplete coverage.
+*   **4.0:** Mainly aftermarket, grey-market, or inconsistent third-party supply.
+*   **0.0:** Parts are extremely difficult to obtain or no reliable replacement-parts evidence exists.
+
+**B. Service Documentation (`S_manuals`)**
+*Definition:* Evaluates whether the manufacturer publicly provides free, detailed, and official service manuals to ensure safe and correct repair procedures.
+*   **10.0:** Free official service manuals and repair procedures publicly available.
+*   **7.0:** Official documentation available for major repairs, or restricted authorized service documentation.
+*   **3.0:** Manufacturer-endorsed third-party documentation, or independent teardown guides only.
+*   **0.0:** No reliable repair documentation exists.
+
+**C. Calibration and Parts-Pairing Score (`S_calibration`)**
+*Definition:* Measures the presence and severity of software-based Digital Rights Management (DRM) or cryptographic parts-pairing that intentionally disables features or blocks functionality when an unauthorized replacement part is installed.
+*(Note: Warnings alone do not automatically constitute a zero. This evaluates the severity of the lock).*
+*   **10.0 (No Pairing / Open):** No parts pairing; replacement parts function normally without special authorization, OR calibration tools are publicly available to consumers.
+*   **7.0 (Restricted Calibration):** Calibration is available, but restricted to authorized or registered independent repairers.
+*   **4.0 (Minor Consequence):** Repair works fully, but causes persistent non-critical warnings (e.g., "Unknown Part") or cosmetic/statistical loss (e.g., battery health metric hidden).
+*   **0.0 (Hard Lock / Functional Consequence):** Proprietary cryptographic pairing prevents practical use. Biometric sensors disabled, cameras impaired, or device refuses normal operation without proprietary server authorization.
+
+**D. Donor-Part and Salvage Compatibility (`S_salvage`)**
+*Definition:* Assesses whether a perfectly functioning genuine part harvested from an identical broken device (donor part) can be installed and used without artificial software restrictions, promoting e-waste reduction.
+*(Non-Redundancy Justification: This is distinct from Calibration (`S_calibration`). A manufacturer might offer a public calibration tool for brand-new parts purchased directly from them (scoring highly in Calibration), but intentionally program that tool to reject used serial numbers harvested from donor phones to force new-part sales. Salvage measures the specific right to reuse existing functional hardware).*
+*   **10.0:** Genuine harvested donor parts work normally across identical devices with no restriction.
+*   **7.0:** Donor parts work, but non-critical calibration warnings may remain.
+*   **3.0:** Only selected components are reusable; most serialized components are functionally restricted.
+*   **0.0:** Genuine donor parts are effectively rejected, locked, or rendered unusable by the OS.
+
+#### 9.3.4 Evidence Rules
+To ensure data integrity when AI agents evaluate devices, each subscore must be assigned one of the following evidence states:
+1.  **Verified:** Directly supported by official manuals, official parts portals, or detailed independent teardown guides.
+2.  **Partially Verified:** Some but not all required attributes are known (e.g., battery adhesive is known, but access depth is not).
+3.  **Inferred:** Derived from a demonstrably identical internal platform or sibling model. *(Note: Similar appearance or shared chipset is insufficient; internal architectural parity must be explicitly demonstrated).*
+4.  **Unknown:** No reliable evidence exists. Unknown must NOT silently be treated as a factual zero.
+5.  **Imputed:** A fallback conservative midpoint value inserted ONLY when a complete numerical dataset is mandatory. Imputed values must be explicitly flagged.
+
+**Evidence Hierarchy:**
+1. Official service manuals and repair programs.
+2. Detailed independent teardowns and reputable repair-specialist documentation.
+3. High-quality text reviews explicitly describing internal construction or software policies.
+4. Inference from a demonstrably identical sibling model.
+*(General speculation or visual assumptions by AI are strictly inadmissible).*
+
+#### 9.3.5 Exclusions
+The following are NOT direct repairability penalties in Section 9.3, as they are evaluated elsewhere or represent economic realities rather than technical serviceability:
+*   Presence of an IP rating (Ingress Protection rating, an international standard measuring how well a device is sealed against dust and water, typically ranging from IP67 to IP68 for smartphones).
+*   Lack of a direct consumer-facing OEM storefront (authorized distribution counts).
+*   High repair price, regional taxes, or labor costs.
+*   Warranty duration or software-update duration.
+*   General durability, battery capacity, or pouch construction.
+
+#### 9.3.6 Future Evolution of the Model
+*(Note on Water-Resistance Restoration: As a future evolution of the model, water-resistance restoration after opening may be recorded separately as metadata: `water_resistance_restoration_risk = low / medium / high / unknown / N_A`. Because it cannot be rigorously guaranteed without a specialized pressure-testing chamber post-repair, it will not be included in the primary repairability score. When implemented, it will be evaluated purely based on the repair procedure: "low" risk means the OEM provides official, pre-cut waterproof adhesive seals for reassembly; "high" risk means technicians must rely on generic liquid adhesives or third-party tape; "N_A" applies to phones with no original IP rating).*
 
 
 ## 🟣 10. Miscellaneous
