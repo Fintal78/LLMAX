@@ -5773,26 +5773,40 @@ The following are NOT direct repairability penalties in Section 9.3, as they are
 ## 🟣 10. Miscellaneous
 
 ### 🔹 10.1 Stylus Hardware & System Support (SHSS)
-*Description:* Measures whether the phone supports active stylus input at the hardware and system level, including digitizer presence and latency class.
-*   **Measurement:** Digitizer specifications, stylus protocol support (e.g., USI 2.0, MPP 2.0), manufacturer documentation.
+*Description:* Measures whether the phone supports active stylus input at the hardware and system level, differentiating between basic capacitive touch and advanced productivity tools.
+*   **Measurement:** Display digitizer specifications (e.g., Wacom EMR, AES, proprietary active-pen protocols), manufacturer teardowns, independent testing.
 *   **Unit:** Stylus Capability Index (0–10)
-*   **Significance:** Determines whether precision input is natively supported or only simulated.
+*   **Significance:** Determines whether precision input (pressure sensitivity, tilt, palm rejection) is natively supported by the hardware, or if the device merely relies on basic capacitive touch.
 
-| Score    | Stylus Support Level                                                   | Example Models                          |
-| :------- | :--------------------------------------------------------------------- | :-------------------------------------- |
-| **10.0** | **Integrated active stylus + dedicated digitizer + Bluetooth features**| S24 Ultra                               |
-| **8.0**  | **Integrated active stylus + dedicated digitizer**                     | Moto G Stylus                           |
-| **6.0**  | **External active stylus support + dedicated digitizer**               | Z Fold 5, Xiaomi Mix Fold               |
-| **3.0**  | **Universal Touchscreen Compatibility (Finger/Passive Stylus)**        | **Baseline for ALL modern smartphones** |
-| **0.0**  | **No Touchscreen / Resistive Screen**                                  | Feature Phones / Legacy                 |
+> [!IMPORTANT]
+> **Why keep this metric?** While rare, active stylus support is a major differentiator for productivity and creative users. It unlocks practical functionalities that standard touchscreens cannot offer, such as precise drawing with pressure sensitivity, hardware palm rejection, and wireless remote control features. Because it is niche, its weight in the aggregate device score is intentionally small, but it must be recorded to evaluate the unique practical capabilities it provides to the user.
+
+| Score Component   | Stylus Support Level                                                   | Example Models                                                        |
+| :---------------- | :--------------------------------------------------------------------- | :-------------------------------------------------------------------- |
+| **8.0 (Base)**    | **Integrated active stylus (Internal Silo)**                           | Moto G Stylus (2026), Galaxy Note 8, Mate 20 X                        |
+| **6.0 (Base)**    | **External active stylus support + active digitizer**                  | Galaxy Z Fold 5/6 (standard pen), LG V60, Honor Magic V3              |
+| **+2.0 (Bonus)**  | **Bluetooth-enabled stylus / wireless remote features**                | Galaxy S24 Ultra (+2.0 to Int), Z Fold 5/6 w/ S Pen Pro (+2.0 to Ext) |
+| **0.0 (Baseline)**| **Universal Touchscreen Compatibility (Passive Stylus) / No Digitizer**| **Baseline for ALL standard smartphones**                             |
+
+*(Note: The Stylus Hardware & System Support (SHSS) score is additive. A device with an Integrated Stylus (8.0) and a Bluetooth-enabled stylus (2.0) maxes out at 10.0. A device with External Support (6.0) and a Bluetooth-enabled stylus (2.0) scores 8.0. Standard smartphone Bluetooth connectivity does NOT qualify for this bonus.)*
 
 > [!NOTE]
-> **Technical Definitions:**
-> - **Dedicated Digitizer:** A specialized hardware layer under the screen (e.g., Wacom EMR) required for any "Active" stylus functions like pressure sensitivity and palm rejection. **An active stylus cannot function with pressure/tilt features without a digitizer.**
-> - **Bluetooth Features:** Beyond writing, the stylus acts as a wireless remote control (e.g., camera shutter, media control, "Air Actions"). This requires an internal battery/capacitor in the stylus and a BLE radio.
-> - **Integrated Active Stylus:** Physically built into the phone chassis (silo) for storage and charging.
-> - **External Active Stylus Support:** The screen has the required digitizer, but the pen is sold separately or stored in a localized case (not inside the phone body).
-> - **Universal Compatibility (Passive):** This is **NOT** a specific feature but rather the absence of a digitizer. It means the phone works with cheap "rubber tip" styluses that simply simulate a finger. Since all modern smartphones use capacitive screens, they all achieve this 3.0 baseline.
+> **Concept: Active vs. Passive Styluses (Why it matters)**
+> The distinction between an active and a passive stylus fundamentally changes what a user can do with the device. 
+> *   **Passive (Capacitive) Stylus:** A basic tool with a conductive tip that simply mimics a human finger. The phone's screen cannot tell the difference between the stylus tip and your hand. **User Impact:** While it has real value-add for the user (e.g., basic UI navigation, avoiding screen smudges, accessibility), it scores **0.0** because it requires zero specialized pen-sensing hardware from the phone itself. Every modern smartphone can use a passive stylus, meaning it represents the baseline (0.0) hardware capability.
+> *   **Active Stylus System:** A complex integration where a "smart" pen communicates with a dedicated sensing layer (digitizer) built into the phone's display. **User Impact:** Because the phone can specifically identify the pen independently of touch, it allows you to rest your hand naturally on the glass while writing (hardware palm rejection). It also enables advanced artistic tools like pressure sensitivity (pressing harder draws a thicker line) and hover actions (previewing content by holding the pen above the glass).
+
+> [!CAUTION]
+> **The "Name" Trap (Passive vs. Active):** Do not assume a phone has an active digitizer just because its name includes "Stylus" or "Stylo".
+> *   The **LG Stylo series** (Stylo 4, 5, 6) and the **Moto G Stylus (2020-2025)** use *passive (capacitive)* styluses. They should not be classified as active-pen systems unless pressure/hover/tilt or equivalent pen-specific input is independently verified. Even though they may feature a storage silo, their screens possess no specialized pen-sensing hardware beyond what is found on any standard smartphone, which is why they score the **0.0** baseline.
+> *   The **Moto G Stylus (2026)** introduced a true *active* digitizer with pressure and tilt support. It scores **8.0**.
+
+**Technical Feature Breakdown & Utility:**
+*   **Active Digitizer / Input Layer (Base requirement for > 0.0):** A display/input system capable of detecting a compatible active pen independently of ordinary finger-capacitive input (e.g., Wacom EMR, AES, or proprietary active protocols). **Utility:** Enables pressure sensitivity (for drawing/shading) and true hardware palm rejection (so you can rest your hand on the screen while writing).
+*   **Integrated / Internal Silo (Base 8.0):** Physically built into the phone chassis (a dedicated "silo") for storage and inductive charging. **Utility:** Ensures the stylus is always with the user and never lost, representing a significant engineering cost to internal volume.
+*   **External Support (Base 6.0):** The screen has the required active digitizer layer, but the pen is sold separately or stored in an external bulky case. **Utility:** Provides full drawing/writing capability, typically found on foldables where internal space is too constrained for a silo.
+*   **Bluetooth-Enabled Stylus (+2.0 Bonus):** The active stylus itself integrates a Bluetooth / Bluetooth Low Energy (BLE) radio, allowing it to function as a wireless remote control (e.g., Samsung "Air Actions"). **Important:** This bonus specifically requires Bluetooth hardware embedded inside the *stylus*; standard smartphone Bluetooth capability does NOT grant this bonus. **Utility:** Allows triggering the camera shutter from a distance, controlling media, or navigating presentations. *(Note: This technically requires an internal battery or supercapacitor in the stylus to power the wireless radio, which in turn requires the phone's silo to support inductive charging, unless charged externally via USB-C).*
+*   **Universal Compatibility (Score 0.0):** The absence of verified active-pen sensing. The phone works with cheap "rubber tip" styluses that simply simulate a finger. **Utility:** Standard UI navigation. Since all modern smartphones (2016-2026) use capacitive screens, they all fall into this 0.0 baseline (e.g., iPhone 16 Pro, Pixel 9).
 
 
 # 🟣 11. Reviews & Performance Boosters
