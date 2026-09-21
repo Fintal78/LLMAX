@@ -59,9 +59,9 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   
   // GUIDELINE (meta): Tracks the state of this document itself. Update both fields every time you modify this file.
   "meta": {
-    "schema_version": "6.9",
+    "schema_version": "7.0",
     // GUIDELINE: Version of the data structure schema. Increment only when a structural change is made (new fields added, renamed, or removed). Use semantic versioning (Major.Minor).
-    "last_updated": "2026-09-18"
+    "last_updated": "2026-09-21"
     // GUIDELINE: Date this file was last modified, in ISO 8601 format (YYYY-MM-DD). MUST be updated on every run — leaving this stale is a data integrity violation.
   },
   // GUIDELINE (identity): Uniquely identifies the device and the specific hardware variant being scored. None of these fields feed into scoring — they are used for display, search, and database linking.
@@ -6491,25 +6491,44 @@ This schema is the primary, self-contained "Recipe" for AI-automated classificat
   },
   "10_miscellaneous": {
     "10_1_stylus_hardware_system_support": {
-      // SCORING GOAL: Evaluates native stylus presence and hardware digitizer support.
-      "support_tier": {
-        "value": "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features",
+      // SCORING GOAL: Measures whether the phone supports active stylus input at the hardware and system level, differentiating between basic capacitive touch and advanced productivity tools.
+      
+      "base_stylus_support": {
+        "value": "Tier 1: Integrated active stylus (Internal Silo)",
         "source": "TBD",
         "exact_extract": "Proof pending",
-        "subscore": 10.00
-        // SCORING GUIDELINE: Identify the stylus support level. Use the following exact Tier Names for "value" with related scores as subscore (always apply the highest applicable tier):
-        //   • "Tier 1: Integrated active stylus + dedicated digitizer + Bluetooth features" → 10.00
-        //     Definition: Stylus is stored inside the device (silo), uses an active digitizer layer for pressure/tilt, and has a battery for remote Bluetooth gestures.
-        //   • "Tier 2: Active stylus support (dedicated digitizer, no silo)"              → 7.00
-        //     Definition: Device has a dedicated digitizer layer for high-precision active pens (e.g., Apple Pencil, S Pen) but no internal storage for the pen.
-        //   • "Tier 3: Passive stylus or basic touch pen"                                  → 3.00
-        //     Definition: No dedicated digitizer; works with generic capacitive pens that mimic finger touch.
-        //   • "Tier 4: None"                                                               → 0.00
-        //     Definition: No official stylus support or secondary digitizer layer.
+        "subscore": 8.00
+        // SCORING GUIDELINE: Identify the base stylus support level. Use the following exact Tier Names for "value" with related scores as subscore:
+        //   • "Tier 1: Integrated active stylus (Internal Silo)"                            → 8.00
+        //     Definition: Physically built into the phone chassis (a dedicated "silo") for storage and inductive charging.
+        //   • "Tier 2: External active stylus support + active digitizer"                   → 6.00
+        //     Definition: The screen has the required active digitizer layer (capable of detecting a compatible active pen independently of ordinary finger-capacitive input), but the pen is sold separately or stored in an external case.
+        //   • "Tier 3: Universal Touchscreen Compatibility (Passive Stylus) / No Digitizer" → 0.00
+        //     Definition: The absence of verified active-pen sensing. The phone works with standard styluses that simply simulate a finger.
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. THE "NAME" TRAP (PASSIVE VS. ACTIVE): Do not assume a phone has an active digitizer just because its name includes "Stylus" or "Stylo". Phones like the LG Stylo series or Moto G Stylus (2020-2025) use passive (capacitive) styluses. They score the Tier 3 baseline (0.0) unless pressure/hover/tilt or equivalent pen-specific input is independently verified (like the Moto G Stylus 2026).
+        //   2. VERIFICATION REQUIREMENT: To assign Tier 1 or Tier 2, explicit mention of an active digitizer layer/protocol (e.g., Wacom AES, MPP, USI), recognized active pen ecosystem (e.g., Samsung S Pen, Huawei M-Pen), pressure sensitivity, hover actions, or hardware palm rejection is required.
+        //   3. ABSENCE OF FEATURE PROOF (TIER 3): Set "source" and "exact_extract" to "N/A" when assigning Tier 3.
+      },
+      "bluetooth_enabled_stylus_remote_features": {
+        "value": true,
+        "source": "TBD",
+        "exact_extract": "Proof pending",
+        "subscore": 2.00
+        // SCORING GUIDELINE: Evaluates if the active stylus integrates a Bluetooth / Bluetooth Low Energy (BLE) radio, allowing it to function as a wireless remote control (e.g., Samsung "Air Actions").
+        //   • true  → 2.00
+        //   • false → 0.00
+        //
+        // AMBIGUITY RESOLUTION & LOGIC TREE (MANDATORY):
+        //   1. STRICT BLUETOOTH STYLUS HARDWARE REQUIREMENT: This bonus specifically requires Bluetooth hardware embedded inside the *stylus*. Standard smartphone Bluetooth capability does NOT grant this bonus.
+        //   2. PASSIVE/NO DIGITIZER LIMITATION: If `base_stylus_support.subscore` is 0.00, this bonus MUST be false (0.00).
+        //   3. ABSENCE OF FEATURE PROOF (FALSE): Set "source" and "exact_extract" to "N/A" when the value is false.
       },
       "scores": {
         "predicted": 10.00,
-        // SCORING GUIDELINE: scores.predicted directly inherits support_tier.subscore.
+        "calculation_formula": "base_stylus_support.subscore + bluetooth_enabled_stylus_remote_features.subscore, clamped 0.0 to 10.0",
+        // SCORING GUIDELINE: Additive score (Base + Bonus). Max score is 10.0.
         "final": {
           // ⚠ MANDATORY: This block follows FINAL_SCORE_PREDICTOR_TEMPLATE (defined in file header). Do NOT add inline scoring guidelines here.
           "value": 10.00,
